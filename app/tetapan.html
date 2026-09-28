@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tetapan · ePASTI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/app.css?v=4">
+</head>
+<body>
+<div class="pt-app" data-module="tetapan" data-page="tetapan" data-title="Tetapan" data-subtitle="Profil & pentadbir">
+  <main class="pt-main">
+
+    <div class="page-head">
+      <div>
+        <div class="crumb">ePASTI <span>›</span> Tetapan</div>
+        <h1>Tetapan</h1>
+        <div class="lead">Kemas kini profil, kata laluan & senarai pentadbir</div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <a href="#" class="active" data-tab="profil">Profil</a>
+      <a href="#" data-tab="katalaluan">Tukar Kata Laluan</a>
+      <a href="#" data-tab="pentadbir">Pengguna &amp; Akaun</a>
+    </div>
+
+    <!-- ===== Profil ===== -->
+    <div data-panel="profil">
+      <div class="card">
+        <div class="card-head"><h3>Maklumat Profil</h3></div>
+        <div class="card-body">
+          <form>
+            <div class="form-grid">
+              <div class="field"><span class="label">Nama <span class="req">*</span></span><input class="input" value="AMIRUL MUKMININ BIN SAHAK"></div>
+              <div class="field"><span class="label">No. KP <span class="req">*</span></span><input class="input" value="830924-10-5417"></div>
+              <div class="field"><span class="label">Tarikh Lahir</span><input class="input" type="text" value="24/09/1983"></div>
+              <div class="field"><span class="label">Gelaran</span>
+                <select class="select">
+                  <option selected>USTAZ</option>
+                  <option>USTAZAH</option>
+                  <option>ENCIK</option>
+                  <option>PUAN</option>
+                </select>
+              </div>
+              <div class="field"><span class="label">Jantina</span>
+                <div class="flex gap wrap aic" style="padding-top:4px">
+                  <label class="check"><input type="radio" name="jantina" checked> Lelaki</label>
+                  <label class="check"><input type="radio" name="jantina"> Perempuan</label>
+                </div>
+              </div>
+              <div class="field"><span class="label">Kaum</span>
+                <select class="select">
+                  <option selected>Melayu</option>
+                  <option>Cina</option>
+                  <option>India</option>
+                  <option>Bumiputera Sabah</option>
+                  <option>Bumiputera Sarawak</option>
+                  <option>Lain-lain</option>
+                </select>
+              </div>
+              <div class="field"><span class="label">Telefon</span><input class="input" value="013-7729481"></div>
+              <div class="field"><span class="label">Telefon Pejabat</span><input class="input" value="03-32256640"></div>
+              <div class="field"><span class="label">Faks</span><input class="input" value="03-32256641"></div>
+              <div class="field"><span class="label">Facebook</span><input class="input" value="fb.com/pastiassalamahsb"></div>
+              <div class="field"><span class="label">Homepage / Blog</span><input class="input" value="pastiassalamahsb.blogspot.com"></div>
+              <div class="field"><span class="label">Email <span class="req">*</span></span><input class="input" type="email" value="pastiassalamahsb@gmail.com"></div>
+              <div class="field full"><span class="label">Alamat</span>
+                <input class="input mb" value="NO 12, JALAN BESTARI 3">
+                <input class="input" value="TAMAN SRI MAKMUR, 16150 KUBANG KERIAN, KELANTAN">
+              </div>
+              <div class="field full"><span class="label">Gambar</span>
+                <input class="input" type="file" accept="image/jpeg,image/png">
+                <span class="hint">Format jpeg/png, saiz &lt; 2mb.</span>
+              </div>
+            </div>
+            <div class="divider"></div>
+            <div class="right"><button class="btn btn-primary" type="submit">Simpan</button></div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== Tukar Kata Laluan ===== -->
+    <div data-panel="katalaluan" style="display:none">
+      <div class="card">
+        <div class="card-head"><h3>Tukar Kata Laluan</h3></div>
+        <div class="card-body">
+          <form>
+            <div class="form-grid">
+              <div class="field"><span class="label">Kata Laluan</span><input class="input" type="password" placeholder="••••••••"></div>
+              <div class="field"><span class="label">Sahkan Kata Laluan</span><input class="input" type="password" placeholder="••••••••"></div>
+              <div class="field full"><span class="hint">*Kosongkan jika tidak ingin mengubah katalaluan.</span></div>
+            </div>
+            <div class="divider"></div>
+            <div class="right"><button class="btn btn-primary" type="submit">Simpan</button></div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== Pengguna & Akaun (cascading: each tier creates the tier below) ===== -->
+    <div data-panel="pentadbir" style="display:none">
+      <div class="card mb">
+        <div class="card-body">
+          <div class="chainx" id="uChain"></div>
+          <div class="muted" style="font-size:12.5px;margin-top:10px" id="uRule"></div>
+        </div>
+      </div>
+      <div class="toolbar">
+        <button class="btn btn-soft" id="uExcel">Excel</button>
+        <button class="btn btn-primary" id="uNew" data-own></button>
+        <div class="spacer"></div>
+        <div class="input-group"><input type="text" placeholder="Cari nama atau emel…"></div>
+      </div>
+      <div class="card">
+        <div class="table-wrap">
+          <table class="pt" data-nosave>
+            <thead><tr><th>Bil</th><th>Nama</th><th>Emel (ID Log Masuk)</th><th>Peranan</th><th>Skop</th><th>Dicipta Oleh</th><th>Tarikh</th><th>Status</th><th>Tindakan</th></tr></thead>
+            <tbody id="uRows"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- create account modal -->
+<div class="modal-overlay" id="uModal">
+  <div class="modal" data-own>
+    <div class="m-head"><h3 id="uModalT">Cipta Akaun</h3><button class="btn btn-ghost btn-sm" data-close>✕</button></div>
+    <div class="m-body" id="uModalB">
+      <div class="form-grid">
+        <div class="field full"><span class="label">Nama Penuh <span class="req">*</span></span><input class="input" id="uNama" placeholder="Nama penuh seperti dalam KP"></div>
+        <div class="field"><span class="label">Emel (ID log masuk) <span class="req">*</span></span><input class="input" id="uEmel" type="email" placeholder="nama@pasti.org"></div>
+        <div class="field"><span class="label">No. Telefon</span><input class="input" id="uTel" placeholder="01x-xxxxxxx"></div>
+        <div class="field" id="uRoleF" hidden><span class="label">Peranan <span class="req">*</span></span><select class="select" id="uRole"><option value="guru">Guru PASTI</option><option value="pembantu">Pembantu Guru</option></select></div>
+        <div class="field"><span class="label" id="uSkopL">Skop <span class="req">*</span></span><select class="select" id="uSkop"></select></div>
+      </div>
+      <div class="notice mt"><div class="tx"><b>Kata laluan sementara dijana automatik.</b><span>Pengguna perlu menukar kata laluan pada log masuk pertama.</span></div></div>
+    </div>
+    <div class="m-foot" id="uModalF"><button class="btn btn-ghost" data-close>Batal</button><button class="btn btn-primary" id="uCreate">Cipta Akaun</button></div>
+  </div>
+</div>
+
+<style>
+  .chainx{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+  .chainx .c{padding:7px 12px;border-radius:10px;border:1px solid var(--line);font-size:12.5px;font-weight:700;color:var(--muted);background:#fff}
+  .chainx .c.me{border-color:var(--brand);color:var(--brand-d);background:var(--brand-l)}
+  .chainx .c.kid{border-color:var(--accent);color:var(--accent-d);background:var(--accent-l)}
+  .chainx .a{color:var(--faint);font-weight:700}
+</style>
+
+<script src="../assets/js/app.js?v=4"></script>
+<script>
+(function(){
+  const tier = PT.tier, DB = window.DB, H = DB.HIER, RL = DB.ROLE_LABEL;
+  const child = H[tier];
+  const ME = DB.user();                                   // the signed-in account decides its own scope
+  const MY = (ME && ME.peranan === tier) ? ME.skop : { pusat:'JABATAN PASTI MALAYSIA', negeri:'KELANTAN', kawasan:'P025 KUBANG KERIAN', dun:'N44 KOTA LAMA', cawangan:"PASTI AL-TA'LIM" }[tier];
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+  // who-creates-who strip
+  const ORDER = ['pusat','negeri','kawasan','dun','cawangan','guru'];
+  $('uChain').innerHTML = ORDER.map((k,i) => `${i?'<span class="a">→</span>':''}<span class="c ${k===tier?'me':k===child?'kid':''}">${RL[k].replace('Pentadbir ','')}${k===tier?' (anda)':''}</span>`).join('') + '<span class="a">→</span><span class="c">Ibu Bapa (automatik bila murid diterima)</span>';
+  $('uRule').innerHTML = `Sebagai <b>${RL[tier]}</b>, anda boleh cipta akaun <b>${RL[child]}${child==='guru'?' & Pembantu Guru':''}</b> dalam skop <b>${esc(MY)}</b> sahaja. Akaun peringkat lain dicipta oleh peringkat di atasnya.`;
+  $('uNew').textContent = '+ Cipta Akaun ' + (child === 'guru' ? 'Guru' : RL[child].replace('Pentadbir ',''));
+
+  // scope choices for the account being created
+  const KELANTAN_KAW = ['P025 KUBANG KERIAN','P026 BACHOK','TUMPAT','PENGKALAN CHEPA','KOTA BHARU','PASIR MAS','RANTAU PANJANG','KETEREH','TANAH MERAH','PASIR PUTEH','MACHANG','JELI','KUALA KRAI','GUA MUSANG'];
+  const NEGERI = ['JOHOR','KEDAH','KELANTAN','MELAKA','NEGERI SEMBILAN','PAHANG','PERAK','PERLIS','PULAU PINANG','SABAH','SARAWAK','SELANGOR','TERENGGANU','WP KUALA LUMPUR & PUTRAJAYA'];
+  function scopes(){
+    if (child === 'negeri') return NEGERI;
+    if (child === 'kawasan') return KELANTAN_KAW;
+    if (child === 'dun') return ['N44 KOTA LAMA','N45 BUNUT PAYONG'];
+    if (child === 'cawangan') return DB.all('pasti').filter(p => p.status === 'Lulus' && p.dun === MY).map(p => p.nama);
+    return [MY];
+  }
+  const inScope = u => {
+    if (tier === 'pusat') return u.peranan === 'negeri';
+    if (tier === 'negeri') return u.peranan === 'kawasan' && KELANTAN_KAW.includes(u.skop);
+    if (tier === 'kawasan') return u.peranan === 'dun' && ['N44 KOTA LAMA','N45 BUNUT PAYONG'].includes(u.skop);
+    if (tier === 'dun') return u.peranan === 'cawangan' && DB.all('pasti').some(p => p.nama === u.skop && p.dun === MY);
+    if (tier === 'cawangan') return /guru|pembantu|ibubapa/.test(u.peranan) && u.skop === MY;
+    return false;
+  };
+  const roleBadge = r => `<span class="badge ${r==='ibubapa'?'b-violet':r==='guru'||r==='pembantu'?'b-green':'b-blue'} no-dot">${RL[r]}</span>`;
+
+  function draw(){
+    const rows = DB.all('users').filter(inScope);
+    $('uRows').innerHTML = rows.map((u,i) => `<tr>
+      <td class="num">${i+1}</td><td><b style="color:var(--ink)">${esc(u.nama)}</b></td><td class="num">${esc(u.emel)}</td><td>${roleBadge(u.peranan)}</td>
+      <td>${esc(u.skop)}</td><td>${esc(u.oleh)}</td><td class="num">${u.tarikh}</td>
+      <td><span class="badge ${u.status==='Aktif'?'b-green':'b-red'}">${u.status}</span></td>
+      <td class="flex gap wrap" data-own>${u.peranan === 'ibubapa' ? '<span class="muted" style="font-size:12px">Dicipta automatik</span>' :
+        `<button class="btn btn-soft btn-sm" data-u="${esc(u.emel)}" data-do="toggle">${u.status==='Aktif'?'Nyahaktif':'Aktifkan'}</button>
+         <button class="btn btn-ghost btn-sm" data-u="${esc(u.emel)}" data-do="reset">Set Semula Kata Laluan</button>
+         <button class="btn btn-ghost btn-sm" data-u="${esc(u.emel)}" data-do="as">Log masuk sebagai</button>`}</td></tr>`).join('')
+      || `<tr><td colspan="9" class="empty">Belum ada akaun ${RL[child]} dalam skop anda.</td></tr>`;
+  }
+
+  function openNew(){
+    $('uModalT').textContent = 'Cipta Akaun ' + (child === 'guru' ? 'Guru / Pembantu Guru' : RL[child]);
+    $('uRoleF').hidden = child !== 'guru';
+    $('uSkopL').innerHTML = ({negeri:'Negeri',kawasan:'Kawasan',dun:'DUN',cawangan:'Cawangan PASTI',guru:'PASTI'}[child]) + ' <span class="req">*</span>';
+    const taken = DB.all('users').filter(u => u.peranan === child).map(u => u.skop);
+    $('uSkop').innerHTML = scopes().map(s => `<option value="${esc(s)}">${esc(s)}${child!=='guru' && taken.includes(s) ? ' — sudah ada pentadbir' : ''}</option>`).join('')
+      || '<option value="">Tiada PASTI berstatus Lulus dalam DUN anda</option>';
+    $('uSkop').disabled = child === 'guru';
+    ['uNama','uEmel','uTel'].forEach(id => { $(id).value = ''; $(id).classList.remove('pt-err'); });
+    $('uModalF').innerHTML = '<button class="btn btn-ghost" data-close>Batal</button><button class="btn btn-primary" id="uCreate">Cipta Akaun</button>';
+    $('uModal').classList.add('open');
+  }
+  function create(){
+    const nama = $('uNama').value.trim(), emel = $('uEmel').value.trim().toLowerCase(), skop = $('uSkop').value;
+    let bad = 0; [['uNama', nama], ['uEmel', /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(emel) ? emel : '']].forEach(([id,v]) => { $(id).classList.toggle('pt-err', !v); if (!v) bad++; });
+    if (bad) { PT.toast('Isi nama dan emel yang sah', 'red'); return; }
+    if (!skop) { PT.toast('Tiada skop untuk dipilih', 'red'); return; }
+    if (DB.find('users', u => u.emel.toLowerCase() === emel)) { $('uEmel').classList.add('pt-err'); PT.toast('Emel ini sudah digunakan oleh akaun lain', 'red'); return; }
+    const peranan = child === 'guru' ? $('uRole').value : child;
+    const d = new Date(), tarikh = String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + d.getFullYear();
+    DB.add('users', { nama, emel, tel: $('uTel').value.trim(), peranan, skop, oleh: RL[tier], tarikh, status:'Aktif' });
+    const pw = 'Pasti@' + (1000 + Math.floor(Math.random()*9000));
+    $('uModalT').textContent = 'Akaun berjaya dicipta';
+    $('uModalB').insertAdjacentHTML('afterbegin', '');
+    $('uModalB').dataset.keep = '1';
+    const card = `<div class="notice"><div class="tx"><b>${esc(nama)} — ${RL[peranan]}</b><span>Skop: ${esc(skop)}</span></div></div>
+      <div class="kv mt" style="grid-template-columns:150px 1fr"><dt>ID log masuk</dt><dd>${esc(emel)}</dd><dt>Kata laluan sementara</dt><dd>${pw}</dd><dt>Log masuk di</dt><dd>Halaman log masuk ePASTI</dd></div>
+      <div class="muted mt" style="font-size:12.5px">Butiran ini juga dihantar ke emel pengguna. Rekod penciptaan dicatat dalam Log Akses.</div>`;
+    $('uModalB').innerHTML = card;
+    $('uModalF').innerHTML = `<button class="btn btn-ghost" data-close>Tutup</button><button class="btn btn-primary" data-u="${esc(emel)}" data-do="as">Log masuk sebagai akaun ini</button>`;
+    draw(); PT.toast('Akaun ' + RL[peranan] + ' dicipta');
+  }
+  function loginAs(emel){
+    const u = DB.find('users', x => x.emel === emel); if (!u) return;
+    localStorage.setItem('pt-user', u.emel);
+    if (u.peranan === 'guru' || u.peranan === 'pembantu') { location.href = '../guru/dashboard.html'; return; }
+    localStorage.setItem('pt-tier', u.peranan); location.href = 'dashboard.html';
+  }
+
+  // the modal body is rebuilt after a create; restore it on the next open
+  const FORM = $('uModalB').innerHTML;
+  document.addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    if (b.id === 'uNew') { $('uModalB').innerHTML = FORM; openNew(); return; }
+    if (b.id === 'uCreate') { create(); return; }
+    if (b.id === 'uExcel') return;
+    const emel = b.dataset.u, act = b.dataset.do; if (!emel || !act) return;
+    const u = DB.find('users', x => x.emel === emel); if (!u) return;
+    if (act === 'toggle') { u.status = u.status === 'Aktif' ? 'Tidak Aktif' : 'Aktif'; DB.save(); draw(); PT.toast('Akaun ' + u.nama + ' kini ' + u.status, u.status === 'Aktif' ? 'green' : 'red'); }
+    if (act === 'reset') PT.toast('Kata laluan sementara baharu dihantar ke ' + u.emel);
+    if (act === 'as') loginAs(emel);
+  });
+  draw();
+
+  // profile tab shows the signed-in account
+  const me = DB.user();
+  if (me) { const f = [...document.querySelectorAll('[data-panel="profil"] .field')].find(x => /nama/i.test(x.textContent)); const i = f && f.querySelector('input'); if (i) i.value = me.nama; }
+})();
+</script>
+</body>
+</html>

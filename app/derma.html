@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Derma / Donation · ePASTI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/app.css?v=4">
+</head>
+<body>
+<div class="pt-app" data-module="kempen" data-page="derma" data-title="Derma / Donation" data-subtitle="Sumbangan mengikut lokaliti &amp; kempen">
+  <main class="pt-main">
+
+    <div class="page-head">
+      <div>
+        <div class="crumb">ePASTI <span>›</span> Kempen &amp; Derma <span>›</span> Derma</div>
+        <h1>Derma / Donation</h1>
+        <div class="lead">Sumbangan mengikut lokaliti &amp; kempen</div>
+      </div>
+      <button class="btn btn-primary" data-modal="dermaModal">+ Terima Derma</button>
+    </div>
+
+    <!-- stat strip -->
+    <div class="grid g-4">
+      <div class="stat"><div class="top"><span class="label">Jumlah Terkumpul</span><div class="ic g">RM</div></div><div class="value">RM 128,450</div><div class="trend up">▲ 342 sumbangan</div></div>
+      <div class="stat"><div class="top"><span class="label">Sasaran</span><div class="ic t">◎</div></div><div class="value">RM 200,000</div><div class="trend flat">64% tercapai</div></div>
+      <div class="stat"><div class="top"><span class="label">Bilangan Penderma</span><div class="ic b">P</div></div><div class="value">287</div><div class="trend up">▲ 18 bulan ini</div></div>
+      <div class="stat"><div class="top"><span class="label">Kempen Aktif</span><div class="ic a">K</div></div><div class="value">6</div><div class="trend flat">Sedang berjalan</div></div>
+    </div>
+
+    <div class="notice mt-lg">
+      <div class="tx">
+        <b>Derma boleh disalurkan khusus mengikut lokaliti</b>
+        <span>Penderma boleh memilih untuk menyalurkan sumbangan terus kepada PASTI tertentu, DUN atau Kawasan pilihan. Setiap sumbangan akan direkodkan mengikut lokaliti yang dipilih untuk ketelusan pengagihan dana.</span>
+      </div>
+    </div>
+
+    <div class="card mt-lg">
+      <div class="card-head"><h3>Rekod Sumbangan</h3><span class="sub">Senarai derma mengikut lokaliti &amp; kempen</span></div>
+      <div class="card-body">
+        <div class="filter-bar mb">
+          <select class="select">
+            <option>Semua Negeri</option>
+            <option>KELANTAN</option>
+          </select>
+          <select class="select">
+            <option>Semua Kawasan</option>
+            <option>P025 KUBANG KERIAN</option>
+            <option>P026 BACHOK</option>
+          </select>
+          <select class="select">
+            <option>Semua DUN</option>
+            <option>N44 KOTA LAMA</option>
+            <option>N45 BUNUT PAYONG</option>
+          </select>
+          <select class="select">
+            <option>Semua PASTI</option>
+            <option>AL-TA'LIM</option>
+            <option>AS-SALAMAH</option>
+            <option>ITQAN</option>
+            <option>NURUL IMAN</option>
+            <option>NURUL HIDAYAH</option>
+          </select>
+        </div>
+        <div class="toolbar">
+          <div class="input-group">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z"/><path d="M21 21l-4.3-4.3"/></svg>
+            <input type="text" placeholder="Cari penderma atau no rujukan…">
+          </div>
+          <div class="spacer"></div>
+          <select class="select">
+            <option>Semua Status</option>
+            <option>Berjaya</option>
+            <option>Menunggu</option>
+          </select>
+        </div>
+        <div class="table-wrap">
+          <table class="pt">
+            <thead><tr>
+              <th>No. Rujukan</th><th>Tarikh</th><th>Penderma</th><th>Untuk (PASTI/Lokaliti)</th><th>Kempen/Tujuan</th><th class="right">Jumlah (RM)</th><th>Kaedah</th><th>Status</th><th>Tindakan</th>
+            </tr></thead>
+            <tbody id="dermaBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- derma modal -->
+<div class="modal-overlay" id="dermaModal">
+  <div class="modal">
+    <div class="m-head"><h3>Terima Derma</h3><button class="btn btn-ghost btn-sm" data-close>✕</button></div>
+    <div class="m-body">
+      <div class="form-grid">
+        <div class="field"><span class="label">Nama Penderma <span class="req">*</span></span><input class="input" placeholder="Nama penuh penderma"></div>
+        <div class="field"><span class="label">No. Telefon / Emel <span class="req">*</span></span><input class="input" placeholder="012-3456789 atau emel"></div>
+        <div class="field"><span class="label">Untuk (PASTI/Lokaliti) <span class="req">*</span></span>
+          <select class="select">
+            <option>Semua PASTI Kawasan Kubang Kerian</option>
+            <option>PASTI AL-TA'LIM</option>
+            <option>PASTI AS-SALAMAH</option>
+            <option>PASTI ITQAN</option>
+            <option>PASTI NURUL IMAN</option>
+            <option>PASTI NURUL HIDAYAH</option>
+            <option>DUN N44 KOTA LAMA</option>
+            <option>DUN N45 BUNUT PAYONG</option>
+          </select>
+        </div>
+        <div class="field"><span class="label">Kempen <span class="req">*</span></span>
+          <select class="select">
+            <option>Tabung Naik Taraf PASTI AL-TA'LIM</option>
+            <option>Bantuan Yuran Anak Yatim N44 Kota Lama</option>
+            <option>Wakaf Buku PASTI ITQAN</option>
+            <option>Tabung Ihsan Ramadan Kawasan Kubang Kerian</option>
+            <option>Tabung Am / Sumbangan Ikhlas</option>
+          </select>
+        </div>
+        <div class="field"><span class="label">Jumlah (RM) <span class="req">*</span></span><input class="input" type="text" placeholder="0.00"></div>
+        <div class="field"><span class="label">Kaedah <span class="req">*</span></span>
+          <select class="select">
+            <option>FPX</option>
+            <option>Kad Kredit/Debit</option>
+            <option>DuitNow QR</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="m-foot"><button class="btn btn-ghost" data-close>Batal</button><button class="btn btn-primary" data-toast="Menghala ke pintu bayaran…">Sumbang Sekarang</button></div>
+  </div>
+</div>
+
+<script src="../assets/js/app.js?v=4"></script>
+<script>
+(function(){
+  var rows = [
+    {ref:'DRM-2026-0342', tarikh:'21/09/2026', nama:'Hj. Azman Yusof',       untuk:"PASTI AL-TA'LIM",           kempen:'Tabung Naik Taraf PASTI AL-TA\'LIM',      jumlah:'2,000.00', kaedah:'FPX',        status:'Berjaya',  b:'b-green'},
+    {ref:'DRM-2026-0341', tarikh:'20/09/2026', nama:'Puan Rohana Ismail',    untuk:'N44 KOTA LAMA',        kempen:'Bantuan Yuran Anak Yatim',                jumlah:'500.00',   kaedah:'DuitNow QR', status:'Berjaya',  b:'b-green'},
+    {ref:'DRM-2026-0340', tarikh:'20/09/2026', nama:'En. Zulkifli Rahman',   untuk:'PASTI ITQAN',              kempen:'Wakaf Buku PASTI ITQAN',                  jumlah:'150.00',   kaedah:'Kad',        status:'Menunggu', b:'b-amber'},
+    {ref:'DRM-2026-0339', tarikh:'19/09/2026', nama:'Hjh. Siti Aminah',      untuk:'P025 KUBANG KERIAN',        kempen:'Tabung Ihsan Ramadan',                    jumlah:'1,000.00', kaedah:'FPX',        status:'Berjaya',  b:'b-green'},
+    {ref:'DRM-2026-0338', tarikh:'18/09/2026', nama:'En. Faizal Abdullah',   untuk:'PASTI NURUL IMAN',         kempen:'Tabung Am / Sumbangan Ikhlas',            jumlah:'300.00',   kaedah:'DuitNow QR', status:'Berjaya',  b:'b-green'},
+    {ref:'DRM-2026-0337', tarikh:'17/09/2026', nama:'Puan Noraini Hashim',   untuk:'N45 BUNUT PAYONG',            kempen:'Bantuan Yuran Anak Yatim',                jumlah:'250.00',   kaedah:'Kad',        status:'Menunggu', b:'b-amber'},
+    {ref:'DRM-2026-0336', tarikh:'16/09/2026', nama:'Dato\' Hamzah Salleh',  untuk:"PASTI AL-TA'LIM",          kempen:'Tabung Naik Taraf PASTI AL-TA\'LIM',      jumlah:'5,000.00', kaedah:'FPX',        status:'Berjaya',  b:'b-green'},
+    {ref:'DRM-2026-0335', tarikh:'15/09/2026', nama:'En. Ridzuan Kamal',     untuk:'PASTI AS-SALAMAH',         kempen:'Tabung Am / Sumbangan Ikhlas',            jumlah:'120.00',   kaedah:'DuitNow QR', status:'Berjaya',  b:'b-green'}
+  ];
+  var html = rows.map(function(r){
+    return '<tr>'+
+      '<td class="strong">'+r.ref+'</td>'+
+      '<td>'+r.tarikh+'</td>'+
+      '<td>'+r.nama+'</td>'+
+      '<td>'+r.untuk+'</td>'+
+      '<td>'+r.kempen+'</td>'+
+      '<td class="right num">'+r.jumlah+'</td>'+
+      '<td>'+r.kaedah+'</td>'+
+      '<td><span class="badge '+r.b+'">'+r.status+'</span></td>'+
+      '<td><button class="btn btn-soft btn-sm" data-action="print">Resit</button></td>'+
+    '</tr>';
+  }).join('');
+  document.getElementById('dermaBody').innerHTML = html;
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pengurusan Yuran &amp; Pembayaran · ePASTI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/app.css?v=4">
+</head>
+<body>
+<div class="pt-app" data-module="caruman" data-page="yuran" data-title="Pengurusan Yuran &amp; Pembayaran" data-subtitle="Bil yuran, struktur & transaksi pembayaran">
+  <main class="pt-main">
+
+    <div class="page-head">
+      <div>
+        <div class="crumb">ePASTI <span>›</span> Caruman &amp; Yuran <span>›</span> Yuran</div>
+        <h1>Pengurusan Yuran &amp; Pembayaran</h1>
+        <div class="lead">Jana bil yuran murid, urus struktur yuran &amp; jejak transaksi pembayaran</div>
+      </div>
+      <div class="flex gap wrap">
+        <button class="btn btn-primary" data-toast="Menjana bil yuran pukal…">Jana Bil (Pukal)</button>
+        <button class="btn btn-soft" data-modal="feeModal">Tambah Struktur Yuran</button>
+      </div>
+    </div>
+
+    <!-- stat strip -->
+    <div class="grid g-4">
+      <div class="stat"><div class="top"><span class="label">Jumlah Yuran 2026</span><div class="ic g">RM</div></div><div class="value">RM 32,400</div><div class="trend flat">Sasaran tahunan</div></div>
+      <div class="stat"><div class="top"><span class="label">Sudah Kutip</span><div class="ic t">✓</div></div><div class="value">RM 26,800</div><div class="trend up">▲ 83% terkumpul</div></div>
+      <div class="stat"><div class="top"><span class="label">Tertunggak</span><div class="ic a">!</div></div><div class="value">RM 5,600</div><div class="trend down">▼ bil belum jelas</div></div>
+      <div class="stat"><div class="top"><span class="label">Bil Aktif</span><div class="ic b">B</div></div><div class="value">27</div><div class="trend flat">Bil bulan semasa</div></div>
+    </div>
+
+    <!-- tabs -->
+    <div class="tabs mt-lg">
+      <a href="#" class="active" data-tab="bil">Bil Yuran</a>
+      <a href="#" data-tab="struktur">Struktur Yuran</a>
+      <a href="#" data-tab="transaksi">Transaksi Pembayaran</a>
+    </div>
+
+    <!-- PANEL: Bil Yuran -->
+    <div data-panel="bil">
+      <div class="card">
+        <div class="card-head"><h3>Bil Yuran Murid</h3><span class="sub">Senarai bil yuran bulanan &amp; sedebuk</span></div>
+        <div class="card-body">
+          <div class="toolbar">
+            <div class="input-group">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z"/><path d="M21 21l-4.3-4.3"/></svg>
+              <input type="text" placeholder="Cari nama murid atau no bil…">
+            </div>
+            <div class="spacer"></div>
+            <select class="select">
+              <option value="">Semua PASTI</option>
+              <option>PASTI Al-Ta'lim</option>
+              <option>PASTI As-Salamah</option>
+              <option>PASTI Itqan</option>
+              <option>PASTI Nurul Iman</option>
+              <option>PASTI Nurul Hidayah</option>
+            </select>
+            <select class="select">
+              <option value="">Semua Status</option>
+              <option>Belum</option>
+              <option>Sudah Bayar</option>
+            </select>
+          </div>
+          <div class="table-wrap">
+            <table class="pt">
+              <thead><tr>
+                <th>No Bil</th><th>Nama Murid</th><th>PASTI</th><th>Bulan/Tempoh</th><th>Jenis</th><th class="right">Jumlah (RM)</th><th>Status</th><th>Tindakan</th>
+              </tr></thead>
+              <tbody>
+                <tr>
+                  <td>BIL-2026-0801</td>
+                  <td><div class="cell-user"><div class="avatar">AS</div><div><div class="nm">Aleeya Sofia</div><div class="ml">4 tahun</div></div></div></td>
+                  <td>PASTI Al-Ta'lim</td><td>Ogos 2026</td><td>Bulanan</td>
+                  <td class="right num">60.00</td><td><span class="badge b-amber">Belum</span></td>
+                  <td><button class="btn btn-primary btn-sm" data-toast="Membuka pintu bayaran…">Bayar</button></td>
+                </tr>
+                <tr>
+                  <td>BIL-2026-0802</td>
+                  <td><div class="cell-user"><div class="avatar">WD</div><div><div class="nm">Wafiy Danial</div><div class="ml">5 tahun</div></div></div></td>
+                  <td>PASTI Al-Ta'lim</td><td>Ogos 2026</td><td>Bulanan</td>
+                  <td class="right num">60.00</td><td><span class="badge b-green">Sudah Bayar</span></td>
+                  <td><button class="btn btn-soft btn-sm" data-action="print">Resit</button></td>
+                </tr>
+                <tr>
+                  <td>BIL-2026-0803</td>
+                  <td><div class="cell-user"><div class="avatar">NE</div><div><div class="nm">Nur Eliya</div><div class="ml">6 tahun</div></div></div></td>
+                  <td>PASTI As-Salamah</td><td>Ogos 2026</td><td>Bulanan</td>
+                  <td class="right num">65.00</td><td><span class="badge b-green">Sudah Bayar</span></td>
+                  <td><button class="btn btn-soft btn-sm" data-action="print">Resit</button></td>
+                </tr>
+                <tr>
+                  <td>BIL-2026-0804</td>
+                  <td><div class="cell-user"><div class="avatar">ZA</div><div><div class="nm">Zulqarnain Adam</div><div class="ml">4 tahun</div></div></div></td>
+                  <td>PASTI Itqan</td><td>Pendaftaran 2026</td><td>Sedebuk</td>
+                  <td class="right num">150.00</td><td><span class="badge b-amber">Belum</span></td>
+                  <td><button class="btn btn-primary btn-sm" data-toast="Membuka pintu bayaran…">Bayar</button></td>
+                </tr>
+                <tr>
+                  <td>BIL-2026-0805</td>
+                  <td><div class="cell-user"><div class="avatar">BH</div><div><div class="nm">Balqis Humaira</div><div class="ml">5 tahun</div></div></div></td>
+                  <td>PASTI Itqan</td><td>Ogos 2026</td><td>Bulanan</td>
+                  <td class="right num">70.00</td><td><span class="badge b-green">Sudah Bayar</span></td>
+                  <td><button class="btn btn-soft btn-sm" data-action="print">Resit</button></td>
+                </tr>
+                <tr>
+                  <td>BIL-2026-0806</td>
+                  <td><div class="cell-user"><div class="avatar">LH</div><div><div class="nm">Luqman Hariz</div><div class="ml">6 tahun</div></div></div></td>
+                  <td>PASTI Nurul Iman</td><td>Ogos 2026</td><td>Bulanan</td>
+                  <td class="right num">55.00</td><td><span class="badge b-amber">Belum</span></td>
+                  <td><button class="btn btn-primary btn-sm" data-toast="Membuka pintu bayaran…">Bayar</button></td>
+                </tr>
+                <tr>
+                  <td>BIL-2026-0807</td>
+                  <td><div class="cell-user"><div class="avatar">DA</div><div><div class="nm">Damia Aleesya</div><div class="ml">4 tahun</div></div></div></td>
+                  <td>PASTI Nurul Hidayah</td><td>Ogos 2026</td><td>Bulanan</td>
+                  <td class="right num">60.00</td><td><span class="badge b-green">Sudah Bayar</span></td>
+                  <td><button class="btn btn-soft btn-sm" data-action="print">Resit</button></td>
+                </tr>
+                <tr>
+                  <td>BIL-2026-0808</td>
+                  <td><div class="cell-user"><div class="avatar">RI</div><div><div class="nm">Rayyan Iman</div><div class="ml">5 tahun</div></div></div></td>
+                  <td>PASTI Nurul Hidayah</td><td>Pendaftaran 2026</td><td>Sedebuk</td>
+                  <td class="right num">150.00</td><td><span class="badge b-amber">Belum</span></td>
+                  <td><button class="btn btn-primary btn-sm" data-toast="Membuka pintu bayaran…">Bayar</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL: Struktur Yuran -->
+    <div data-panel="struktur" style="display:none">
+      <div class="notice mb">
+        <div class="tx">
+          <b>Kaedah bayaran yuran</b>
+          <span><strong>Bulanan berulang</strong> — bil dijana automatik setiap bulan &amp; ibu bapa boleh langgan bayaran berulang. <strong>Sedebuk</strong> — bayar sekali gus (contoh yuran pendaftaran). Kedua-dua kaedah diproses melalui pintu bayaran.</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>Struktur Yuran mengikut PASTI</h3><span class="sub">Kadar yuran pendaftaran &amp; bulanan</span></div>
+        <div class="card-body">
+          <div class="table-wrap">
+            <table class="pt">
+              <thead><tr>
+                <th>PASTI</th><th class="right">Yuran Pendaftaran (RM)</th><th class="right">Yuran Bulanan (RM)</th><th>Kaedah</th><th>Status</th><th>Tindakan</th>
+              </tr></thead>
+              <tbody>
+                <tr>
+                  <td>PASTI Al-Ta'lim</td><td class="right num">150.00</td><td class="right num">60.00</td>
+                  <td>Bulanan berulang</td><td><span class="badge b-green">Aktif</span></td>
+                  <td><button class="btn btn-soft btn-sm" data-modal="feeModal">Edit</button></td>
+                </tr>
+                <tr>
+                  <td>PASTI As-Salamah</td><td class="right num">150.00</td><td class="right num">65.00</td>
+                  <td>Bulanan berulang</td><td><span class="badge b-green">Aktif</span></td>
+                  <td><button class="btn btn-soft btn-sm" data-modal="feeModal">Edit</button></td>
+                </tr>
+                <tr>
+                  <td>PASTI Itqan</td><td class="right num">150.00</td><td class="right num">70.00</td>
+                  <td>Bulanan berulang</td><td><span class="badge b-green">Aktif</span></td>
+                  <td><button class="btn btn-soft btn-sm" data-modal="feeModal">Edit</button></td>
+                </tr>
+                <tr>
+                  <td>PASTI Nurul Iman</td><td class="right num">120.00</td><td class="right num">55.00</td>
+                  <td>Sedebuk</td><td><span class="badge b-amber">Draf</span></td>
+                  <td><button class="btn btn-soft btn-sm" data-modal="feeModal">Edit</button></td>
+                </tr>
+                <tr>
+                  <td>PASTI Nurul Hidayah</td><td class="right num">150.00</td><td class="right num">60.00</td>
+                  <td>Bulanan berulang</td><td><span class="badge b-green">Aktif</span></td>
+                  <td><button class="btn btn-soft btn-sm" data-modal="feeModal">Edit</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL: Transaksi Pembayaran -->
+    <div data-panel="transaksi" style="display:none">
+      <div class="card">
+        <div class="card-head"><h3>Transaksi Pembayaran</h3><span class="sub">Rekod pembayaran yuran melalui pintu bayaran</span></div>
+        <div class="card-body">
+          <div class="table-wrap">
+            <table class="pt">
+              <thead><tr>
+                <th>No. Rujukan</th><th>Tarikh &amp; Masa</th><th>Pembayar</th><th>Nama Murid</th><th class="right">Jumlah (RM)</th><th>Kaedah</th><th>Status</th>
+              </tr></thead>
+              <tbody>
+                <tr><td>BC-2026-0104318</td><td>22/09/2026 09:14</td><td>Puan Norlela Bt Sabri</td><td>Wafiy Danial</td><td class="right num">60.00</td><td>FPX</td><td><span class="badge b-green">Berjaya</span></td></tr>
+                <tr><td>BC-2026-0104326</td><td>22/09/2026 10:02</td><td>Encik Hisham B Mokhtar</td><td>Nur Eliya</td><td class="right num">65.00</td><td>DuitNow QR</td><td><span class="badge b-green">Berjaya</span></td></tr>
+                <tr><td>BC-2026-0104339</td><td>22/09/2026 11:37</td><td>Puan Suhaila Bt Karim</td><td>Balqis Humaira</td><td class="right num">70.00</td><td>Kad</td><td><span class="badge b-green">Berjaya</span></td></tr>
+                <tr><td>BC-2026-0104347</td><td>22/09/2026 13:20</td><td>Encik Azhar B Latif</td><td>Luqman Hariz</td><td class="right num">55.00</td><td>FPX</td><td><span class="badge b-amber">Menunggu</span></td></tr>
+                <tr><td>BC-2026-0104352</td><td>22/09/2026 14:05</td><td>Puan Wardina Bt Jamal</td><td>Damia Aleesya</td><td class="right num">60.00</td><td>DuitNow QR</td><td><span class="badge b-green">Berjaya</span></td></tr>
+                <tr><td>BC-2026-0104364</td><td>22/09/2026 15:48</td><td>Encik Shukri B Talib</td><td>Zulqarnain Adam</td><td class="right num">150.00</td><td>Kad</td><td><span class="badge b-red">Gagal</span></td></tr>
+                <tr><td>BC-2026-0104377</td><td>22/09/2026 16:31</td><td>Puan Rahimah Bt Sallehuddin</td><td>Aleeya Sofia</td><td class="right num">60.00</td><td>FPX</td><td><span class="badge b-amber">Menunggu</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- fee structure modal -->
+<div class="modal-overlay" id="feeModal">
+  <div class="modal">
+    <div class="m-head"><h3>Struktur Yuran</h3><button class="btn btn-ghost btn-sm" data-close>✕</button></div>
+    <div class="m-body">
+      <div class="form-grid">
+        <div class="field full"><span class="label">PASTI <span class="req">*</span></span>
+          <select class="select">
+            <option>PASTI Al-Ta'lim</option>
+            <option>PASTI As-Salamah</option>
+            <option>PASTI Itqan</option>
+            <option>PASTI Nurul Iman</option>
+            <option>PASTI Nurul Hidayah</option>
+          </select>
+        </div>
+        <div class="field"><span class="label">Yuran Pendaftaran (RM) <span class="req">*</span></span><input class="input" type="text" placeholder="0.00"></div>
+        <div class="field"><span class="label">Yuran Bulanan (RM) <span class="req">*</span></span><input class="input" type="text" placeholder="0.00"></div>
+        <div class="field"><span class="label">Kaedah <span class="req">*</span></span>
+          <select class="select">
+            <option>Bulanan berulang</option>
+            <option>Sedebuk</option>
+          </select>
+        </div>
+        <div class="field"><span class="label">Tarikh Kuat Kuasa</span><input class="input" type="text" value="01/08/2026"></div>
+      </div>
+    </div>
+    <div class="m-foot"><button class="btn btn-ghost" data-close>Batal</button><button class="btn btn-primary">Simpan Struktur</button></div>
+  </div>
+</div>
+
+<script src="../assets/js/app.js?v=4"></script>
+</body>
+</html>

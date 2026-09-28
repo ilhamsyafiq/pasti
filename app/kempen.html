@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kempen PASTI · ePASTI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/app.css?v=4">
+</head>
+<body>
+<div class="pt-app" data-module="kempen" data-page="kempen" data-title="Kempen PASTI" data-subtitle="Kempen kutipan mengikut PASTI / lokaliti">
+  <main class="pt-main">
+
+    <div class="page-head">
+      <div>
+        <div class="crumb">ePASTI <span>›</span> Kempen &amp; Derma <span>›</span> Kempen</div>
+        <h1>Kempen PASTI</h1>
+        <div class="lead">Kempen kutipan mengikut PASTI / lokaliti</div>
+      </div>
+      <button class="btn btn-primary" data-modal="kempenModal">+ Cipta Kempen</button>
+    </div>
+
+    <!-- stat strip -->
+    <div class="grid g-4">
+      <div class="stat"><div class="top"><span class="label">Kempen Aktif</span><div class="ic g">K</div></div><div class="value">6</div><div class="trend up">Sedang berjalan</div></div>
+      <div class="stat"><div class="top"><span class="label">Jumlah Sasaran</span><div class="ic t">◎</div></div><div class="value">RM 285,000</div><div class="trend flat">Semua kempen</div></div>
+      <div class="stat"><div class="top"><span class="label">Jumlah Terkumpul</span><div class="ic b">RM</div></div><div class="value">RM 168,900</div><div class="trend up">▲ 59% tercapai</div></div>
+      <div class="stat"><div class="top"><span class="label">Kempen Tamat</span><div class="ic a">T</div></div><div class="value">4</div><div class="trend flat">Telah selesai</div></div>
+    </div>
+
+    <div class="card mt-lg">
+      <div class="card-head"><h3>Senarai Kempen</h3><span class="sub">Kempen kutipan mengikut PASTI / lokaliti</span></div>
+      <div class="card-body">
+        <div class="filter-bar mb">
+          <select class="select">
+            <option>Semua Negeri</option>
+            <option>KELANTAN</option>
+          </select>
+          <select class="select">
+            <option>Semua Kawasan</option>
+            <option>P025 KUBANG KERIAN</option>
+            <option>P026 BACHOK</option>
+          </select>
+          <select class="select">
+            <option>Semua DUN</option>
+            <option>N44 KOTA LAMA</option>
+            <option>N45 BUNUT PAYONG</option>
+          </select>
+          <select class="select">
+            <option>Semua PASTI</option>
+            <option>AL-TA'LIM</option>
+            <option>AS-SALAMAH</option>
+            <option>ITQAN</option>
+            <option>NURUL IMAN</option>
+            <option>NURUL HIDAYAH</option>
+          </select>
+        </div>
+        <div class="toolbar">
+          <div class="input-group">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z"/><path d="M21 21l-4.3-4.3"/></svg>
+            <input type="text" placeholder="Cari nama kempen…">
+          </div>
+          <div class="spacer"></div>
+          <select class="select">
+            <option>Semua Status</option>
+            <option>Aktif</option>
+            <option>Tamat</option>
+          </select>
+        </div>
+        <div class="grid g-3" id="kempenGrid"></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- kempen modal -->
+<div class="modal-overlay" id="kempenModal">
+  <div class="modal">
+    <div class="m-head"><h3>Cipta Kempen</h3><button class="btn btn-ghost btn-sm" data-close>✕</button></div>
+    <div class="m-body">
+      <div class="form-grid">
+        <div class="field full"><span class="label">Nama Kempen <span class="req">*</span></span><input class="input" placeholder="Cth: Tabung Naik Taraf PASTI"></div>
+        <div class="field"><span class="label">Untuk (PASTI/Lokaliti) <span class="req">*</span></span>
+          <select class="select">
+            <option>Semua PASTI Kawasan Kubang Kerian</option>
+            <option>PASTI AL-TA'LIM</option>
+            <option>PASTI AS-SALAMAH</option>
+            <option>PASTI ITQAN</option>
+            <option>PASTI NURUL IMAN</option>
+            <option>PASTI NURUL HIDAYAH</option>
+            <option>DUN N44 KOTA LAMA</option>
+            <option>DUN N45 BUNUT PAYONG</option>
+          </select>
+        </div>
+        <div class="field"><span class="label">Sasaran (RM) <span class="req">*</span></span><input class="input" type="text" placeholder="0.00"></div>
+        <div class="field"><span class="label">Tarikh Mula <span class="req">*</span></span><input class="input" type="date"></div>
+        <div class="field"><span class="label">Tarikh Tamat <span class="req">*</span></span><input class="input" type="date"></div>
+        <div class="field full"><span class="label">Keterangan</span><textarea class="input" rows="3" placeholder="Tujuan &amp; butiran kempen"></textarea></div>
+      </div>
+    </div>
+    <div class="m-foot"><button class="btn btn-ghost" data-close>Batal</button><button class="btn btn-primary" id="kpSave" data-own>Cipta Kempen</button></div>
+  </div>
+</div>
+
+<script src="../assets/js/app.js?v=4"></script>
+<script>
+(function(){
+  var kempen = [
+    {nama:'Tabung Naik Taraf PASTI AL-TA\'LIM',        lokaliti:"PASTI AL-TA'LIM · P025 Kubang Kerian",   terkumpul:38500,  sasaran:60000,  status:'Aktif', b:'b-green'},
+    {nama:'Bantuan Yuran Anak Yatim N44 Kota Lama', lokaliti:'DUN N44 Kota Lama',              terkumpul:22400,  sasaran:35000,  status:'Aktif', b:'b-green'},
+    {nama:'Wakaf Buku PASTI ITQAN',                   lokaliti:'PASTI ITQAN · P025 Kubang Kerian',        terkumpul:9800,   sasaran:15000,  status:'Aktif', b:'b-green'},
+    {nama:'Tabung Ihsan Ramadan Kawasan Kubang Kerian',  lokaliti:'P025 Kubang Kerian',                    terkumpul:54200,  sasaran:80000,  status:'Aktif', b:'b-green'},
+    {nama:'Tabung Kelengkapan PASTI NURUL IMAN',      lokaliti:'PASTI NURUL IMAN · N45 Bunut Payong',       terkumpul:16000,  sasaran:20000,  status:'Aktif', b:'b-green'},
+    {nama:'Bantuan Banjir PASTI NURUL HIDAYAH',       lokaliti:'PASTI NURUL HIDAYAH · N45 Bunut Payong',    terkumpul:28000,  sasaran:28000,  status:'Tamat', b:'b-slate'}
+  ];
+  function rm(n){ return 'RM ' + n.toLocaleString('en-MY'); }
+  try { JSON.parse(localStorage.getItem('pt-kempen')||'[]').forEach(function(k){ kempen.unshift(k); }); } catch(e){}
+  window.__KEMPEN = kempen;
+  var html = kempen.map(function(k){
+    var pct = Math.min(100, Math.round(k.terkumpul / k.sasaran * 100));
+    return '<div class="card" data-nama="'+k.nama.replace(/"/g,'&quot;')+'"><div class="card-body">'+
+      '<div class="flex between aic wrap gap mb"><span class="badge '+k.b+'">'+k.status+'</span><span class="muted num" style="font-size:12px">'+pct+'%</span></div>'+
+      '<h3 style="font-size:15px;line-height:1.35">'+k.nama+'</h3>'+
+      '<div class="muted" style="font-size:12px;margin-top:5px">'+k.lokaliti+'</div>'+
+      '<div class="mt">'+
+        '<div class="flex between aic" style="font-size:12.5px;margin-bottom:7px"><span class="strong num">'+rm(k.terkumpul)+'</span><span class="muted num">/ '+rm(k.sasaran)+'</span></div>'+
+        '<div style="width:100%;height:8px;border-radius:20px;background:#eef1ec;overflow:hidden"><div style="width:'+pct+'%;height:100%;background:var(--brand);border-radius:20px"></div></div>'+
+      '</div>'+
+      '<div class="flex gap mt" data-own><button class="btn btn-soft btn-sm" data-kp="lihat">Lihat</button><button class="btn btn-ghost btn-sm" data-kp="kongsi">Kongsi</button></div>'+
+    '</div></div>';
+  }).join('');
+  document.getElementById('kempenGrid').innerHTML = html;
+})();
+</script>
+<script>
+(function(){
+  const md=document.getElementById('kempenModal'), F=l=>{ const f=[...md.querySelectorAll('.field')].find(x=>x.querySelector('.label')&&x.querySelector('.label').textContent.toLowerCase().includes(l)); return f&&f.querySelector('input,select,textarea'); };
+  document.getElementById('kpSave').onclick=()=>{
+    const nm=F('nama'), sa=F('sasaran'); [nm,sa].forEach(i=>i&&i.classList.toggle('pt-err',!i.value.trim()));
+    if(!nm.value.trim()||!sa||!+String(sa.value).replace(/[^\d.]/g,'')){ PT.toast('Isi nama kempen dan sasaran (RM)','red'); return; }
+    const u=F('untuk'), k={ nama:nm.value.trim(), lokaliti: u ? u.value : 'P025 Kubang Kerian', terkumpul:0, sasaran:+String(sa.value).replace(/[^\d.]/g,''), status:'Aktif', b:'b-green' };
+    let all=[]; try{ all=JSON.parse(localStorage.getItem('pt-kempen')||'[]'); }catch(e){} all.unshift(k); try{ localStorage.setItem('pt-kempen', JSON.stringify(all)); }catch(e){}
+    try{ sessionStorage.setItem('pt-flash','Kempen "'+k.nama+'" dicipta dan boleh menerima derma'); }catch(e){} location.reload();
+  };
+  document.addEventListener('click', e => {
+    const b=e.target.closest('[data-kp]'); if(!b) return; const card=b.closest('.card'), k=(window.__KEMPEN||[]).find(x=>x.nama===card.dataset.nama); if(!k) return;
+    if(b.dataset.kp==='kongsi'){ const url=location.href.replace(/[^/]*$/,'')+'derma.html?kempen='+encodeURIComponent(k.nama); (navigator.clipboard?navigator.clipboard.writeText(url):Promise.reject()).then(()=>PT.toast('Pautan kempen disalin')).catch(()=>PT.toast('Pautan: '+url)); }
+    if(b.dataset.kp==='lihat'){ let ov=document.getElementById('kpDlg'); if(!ov){ ov=document.createElement('div'); ov.className='modal-overlay'; ov.id='kpDlg'; document.body.appendChild(ov); }
+      const pct=Math.min(100,Math.round(k.terkumpul/k.sasaran*100));
+      ov.innerHTML='<div class="modal"><div class="m-head"><h3>'+k.nama+'</h3><button class="btn btn-ghost btn-sm" data-close>✕</button></div><div class="m-body"><dl class="kv"><dt>Lokaliti</dt><dd>'+k.lokaliti+'</dd><dt>Terkumpul</dt><dd>RM '+k.terkumpul.toLocaleString('en-MY')+'</dd><dt>Sasaran</dt><dd>RM '+k.sasaran.toLocaleString('en-MY')+'</dd><dt>Pencapaian</dt><dd>'+pct+'%</dd><dt>Status</dt><dd><span class="badge '+k.b+'">'+k.status+'</span></dd></dl></div><div class="m-foot"><button class="btn btn-ghost" data-close>Tutup</button><a class="btn btn-primary" href="derma.html">Terima Derma</a></div></div>';
+      ov.classList.add('open'); }
+  });
+})();
+</script>
+</body>
+</html>

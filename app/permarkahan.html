@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Permarkahan SPPM · ePASTI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/app.css?v=4">
+</head>
+<body>
+<div class="pt-app" data-module="pengurusan" data-page="permarkahan" data-title="Permarkahan SPPM" data-subtitle="Pemantauan penilaian SPPM murid PASTI">
+  <main class="pt-main">
+
+    <div class="page-head">
+      <div>
+        <div class="crumb">ePASTI <span>›</span> Pengurusan &amp; Murid <span>›</span> Permarkahan</div>
+        <h1>Permarkahan SPPM</h1>
+        <div class="lead" id="pmLead">Sistem Perkembangan Prestasi Murid · pemantauan penilaian guru mengikut buku rekod SPPM (5 &amp; 6 Tahun)</div>
+      </div>
+      <div class="chips" id="pmPg" data-own></div>
+    </div>
+
+    <div data-own id="pmApp">
+      <div class="notice mb">
+        <div class="tx"><b>Penilaian diisi oleh guru kelas di Portal Guru</b><span>Paparan ini baca sahaja dan menggunakan data yang sama. Ibu bapa hanya melihat penggal yang telah <strong>dihantar</strong> oleh guru.</span></div>
+      </div>
+
+      <!-- stats -->
+      <div class="pp-tiles" style="grid-template-columns:repeat(4,1fr)" id="pmStats"></div>
+
+      <!-- per PASTI -->
+      <div class="card">
+        <div class="card-head"><div><h3>Kemajuan Mengikut PASTI</h3><span class="sub">Klik baris untuk tapis senarai murid</span></div><span id="pmPastiNote" class="sub"></span></div>
+        <div class="table-wrap">
+          <table class="pt" data-nosave>
+            <thead><tr><th>PASTI</th><th>DUN</th><th class="right">Murid</th><th style="min-width:180px">Kemajuan Penilaian</th><th>Taburan Tahap</th><th class="right">Dihantar</th><th>Status</th></tr></thead>
+            <tbody id="pmPasti"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- per murid -->
+      <div class="card mt-lg">
+        <div class="card-head" style="flex-wrap:wrap;gap:10px">
+          <div><h3>Senarai Murid</h3><span class="sub" id="pmMuridSub">Semua PASTI</span></div>
+          <div class="flex gap wrap" style="align-items:center">
+            <div class="input-group" style="min-width:220px">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z"/><path d="M21 21l-4.3-4.3"/></svg>
+              <input type="text" id="pmQ" placeholder="Cari nama murid atau MyKid…">
+            </div>
+            <select class="select" id="pmUmur"><option value="">Semua Buku</option><option value="5">5 Tahun</option><option value="6">6 Tahun</option></select>
+            <select class="select" id="pmSt"><option value="">Semua Status</option><option>Dihantar</option><option>Dalam proses</option><option>Belum mula</option></select>
+            <button type="button" class="btn btn-ghost btn-sm" id="pmClear" style="display:none">✕ Semua PASTI</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table class="pt" data-nosave>
+            <thead><tr><th style="min-width:240px">Murid</th><th style="min-width:130px">PASTI</th><th style="white-space:nowrap">Buku</th><th style="min-width:170px">Kemajuan</th><th>Taburan Tahap</th><th>Celik Minda</th><th>Status</th><th>Tindakan</th></tr></thead>
+            <tbody id="pmMurid"></tbody>
+          </table>
+        </div>
+        <div class="pager" id="pmPager"><span class="info" id="pmInfo"></span><div class="pages" id="pmPages"></div></div>
+      </div>
+
+      <div class="legend mt" style="display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--muted)">
+        <span><span class="lvl AM">AM</span> Ansur Maju</span><span><span class="lvl M">M</span> Maju</span><span><span class="lvl SM">SM</span> Sangat Maju</span>
+        <span>Kemajuan = item penilaian penggal ini yang telah diisi guru</span>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- rumusan modal -->
+<div class="modal-overlay" id="pmModal">
+  <div class="modal lg" style="max-width:860px">
+    <div class="m-head"><h3 id="pmModalT">Rumusan Prestasi</h3><button class="btn btn-ghost btn-sm" data-close>✕</button></div>
+    <div class="m-body" id="pmModalB" style="background:var(--canvas)"></div>
+    <div class="m-foot"><button class="btn btn-ghost" data-close>Tutup</button><button class="btn btn-primary" data-own onclick="window.print()">Cetak</button></div>
+  </div>
+</div>
+
+<style>
+  .pm-bar{display:flex;align-items:center;gap:10px}
+  .pm-bar .t{flex:1;height:8px;border-radius:8px;background:var(--line2);overflow:hidden}
+  .pm-bar .t i{display:block;height:100%;border-radius:8px;background:linear-gradient(90deg,var(--brand),#7fd35a)}
+  .pm-bar b{font-size:12px;color:var(--ink);min-width:36px;text-align:right}
+  .pm-mix{display:flex;height:8px;border-radius:6px;overflow:hidden;width:110px;background:var(--line2)}
+  .pm-mix i{display:block;height:100%}
+  #pmPasti tr{cursor:pointer}
+  #pmPasti tr.on td{background:var(--brand-l)}
+  @media(max-width:1000px){#pmStats{grid-template-columns:repeat(2,1fr)!important}}
+  @media print{body.pm-printing .pt-app{display:none}body.pm-printing #pmModal{position:static;background:none}body.pm-printing #pmModal .m-foot,body.pm-printing #pmModal .m-head button{display:none}}
+</style>
+
+<script src="../assets/js/app.js?v=4"></script>
+<script src="../assets/js/sppm.js?v=2"></script>
+<script src="../assets/js/guru-kelas.js"></script>
+<script src="../assets/js/parent-kids.js?v=2"></script>
+<script>
+(function(){
+  const S = window.SPPM, $ = id => document.getElementById(id), esc = PK.esc, I = PK.I;
+  const tier = PT.tier, me = DB.user();
+
+  // ---- PASTI in scope for this tier
+  let PASTI = DB.all('pasti').filter(p => p.status === 'Lulus' && p.kod);
+  if (tier === 'dun' && me) PASTI = PASTI.filter(p => p.dun === me.skop);
+  if (tier === 'cawangan' && me) PASTI = PASTI.filter(p => p.nama === me.skop);
+
+  // ---- roster: real class from the guru portal (Al-Ta'lim, 5 Tahun) + demo classes for the other PASTI
+  const hash = s => { let h = 7; for (const c of String(s)) h = (h * 31 + c.charCodeAt(0)) >>> 0; return h; };
+  const FIRST_L = ['Muhammad Adam','Ahmad Irfan','Muhammad Harith','Ahmad Luqman','Muhammad Rayyan','Umar Al-Faruq','Muhammad Fateh','Ahmad Naufal','Muhammad Aqil','Yusuf Hakimi'];
+  const FIRST_P = ['Nur Aisyah','Nur Hana','Siti Maryam','Nur Iman','Aleesya Sofea','Nur Damia','Hana Safiyya','Nur Qistina','Nur Batrisyia','Fatimah Zahra'];
+  const BAPA = ['Abdullah','Ismail','Zulkifli','Hassan','Rahman','Yusof','Omar','Hamzah','Ibrahim','Salleh'];
+  const roster = [];
+  PASTI.forEach((p, pi) => {
+    if (p.nama === window.KELAS.pasti) window.KELAS.murid.forEach(m => roster.push({ nama:m.nama, mykid:m.mykid, umur:5, pasti:p, kelas:window.KELAS.nama, real:true }));
+    [5,6].forEach(umur => {
+      if (p.nama === window.KELAS.pasti && umur === 5) return;
+      const n = 4 + hash(p.nama + umur) % 4;
+      for (let i = 0; i < n; i++) {
+        const h = hash(p.nama + umur + i), girl = h % 2, nm = (girl ? FIRST_P : FIRST_L)[(h >> 3) % 10] + (girl ? ' binti ' : ' bin ') + BAPA[(h >> 7) % 10];
+        roster.push({ nama:nm, mykid:(umur === 5 ? '21' : '20') + String(100000 + h % 899999).slice(0,6) + '10' + String(pi).padStart(2,'0'), umur, pasti:p, kelas:umur + ' Tahun', real:false });
+      }
+    });
+  });
+
+  // ---- record: stored SPPM (what the guru actually entered) or a deterministic demo record
+  const RATE = ['SM','M','SM','M','SM','AM','M'];
+  function demoRec(m){
+    const h = hash(m.mykid), tpl = S.rateItems(m.umur).filter(x => !x.sec.tambahan);
+    const r = { umur:m.umur, p:{1:{},2:{}}, minda:{1:null,2:null}, aktiviti:[], aulad:{ tema:'', tajuk:'', items:{}, skor:'' }, ulasan:{1:'',2:''}, sent:{1:false,2:false}, sentAt:{} };
+    const band = h % 10;                     // 0-1 belum mula, 2-4 dalam proses, 5-9 siap & dihantar
+    const pct1 = band < 2 ? 0 : band < 5 ? 0.25 + (h % 50) / 100 : 1;
+    const t1 = tpl.filter(x => x.p === 0 || x.p === 1), cut = Math.round(t1.length * pct1);
+    t1.slice(0, cut).forEach((x,i) => r.p[1][x.k] = RATE[(h + i * 3) % 7]);
+    if (pct1 === 1) { r.minda[1] = 45 + h % 50; r.sent[1] = true; r.sentAt[1] = String(10 + h % 18) + '/06/2026'; r.aulad.skor = RATE[h % 7];
+      r.ulasan[1] = m.nama.split(' ')[0] + ' ' + m.nama.split(' ')[1] + ' menunjukkan kemajuan yang baik. Teruskan bimbingan di rumah.'; }
+    if (pct1 === 1 && h % 3 === 0) { const t2 = tpl.filter(x => x.p === 0 || x.p === 2); t2.slice(0, Math.round(t2.length * ((h % 60) / 100))).forEach((x,i) => r.p[2][x.k] = RATE[(h + i) % 7]); }
+    return r;
+  }
+  const recOf = m => (m.real && S.has(m.mykid)) ? S.rec(m.mykid, m.umur) : (m.real ? demoRec(Object.assign({}, m, { mykid: m.mykid + 'x' })) : demoRec(m));
+
+  // ---- per penggal metrics
+  let PG = 1, pick = null, PAGE = 1; const PER = 15;
+  function metrics(m){
+    const r = recOf(m), pr = S.progress(r, PG), pct = pr.total ? pr.done / pr.total : 0;
+    const vals = Object.values(r.p[PG]), c = { AM:0, M:0, SM:0 }; vals.forEach(v => c[v] = (c[v]||0) + 1);
+    const status = r.sent[PG] ? 'Dihantar' : pr.done ? 'Dalam proses' : 'Belum mula';
+    return { r, pct, done:pr.done, total:pr.total, c, status, minda:r.minda[PG] };
+  }
+  const bar = p => `<div class="pm-bar"><div class="t"><i style="width:${Math.round(p*100)}%"></i></div><b>${Math.round(p*100)}%</b></div>`;
+  const mix = c => { const n = c.AM + c.M + c.SM; if (!n) return '<span class="muted" style="font-size:12px">—</span>';
+    return `<div class="pm-mix" title="SM ${c.SM} · M ${c.M} · AM ${c.AM}">${['SM','M','AM'].map(l => `<i style="width:${c[l]/n*100}%;background:${l==='SM'?'var(--brand)':l==='M'?'#2563eb':'var(--accent-d)'}"></i>`).join('')}</div>`; };
+  const badge = s => `<span class="badge ${s === 'Dihantar' ? 'b-green' : s === 'Dalam proses' ? 'b-amber' : 'b-slate'} no-dot">${s}</span>`;
+
+  function draw(){
+    $('pmPg').innerHTML = [1,2].map(p => `<button type="button" data-pg="${p}" class="${p===PG?'on':''}">Penggal ${p}</button>`).join('');
+    const rows = roster.map(m => Object.assign({ m }, metrics(m)));
+
+    // stats
+    const sent = rows.filter(x => x.status === 'Dihantar').length, prog = rows.filter(x => x.status === 'Dalam proses').length, none = rows.length - sent - prog;
+    const all = rows.reduce((a,x) => ({ AM:a.AM + x.c.AM, M:a.M + x.c.M, SM:a.SM + x.c.SM }), { AM:0, M:0, SM:0 }), tot = all.AM + all.M + all.SM;
+    $('pmStats').innerHTML =
+        `<div class="pp-tile"><div class="ic pp-c1">${I.anak}</div><div><div class="l">Murid Dinilai</div><div class="v">${rows.length}</div><div class="s">${PASTI.length} PASTI · buku 5 &amp; 6 Tahun</div></div></div>`
+      + `<div class="pp-tile"><div class="ic pp-c2">${I.ok}</div><div><div class="l">Dihantar ke Ibu Bapa</div><div class="v">${sent}</div><div class="s">${rows.length ? Math.round(sent/rows.length*100) : 0}% murid · Penggal ${PG}</div></div></div>`
+      + `<div class="pp-tile"><div class="ic pp-c3">${I.prestasi}</div><div><div class="l">Dalam Proses</div><div class="v">${prog}</div><div class="s">${none} belum dimulakan</div></div></div>`
+      + `<div class="pp-tile"><div class="ic pp-c4">${I.program}</div><div><div class="l">Tahap Sangat Maju</div><div class="v">${tot ? Math.round(all.SM/tot*100) : 0}%</div><div class="s">daripada item yang dinilai</div></div></div>`;
+
+    // per PASTI
+    $('pmPasti').innerHTML = PASTI.map(p => {
+      const rs = rows.filter(x => x.m.pasti === p); if (!rs.length) return '';
+      const d = rs.reduce((a,x) => a + x.done, 0), t = rs.reduce((a,x) => a + x.total, 0), s = rs.filter(x => x.status === 'Dihantar').length;
+      const c = rs.reduce((a,x) => ({ AM:a.AM + x.c.AM, M:a.M + x.c.M, SM:a.SM + x.c.SM }), { AM:0, M:0, SM:0 });
+      const st = s === rs.length ? 'Selesai' : d ? 'Dalam proses' : 'Belum mula';
+      return `<tr data-pasti="${esc(p.nama)}" class="${pick === p.nama ? 'on' : ''}"><td><b>${esc(p.nama)}</b><div class="muted" style="font-size:11.5px">${p.kod}</div></td><td>${esc(p.dun)}</td><td class="right num">${rs.length}</td>
+        <td>${bar(t ? d/t : 0)}</td><td>${mix(c)}</td><td class="right num">${s}/${rs.length}</td>
+        <td><span class="badge ${st === 'Selesai' ? 'b-green' : st === 'Dalam proses' ? 'b-amber' : 'b-slate'} no-dot">${st}</span></td></tr>`;
+    }).join('') || '<tr><td colspan="7" class="empty">Tiada PASTI dalam skop anda.</td></tr>';
+    $('pmPastiNote').textContent = '';
+
+    // per murid
+    const q = $('pmQ').value.trim().toLowerCase(), um = $('pmUmur').value, sf = $('pmSt').value;
+    const list = rows.filter(x => (!pick || x.m.pasti.nama === pick) && (!um || String(x.m.umur) === um) && (!sf || x.status === sf)
+      && (!q || x.m.nama.toLowerCase().includes(q) || x.m.mykid.includes(q)));
+    $('pmMuridSub').textContent = (pick || 'Semua PASTI') + ' · ' + list.length + ' murid';
+    $('pmClear').style.display = pick ? '' : 'none';
+    const pages = Math.max(1, Math.ceil(list.length / PER)); if (PAGE > pages) PAGE = pages;
+    $('pmMurid').innerHTML = list.slice((PAGE - 1) * PER, PAGE * PER).map(x => { const m = x.m, i = roster.indexOf(m);
+      return `<tr><td><div class="cell-user"><div class="avatar ${PK.COLORS[hash(m.nama) % 6]}">${PK.ini(m.nama)}</div><div><div class="nm">${esc(m.nama)}</div><div class="ml">MyKid ${esc(m.mykid)}</div><div class="ml">${esc(m.kelas)}</div></div></div></td>
+        <td>${esc(m.pasti.nama)}</td><td style="white-space:nowrap">${m.umur} Tahun</td><td>${bar(x.pct)}<div class="muted" style="font-size:11px;margin-top:3px">${x.done}/${x.total} item</div></td>
+        <td>${mix(x.c)}</td><td>${x.minda != null ? `<b>${x.minda}</b>/100` : '<span class="muted">—</span>'}</td><td style="white-space:nowrap">${badge(x.status)}</td>
+        <td>${x.done ? `<button type="button" class="btn btn-soft btn-sm" data-m="${i}">Lihat Rumusan</button>` : '<span class="muted" style="font-size:12px">Belum ada penilaian</span>'}</td></tr>`; }).join('')
+      || '<tr><td colspan="8" class="empty">Tiada murid sepadan.</td></tr>';
+    const from = list.length ? (PAGE - 1) * PER + 1 : 0, to = Math.min(PAGE * PER, list.length);
+    $('pmInfo').textContent = 'Memaparkan ' + from + '–' + to + ' daripada ' + list.length + ' murid';
+    const nums = []; for (let i = 1; i <= pages; i++) if (i === 1 || i === pages || Math.abs(i - PAGE) <= 1) nums.push(i); else if (nums[nums.length - 1] !== '…') nums.push('…');
+    $('pmPages').innerHTML = `<button type="button" data-p="${PAGE - 1}" ${PAGE === 1 ? 'disabled' : ''}>‹</button>`
+      + nums.map(n => n === '…' ? '<button type="button" disabled>…</button>' : `<button type="button" data-p="${n}" class="${n === PAGE ? 'active' : ''}">${n}</button>`).join('')
+      + `<button type="button" data-p="${PAGE + 1}" ${PAGE === pages ? 'disabled' : ''}>›</button>`;
+    $('pmPager').style.display = list.length > PER ? '' : 'none';
+  }
+
+  function openRumusan(m){
+    const r = recOf(m);
+    $('pmModalT').textContent = 'Rumusan Prestasi — ' + PK.title(m.nama);
+    const note = r.sent[PG] ? `<div class="notice mb"><div class="tx"><b>Dihantar kepada ibu bapa</b><span>Penggal ${PG} dihantar oleh guru pada ${r.sentAt[PG] || '—'}.</span></div></div>`
+      : `<div class="notice amber mb"><div class="tx"><b>Draf guru — belum dihantar</b><span>Ibu bapa belum boleh melihat penilaian Penggal ${PG}. Paparan di bawah ialah kemajuan semasa.</span></div></div>`;
+    $('pmModalB').innerHTML = note + S.report({ nama:m.nama.toUpperCase(), umur:m.umur }, r, PG);
+    $('pmModal').classList.add('open');
+  }
+
+  document.addEventListener('click', e => {
+    const g = e.target.closest('[data-pg]'); if (g) { PG = +g.dataset.pg; draw(); return; }
+    const b = e.target.closest('[data-m]'); if (b) { openRumusan(roster[+b.dataset.m]); return; }
+    const tr = e.target.closest('#pmPasti tr[data-pasti]'); if (tr) { pick = pick === tr.dataset.pasti ? null : tr.dataset.pasti; PAGE = 1; draw(); $('pmMurid').closest('.card').scrollIntoView({ behavior:'smooth', block:'start' }); return; }
+    if (e.target.closest('#pmClear')) { pick = null; PAGE = 1; draw(); }
+    const pb = e.target.closest('#pmPages [data-p]'); if (pb && !pb.disabled) { PAGE = +pb.dataset.p; draw(); $('pmMurid').closest('.card').scrollIntoView({ block:'start' }); }
+  });
+  ['pmQ','pmUmur','pmSt'].forEach(id => $(id).addEventListener('input', () => { PAGE = 1; draw(); }));
+  window.addEventListener('beforeprint', () => { if ($('pmModal').classList.contains('open')) document.body.classList.add('pm-printing'); });
+  window.addEventListener('afterprint', () => document.body.classList.remove('pm-printing'));
+  if (tier === 'cawangan' && PASTI[0]) $('pmLead').textContent = 'Pemantauan penilaian SPPM murid ' + PASTI[0].nama + ' · diisi oleh guru kelas di Portal Guru';
+  draw();
+})();
+</script>
+</body>
+</html>

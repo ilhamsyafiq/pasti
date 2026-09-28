@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ahli Jawatankuasa · ePASTI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/app.css?v=4">
+</head>
+<body>
+<div class="pt-app" data-module="warga" data-page="warga-jawatankuasa" data-title="Ahli Jawatankuasa" data-subtitle="AJK Kawasan & Jemaah Pengurus Cawangan">
+  <main class="pt-main">
+
+    <div class="page-head">
+      <div>
+        <div class="crumb">ePASTI <span>›</span> Warga PASTI <span>›</span> Jawatankuasa</div>
+        <h1>Ahli Jawatankuasa PASTI</h1>
+        <div class="lead">Ahli jawatankuasa kawasan dan jemaah pengurus cawangan mengikut penggal</div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <a href="#" class="active" data-tab="ajk">AJK PASTI Kawasan</a>
+      <a href="#" data-tab="jemaah">Jemaah Pengurus Cawangan</a>
+    </div>
+
+    <!-- Panel: AJK Kawasan -->
+    <div data-panel="ajk">
+      <div class="card">
+        <div class="card-body">
+          <div class="toolbar">
+            <select class="select">
+              <option>Penggal 2025-2027</option>
+              <option>Penggal 2023-2025</option>
+              <option>Penggal 2027-2029</option>
+            </select>
+            <div class="input-group"><input type="text" placeholder="Cari nama atau No KP…"></div>
+            <div class="spacer"></div>
+            <button class="btn btn-soft" data-action="print">Cetak Surat Pelantikan (Pukal)</button>
+            <button class="btn btn-primary" data-modal="addAjkModal">+ Tambah Ahli</button>
+          </div>
+          <div class="table-wrap">
+            <table class="pt">
+              <thead><tr><th>Bil</th><th>Nama</th><th>No KP/Passport</th><th>Jawatan</th><th>Cawangan</th><th>Status</th><th class="right">Tindakan</th></tr></thead>
+              <tbody id="ajkRows"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel: Jemaah Pengurus Cawangan -->
+    <div data-panel="jemaah" style="display:none">
+      <div class="card">
+        <div class="card-body">
+          <div class="toolbar">
+            <select class="select">
+              <option>Penggal 2025-2027</option>
+              <option>Penggal 2023-2025</option>
+              <option>Penggal 2027-2029</option>
+            </select>
+            <div class="input-group"><input type="text" placeholder="Cari nama atau No KP…"></div>
+            <div class="spacer"></div>
+            <button class="btn btn-soft" data-action="print">Cetak Surat Pelantikan (Pukal)</button>
+            <button class="btn btn-primary" data-modal="addAjkModal">+ Tambah Ahli</button>
+          </div>
+          <div class="table-wrap">
+            <table class="pt">
+              <thead><tr><th>Bil</th><th>Nama</th><th>No KP/Passport</th><th>Jawatan</th><th>Cawangan</th><th>Status</th><th class="right">Tindakan</th></tr></thead>
+              <tbody id="jemaahRows"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Add Member modal -->
+<div class="modal-overlay" id="addAjkModal">
+  <div class="modal">
+    <div class="m-head"><h3>Tambah Ahli Jawatankuasa</h3><button class="btn btn-ghost btn-sm" data-close>✕</button></div>
+    <div class="m-body">
+      <div class="form-grid">
+        <div class="field full"><span class="label">Nama Penuh <span class="req">*</span></span><input class="input" placeholder="Nama seperti dalam MyKad"></div>
+        <div class="field"><span class="label">No KP <span class="req">*</span></span><input class="input" placeholder="Cth: 800512105533"></div>
+        <div class="field"><span class="label">Jawatan</span>
+          <select class="select"><option>Pengerusi</option><option>Naib Pengerusi</option><option>Setiausaha</option><option>Bendahari</option><option>AJK</option></select>
+        </div>
+        <div class="field"><span class="label">Cawangan</span>
+          <select class="select"><option>AL-TA'LIM</option><option>AS-SALAMAH</option><option>ITQAN</option><option>NURUL IMAN</option><option>NURUL HIDAYAH</option></select>
+        </div>
+        <div class="field"><span class="label">Telefon</span><input class="input" placeholder="013-xxxxxxx"></div>
+        <div class="field"><span class="label">Penggal</span>
+          <select class="select"><option>2025-2027</option><option>2023-2025</option><option>2027-2029</option></select>
+        </div>
+        <div class="field"><span class="label">Status</span>
+          <select class="select"><option>Aktif</option><option>Tidak Aktif</option></select>
+        </div>
+      </div>
+    </div>
+    <div class="m-foot"><button class="btn btn-ghost" data-close>Batal</button><button class="btn btn-primary">Simpan</button></div>
+  </div>
+</div>
+
+<script src="../assets/js/app.js?v=4"></script>
+<script>
+  const ajk = [
+    ['USTAZ RIDZUAN BIN MAT SALLEH','810204107215','Pengerusi','AL-TA\'LIM','Aktif'],
+    ['USTAZ SHAHRUL NIZAM BIN LATIF','830617085492','Naib Pengerusi','AS-SALAMAH','Aktif'],
+    ['ROHAIDA BINTI MUSTAFFA','870913106318','Setiausaha','ITQAN','Aktif'],
+    ['WAN NORHASLINDA BINTI WAHAB','860428104627','Bendahari','NURUL IMAN','Aktif'],
+    ['USTAZ TAJUL ARIFIN BIN SABRI','800311086154','AJK','NURUL HIDAYAH','Aktif'],
+    ['MASTURA BINTI GHAZALI','910726108031','AJK','AL-TA\'LIM','Tidak Aktif'],
+    ['KHAIRUL ANWAR BIN TALIB','890502107448','AJK','AS-SALAMAH','Aktif'],
+  ];
+  const jemaah = [
+    ['USTAZ ZULHILMI BIN BAHARUDDIN','820825085973','Pengurus','ITQAN','Aktif'],
+    ['SITI RAHMAH BINTI JUSOH','880114106204','Penolong Pengurus','NURUL IMAN','Aktif'],
+    ['NURAZLIN BINTI KADIR','840719108726','Setiausaha','AL-TA\'LIM','Aktif'],
+    ['USTAZ HELMI BIN ABD RAZAK','810306086537','Bendahari','AS-SALAMAH','Aktif'],
+    ['ZAHARAH BINTI OTHMAN','930221104815','AJK','NURUL HIDAYAH','Aktif'],
+    ['FIKRI HAKIMI BIN NORDIN','900610107022','AJK','ITQAN','Tidak Aktif'],
+  ];
+  function initials(n){ const p=n.replace(/^(USTAZ|USTAZAH)\s+/,'').split(' '); return (p[0][0]+(p[1]?p[1][0]:'')).toUpperCase(); }
+  function badge(s){ return s==='Aktif' ? '<span class="badge b-green">Aktif</span>' : '<span class="badge b-slate">Tidak Aktif</span>'; }
+  function actions(){ return '<button class="btn btn-soft btn-sm">Edit</button> <button class="btn btn-ghost btn-sm" data-action="print">Surat Pelantikan</button>'; }
+  function render(id, rows){
+    document.getElementById(id).innerHTML = rows.map((r,i)=>`
+      <tr>
+        <td class="num">${i+1}</td>
+        <td><div class="cell-user"><span class="avatar">${initials(r[0])}</span><div><div class="nm">${r[0]}</div><div class="ml">${r[3]}</div></div></div></td>
+        <td class="num">${r[1]}</td>
+        <td>${r[2]}</td>
+        <td>${r[3]}</td>
+        <td>${badge(r[4])}</td>
+        <td class="right">${actions()}</td>
+      </tr>`).join('');
+  }
+  render('ajkRows', ajk);
+  render('jemaahRows', jemaah);
+</script>
+</body>
+</html>

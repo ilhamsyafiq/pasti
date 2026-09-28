@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Caruman Skim PASTI · ePASTI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/app.css?v=4">
+</head>
+<body>
+<div class="pt-app" data-module="caruman" data-page="caruman" data-title="Caruman Skim PASTI" data-subtitle="Caruman skim, tuntutan ahli & PERKESO SKSPS">
+  <main class="pt-main">
+
+    <div class="page-head">
+      <div>
+        <div class="crumb">ePASTI <span>›</span> Caruman &amp; Yuran <span>›</span> Caruman</div>
+        <h1>Caruman Skim PASTI</h1>
+        <div class="lead">Pengurusan caruman skim PASTI, tuntutan ahli &amp; caruman PERKESO SKSPS</div>
+      </div>
+    </div>
+
+    <!-- stat strip -->
+    <div class="grid g-4">
+      <div class="stat"><div class="top"><span class="label">Jumlah Caruman 2026</span><div class="ic g">RM</div></div><div class="value">RM 48,600</div><div class="trend flat">Sasaran tahunan</div></div>
+      <div class="stat"><div class="top"><span class="label">Sudah Bayar</span><div class="ic t">✓</div></div><div class="value">RM 42,300</div><div class="trend up">▲ 87% terkumpul</div></div>
+      <div class="stat"><div class="top"><span class="label">Tertunggak</span><div class="ic a">!</div></div><div class="value">RM 6,300</div><div class="trend down">▼ 3 inbois belum jelas</div></div>
+      <div class="stat"><div class="top"><span class="label">Tuntutan Menunggu</span><div class="ic v">T</div></div><div class="value">3</div><div class="trend flat">Perlu semakan</div></div>
+    </div>
+
+    <!-- tabs -->
+    <div class="tabs mt-lg">
+      <a href="#" class="active" data-tab="skim">Skim PASTI</a>
+      <a href="#" data-tab="tuntutan">Tuntutan</a>
+      <a href="#" data-tab="perkeso">PERKESO SKSPS</a>
+      <a href="#" data-tab="tetapan">Tetapan Caruman</a>
+    </div>
+
+    <!-- PANEL: Skim PASTI -->
+    <div data-panel="skim">
+      <div class="card">
+        <div class="card-head"><h3>Caruman Skim PASTI</h3><span class="sub">Senarai inbois caruman mengikut negeri</span></div>
+        <div class="card-body">
+          <div class="toolbar">
+            <div class="input-group">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z"/><path d="M21 21l-4.3-4.3"/></svg>
+              <input type="text" placeholder="Cari negeri atau no inbois…">
+            </div>
+            <div class="spacer"></div>
+            <select class="select">
+              <option value="">Semua Status</option>
+              <option>Sudah Bayar</option>
+              <option>Tertunggak</option>
+            </select>
+          </div>
+          <div class="table-wrap">
+            <table class="pt">
+              <thead><tr>
+                <th>No</th><th>Negeri</th><th>Status</th><th>No &amp; Tarikh Inbois</th><th>No &amp; Tarikh Resit</th><th class="right">Jumlah (RM)</th><th>Tindakan</th>
+              </tr></thead>
+              <tbody>
+                <tr>
+                  <td>1</td><td>Kelantan</td><td><span class="badge b-green">Sudah Bayar</span></td>
+                  <td>INV-SEL-2026-027<div class="muted">06/08/2026</div></td>
+                  <td>RCP-SEL-2026-027<div class="muted">08/08/2026</div></td>
+                  <td class="right num">7,950.00</td>
+                  <td><button class="btn btn-soft btn-sm" data-action="print">Resit</button></td>
+                </tr>
+                <tr>
+                  <td>2</td><td>Perak</td><td><span class="badge b-amber">Tertunggak</span></td>
+                  <td>INV-PRK-2026-019<div class="muted">06/08/2026</div></td>
+                  <td>—</td>
+                  <td class="right num">5,850.00</td>
+                  <td><button class="btn btn-primary btn-sm" data-toast="Membuka pintu bayaran…" data-tiers="negeri kawasan dun cawangan">Bayar</button><button class="btn btn-soft btn-sm" data-toast="Peringatan caruman dihantar kepada negeri" data-tiers="pusat">Hantar Peringatan</button></td>
+                </tr>
+                <tr>
+                  <td>3</td><td>Kedah</td><td><span class="badge b-green">Sudah Bayar</span></td>
+                  <td>INV-KDH-2026-016<div class="muted">05/08/2026</div></td>
+                  <td>RCP-KDH-2026-016<div class="muted">07/08/2026</div></td>
+                  <td class="right num">6,750.00</td>
+                  <td><button class="btn btn-soft btn-sm" data-action="print">Resit</button></td>
+                </tr>
+                <tr>
+                  <td>4</td><td>Kelantan</td><td><span class="badge b-green">Sudah Bayar</span></td>
+                  <td>INV-KEL-2026-033<div class="muted">04/08/2026</div></td>
+                  <td>RCP-KEL-2026-033<div class="muted">06/08/2026</div></td>
+                  <td class="right num">10,200.00</td>
+                  <td><button class="btn btn-soft btn-sm" data-action="print">Resit</button></td>
+                </tr>
+                <tr>
+                  <td>5</td><td>Terengganu</td><td><span class="badge b-green">Sudah Bayar</span></td>
+                  <td>INV-TRG-2026-012<div class="muted">03/08/2026</div></td>
+                  <td>RCP-TRG-2026-012<div class="muted">05/08/2026</div></td>
+                  <td class="right num">4,980.00</td>
+                  <td><button class="btn btn-soft btn-sm" data-action="print">Resit</button></td>
+                </tr>
+                <tr>
+                  <td>6</td><td>Johor</td><td><span class="badge b-green">Sudah Bayar</span></td>
+                  <td>INV-JHR-2026-024<div class="muted">02/08/2026</div></td>
+                  <td>RCP-JHR-2026-024<div class="muted">04/08/2026</div></td>
+                  <td class="right num">12,450.00</td>
+                  <td><button class="btn btn-soft btn-sm" data-action="print">Resit</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL: Tuntutan -->
+    <div data-panel="tuntutan" style="display:none">
+      <div class="card">
+        <div class="card-head">
+          <div><h3>Tuntutan Ahli</h3><span class="sub">Permohonan tuntutan skim PASTI</span></div>
+          <button class="btn btn-primary" data-modal="claimModal" data-tiers="kawasan dun cawangan">+ Tambah Tuntutan Ahli</button>
+        </div>
+        <div class="card-body">
+          <div class="table-wrap">
+            <table class="pt">
+              <thead><tr>
+                <th>No</th><th>Nama Ahli</th><th>Jenis Tuntutan</th><th>Status Permohonan</th><th>Tarikh</th><th>Tindakan</th>
+              </tr></thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td><div class="cell-user"><div class="avatar">MS</div><div><div class="nm">Ustazah Munirah Sohaimi</div><div class="ml">PASTI Al-Ta'lim</div></div></div></td>
+                  <td>Tuntutan Perubatan</td>
+                  <td><span class="badge b-blue">Baharu</span></td>
+                  <td>19/09/2026</td>
+                  <td class="flex gap">
+                    <button class="btn btn-soft btn-sm">View</button>
+                    <button class="btn btn-primary btn-sm" data-action="approve" data-status="Diluluskan" data-tiers="negeri">Lulus</button>
+                    <button class="btn btn-ghost btn-sm" data-action="reject" data-tiers="negeri">Tolak</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td><div class="cell-user"><div class="avatar">FR</div><div><div class="nm">Ustaz Firdaus Rahim</div><div class="ml">PASTI As-Salamah</div></div></div></td>
+                  <td>Tuntutan Khairat Kematian</td>
+                  <td><span class="badge b-green">Diluluskan</span></td>
+                  <td>15/09/2026</td>
+                  <td class="flex gap">
+                    <button class="btn btn-soft btn-sm">View</button>
+                    <button class="btn btn-primary btn-sm" data-action="approve" data-status="Diluluskan" data-tiers="negeri">Lulus</button>
+                    <button class="btn btn-ghost btn-sm" data-action="reject" data-tiers="negeri">Tolak</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td><div class="cell-user"><div class="avatar">WZ</div><div><div class="nm">Ustazah Wardah Zainuddin</div><div class="ml">PASTI Itqan</div></div></div></td>
+                  <td>Tuntutan Bersalin</td>
+                  <td><span class="badge b-blue">Baharu</span></td>
+                  <td>13/09/2026</td>
+                  <td class="flex gap">
+                    <button class="btn btn-soft btn-sm">View</button>
+                    <button class="btn btn-primary btn-sm" data-action="approve" data-status="Diluluskan" data-tiers="negeri">Lulus</button>
+                    <button class="btn btn-ghost btn-sm" data-action="reject" data-tiers="negeri">Tolak</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>4</td>
+                  <td><div class="cell-user"><div class="avatar">HR</div><div><div class="nm">Ustaz Hakimi Roslan</div><div class="ml">PASTI Nurul Iman</div></div></div></td>
+                  <td>Tuntutan Perubatan</td>
+                  <td><span class="badge b-red">Ditolak</span></td>
+                  <td>09/09/2026</td>
+                  <td class="flex gap">
+                    <button class="btn btn-soft btn-sm">View</button>
+                    <button class="btn btn-primary btn-sm" data-action="approve" data-status="Diluluskan" data-tiers="negeri">Lulus</button>
+                    <button class="btn btn-ghost btn-sm" data-action="reject" data-tiers="negeri">Tolak</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>5</td>
+                  <td><div class="cell-user"><div class="avatar">SJ</div><div><div class="nm">Ustazah Salbiah Jaafar</div><div class="ml">PASTI Badrotim</div></div></div></td>
+                  <td>Tuntutan Khairat Kematian</td>
+                  <td><span class="badge b-blue">Baharu</span></td>
+                  <td>07/09/2026</td>
+                  <td class="flex gap">
+                    <button class="btn btn-soft btn-sm">View</button>
+                    <button class="btn btn-primary btn-sm" data-action="approve" data-status="Diluluskan" data-tiers="negeri">Lulus</button>
+                    <button class="btn btn-ghost btn-sm" data-action="reject" data-tiers="negeri">Tolak</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL: PERKESO SKSPS -->
+    <div data-panel="perkeso" style="display:none">
+      <div class="card">
+        <div class="card-head"><h3>Caruman PERKESO SKSPS</h3><span class="sub">Skim Keselamatan Sosial Pekerjaan Sendiri</span></div>
+        <div class="card-body">
+          <div class="table-wrap">
+            <table class="pt">
+              <thead><tr>
+                <th>No</th><th>Nama Ahli</th><th>Jantina</th><th>Status</th><th>No &amp; Tarikh Inbois</th><th class="right">Jumlah (RM)</th><th>Tindakan</th>
+              </tr></thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td><div class="cell-user"><div class="avatar">MS</div><div><div class="nm">Ustazah Munirah Sohaimi</div><div class="ml">PASTI Al-Ta'lim</div></div></div></td>
+                  <td>Perempuan</td><td><span class="badge b-green">Sudah Bayar</span></td>
+                  <td>SKSPS-2026-118<div class="muted">01/08/2026</div></td>
+                  <td class="right num">75.80</td>
+                  <td><button class="btn btn-soft btn-sm" data-action="print">Resit</button></td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td><div class="cell-user"><div class="avatar">FR</div><div><div class="nm">Ustaz Firdaus Rahim</div><div class="ml">PASTI As-Salamah</div></div></div></td>
+                  <td>Lelaki</td><td><span class="badge b-amber">Tertunggak</span></td>
+                  <td>SKSPS-2026-119<div class="muted">01/08/2026</div></td>
+                  <td class="right num">100.00</td>
+                  <td><button class="btn btn-primary btn-sm" data-toast="Membuka pintu bayaran…" data-tiers="negeri kawasan dun cawangan">Bayar</button><button class="btn btn-soft btn-sm" data-toast="Peringatan caruman dihantar kepada negeri" data-tiers="pusat">Hantar Peringatan</button></td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td><div class="cell-user"><div class="avatar">WZ</div><div><div class="nm">Ustazah Wardah Zainuddin</div><div class="ml">PASTI Itqan</div></div></div></td>
+                  <td>Perempuan</td><td><span class="badge b-green">Sudah Bayar</span></td>
+                  <td>SKSPS-2026-120<div class="muted">01/08/2026</div></td>
+                  <td class="right num">75.80</td>
+                  <td><button class="btn btn-soft btn-sm" data-action="print">Resit</button></td>
+                </tr>
+                <tr>
+                  <td>4</td>
+                  <td><div class="cell-user"><div class="avatar">HR</div><div><div class="nm">Ustaz Hakimi Roslan</div><div class="ml">PASTI Nurul Iman</div></div></div></td>
+                  <td>Lelaki</td><td><span class="badge b-green">Sudah Bayar</span></td>
+                  <td>SKSPS-2026-121<div class="muted">01/08/2026</div></td>
+                  <td class="right num">100.00</td>
+                  <td><button class="btn btn-soft btn-sm" data-action="print">Resit</button></td>
+                </tr>
+                <tr>
+                  <td>5</td>
+                  <td><div class="cell-user"><div class="avatar">SJ</div><div><div class="nm">Ustazah Salbiah Jaafar</div><div class="ml">PASTI Badrotim</div></div></div></td>
+                  <td>Perempuan</td><td><span class="badge b-amber">Tertunggak</span></td>
+                  <td>SKSPS-2026-122<div class="muted">01/08/2026</div></td>
+                  <td class="right num">75.80</td>
+                  <td><button class="btn btn-primary btn-sm" data-toast="Membuka pintu bayaran…" data-tiers="negeri kawasan dun cawangan">Bayar</button><button class="btn btn-soft btn-sm" data-toast="Peringatan caruman dihantar kepada negeri" data-tiers="pusat">Hantar Peringatan</button></td>
+                </tr>
+                <tr>
+                  <td>6</td>
+                  <td><div class="cell-user"><div class="avatar">TN</div><div><div class="nm">Ustaz Taufiq Nordin</div><div class="ml">PASTI Nurul Hidayah</div></div></div></td>
+                  <td>Lelaki</td><td><span class="badge b-green">Sudah Bayar</span></td>
+                  <td>SKSPS-2026-123<div class="muted">01/08/2026</div></td>
+                  <td class="right num">100.00</td>
+                  <td><button class="btn btn-soft btn-sm" data-action="print">Resit</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL: Tetapan Caruman -->
+    <div data-panel="tetapan" style="display:none">
+      <div class="card">
+        <div class="card-head">
+          <div><h3>Senarai Tetapan Caruman PERKESO SKSPS</h3><span class="sub">Kadar caruman mengikut tahun &amp; jantina</span></div>
+          <button class="btn btn-soft" data-toast="Membuka borang kadar caruman…">Edit Kadar</button>
+        </div>
+        <div class="card-body">
+          <div class="table-wrap">
+            <table class="pt">
+              <thead><tr>
+                <th>Tahun</th><th>Jantina</th><th class="right">Pencarum Cawangan</th><th class="right">Kawasan</th><th class="right">Negeri</th><th class="right">Pusat</th><th class="right">Peringkat</th><th>Tempoh Caruman</th><th>Tempoh Bayaran</th>
+              </tr></thead>
+              <tbody>
+                <tr>
+                  <td>2026</td><td>Lelaki</td>
+                  <td class="right num">100.00</td><td class="right num">12.00</td><td class="right num">12.00</td><td class="right num">33.00</td><td class="right num">132.80</td>
+                  <td>01/08/2026 – 31/07/2027</td><td>01/08/2026 – 31/07/2027</td>
+                </tr>
+                <tr>
+                  <td>2026</td><td>Perempuan</td>
+                  <td class="right num">75.80</td><td class="right num">12.00</td><td class="right num">12.00</td><td class="right num">33.00</td><td class="right num">132.80</td>
+                  <td>01/08/2026 – 31/07/2027</td><td>01/08/2026 – 31/07/2027</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- claim modal -->
+<div class="modal-overlay" id="claimModal">
+  <div class="modal">
+    <div class="m-head"><h3>Tambah Tuntutan Ahli</h3><button class="btn btn-ghost btn-sm" data-close>✕</button></div>
+    <div class="m-body">
+      <div class="form-grid">
+        <div class="field full"><span class="label">Nama Ahli <span class="req">*</span></span><input class="input" placeholder="Nama penuh ahli"></div>
+        <div class="field"><span class="label">Jenis Tuntutan <span class="req">*</span></span>
+          <select class="select">
+            <option>Tuntutan Perubatan</option>
+            <option>Tuntutan Khairat Kematian</option>
+            <option>Tuntutan Bersalin</option>
+            <option>Tuntutan Hilang Upaya</option>
+          </select>
+        </div>
+        <div class="field"><span class="label">Jumlah (RM) <span class="req">*</span></span><input class="input" type="text" placeholder="0.00"></div>
+        <div class="field full"><span class="label">Catatan</span><textarea class="input" rows="3" placeholder="Butiran tuntutan"></textarea></div>
+        <div class="field full"><span class="label">Dokumen Sokongan</span><input class="input" type="file"><span class="hint">Muat naik resit / surat sokongan (PDF, JPG).</span></div>
+      </div>
+    </div>
+    <div class="m-foot"><button class="btn btn-ghost" data-close>Batal</button><button class="btn btn-primary">Simpan Tuntutan</button></div>
+  </div>
+</div>
+
+<script src="../assets/js/app.js?v=4"></script>
+</body>
+</html>

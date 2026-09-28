@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Semak Status Permohonan · ePASTI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/app.css?v=4">
+</head>
+<body>
+
+<!-- Green public header bar -->
+<div style="background:linear-gradient(135deg,#2fa308,#153f08);color:#fff;padding:16px 22px;display:flex;align-items:center;gap:14px">
+  <div style="width:44px;height:44px;border-radius:12px;background:#fff;display:grid;place-items:center;overflow:hidden;padding:3px;flex:none"><img src="assets/img/pasti-logo.png" alt="PASTI" style="width:100%;height:100%;object-fit:contain" onerror="this.onerror=null;this.src='assets/img/pasti-logo.svg'"></div>
+  <div>
+    <div style="font-weight:700;font-size:15px;letter-spacing:.01em">JABATAN PASTI MALAYSIA</div>
+    <div style="font-size:12.5px;opacity:.88">Semak Status Permohonan</div>
+  </div>
+  <div style="margin-left:auto"><a class="btn btn-soft" href="index.html">Log Masuk</a></div>
+</div>
+
+<div class="pt-wrap" style="max-width:900px;margin:0 auto;padding:24px">
+
+  <div class="notice mb" style="margin-bottom:18px">
+    <div class="tx">
+      <b>Semak Status Permohonan Pendaftaran</b>
+      <span>Masukkan No. MyKID / Pasport murid beserta No. Rujukan Pendaftaran yang diterima semasa memohon untuk menyemak status permohonan anda.</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <div>
+        <h3>Semakan Status</h3>
+        <div class="sub">Sistem Pengurusan PASTI (ePASTI)</div>
+      </div>
+      <span class="badge b-green no-dot">Sesi 2026</span>
+    </div>
+    <div class="card-body">
+      <div class="form-grid">
+        <div class="field">
+          <label class="label">No. MyKID / Pasport Murid <span class="req">*</span></label>
+          <input class="input" type="text" placeholder="cth: 190312-10-1234">
+        </div>
+        <div class="field">
+          <label class="label">No. Rujukan Pendaftaran <span class="req">*</span></label>
+          <input class="input" type="text" placeholder="cth: B124781">
+          <span class="hint">No. rujukan diterima melalui SMS / e-mel selepas pendaftaran.</span>
+        </div>
+      </div>
+      <div class="flex gap" style="justify-content:flex-end;margin-top:22px">
+        <button class="btn btn-primary btn-lg" id="semakBtn" data-own>Semak Status</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="muted center" style="margin-top:20px;font-size:12px">© 2026 Jabatan PASTI Malaysia · Bahagian Teknologi dan Komunikasi (ICT)</div>
+
+</div>
+
+<!-- Result modal -->
+<div class="modal-overlay" id="hasilModal">
+  <div class="modal">
+    <div class="m-head">
+      <h3>Keputusan Semakan Permohonan</h3>
+      <button class="logout" data-close style="background:#e5e7eb;border-color:#e5e7eb;color:#374151;width:30px;height:30px">✕</button>
+    </div>
+    <div class="m-body">
+      <div class="notice mb">
+        <div class="tx">
+          <b>Permohonan Ditemui</b>
+          <span>Berikut adalah butiran dan status permohonan pendaftaran murid.</span>
+        </div>
+      </div>
+      <dl class="kv">
+        <dt>Nama Anak</dt><dd>Adam Harraz bin Zulhelmi</dd>
+        <dt>No. Rujukan</dt><dd>B124773</dd>
+        <dt>PASTI</dt><dd>PASTI AS-SALAMAH</dd>
+        <dt>Kelas Dipohon</dt><dd>Tahun 4</dd>
+        <dt>Tarikh Mohon</dt><dd>16 September 2026</dd>
+        <dt>Status</dt><dd><span class="badge b-green">DILULUSKAN</span></dd>
+      </dl>
+      <div class="notice amber mt-lg">
+        <div class="tx">
+          <b>Tindakan Seterusnya</b>
+          <span>Tahniah! Permohonan anda telah <strong>diluluskan</strong>. Sila bawa anak anda pada <strong>Hari Orientasi</strong> yang akan dimaklumkan melalui SMS / e-mel, beserta salinan dokumen asal (MyKid, kad pengenalan penjaga).</span>
+        </div>
+      </div>
+    </div>
+    <div class="m-foot">
+      <button class="btn btn-primary" data-close>Tutup</button>
+    </div>
+  </div>
+</div>
+
+<script src="assets/js/app.js?v=4"></script>
+<script>
+// Looks the application up in the shared DB by MyKid + No. Rujukan.
+(function(){
+  const [kid, refIn] = document.querySelectorAll('.card-body .form-grid input');
+  const q = new URLSearchParams(location.search); if (q.get('ref')) { refIn.value = q.get('ref'); kid.value = q.get('mykid') || ''; }
+  const digits = s => String(s).replace(/\D/g,'');
+  const body = document.querySelector('#hasilModal .m-body');
+  document.getElementById('semakBtn').addEventListener('click', () => {
+    let bad = 0; [kid, refIn].forEach(i => { i.classList.toggle('pt-err', !i.value.trim()); if (!i.value.trim()) bad++; });
+    if (bad) { PT.toast('Isi No. MyKid dan No. Rujukan', 'red'); return; }
+    const m = DB.find('murid', x => x.ref.toUpperCase() === refIn.value.trim().toUpperCase() && digits(x.mykid) === digits(kid.value));
+    if (!m) { body.innerHTML = '<div class="notice amber"><div class="tx"><b>Permohonan tidak ditemui</b><span>Semak semula No. MyKid dan No. Rujukan. No. rujukan dihantar melalui SMS / e-mel selepas pendaftaran.</span></div></div>'; }
+    else {
+      const st = { Baharu:['DALAM SEMAKAN','b-blue'], Diterima:['DITERIMA','b-green'], Ditolak:['DITOLAK','b-red'] }[m.status];
+      const acc = m.status === 'Diterima' && DB.find('users', u => u.peranan === 'ibubapa' && u.emel === m.emel);
+      const next = m.status === 'Baharu' ? 'Permohonan sedang disemak oleh pentadbir ' + m.pasti + '. Sila semak semula dalam beberapa hari.'
+        : m.status === 'Ditolak' ? 'Permohonan tidak berjaya' + (m.sebab ? ': ' + m.sebab : '.') + ' Anda boleh memohon semula pada sesi akan datang.'
+        : 'Tahniah! Sila bawa anak anda pada <strong>Hari Orientasi</strong> beserta dokumen asal (MyKid, kad pengenalan penjaga).' + (acc ? '<br><br><b>Akaun Portal Ibu Bapa telah dicipta.</b> Log masuk dengan emel <b>' + acc.emel + '</b> untuk melihat anak, yuran dan makluman.' : '');
+      body.innerHTML = '<dl class="kv"><dt>Nama Anak</dt><dd>' + m.nama + '</dd><dt>No. Rujukan</dt><dd>' + m.ref + '</dd><dt>PASTI</dt><dd>' + m.pasti + '</dd><dt>Kelas Dipohon</dt><dd>' + m.kelas + '</dd><dt>Tarikh Mohon</dt><dd>' + m.tarikh + '</dd><dt>Status</dt><dd><span class="badge ' + st[1] + '">' + st[0] + '</span></dd></dl>'
+        + '<div class="notice ' + (m.status === 'Diterima' ? '' : 'amber') + ' mt-lg"><div class="tx"><b>Tindakan Seterusnya</b><span>' + next + '</span></div></div>'
+        + (acc ? '<div class="mt"><a class="btn btn-primary" href="index.html">Log Masuk Portal Ibu Bapa</a></div>' : '');
+    }
+    document.getElementById('hasilModal').classList.add('open');
+  });
+})();
+</script>
+</body>
+</html>

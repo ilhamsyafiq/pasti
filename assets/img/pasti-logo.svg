@@ -1,0 +1,43 @@
+<svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="PASTI">
+  <defs>
+    <path id="arcTop" d="M 30 120 A 90 90 0 0 1 210 120"/>
+    <path id="arcBot" d="M 36 120 A 84 84 0 0 0 204 120"/>
+  </defs>
+  <!-- rings -->
+  <circle cx="120" cy="120" r="118" fill="#1f9e2f"/>
+  <circle cx="120" cy="120" r="110" fill="#ffffff"/>
+  <circle cx="120" cy="120" r="105" fill="#1f9e2f"/>
+  <circle cx="120" cy="120" r="86"  fill="#ffffff"/>
+  <!-- circular text -->
+  <text font-family="Arial, sans-serif" font-weight="700" font-size="15" letter-spacing="1.5" fill="#e2231a">
+    <textPath href="#arcTop" startOffset="50%" text-anchor="middle">PUSAT ASUHAN TUNAS ISLAM</textPath>
+  </text>
+  <text font-family="Arial, sans-serif" font-weight="800" font-size="34" letter-spacing="10" fill="#ffffff">
+    <textPath href="#arcBot" startOffset="50%" text-anchor="middle">PASTI</textPath>
+  </text>
+  <!-- three figures (head = circle with a bar) rising from a book -->
+  <g fill="#1f9e2f">
+    <path d="M92 120 C82 104 84 92 92 90 C100 92 102 104 92 120 Z"/>
+    <path d="M148 120 C138 104 140 92 148 90 C156 92 158 104 148 120 Z"/>
+    <path d="M120 122 C107 100 110 82 120 80 C130 82 133 100 120 122 Z"/>
+  </g>
+  <g fill="#ffffff" stroke="#1f9e2f" stroke-width="5">
+    <circle cx="92"  cy="86" r="11"/>
+    <circle cx="148" cy="86" r="11"/>
+    <circle cx="120" cy="74" r="15"/>
+  </g>
+  <g stroke="#1f9e2f" stroke-width="4" stroke-linecap="round">
+    <line x1="83" y1="86" x2="101" y2="86"/>
+    <line x1="139" y1="86" x2="157" y2="86"/>
+    <line x1="107" y1="74" x2="133" y2="74"/>
+  </g>
+  <!-- open book -->
+  <g fill="#ffffff" stroke="#1f9e2f" stroke-width="3.5" stroke-linejoin="round">
+    <path d="M120 132 C104 122 82 122 66 130 L66 156 C82 148 104 148 120 158 Z"/>
+    <path d="M120 132 C136 122 158 122 174 130 L174 156 C158 148 136 148 120 158 Z"/>
+  </g>
+  <g stroke="#1f9e2f" stroke-width="2" stroke-linecap="round" opacity=".8">
+    <path d="M74 136 C88 131 104 132 116 138" fill="none"/>
+    <path d="M166 136 C152 131 136 132 124 138" fill="none"/>
+  </g>
+</svg>

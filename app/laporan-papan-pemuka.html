@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Papan Pemuka · ePASTI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/app.css?v=4">
+</head>
+<body>
+<div class="pt-app" data-module="pelaporan" data-page="laporan-papan-pemuka" data-title="Papan Pemuka" data-subtitle="Ringkasan statistik PASTI mengikut DUN">
+  <main class="pt-main">
+
+    <div class="page-head">
+      <div>
+        <div class="crumb">ePASTI <span>›</span> Pelaporan <span>›</span> Papan Pemuka</div>
+        <h1>Papan Pemuka</h1>
+        <div class="lead">Ringkasan bilangan PASTI, guru dan murid — Kawasan Kubang Kerian</div>
+      </div>
+      <div class="toolbar" style="margin-bottom:0">
+        <select class="select" title="Tahun">
+          <option>2026</option>
+          <option>2025</option>
+        </select>
+        <button class="btn btn-ghost" data-action="print">Cetak</button>
+      </div>
+    </div>
+
+    <div class="grid g-3">
+      <div class="card">
+        <div class="card-head"><h3>Bilangan PASTI</h3><a class="muted" href="#" data-action="print" style="font-size:12.5px">Cetak</a></div>
+        <div class="card-body"><div class="chart-ph">Carta Pai — Bilangan PASTI mengikut DUN</div></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>Bilangan Guru</h3><a class="muted" href="#" data-action="print" style="font-size:12.5px">Cetak</a></div>
+        <div class="card-body"><div class="chart-ph">Carta Pai — Bilangan Guru mengikut DUN</div></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>Bilangan Murid</h3><a class="muted" href="#" data-action="print" style="font-size:12.5px">Cetak</a></div>
+        <div class="card-body"><div class="chart-ph">Carta Pai — Bilangan Murid mengikut DUN</div></div>
+      </div>
+    </div>
+
+    <div class="card mt-lg">
+      <div class="card-head"><h3>Statistik Mengikut DUN — Tahun 2026</h3></div>
+      <div class="table-wrap">
+        <table class="pt">
+          <thead>
+            <tr>
+              <th>Bil</th>
+              <th>DUN</th>
+              <th class="right">Bilangan PASTI</th>
+              <th class="right">Bilangan Guru</th>
+              <th class="right">Bilangan Murid</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>N44 KOTA LAMA</td><td class="right num">9</td><td class="right num">18</td><td class="right num">147</td></tr>
+            <tr><td>2</td><td>N45 BUNUT PAYONG</td><td class="right num">1</td><td class="right num">2</td><td class="right num">34</td></tr>
+            <tr><td>3</td><td>TIADA MAKLUMAT</td><td class="right num">0</td><td class="right num">0</td><td class="right num">0</td></tr>
+            <tr class="strong"><td></td><td>JUMLAH</td><td class="right num">10</td><td class="right num">20</td><td class="right num">181</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script src="../assets/js/app.js?v=4"></script>
+</body>
+</html>

@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Laporan Murid PASTI · ePASTI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/app.css?v=4">
+</head>
+<body>
+<div class="pt-app" data-module="pelaporan" data-page="laporan-murid" data-title="Laporan Murid PASTI" data-subtitle="Statistik murid mengikut kategori">
+  <main class="pt-main">
+
+    <div class="page-head">
+      <div>
+        <div class="crumb">ePASTI <span>›</span> Pelaporan <span>›</span> Laporan Murid</div>
+        <h1>Laporan Murid PASTI</h1>
+        <div class="lead">Kawasan Kubang Kerian · Kelantan · Sesi 2026</div>
+      </div>
+      <div class="flex gap wrap aic">
+        <button class="btn btn-soft" data-action="export" data-toast="Menyediakan Excel…">Muat Turun Excel</button>
+        <button class="btn btn-ghost" data-action="print">Cetak</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <div class="tabs">
+          <a href="#" class="active" data-tab="yatim">Status Yatim</a>
+          <a href="#" data-tab="jantina">Jantina</a>
+          <a href="#" data-tab="bangsa">Bangsa</a>
+          <a href="#" data-tab="online">Permohonan Online</a>
+        </div>
+
+        <!-- ===== Status Yatim ===== -->
+        <div data-panel="yatim">
+          <div class="chart-ph mb">Carta Bar — Bilangan Murid Yatim & Bukan Yatim mengikut DUN</div>
+          <div class="table-wrap">
+            <table class="pt">
+              <thead>
+                <tr>
+                  <th rowspan="2">DUN</th>
+                  <th colspan="2" class="right">Tahun 4</th>
+                  <th colspan="2" class="right">Tahun 5</th>
+                  <th colspan="2" class="right">Tahun 6</th>
+                  <th rowspan="2" class="right">Bilangan Murid</th>
+                </tr>
+                <tr>
+                  <th class="right">L</th><th class="right">P</th>
+                  <th class="right">L</th><th class="right">P</th>
+                  <th class="right">L</th><th class="right">P</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>N44 Kota Lama</td>
+                  <td class="right num">28</td><td class="right num">24</td>
+                  <td class="right num">26</td><td class="right num">23</td>
+                  <td class="right num">24</td><td class="right num">22</td>
+                  <td class="right num strong">147</td>
+                </tr>
+                <tr>
+                  <td>N45 Bunut Payong</td>
+                  <td class="right num">6</td><td class="right num">6</td>
+                  <td class="right num">6</td><td class="right num">5</td>
+                  <td class="right num">5</td><td class="right num">6</td>
+                  <td class="right num strong">34</td>
+                </tr>
+                <tr class="strong">
+                  <td>JUMLAH</td>
+                  <td class="right num">34</td><td class="right num">30</td>
+                  <td class="right num">32</td><td class="right num">28</td>
+                  <td class="right num">29</td><td class="right num">28</td>
+                  <td class="right num">181</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ===== Jantina ===== -->
+        <div data-panel="jantina" style="display:none">
+          <div class="chart-ph mb">Carta Pai — Nisbah Lelaki vs Perempuan mengikut DUN</div>
+          <div class="table-wrap">
+            <table class="pt">
+              <thead>
+                <tr>
+                  <th>DUN</th>
+                  <th class="right">Lelaki</th>
+                  <th class="right">Perempuan</th>
+                  <th class="right">Bilangan Murid</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>N44 Kota Lama</td>
+                  <td class="right num">78</td>
+                  <td class="right num">69</td>
+                  <td class="right num strong">147</td>
+                </tr>
+                <tr>
+                  <td>N45 Bunut Payong</td>
+                  <td class="right num">17</td>
+                  <td class="right num">17</td>
+                  <td class="right num strong">34</td>
+                </tr>
+                <tr class="strong">
+                  <td>JUMLAH</td>
+                  <td class="right num">95</td>
+                  <td class="right num">86</td>
+                  <td class="right num">181</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ===== Bangsa ===== -->
+        <div data-panel="bangsa" style="display:none">
+          <div class="chart-ph mb">Carta Bar — Taburan Murid mengikut Bangsa</div>
+          <div class="table-wrap">
+            <table class="pt">
+              <thead>
+                <tr>
+                  <th>DUN</th>
+                  <th class="right">Melayu</th>
+                  <th class="right">Cina</th>
+                  <th class="right">India</th>
+                  <th class="right">Bumi Sabah</th>
+                  <th class="right">Bumi Sarawak</th>
+                  <th class="right">Lain-lain</th>
+                  <th class="right">Bilangan Murid</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>N44 Kota Lama</td>
+                  <td class="right num">146</td>
+                  <td class="right num">0</td>
+                  <td class="right num">0</td>
+                  <td class="right num">0</td>
+                  <td class="right num">0</td>
+                  <td class="right num">1</td>
+                  <td class="right num strong">147</td>
+                </tr>
+                <tr>
+                  <td>N45 Bunut Payong</td>
+                  <td class="right num">34</td>
+                  <td class="right num">0</td>
+                  <td class="right num">0</td>
+                  <td class="right num">0</td>
+                  <td class="right num">0</td>
+                  <td class="right num">0</td>
+                  <td class="right num strong">34</td>
+                </tr>
+                <tr class="strong">
+                  <td>JUMLAH</td>
+                  <td class="right num">180</td>
+                  <td class="right num">0</td>
+                  <td class="right num">0</td>
+                  <td class="right num">0</td>
+                  <td class="right num">0</td>
+                  <td class="right num">1</td>
+                  <td class="right num">181</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ===== Permohonan Online ===== -->
+        <div data-panel="online" style="display:none">
+          <div class="toolbar">
+            <div class="input-group">
+              <input type="text" placeholder="Cari PASTI…">
+            </div>
+            <div class="spacer"></div>
+            <button class="btn btn-soft" data-action="export" data-toast="Menyediakan Excel…">Muat Turun Excel</button>
+          </div>
+          <div class="table-wrap">
+            <table class="pt">
+              <thead>
+                <tr>
+                  <th>PASTI</th>
+                  <th class="right">Bil. Permohonan Baharu</th>
+                  <th class="right">Bil. Diterima</th>
+                  <th class="right">Bil. Ditolak</th>
+                  <th class="right">Jumlah</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>AL-TA'LIM</td><td class="right num">3</td><td class="right num">49</td><td class="right num">3</td><td class="right num strong">55</td></tr>
+                <tr><td>AN NUR PARIT 13</td><td class="right num">2</td><td class="right num">0</td><td class="right num">0</td><td class="right num strong">2</td></tr>
+                <tr><td>AS-SALAMAH</td><td class="right num">0</td><td class="right num">53</td><td class="right num">2</td><td class="right num strong">55</td></tr>
+                <tr><td>ITQAN</td><td class="right num">2</td><td class="right num">21</td><td class="right num">0</td><td class="right num strong">23</td></tr>
+                <tr><td>NADWAH HASSANAH</td><td class="right num">31</td><td class="right num">0</td><td class="right num">0</td><td class="right num strong">31</td></tr>
+                <tr><td>NURUL IMAN</td><td class="right num">0</td><td class="right num">14</td><td class="right num">1</td><td class="right num strong">15</td></tr>
+                <tr><td>PASTI BADROTIM</td><td class="right num">7</td><td class="right num">7</td><td class="right num">0</td><td class="right num strong">14</td></tr>
+                <tr class="strong">
+                  <td>JUMLAH</td>
+                  <td class="right num">45</td>
+                  <td class="right num">144</td>
+                  <td class="right num">6</td>
+                  <td class="right num">195</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script src="../assets/js/app.js?v=4"></script>
+<script>/* laporan-murid: interactions handled by app.js (tabs, filter, print, export toast) */</script>
+</body>
+</html>

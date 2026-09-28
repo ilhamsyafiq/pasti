@@ -1,0 +1,601 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Utama · ePASTI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/app.css?v=4">
+</head>
+<body>
+<div class="pt-app" data-module="dashboard" data-page="dashboard" data-title="Utama" data-subtitle="Papan utama ePASTI">
+  <main class="pt-main">
+    <!-- ================= PUSAT (HQ): master analytics dashboard ================= -->
+    <div data-tiers="pusat negeri" id="hq">
+      <style>
+        .hq-kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:14px}
+        .hq-kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px 16px 14px;box-shadow:var(--shadow)}
+        .hq-kpi .l{font-size:12px;font-weight:600;color:var(--muted)}
+        .hq-kpi .v{font-size:25px;font-weight:800;color:var(--ink);letter-spacing:-.02em;margin-top:6px;font-variant-numeric:tabular-nums}
+        .hq-kpi .d{font-size:12px;font-weight:600;margin-top:2px}
+        .hq-kpi .d.up{color:var(--good)} .hq-kpi .d.down{color:var(--bad)} .hq-kpi .d.flat{color:var(--muted)}
+        .hq-kpi canvas{margin-top:8px;width:100%!important;height:34px!important}
+        .hq-row{display:grid;gap:18px;margin-top:18px}
+        .hq-row.r21{grid-template-columns:2fr 1fr}
+        .hq-row.r11{grid-template-columns:1fr 1fr}
+        .hq-row.r111{grid-template-columns:1.2fr 1fr 1.2fr}
+        .flow-tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+        .ft{border-radius:14px;padding:16px;border:1px solid var(--line);background:#fff}
+        .ft .l{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+        .ft .v{font-size:27px;font-weight:800;letter-spacing:-.02em;margin-top:6px;font-variant-numeric:tabular-nums;color:var(--ink)}
+        .ft .s{font-size:12px;font-weight:600;color:var(--muted);margin-top:2px}
+        .ft.in{background:linear-gradient(145deg,#f1f9ec,#fff);border-color:#cfe6c3}.ft.in .v{color:var(--brand-d)}
+        .ft.out{background:linear-gradient(145deg,#fdf1ef,#fff);border-color:#f3d3cd}.ft.out .v{color:#b0342a}
+        .ft.net{background:linear-gradient(145deg,var(--brand),var(--brand-d));border:0}.ft.net .l,.ft.net .s{color:rgba(255,255,255,.85)}.ft.net .v{color:#fff}
+        .brk{display:grid;gap:9px}
+        .brk .r{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;font-size:13px}
+        .brk .r b{color:var(--ink);font-weight:600}.brk .r span{font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+        .brk .r .hq-bar{grid-column:1/-1;min-width:0;height:7px}
+        .brk h5{margin:4px 0 2px;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+        .org{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--line);border-radius:var(--r);background:var(--card);box-shadow:var(--shadow);overflow:hidden}
+        .org>div{padding:16px 18px;border-left:1px solid var(--line2)}.org>div:first-child{border-left:0}
+        .org .l{font-size:12px;font-weight:600;color:var(--muted)}.org .v{font-size:26px;font-weight:800;color:var(--ink);margin-top:4px;font-variant-numeric:tabular-nums}
+        .org .v small{font-size:13px;color:var(--muted);font-weight:600}
+        .org .arr{color:var(--faint);font-weight:700}
+        .txf{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;padding:9px 0;border-top:1px solid var(--line2);font-size:13px}
+        .txf:first-child{border-top:0}
+        .txf .ic{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;font-weight:800}
+        .txf .ic.in{background:var(--brand-l);color:var(--brand-d)}.txf .ic.out{background:#fdecea;color:#b0342a}
+        .txf b{display:block;color:var(--ink);font-weight:600}.txf small{color:var(--muted)}
+        .txf .am{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}.txf .am.in{color:var(--brand-d)}.txf .am.out{color:#b0342a}
+        .hq-chart{position:relative;height:280px}
+        .hq-chart.sm{height:230px}
+        .hq-legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--muted);font-weight:600}
+        .hq-legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+        .hq-bar{display:flex;height:9px;border-radius:6px;overflow:hidden;background:var(--line2);min-width:110px}
+        .hq-bar span{display:block;height:100%}
+        .hq-alert{display:flex;gap:12px;padding:12px 0;border-top:1px solid var(--line2)}
+        .hq-alert:first-child{border-top:0;padding-top:0}
+        .hq-alert .dot{width:9px;height:9px;border-radius:50%;margin-top:6px;flex:none}
+        .hq-alert b{display:block;color:var(--ink);font-size:13.5px}
+        .hq-alert span{font-size:12.5px;color:var(--muted)}
+        .hq-rank{display:flex;align-items:center;gap:12px;padding:9px 0;border-top:1px solid var(--line2);font-size:13.5px}
+        .hq-rank:first-child{border-top:0}
+        .hq-rank .n{width:22px;height:22px;border-radius:7px;background:var(--brand-l);color:var(--brand-d);font-weight:700;font-size:12px;display:grid;place-items:center;flex:none}
+        .hq-rank .nm{flex:1;color:var(--ink);font-weight:600}
+        .hq-rank .am{font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+        #hqStates td.num,#hqStates th.right{text-align:right}
+        #hqStates tfoot td{font-weight:700;color:var(--ink);border-top:2px solid var(--line);background:#fafcf9}
+        @media (max-width:1200px){.hq-kpis{grid-template-columns:repeat(3,1fr)}}
+        @media (max-width:1200px){.hq-row.r111{grid-template-columns:1fr 1fr}.flow-tiles{grid-template-columns:repeat(2,1fr)}}
+        @media (max-width:900px){.hq-row.r21,.hq-row.r11,.hq-row.r111{grid-template-columns:1fr}.org{grid-template-columns:1fr 1fr}.hq-kpis{grid-template-columns:repeat(2,1fr)}}
+      </style>
+
+      <div class="page-head">
+        <div>
+          <div class="crumb">ePASTI <span>›</span> Utama <span>›</span> <b id="hqCrumb" style="font-weight:600">Papan Pemuka Induk</b></div>
+          <h1 id="hqTitle">Papan Pemuka Induk — Jabatan PASTI Malaysia</h1>
+          <div class="lead" id="hqLead">Pantauan nasional semua peringkat — Negeri, Kawasan, DUN &amp; Cawangan · Sesi 2026 · data sehingga 27 September 2026</div>
+        </div>
+        <div class="flex gap wrap">
+          <select class="select" id="hqSesi"><option>Sesi 2026</option><option>Sesi 2025</option></select>
+          <select class="select" id="hqRange"><option>Tahun semasa (Jan–Sep)</option><option>Suku 3 (Jul–Sep)</option><option>Bulan ini</option></select>
+          <button class="btn btn-soft" data-toast="Laporan induk dieksport ke Excel">Eksport</button>
+          <button class="btn btn-primary" onclick="window.print()">Cetak</button>
+        </div>
+      </div>
+
+      <!-- 1. Money in / money out (most important for Pusat) -->
+      <div class="card">
+        <div class="card-head">
+          <div><h3>Aliran Wang Masuk &amp; Keluar</h3><span class="sub" id="hqFlowSub">Gabungan semua akaun PASTI (Pusat, Negeri, Kawasan, DUN &amp; Cawangan) · Jan–Sep 2026</span></div>
+          <div class="hq-legend"><span><i style="background:#2fa308"></i>Masuk</span><span><i style="background:#e0685a"></i>Keluar</span><span><i style="background:#122019"></i>Bersih</span></div>
+        </div>
+        <div class="card-body">
+          <div class="flow-tiles" id="hqFlowTiles"></div>
+          <div class="hq-row r21" style="margin-top:16px">
+            <div><div class="hq-chart"><canvas id="hqFlow"></canvas></div></div>
+            <div class="brk" id="hqBrk"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. The PASTI network -->
+      <div class="org mt-lg" id="hqOrg"></div>
+
+      <!-- 3. Operations strip -->
+      <div class="hq-kpis mt-lg" id="hqKpis"></div>
+
+      <!-- 4. Recent money movement + balances by level -->
+      <div class="hq-row r21">
+        <div class="card">
+          <div class="card-head"><div><h3>Transaksi Terkini</h3><span class="sub">Wang masuk &amp; keluar terbesar minggu ini</span></div><a class="btn btn-soft btn-sm" href="payment-gateway.html" data-tiers="negeri">Payment Gateway</a></div>
+          <div class="card-body" id="hqTx"></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div><h3>Baki Mengikut Peringkat</h3><span class="sub">Baki semasa akaun PASTI</span></div></div>
+          <div class="card-body"><div class="hq-chart sm"><canvas id="hqBal"></canvas></div><div class="brk mt" id="hqBalList"></div></div>
+        </div>
+      </div>
+
+      <!-- State performance table -->
+      <div class="card mt-lg">
+        <div class="card-head">
+          <div><h3>Prestasi Mengikut Negeri</h3><span class="sub">Klik tajuk lajur untuk susun · liputan akaun BayarCash cawangan</span></div>
+          <div class="hq-legend"><span><i style="background:#2fa308"></i>Akaun sendiri</span><span><i style="background:#2563eb"></i>Guna DUN</span><span><i style="background:#6d5bd0"></i>Guna Kawasan</span><span><i style="background:#d9dfd6"></i>Tiada</span></div>
+        </div>
+        <div class="card-body">
+          <div class="table-wrap">
+            <table class="pt" id="hqStates" data-nosave>
+              <thead></thead>
+              <tbody></tbody>
+              <tfoot></tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Students per state + BayarCash coverage -->
+      <div class="hq-row r11">
+        <div class="card">
+          <div class="card-head"><div><h3>Murid Mengikut Negeri</h3><span class="sub">Bilangan murid aktif Sesi 2026</span></div></div>
+          <div class="card-body"><div class="hq-chart" style="height:360px"><canvas id="hqMurid"></canvas></div></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div><h3>Akaun Kutipan Cawangan</h3><span class="sub">Cawangan tanpa akaun sendiri guna akaun DUN atau Kawasan</span></div></div>
+          <div class="card-body"><div class="hq-chart" style="height:360px"><canvas id="hqBc"></canvas></div></div>
+        </div>
+      </div>
+
+      <!-- Alerts + applications + rankings -->
+      <div class="hq-row r111">
+        <div class="card">
+          <div class="card-head"><div><h3>Perlu Perhatian</h3><span class="sub">Isu yang memerlukan tindakan Pusat</span></div></div>
+          <div class="card-body" id="hqAlerts"></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div><h3>Permohonan Murid 2026</h3><span class="sub">Pendaftaran online seluruh negara</span></div></div>
+          <div class="card-body">
+            <div class="hq-chart sm"><canvas id="hqApps"></canvas></div>
+            <div class="hq-legend mt" id="hqAppsLegend" style="justify-content:center"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div><h3>Kutipan Tertinggi Mengikut Negeri</h3><span class="sub">Yuran YTD (RM)</span></div><a class="btn btn-soft btn-sm" href="laporan-papan-pemuka.html">Laporan penuh</a></div>
+          <div class="card-body" id="hqRank"></div>
+        </div>
+      </div>
+    </div>
+
+    <div data-tiers="kawasan dun cawangan">
+
+    <div class="page-head">
+      <div>
+        <div class="crumb">ePASTI <span>›</span> Utama</div>
+        <h1>Selamat Datang, Ustaz Khairi</h1>
+        <div class="lead">Pentadbir Parlimen P.025 Kubang Kerian · Kelantan · Dikemas kini sebentar tadi</div>
+      </div>
+    </div>
+
+    <!-- role card + stats -->
+    <div class="grid g-4">
+      <div class="stat"><div class="top"><span class="label">Bilangan PASTI</span><div class="ic g">P</div></div><div class="value">11</div><div class="trend up">▲ 1 permohonan baharu</div></div>
+      <div class="stat"><div class="top"><span class="label">Bilangan Guru</span><div class="ic v">G</div></div><div class="value">38</div><div class="trend up">▲ 23 aktif</div></div>
+      <div class="stat"><div class="top"><span class="label">Bilangan Murid</span><div class="ic t">M</div></div><div class="value">181</div><div class="trend up">▲ 45 permohonan online</div></div>
+      <div class="stat"><div class="top"><span class="label">Yuran Belum Jelas</span><div class="ic a">RM</div></div><div class="value">RM 6,300</div><div class="trend down">▼ 27 bil tertunggak</div></div>
+    </div>
+
+    <!-- Kod PASTI (cawangan only) — the code parents need to register a child -->
+    <div data-tiers="cawangan" class="card mt-lg" id="kodCard" data-own>
+      <div class="card-head">
+        <div><h3>Kod PASTI</h3><span class="sub">Kongsi kod ini dengan ibu bapa untuk pendaftaran murid online</span></div>
+        <span id="kodStatus"></span>
+      </div>
+      <div class="card-body" style="display:grid;grid-template-columns:1fr auto;gap:22px;align-items:center">
+        <div>
+          <div class="muted" style="font-size:12.5px;font-weight:600" id="kodNama"></div>
+          <div id="kodVal" style="font-size:38px;font-weight:800;letter-spacing:3px;color:var(--brand-d);line-height:1.2;margin:4px 0 10px"></div>
+          <div class="field" style="margin-bottom:12px">
+            <span class="label">Pautan pendaftaran</span>
+            <input class="input" id="kodLink" readonly onclick="this.select()" style="font-size:12.5px">
+          </div>
+          <div class="flex gap wrap">
+            <button type="button" class="btn btn-primary btn-sm" id="kodCopy">Salin Kod</button>
+            <button type="button" class="btn btn-soft btn-sm" id="kodCopyLink">Salin Pautan</button>
+            <a class="btn btn-ghost btn-sm" id="kodWa" target="_blank" rel="noopener">Kongsi WhatsApp</a>
+            <button type="button" class="btn btn-ghost btn-sm" id="kodPrint">Cetak Poster</button>
+          </div>
+          <div class="muted" id="kodNote" style="font-size:12px;margin-top:10px"></div>
+        </div>
+        <div style="text-align:center">
+          <div id="kodQr" style="background:#fff;padding:10px;border:1px solid var(--line);border-radius:12px;display:inline-block"></div>
+          <div class="muted" style="font-size:11.5px;margin-top:6px">Imbas untuk daftar</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- two column: news + calendar -->
+    <div class="mt-lg" style="display:grid;grid-template-columns:1.3fr 1fr;gap:18px">
+      <div class="card">
+        <div class="card-head"><h3>Berita / Makluman</h3></div>
+        <div class="card-body">
+          <div class="fieldset-t">Jabatan PASTI Malaysia</div>
+          <div class="news-item muted">Tiada pemakluman buat masa ini.</div>
+          <div class="fieldset-t mt">PASTI Negeri Kelantan</div>
+          <div class="news-item muted">Tiada pemakluman buat masa ini.</div>
+          <div class="fieldset-t mt">PASTI Kawasan Kubang Kerian
+            <button class="btn btn-soft btn-sm" style="float:right;margin-top:-4px" data-modal="addNewsModal">+ Tambah</button>
+          </div>
+          <div class="news-item"><b>» BENGKEL e-PASTI KAWASAN KUBANG KERIAN</b><div class="dt">20 September 2026</div></div>
+          <div class="right"><a class="muted" href="calendar.html" style="font-size:12.5px">Papar semua…</a></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3>Takwim PASTI</h3><a class="btn btn-soft btn-sm" href="calendar.html">Buka Takwim</a></div>
+        <div class="card-body">
+          <table class="cal" id="miniCal"></table>
+          <div class="fieldset-t mt">Program Hari Ini</div>
+          <div class="news-item muted center">* Tiada Rekod *</div>
+        </div>
+      </div>
+    </div>
+
+    </div>
+
+    <!-- quick access hub -->
+    <div class="hub-sec mt-lg">
+      <div class="t">Akses Pantas</div>
+      <div class="hub-grid">
+        <a class="hub green"  href="warga-jawatankuasa.html?t=ajk"><div class="ic"></div><div class="tx"><b>Warga PASTI</b><small>Jawatankuasa, guru &amp; petugas</small></div></a>
+        <a class="hub teal"   href="pasti-pengurusan.html"><div class="ic"></div><div class="tx"><b>Pengurusan &amp; Murid</b><small>PASTI, murid &amp; ibu bapa</small></div></a>
+        <a class="hub violet" href="caruman.html"><div class="ic"></div><div class="tx"><b>Caruman &amp; Yuran</b><small>Skim PASTI, PERKESO, yuran</small></div></a>
+        <a class="hub gold"   href="yuran.html"><div class="ic"></div><div class="tx"><b>Pembayaran Yuran</b><small>Bil &amp; kutipan dalam talian</small></div></a>
+        <a class="hub blue"   href="laporan-papan-pemuka.html"><div class="ic"></div><div class="tx"><b>Pelaporan</b><small>Statistik guru &amp; murid</small></div></a>
+        <a class="hub dark"   href="tetapan.html"><div class="ic"></div><div class="tx"><b>Tetapan</b><small>Profil &amp; pentadbir</small></div></a>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- add news modal -->
+<div class="modal-overlay" id="addNewsModal">
+  <div class="modal">
+    <div class="m-head"><h3>Tambah Makluman Kawasan</h3><button class="btn btn-ghost btn-sm" data-close>✕</button></div>
+    <div class="m-body">
+      <div class="form-grid">
+        <div class="field full"><span class="label">Tajuk <span class="req">*</span></span><input class="input" placeholder="Tajuk makluman"></div>
+        <div class="field full"><span class="label">Kandungan</span><textarea class="input" rows="4" placeholder="Butiran makluman"></textarea></div>
+        <div class="field"><span class="label">Tarikh</span><input class="input" type="text" value="24/09/2026"></div>
+        <div class="field"><span class="label">Peringkat</span><select class="select"><option>Kawasan</option><option>Negeri</option><option>Malaysia</option></select></div>
+      </div>
+    </div>
+    <div class="m-foot"><button class="btn btn-ghost" data-close>Batal</button><button class="btn btn-primary">Simpan</button></div>
+  </div>
+</div>
+
+<script src="../assets/js/app.js?v=4"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+  // Pusat (HQ) master dashboard — national figures, all derived from the tables below so totals always agree.
+  document.addEventListener('DOMContentLoaded', () => {
+    const hq = document.getElementById('hq'); if (!hq) return;   // only Pusat & Negeri keep this block
+    const NEG = window.PT && PT.tier === 'negeri';              // Negeri sees its own state, by Kawasan
+
+    // [negeri, cawangan PASTI, murid, guru, kehadiran %, yuran YTD (RM'000), tertunggak (RM'000),
+    //  [akaun sendiri, guna DUN, guna Kawasan, tiada], kawasan (parlimen), DUN]
+    const NAT = [
+      ['Kelantan',412,14210,1016,93.4,1985,212,[268,84,41,19],14,45],
+      ['Terengganu',305,10480,752,92.8,1460,176,[201,62,30,12],8,32],
+      ['Kedah',238,8120,586,91.6,1102,158,[142,51,31,14],15,36],
+      ['Selangor',196,6890,498,90.9,1216,131,[138,34,17,7],22,56],
+      ['Pahang',124,4150,302,91.2,548,88,[70,28,18,8],14,42],
+      ['Perak',118,3920,288,90.4,512,94,[61,29,19,9],24,59],
+      ['Johor',102,3480,251,91.0,488,72,[60,22,14,6],26,56],
+      ['Pulau Pinang',52,1740,128,90.2,236,39,[29,12,7,4],13,40],
+      ['Perlis',48,1560,116,92.1,204,31,[27,11,7,3],3,15],
+      ['Negeri Sembilan',41,1380,101,89.7,190,28,[21,10,6,4],8,36],
+      ['Melaka',33,1090,82,90.6,152,22,[18,8,5,2],6,28],
+      ['WP Kuala Lumpur & Putrajaya',29,1060,79,91.8,198,17,[20,0,8,1],12,0],   // no DUN in WP → Kawasan account
+      ['Sabah',26,740,64,88.3,96,21,[9,6,5,6],25,73],
+      ['Sarawak',18,540,55,87.9,72,15,[6,4,3,5],31,82],
+    ];
+    // Negeri view: Kelantan split into its 14 Kawasan (Kubang Kerian matches the Kawasan dashboard: 11 PASTI, 181 murid)
+    function kawasanRows(k){
+      const NAMES = ['Tumpat','Pengkalan Chepa','Kota Bharu','Pasir Mas','Rantau Panjang','Kubang Kerian','Bachok','Ketereh','Tanah Merah','Pasir Puteh','Machang','Jeli','Kuala Krai','Gua Musang'];
+      const KK = 5, fixed = { c:11, m:181, g:38, a:92.0, y:26.8, t:6.3, bc:[3,5,2,1], d:2 };
+      const W  = [1.28,1.07,1.41,1.22,0.93,0,1.02,1.15,0.97,0.88,1.04,0.62,0.83,0.71];
+      const TW = [1.1,1.3,1.2,1.5,1.0,0,0.8,1.2,1.4,0.9,1.3,0.7,1.1,0.9];   // tertunggak varies by kawasan
+      const AO = [.4,.2,.6,-.3,-.8,0,.5,.1,-.2,.3,.2,-1.1,-.6,-.9];
+      const split = (total, dec, WW) => { const W2 = WW || W, ws = W2.reduce((a,b)=>a+b,0), f = Math.pow(10, dec||0);
+        const raw = W2.map(w => total*w/ws*f), out = raw.map(Math.floor); let left = Math.round(total*f) - out.reduce((a,b)=>a+b,0);
+        raw.map((v,i)=>[v-out[i],i]).filter(x=>W2[x[1]]).sort((a,b)=>b[0]-a[0]).forEach(([,i]) => { if (left-- > 0) out[i]++; });
+        return out.map(v => v/f); };
+      const c = split(k[1]-fixed.c), m = split(k[2]-fixed.m), g = split(k[3]-fixed.g), y = split(k[5]-fixed.y,1), tt = split(k[6]-fixed.t,1,TW), d = split(k[9]-fixed.d);
+      const rows = NAMES.map((n,i) => { if (i === KK) return [n, fixed.c, fixed.m, fixed.g, fixed.a, fixed.y, fixed.t, fixed.bc, fixed.d, 0];
+        const own = Math.round(c[i]*.66), dun = Math.round(c[i]*.2), kaw = Math.round(c[i]*.095);
+        return [n, c[i], m[i], g[i], k[4]+AO[i], y[i], tt[i], [own, dun, kaw, c[i]-own-dun-kaw], d[i], 0]; });
+      const wAvg = rows.reduce((a,r)=>a+r[4]*r[2],0)/k[2], shift = k[4]-wAvg;   // keep the state average exact
+      rows.forEach(r => r[4] = +(r[4]+shift).toFixed(1));
+      return rows;
+    }
+    const STATES = NEG ? kawasanRows(NAT[0]) : NAT;
+    const UNIT = NEG ? 'Kawasan' : 'Negeri';
+    const SCALE = NEG ? NAT[0][5]/NAT.reduce((a,s)=>a+s[5],0) : 1;          // Kelantan share of national money flow
+    const MONTHS = ['Jan','Feb','Mac','Apr','Mei','Jun','Jul','Ogo','Sep'];
+    const W = [.098,.104,.109,.106,.113,.114,.118,.117,.121];             // yuran share per month
+    const IN_OTHER = {                                                    // RM'000 per month
+      'Caruman Skim PASTI & SKSPS': [412,398,405,420,415,418,436,441,452],
+      'Derma & kempen':             [168,296,354,142,120,131,148,139,165],
+    };
+    const OUT = {
+      'Saguhati & elaun guru':        [805,806,812,815,818,820,826,830,834],
+      'Caruman ke PERKESO / SKSPS':   [300,298,301,305,306,308,318,320,326],
+      'Operasi, sewa & utiliti':      [158,152,166,160,171,168,174,170,176],
+      'Program & latihan':            [35,28,72,40,38,95,44,52,61],
+      'Kebajikan & tuntutan ahli':    [42,55,61,48,52,57,49,63,58],
+    };
+    if (NEG) [IN_OTHER, OUT].forEach(o => Object.keys(o).forEach(k => o[k] = o[k].map(v => Math.round(v*SCALE))));
+    const OPENING = NEG ? 1140 : 4850;                                                 // baki 1 Jan 2026 (RM'000)
+    const BAL_SHARE = NEG ? [['Cawangan (akaun BayarCash sendiri)',.62,'#2fa308'],['DUN',.10,'#2563eb'],['Kawasan',.16,'#6d5bd0'],['Negeri Kelantan',.12,'#e0912a']] : [['Cawangan (akaun BayarCash sendiri)',.56,'#2fa308'],['DUN',.09,'#2563eb'],['Kawasan',.15,'#6d5bd0'],['Negeri',.12,'#e0912a'],['Pusat',.08,'#122019']];
+    const APPS = NEG ? [['Diterima',2410,'#2fa308'],['Baharu',296,'#e0912a'],['Ditolak',71,'#c0392b']] : [['Diterima',9820,'#2fa308'],['Baharu',1245,'#e0912a'],['Ditolak',312,'#c0392b']];
+    const BC = [['Akaun sendiri','#2fa308'],['Guna DUN','#2563eb'],['Guna Kawasan','#6d5bd0'],['Tiada','#d9dfd6']];
+    const TX = NEG ? [
+      ['in','Kutipan yuran September — 14 kawasan','412 cawangan · BayarCash FPX/DuitNow',486200,'26 Sep'],
+      ['out','Saguhati guru September — Kelantan','1,016 guru · pindahan pukal',196300,'25 Sep'],
+      ['out','Caruman Skim PASTI kepada Pusat','Invois INV-2026-KTN-09',96400,'25 Sep'],
+      ['in','Caruman ahli daripada Kawasan','14 kawasan · bulan September',88200,'24 Sep'],
+      ['in','Kempen Tabung Banjir PASTI Nurul Hidayah','Derma awam · 1,204 penderma',38650,'23 Sep'],
+      ['out','Tuntutan khairat kematian ahli — Machang','Diluluskan Negeri',5000,'23 Sep'],
+      ['out','Bengkel e-PASTI Kawasan Kubang Kerian','Program & latihan',4200,'20 Sep'],
+    ] : [
+      ['in','Kutipan yuran September — Kelantan','412 cawangan · BayarCash FPX/DuitNow',486200,'26 Sep'],
+      ['out','Saguhati guru September — semua negeri','4,318 guru · pindahan pukal',834000,'25 Sep'],
+      ['in','Caruman Skim PASTI — Terengganu','Invois INV-2026-TRG-09',96400,'25 Sep'],
+      ['out','Caruman PERKESO / SKSPS — September','Remit bulanan',326000,'24 Sep'],
+      ['in','Kempen Tabung Banjir PASTI Nurul Hidayah','Derma awam · 1,204 penderma',38650,'23 Sep'],
+      ['out','Tuntutan khairat kematian ahli — Kedah','Diluluskan Negeri Kedah',5000,'23 Sep'],
+      ['out','Bengkel e-PASTI Kawasan (6 negeri)','Program & latihan',18400,'22 Sep'],
+    ];
+
+    const sum = (i) => STATES.reduce((a,s)=>a+s[i],0);
+    const fmt = (n) => Math.round(n).toLocaleString('en-MY');
+    const rm  = (k) => 'RM ' + (Math.abs(k)>=1000 ? (k/1000).toFixed(2)+'j' : fmt(k)+'k');
+    const add = (a,b) => a.map((v,i)=>v+b[i]);
+    const tP=sum(1), tM=sum(2), tG=sum(3), tK=sum(5), tT=sum(6), tKaw=sum(8), tDun=sum(9);
+    const att = STATES.reduce((a,s)=>a+s[4]*s[2],0)/tM;
+    const bcT = [0,1,2,3].map(j=>STATES.reduce((a,s)=>a+s[7][j],0));
+    const cover = (bcT[0]/tP)*100;
+    const yuranM = W.map(w=>Math.round(w*tK));
+    const inM  = Object.values(IN_OTHER).reduce(add, yuranM);
+    const outM = Object.values(OUT).reduce(add, MONTHS.map(()=>0));
+    const netM = inM.map((v,i)=>v-outM[i]);
+    const IN = Object.assign({'Yuran murid': yuranM}, IN_OTHER);
+    const tIn = inM.reduce((a,b)=>a+b,0), tOut = outM.reduce((a,b)=>a+b,0), tNet = tIn - tOut, bal = OPENING + tNet;
+    const last = MONTHS.length-1, momIn = (inM[last]/inM[last-1]-1)*100, momOut = (outM[last]/outM[last-1]-1)*100;
+
+    if (NEG) {
+      document.getElementById('hqCrumb').textContent = 'Papan Pemuka Negeri';
+      document.getElementById('hqTitle').textContent = 'Papan Pemuka Negeri — PASTI Negeri Kelantan';
+      document.getElementById('hqLead').textContent = 'Pantauan 14 kawasan, 45 DUN & 412 cawangan PASTI di Kelantan · Sesi 2026 · data sehingga 27 September 2026';
+      document.getElementById('hqFlowSub').textContent = 'Gabungan akaun PASTI dalam negeri (Negeri, Kawasan, DUN & Cawangan) · Jan–Sep 2026';
+      hq.querySelectorAll('h3').forEach(h => h.textContent = h.textContent.replace('Mengikut Negeri', 'Mengikut Kawasan'));
+    }
+
+    // ---- 1. Money flow tiles + breakdown
+    document.getElementById('hqFlowTiles').innerHTML = [
+      ['in','Wang Masuk', rm(tIn), `Sep ${rm(inM[last])} · ${momIn>=0?'▲':'▼'} ${Math.abs(momIn).toFixed(1)}% bulan lalu`],
+      ['out','Wang Keluar', rm(tOut), `Sep ${rm(outM[last])} · ${momOut>=0?'▲':'▼'} ${Math.abs(momOut).toFixed(1)}% bulan lalu`],
+      ['net','Aliran Bersih', (tNet>=0?'+ ':'− ')+rm(Math.abs(tNet)), `${(tNet/tIn*100).toFixed(1)}% daripada wang masuk`],
+      ['','Baki Semasa', rm(bal), `Baki 1 Jan ${rm(OPENING)} · ${NEG ? 'akaun dalam negeri' : 'semua akaun'}`],
+    ].map(t=>`<div class="ft ${t[0]}"><div class="l">${t[1]}</div><div class="v">${t[2]}</div><div class="s">${t[3]}</div></div>`).join('');
+
+    const brkRows = (obj, total, color) => Object.entries(obj).map(([k,v])=>{ const s=v.reduce((a,b)=>a+b,0);
+      return `<div class="r"><b>${k}</b><span>${rm(s)}</span><div class="hq-bar"><span style="width:${s/total*100}%;background:${color}"></span></div></div>`; }).join('');
+    document.getElementById('hqBrk').innerHTML = `<h5>Sumber wang masuk</h5>${brkRows(IN, tIn, '#2fa308')}<h5 style="margin-top:10px">Perbelanjaan wang keluar</h5>${brkRows(OUT, tOut, '#e0685a')}`;
+
+    // ---- 2. PASTI network
+    const natRank = [...NAT].sort((a,b)=>b[5]-a[5]).findIndex(s=>s===NAT[0]) + 1;
+    document.getElementById('hqOrg').innerHTML = (NEG ? [
+      ['Negeri', 'Kelantan', `#${natRank} kutipan yuran nasional`],
+      ['Kawasan PASTI', STATES.length, 'ikut kawasan parlimen'],
+      ['DUN', STATES.reduce((a,s)=>a+s[8],0), 'di bawah 14 kawasan'],
+      ['Cawangan PASTI', tP, '▲ 6 cawangan baharu 2026'],
+    ] : [
+      ['Negeri', STATES.length, 'semua negeri'],
+      ['Kawasan PASTI', tKaw, 'ikut kawasan parlimen'],
+      ['DUN', tDun, 'WP tiada DUN — terus ke Kawasan'],
+      ['Cawangan PASTI', tP, '▲ 38 cawangan baharu 2026'],
+    ]).map((o,i)=>`<div><div class="l">${i?'<span class="arr">→ </span>':''}${o[0]}</div><div class="v">${typeof o[1]==='number' ? fmt(o[1]) : o[1]}</div><div class="l" style="font-weight:500">${o[2]}</div></div>`).join('');
+
+    // ---- 3. Operations strip with sparklines
+    const KPIS = [
+      ['Murid Aktif', fmt(tM), '▲ 6.2% berbanding 2025','up', [55100,55900,56700,57300,57800,58100,58500,58800,59360].map(v=>v/59360*tM)],
+      ['Guru & Pembantu', fmt(tG), NEG ? '▲ 26 lantikan baharu' : '▲ 112 lantikan baharu','up', [4190,4205,4221,4240,4258,4270,4288,4301,4318].map(v=>v/4318*tG)],
+      ['Ibu Bapa Berdaftar', fmt(Math.round(tM*1.49)), '▲ 92% guna portal','up', [80,81,83,84,85,86,87,87,88]],
+      ['Yuran Tertunggak', rm(tT), '▼ '+(tT/tK*100).toFixed(1)+'% daripada kutipan','down', [980,1010,1040,1060,1070,1085,1090,1098,1104].map(v=>v/1104*tT)],
+      ['Kadar Kehadiran', att.toFixed(1)+'%', '▼ 0.6 mata bulan ini','down', [92.6,92.9,92.4,92.8,92.5,92.7,92.6,92.3,att]],
+      ['Liputan BayarCash', cover.toFixed(0)+'%', fmt(bcT[0])+' cawangan akaun sendiri','flat', [48,51,53,55,57,59,61,62,cover]],
+    ];
+    document.getElementById('hqKpis').innerHTML = KPIS.map((k,i)=>`
+      <div class="hq-kpi"><div class="l">${k[0]}</div><div class="v">${k[1]}</div><div class="d ${k[3]}">${k[2]}</div><canvas id="spk${i}"></canvas></div>`).join('');
+
+    // ---- 4. Recent transactions + balances by level
+    document.getElementById('hqTx').innerHTML = TX.map(t=>`<div class="txf"><div class="ic ${t[0]}">${t[0]==='in'?'+':'−'}</div>
+      <div><b>${t[1]}</b><small>${t[2]} · ${t[4]}</small></div><div class="am ${t[0]}">${t[0]==='in'?'+':'−'} RM ${fmt(t[3])}</div></div>`).join('');
+    document.getElementById('hqBalList').innerHTML = BAL_SHARE.map(b=>`<div class="r"><b><i style="display:inline-block;width:9px;height:9px;border-radius:3px;background:${b[2]};margin-right:6px"></i>${b[0]}</b><span>${rm(bal*b[1])}</span></div>`).join('');
+
+    // ---- State table (sortable)
+    const tbody = document.querySelector('#hqStates tbody');
+    const bar = (b,p) => `<div class="hq-bar" title="Sendiri ${b[0]} · DUN ${b[1]} · Kawasan ${b[2]} · Tiada ${b[3]}">${b.map((v,j)=>`<span style="width:${v/p*100}%;background:${BC[j][1]}"></span>`).join('')}</div>`;
+    const attBadge = (a) => `<span class="badge ${a>=91?'b-green':a>=89.5?'b-amber':'b-red'}">${a.toFixed(1)}%</span>`;
+    document.querySelector('#hqStates thead').innerHTML = `<tr><th data-k="0">${UNIT}</th>${NEG ? '' : '<th class="right" data-k="8">Kawasan</th>'}<th class="right" data-k="${NEG?8:9}">DUN</th><th class="right" data-k="1">Cawangan</th><th class="right" data-k="2">Murid</th><th class="right" data-k="3">Guru</th><th class="right" data-k="4">Kehadiran</th><th class="right" data-k="5">Yuran YTD</th><th class="right" data-k="6">Tertunggak</th><th>Liputan BayarCash</th><th></th></tr>`;
+    let sortK = 1, sortDir = -1;
+    function drawTable(){
+      const rows = [...STATES].sort((a,b)=> (typeof a[sortK]==='string' ? a[sortK].localeCompare(b[sortK]) : a[sortK]-b[sortK]) * sortDir);
+      tbody.innerHTML = rows.map(s=>`<tr>
+        <td><b style="color:var(--ink)">${s[0]}</b></td>${NEG ? '' : `<td class="num">${s[8]}</td>`}<td class="num">${(NEG ? s[8] : s[9])||'—'}</td><td class="num"><b>${fmt(s[1])}</b></td><td class="num">${fmt(s[2])}</td><td class="num">${fmt(s[3])}</td>
+        <td class="num">${attBadge(s[4])}</td><td class="num">${fmt(s[5]*1000)}</td>
+        <td class="num" style="color:${s[6]/s[5]>.15?'var(--bad)':'inherit'}">${fmt(s[6]*1000)}</td>
+        <td>${bar(s[7],s[1])}<div class="muted" style="font-size:11.5px;margin-top:3px">${Math.round(s[7][0]/s[1]*100)}% akaun sendiri</div></td>
+        <td><a class="btn btn-soft btn-sm" href="laporan-papan-pemuka.html">Lihat</a></td></tr>`).join('');
+      document.querySelectorAll('#hqStates th[data-k]').forEach(th=>{
+        th.style.cursor='pointer'; th.textContent = th.textContent.replace(/ [▲▼]$/,'') + (+th.dataset.k===sortK ? (sortDir<0?' ▼':' ▲') : '');
+      });
+    }
+    document.querySelector('#hqStates tfoot').innerHTML = `<tr><td>${NEG ? 'Jumlah Negeri Kelantan' : 'Jumlah Nasional'}</td>${NEG ? '' : `<td class="num">${tKaw}</td>`}<td class="num">${NEG ? tKaw : tDun}</td><td class="num">${fmt(tP)}</td><td class="num">${fmt(tM)}</td><td class="num">${fmt(tG)}</td>
+      <td class="num">${att.toFixed(1)}%</td><td class="num">${fmt(tK*1000)}</td><td class="num">${fmt(tT*1000)}</td><td>${bar(bcT,tP)}</td><td></td></tr>`;
+    document.querySelectorAll('#hqStates th[data-k]').forEach(th=>th.addEventListener('click',()=>{
+      const k=+th.dataset.k; sortDir = (k===sortK) ? -sortDir : (k===0?1:-1); sortK=k; drawTable();
+    }));
+    drawTable();
+
+    // ---- Alerts (derived from the data) + ranking
+    const worstDebt = [...STATES].sort((a,b)=>b[6]/b[5]-a[6]/a[5])[0];
+    const lowAtt = STATES.filter(s=>s[4]<89.5).map(s=>s[0]);
+    const noAcc = [...STATES].sort((a,b)=>b[7][3]/b[1]-a[7][3]/a[1]).slice(0,2);
+    const bigOut = Object.entries(OUT).map(([k,v])=>[k,v[last]/v[last-1]-1]).sort((a,b)=>b[1]-a[1])[0];
+    const ALERTS = [
+      ['#c0392b', `Tertunggak tertinggi: ${worstDebt[0]}`, `${Math.round(worstDebt[6]/worstDebt[5]*100)}% daripada kutipan (RM ${fmt(worstDebt[6]*1000)}) belum dijelaskan.`],
+      ['#e0912a', `Perbelanjaan naik: ${bigOut[0]}`, `▲ ${(bigOut[1]*100).toFixed(1)}% berbanding bulan lalu — semak ${NEG ? 'tuntutan & perbelanjaan kawasan' : 'kelulusan Negeri'}.`],
+      ['#e0912a', `${fmt(bcT[3])} cawangan belum ada akaun kutipan`, `Tertinggi: ${noAcc.map(s=>`${s[0]} (${s[7][3]})`).join(', ')}. Galakkan guna akaun DUN/Kawasan sementara.`],
+      ['#e0912a', `Kehadiran di bawah 89.5%`, `${lowAtt.join(', ')} — semak laporan kehadiran ${NEG ? 'kawasan' : 'negeri'}.`],
+      NEG ? ['#2563eb', `6 permohonan cawangan PASTI baharu`, `Menunggu sokongan Negeri sebelum ke Pusat — buka Pengurusan PASTI.`] : ['#2563eb', `38 permohonan cawangan PASTI baharu`, `Menunggu kelulusan peringkat Negeri &amp; Pusat.`],
+      ['#2563eb', `${fmt(APPS[1][1])} permohonan murid belum diproses`, `Pendaftaran online Sesi 2026 di semua ${NEG ? 'kawasan' : 'negeri'}.`],
+    ];
+    document.getElementById('hqAlerts').innerHTML = ALERTS.map(a=>`<div class="hq-alert"><div class="dot" style="background:${a[0]}"></div><div><b>${a[1]}</b><span>${a[2]}</span></div></div>`).join('');
+    document.getElementById('hqRank').innerHTML = [...STATES].sort((a,b)=>b[5]-a[5]).slice(0,6)
+      .map((s,i)=>`<div class="hq-rank"><div class="n">${i+1}</div><div class="nm">${s[0]}</div><div class="hq-bar" style="width:90px;min-width:0"><span style="width:${s[5]/STATES[0][5]*100}%;background:#2fa308"></span></div><div class="am">RM ${fmt(s[5]*1000)}</div></div>`).join('');
+
+    // ---- Charts
+    if (!window.Chart) return;
+    Chart.defaults.font.family = getComputedStyle(document.body).fontFamily;
+    Chart.defaults.color = '#77857c';
+    Chart.defaults.plugins.legend.display = false;
+    const grid = { color:'#eef1ec' }, noGrid = { display:false };
+
+    KPIS.forEach((k,i)=> new Chart(document.getElementById('spk'+i), {
+      type:'line', data:{ labels:MONTHS, datasets:[{ data:k[4], borderColor:k[3]==='down'?'#c0392b':'#2fa308', borderWidth:2, pointRadius:0, tension:.35, fill:true,
+        backgroundColor:k[3]==='down'?'rgba(192,57,43,.08)':'rgba(47,163,8,.10)' }]},
+      options:{ responsive:true, maintainAspectRatio:false, plugins:{tooltip:{enabled:false}}, scales:{x:{display:false},y:{display:false}}, animation:false }
+    }));
+
+    new Chart(document.getElementById('hqFlow'), {
+      data:{ labels:MONTHS, datasets:[
+        { type:'bar', label:'Masuk', data:inM, backgroundColor:'#2fa308', borderRadius:5, barPercentage:.8, categoryPercentage:.7, order:2 },
+        { type:'bar', label:'Keluar', data:outM, backgroundColor:'#e0685a', borderRadius:5, barPercentage:.8, categoryPercentage:.7, order:2 },
+        { type:'line', label:'Bersih', data:netM, borderColor:'#122019', backgroundColor:'#122019', borderWidth:2, pointRadius:3, tension:.3, yAxisID:'y2', order:1 },
+      ]},
+      options:{ responsive:true, maintainAspectRatio:false, interaction:{mode:'index',intersect:false},
+        plugins:{ tooltip:{ callbacks:{ label:c=>` ${c.dataset.label}: RM ${fmt(c.parsed.y*1000)}` } } },
+        scales:{ x:{grid:noGrid}, y:{grid, beginAtZero:true, ticks:{callback:v=>v>=1000?(v/1000).toFixed(1)+'j':v+'k'}},
+          y2:{position:'right', grid:noGrid, beginAtZero:true, ticks:{callback:v=>v+'k'}, title:{display:true,text:'Bersih'}} } }
+    });
+
+    new Chart(document.getElementById('hqBal'), {
+      type:'doughnut',
+      data:{ labels:BAL_SHARE.map(b=>b[0]), datasets:[{ data:BAL_SHARE.map(b=>Math.round(bal*b[1])), backgroundColor:BAL_SHARE.map(b=>b[2]), borderWidth:0 }]},
+      options:{ responsive:true, maintainAspectRatio:false, cutout:'68%', plugins:{ tooltip:{ callbacks:{ label:c=>` ${c.label}: RM ${fmt(c.parsed*1000)}` } } } },
+      plugins:[{ id:'c', afterDraw(c){ const {ctx,chartArea:{left,right,top,bottom}}=c; const x=(left+right)/2,y=(top+bottom)/2;
+        ctx.save(); ctx.textAlign='center'; ctx.fillStyle='#122019'; ctx.font='800 19px '+Chart.defaults.font.family; ctx.fillText(rm(bal),x,y+2);
+        ctx.fillStyle='#77857c'; ctx.font='600 11px '+Chart.defaults.font.family; ctx.fillText('baki semasa',x,y+18); ctx.restore(); } }]
+    });
+
+    const appsTotal = APPS.reduce((a,x)=>a+x[1],0);
+    new Chart(document.getElementById('hqApps'), {
+      type:'doughnut',
+      data:{ labels:APPS.map(a=>a[0]), datasets:[{ data:APPS.map(a=>a[1]), backgroundColor:APPS.map(a=>a[2]), borderWidth:0 }]},
+      options:{ responsive:true, maintainAspectRatio:false, cutout:'70%' },
+      plugins:[{ id:'center', afterDraw(c){ const {ctx,chartArea:{left,right,top,bottom}}=c; const x=(left+right)/2,y=(top+bottom)/2;
+        ctx.save(); ctx.textAlign='center'; ctx.fillStyle='#122019'; ctx.font='800 22px '+Chart.defaults.font.family; ctx.fillText(fmt(appsTotal),x,y+2);
+        ctx.fillStyle='#77857c'; ctx.font='600 11px '+Chart.defaults.font.family; ctx.fillText('permohonan',x,y+19); ctx.restore(); } }]
+    });
+    document.getElementById('hqAppsLegend').innerHTML = APPS.map(a=>`<span><i style="background:${a[2]}"></i>${a[0]} · ${fmt(a[1])} (${Math.round(a[1]/appsTotal*100)}%)</span>`).join('');
+
+    const byM = [...STATES].sort((a,b)=>b[2]-a[2]);
+    const short = n => n.replace('WP Kuala Lumpur & Putrajaya','WP KL & Putrajaya');
+    new Chart(document.getElementById('hqMurid'), {
+      type:'bar',
+      data:{ labels:byM.map(s=>short(s[0])), datasets:[{ data:byM.map(s=>s[2]), backgroundColor:'#2fa308', borderRadius:5, barThickness:14 }]},
+      options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false,
+        plugins:{ tooltip:{ callbacks:{ label:c=>` ${fmt(c.parsed.x)} murid` } } },
+        scales:{ x:{grid, ticks:{callback:v=>v>=1000?(v/1000)+'k':v}}, y:{grid:noGrid} } }
+    });
+
+    const byP = [...STATES].sort((a,b)=>b[1]-a[1]);
+    new Chart(document.getElementById('hqBc'), {
+      type:'bar',
+      data:{ labels:byP.map(s=>short(s[0])), datasets:BC.map((b,j)=>({ label:b[0], data:byP.map(s=>s[7][j]), backgroundColor:b[1], barThickness:14 })) },
+      options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{display:true, position:'bottom', labels:{boxWidth:10, boxHeight:10}},
+          tooltip:{ mode:'index', intersect:false, callbacks:{ label:c=>` ${c.dataset.label}: ${c.parsed.x} cawangan` } } },
+        scales:{ x:{stacked:true, grid}, y:{stacked:true, grid:noGrid} } }
+    });
+  });
+</script>
+<script>
+  // mini calendar — September 2026 (1 Sep = Tuesday). Highlight day 24 (today) + a few events.
+  (function(){
+    const dow=['S','M','T','W','T','F','S']; const first=2; const days=30; const today=24;
+    const ev={5:'cuti',12:'cuti',17:'mesy',24:'prog'};
+    let html='<thead><tr>'+dow.map(d=>`<th>${d}</th>`).join('')+'</tr></thead><tbody><tr>';
+    for(let i=0;i<first;i++) html+='<td class="mut"></td>';
+    let col=first;
+    for(let d=1;d<=days;d++){
+      const cls=(d===today?'today':'')+(ev[d]?'':'');
+      html+=`<td class="${d===today?'today':''}"><span class="d">${d}</span>${ev[d]?`<div class="ev ${ev[d]}">•</div>`:''}</td>`;
+      col++; if(col===7 && d<days){ html+='</tr><tr>'; col=0; }
+    }
+    while(col<7 && col>0){ html+='<td class="mut"></td>'; col++; }
+    html+='</tr></tbody>';
+    document.getElementById('miniCal').innerHTML=html;
+  })();
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+  // Kod PASTI card — cawangan admin shares the code / link / QR with parents.
+  (function(){
+    if (!window.PT || PT.tier !== 'cawangan' || !window.DB) return;
+    const u = DB.user(), p = u && DB.find('pasti', x => x.nama === u.skop && x.kod);
+    const card = document.getElementById('kodCard'); if (!p) { card.style.display = 'none'; return; }
+    const $ = id => document.getElementById(id);
+    const link = new URL('../daftar-murid.html?kod=' + encodeURIComponent(p.kod), location.href).href;
+    const buka = p.daftar === 'BUKA';
+    $('kodNama').textContent = p.nama + ' · ' + p.dun;
+    $('kodVal').textContent = p.kod;
+    $('kodLink').value = link;
+    $('kodStatus').innerHTML = '<span class="badge ' + (buka ? 'b-green' : 'b-red') + '">Pendaftaran ' + (buka ? 'BUKA' : 'TUTUP') + '</span>';
+    $('kodNote').textContent = buka ? 'Permohonan yang dihantar dengan kod ini masuk ke senarai Permohonan Murid cawangan anda.'
+      : 'Pendaftaran murid sedang ditutup — ibu bapa tidak boleh menghantar permohonan. Hubungi Pentadbir Kawasan untuk membukanya.';
+    const msg = 'Assalamualaikum. Pendaftaran murid ' + p.nama + ' kini dibuka.\nKod PASTI: ' + p.kod + '\nDaftar di: ' + link;
+    $('kodWa').href = 'https://wa.me/?text=' + encodeURIComponent(msg);
+    if (window.QRCode) new QRCode($('kodQr'), { text: link, width: 132, height: 132, colorDark: '#1f5c0a', colorLight: '#ffffff' });
+    const copy = (t, ok) => (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject())
+      .then(() => PT.toast(ok)).catch(() => { const i = $('kodLink'); i.value = t; i.select(); document.execCommand('copy'); i.value = link; PT.toast(ok); });
+    $('kodCopy').onclick = () => copy(p.kod, 'Kod PASTI disalin');
+    $('kodCopyLink').onclick = () => copy(link, 'Pautan pendaftaran disalin');
+    $('kodPrint').onclick = () => {
+      const qr = $('kodQr').querySelector('img, canvas'), src = qr ? (qr.tagName === 'CANVAS' ? qr.toDataURL() : qr.src) : '';
+      const w = window.open('', '_blank'); if (!w) return PT.toast('Benarkan pop-up untuk cetak', 'red');
+      w.document.write('<html><head><title>Poster ' + p.nama + '</title><style>body{font-family:Poppins,Arial,sans-serif;text-align:center;padding:50px;color:#1f2a1b}h1{color:#2fa308;margin:0 0 6px}h2{font-size:54px;letter-spacing:6px;margin:18px 0}img{width:260px;height:260px}</style></head><body>'
+        + '<h1>PENDAFTARAN MURID DIBUKA</h1><div style="font-size:20px;font-weight:600">' + p.nama + '</div><div>' + p.alamat + ' · ' + p.tel + '</div>'
+        + '<p style="margin-top:30px">Kod PASTI</p><h2>' + p.kod + '</h2>' + (src ? '<img src="' + src + '">' : '')
+        + '<p>Imbas kod QR atau layari:<br><b>' + link + '</b></p></body></html>');
+      w.document.close(); setTimeout(() => w.print(), 400);
+    };
+  })();
+</script>
+<script>
+  // Hide quick-access cards the current tier isn't allowed to open.
+  (function(){
+    if(!window.PT || !PT.can) return;
+    document.querySelectorAll('.hub-grid .hub[href]').forEach(a=>{
+      const key=(a.getAttribute('href')||'').split('?')[0].replace('.html','');
+      if(key && key!=='dashboard' && !PT.can(key)) a.style.display='none';
+    });
+  })();
+</script>
+</body>
+</html>

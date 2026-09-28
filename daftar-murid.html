@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pendaftaran Murid PASTI Baharu · ePASTI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/app.css?v=4">
+</head>
+<body>
+
+<!-- Green public header bar -->
+<div style="background:linear-gradient(135deg,#2fa308,#153f08);color:#fff;padding:16px 22px;display:flex;align-items:center;gap:14px">
+  <div style="width:44px;height:44px;border-radius:12px;background:#fff;display:grid;place-items:center;overflow:hidden;padding:3px;flex:none"><img src="assets/img/pasti-logo.png" alt="PASTI" style="width:100%;height:100%;object-fit:contain" onerror="this.onerror=null;this.src='assets/img/pasti-logo.svg'"></div>
+  <div>
+    <div style="font-weight:700;font-size:15px;letter-spacing:.01em">JABATAN PASTI MALAYSIA</div>
+    <div style="font-size:12.5px;opacity:.88">Pendaftaran Murid</div>
+  </div>
+  <div style="margin-left:auto"><a class="btn btn-soft" href="index.html">Log Masuk</a></div>
+</div>
+
+<div class="pt-wrap" style="max-width:900px;margin:0 auto;padding:24px">
+
+  <div class="notice mb" style="margin-bottom:18px">
+    <div class="tx">
+      <b>Pendaftaran Murid PASTI Baharu (Tahun 4, 5 &amp; 6)</b>
+      <span>Sila lengkapkan borang di bawah dengan maklumat yang benar. Medan bertanda <span class="req">*</span> adalah wajib diisi. Anda memerlukan Kod PASTI daripada pihak PASTI sebelum menghantar permohonan.</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <div>
+        <h3>Borang Pendaftaran Murid</h3>
+        <div class="sub">Sistem Pengurusan PASTI (ePASTI) · Pendaftaran Online</div>
+      </div>
+      <span class="badge b-green no-dot">Sesi 2026</span>
+    </div>
+    <div class="card-body">
+      <form id="daftarForm" data-own novalidate>
+
+        <!-- (1) Maklumat Murid -->
+        <div class="fieldset-t">1 · Maklumat Murid</div>
+        <div class="form-grid">
+          <div class="field full">
+            <label class="label">Nama Penuh Murid <span class="req">*</span></label>
+            <input class="input" type="text" placeholder="cth: Muhammad Aqil bin Ahmad Firdaus" required>
+          </div>
+          <div class="field">
+            <label class="label">No. MyKid / Passport <span class="req">*</span></label>
+            <input class="input" type="text" placeholder="cth: 190312-10-1234" required>
+          </div>
+          <div class="field">
+            <label class="label">Tarikh Lahir <span class="req">*</span></label>
+            <input class="input" type="date" required>
+          </div>
+          <div class="field">
+            <label class="label">Jantina <span class="req">*</span></label>
+            <select class="select" required>
+              <option value="">— Pilih —</option>
+              <option>Lelaki</option>
+              <option>Perempuan</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="label">Bangsa <span class="req">*</span></label>
+            <select class="select" required>
+              <option value="">— Pilih —</option>
+              <option>Melayu</option>
+              <option>Cina</option>
+              <option>India</option>
+              <option>Bumiputera Sabah</option>
+              <option>Bumiputera Sarawak</option>
+              <option>Lain-lain</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="label">Status Yatim</label>
+            <select class="select">
+              <option value="">— Pilih —</option>
+              <option>Bukan Yatim</option>
+              <option>Yatim (Bapa)</option>
+              <option>Yatim (Ibu)</option>
+              <option>Yatim Piatu</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="label">Kelas Dipohon <span class="req">*</span></label>
+            <select class="select" required>
+              <option value="">— Pilih —</option>
+              <option>Tahun 4</option>
+              <option>Tahun 5</option>
+              <option>Tahun 6</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- (2) Maklumat Ibu Bapa / Penjaga -->
+        <div class="fieldset-t">2 · Maklumat Ibu Bapa / Penjaga</div>
+        <div class="form-grid">
+          <div class="field">
+            <label class="label">Nama Bapa / Penjaga <span class="req">*</span></label>
+            <input class="input" type="text" placeholder="cth: Ahmad Firdaus bin Ismail" required>
+          </div>
+          <div class="field">
+            <label class="label">No. Kad Pengenalan Bapa <span class="req">*</span></label>
+            <input class="input" type="text" placeholder="cth: 850214-10-5567" required>
+          </div>
+          <div class="field">
+            <label class="label">No. Telefon Bapa <span class="req">*</span></label>
+            <input class="input" type="tel" placeholder="cth: 012-3456789" required>
+          </div>
+          <div class="field">
+            <label class="label">Pekerjaan Bapa</label>
+            <input class="input" type="text" placeholder="cth: Jurutera Awam">
+          </div>
+          <div class="field">
+            <label class="label">Nama Ibu <span class="req">*</span></label>
+            <input class="input" type="text" placeholder="cth: Siti Nurhaliza binti Kamal" required>
+          </div>
+          <div class="field">
+            <label class="label">No. Kad Pengenalan Ibu <span class="req">*</span></label>
+            <input class="input" type="text" placeholder="cth: 880922-14-6688" required>
+          </div>
+          <div class="field">
+            <label class="label">No. Telefon Ibu</label>
+            <input class="input" type="tel" placeholder="cth: 019-8765432">
+          </div>
+          <div class="field">
+            <label class="label">Emel Ibu Bapa / Penjaga <span class="req">*</span></label>
+            <input class="input" type="email" placeholder="cth: nama@gmail.com" required>
+            <span class="hint">Akaun Portal Ibu Bapa dicipta dengan emel ini bila permohonan diterima.</span>
+          </div>
+          <div class="field">
+            <label class="label">Pendapatan Isi Rumah (RM) <span class="req">*</span></label>
+            <input class="input" type="text" placeholder="cth: 4500" required>
+            <span class="hint">Jumlah pendapatan kasar seisi keluarga sebulan.</span>
+          </div>
+          <div class="field full">
+            <label class="label">Alamat Kediaman <span class="req">*</span></label>
+            <textarea class="input" rows="3" placeholder="cth: No. 12, Jalan Melati 3, Taman Seri Indah, 43000 Kajang, Kelantan" required></textarea>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- (3) Pilihan PASTI -->
+        <div class="fieldset-t">3 · PASTI</div>
+        <div class="form-grid">
+          <div class="field">
+            <label class="label">Kod PASTI <span class="req">*</span></label>
+            <input class="input" type="text" placeholder="cth: B020108" required autocomplete="off" style="text-transform:uppercase">
+            <span class="hint">Kod diberikan oleh pihak PASTI. PASTI dikenal pasti secara automatik daripada kod ini.</span>
+          </div>
+          <div class="field">
+            <span class="label">PASTI</span>
+            <div id="pastiInfo" class="notice amber"><div class="tx"><b>Belum dikenal pasti</b><span>Masukkan Kod PASTI untuk memaparkan maklumat PASTI.</span></div></div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- (4) Akuan & Persetujuan -->
+        <div class="fieldset-t">4 · Akuan &amp; Persetujuan Data</div>
+        <div class="field full" style="gap:12px">
+          <label class="check">
+            <input type="checkbox" required>
+            <span>Saya bersetuju maklumat yang diberikan direkod dan diproses oleh Jabatan PASTI Malaysia selaras dengan Akta Perlindungan Data Peribadi 2010 (<strong>Data Consent</strong>).</span>
+          </label>
+          <label class="check">
+            <input type="checkbox" required>
+            <span>Saya mengesahkan bahawa segala maklumat yang diberikan adalah benar dan tepat.</span>
+          </label>
+        </div>
+
+        <div class="flex gap" style="justify-content:flex-end;margin-top:22px">
+          <button type="reset" class="btn btn-ghost btn-lg">Batal</button>
+          <button type="submit" class="btn btn-primary btn-lg">Hantar Permohonan</button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <div class="muted center" style="margin-top:20px;font-size:12px">© 2026 Jabatan PASTI Malaysia · Bahagian Teknologi dan Komunikasi (ICT)</div>
+
+</div>
+
+<!-- Kod PASTI modal (open on load) -->
+<div class="modal-overlay open" id="kodModal">
+  <div class="modal">
+    <div class="m-head">
+      <h3>Sila Dapatkan Kod PASTI Dahulu</h3>
+    </div>
+    <div class="m-body">
+      <div class="notice amber mb">
+        <div class="tx">
+          <b>Perhatian</b>
+          <span>Anda memerlukan <strong>Kod PASTI</strong> daripada pihak PASTI pilihan sebelum meneruskan pendaftaran. Sila hubungi PASTI berhampiran untuk mendapatkan kod tersebut.</span>
+        </div>
+      </div>
+      <div class="field">
+        <label class="label">Kod PASTI</label>
+        <input class="input" type="text" placeholder="cth: B020108" style="text-transform:uppercase">
+        <span class="hint">Masukkan kod yang diberikan untuk meneruskan pendaftaran.</span>
+      </div>
+    </div>
+    <div class="m-foot">
+      <button class="btn btn-ghost" data-close>Tutup</button>
+      <button class="btn btn-primary" id="kodGo" data-own>Masuk</button>
+    </div>
+  </div>
+</div>
+
+<script src="assets/js/app.js?v=4"></script>
+<script>
+// Public registration → creates an application in the shared DB (status Baharu) and gives the parent a No. Rujukan.
+(function(){
+  const form = document.getElementById('daftarForm');
+  const F = lbl => { const f = [...form.querySelectorAll('.field')].find(x => x.querySelector('.label') && x.querySelector('.label').textContent.replace('*','').trim().toLowerCase().startsWith(lbl)); return f && f.querySelector('input, select, textarea'); };
+  const kodIn = F('kod pasti'), info = document.getElementById('pastiInfo');
+  const open = DB.all('pasti').filter(p => p.status === 'Lulus' && p.kod);
+  const findKod = k => open.find(p => p.kod.toUpperCase() === String(k).trim().toUpperCase());
+  const esc = v => String(v == null ? '' : v).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  // Returns the PASTI if the code is valid AND registration is open; otherwise an error message.
+  const check = k => { const p = findKod(k);
+    if (!p) return { err: 'Kod PASTI tidak sah. Dapatkan kod daripada PASTI pilihan anda.' };
+    if (p.daftar !== 'BUKA') return { p, err: 'Pendaftaran murid ' + p.nama + ' sedang ditutup.' };
+    return { p }; };
+  function showInfo(){
+    const v = kodIn.value.trim();
+    if (!v) { info.className = 'notice amber'; info.innerHTML = '<div class="tx"><b>Belum dikenal pasti</b><span>Masukkan Kod PASTI untuk memaparkan maklumat PASTI.</span></div>'; return; }
+    const r = check(v);
+    if (!r.p) { info.className = 'notice amber'; info.innerHTML = '<div class="tx"><b>Kod tidak dijumpai</b><span>Semak semula kod yang diberikan oleh PASTI.</span></div>'; return; }
+    info.className = r.err ? 'notice amber' : 'notice';
+    info.innerHTML = '<div class="tx"><b>' + esc(r.p.nama) + '</b><span>' + esc(r.p.alamat) + '<br>' + esc(r.p.dun) + ' · ' + esc(r.p.tel)
+      + (r.err ? '<br><strong style="color:#b0342a">Pendaftaran sedang ditutup</strong>' : '') + '</span></div>';
+  }
+  kodIn.addEventListener('input', () => { kodIn.classList.remove('pt-err'); showInfo(); });
+
+  // Kod PASTI gate (modal on load)
+  document.getElementById('kodGo').addEventListener('click', () => {
+    const inp = document.querySelector('#kodModal input'), r = check(inp.value);
+    if (r.err) { inp.classList.add('pt-err'); PT.toast(r.err, 'red'); return; }
+    kodIn.value = r.p.kod; showInfo(); document.getElementById('kodModal').classList.remove('open');
+    PT.toast('Kod sah — ' + r.p.nama);
+  });
+
+  // Deep link: daftar-murid.html?kod=B020108 fills the code and skips the modal.
+  const qk = new URLSearchParams(location.search).get('kod');
+  if (qk) { kodIn.value = qk.toUpperCase(); showInfo(); if (!check(qk).err) document.getElementById('kodModal').classList.remove('open'); }
+
+  form.addEventListener('reset', () => setTimeout(() => { form.querySelectorAll('.pt-err').forEach(x => x.classList.remove('pt-err')); showInfo(); }));
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    let bad = 0; form.querySelectorAll('[required]').forEach(i => { const miss = i.type === 'checkbox' ? !i.checked : !String(i.value).trim(); i.classList.toggle('pt-err', miss); if (miss) bad++; });
+    if (bad) { PT.toast(bad + ' ruangan wajib belum diisi', 'red'); form.querySelector('.pt-err').scrollIntoView({ block:'center' }); return; }
+    const r = check(kodIn.value);
+    if (r.err) { kodIn.classList.add('pt-err'); PT.toast(r.err, 'red'); kodIn.scrollIntoView({ block:'center' }); return; }
+    const p = r.p;
+    const d = new Date(), tg = String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + d.getFullYear();
+    const lahir = F('tarikh lahir').value, umur = lahir ? Math.max(3, d.getFullYear() - new Date(lahir).getFullYear()) : 5;
+    const ref = DB.nextRef();
+    const m = { tarikh: tg, ref, nama: F('nama penuh murid').value.trim().toUpperCase(), mykid: F('no. mykid').value.trim(), umur: String(umur),
+      bapa: F('nama bapa').value.trim().toUpperCase(), kpBapa: F('no. kad pengenalan bapa').value.trim(), telBapa: F('no. telefon bapa').value.trim(),
+      emel: F('emel').value.trim().toLowerCase(), kelas: F('kelas dipohon').value, pasti: p.nama, tarikhDaftar:'—', status:'Baharu' };
+    DB.add('murid', m);
+    const ov = document.createElement('div'); ov.className = 'modal-overlay open';
+    ov.innerHTML = '<div class="modal"><div class="m-head"><h3>Permohonan Berjaya Dihantar</h3></div><div class="m-body">'
+      + '<div class="notice"><div class="tx"><b>No. Rujukan anda: ' + ref + '</b><span>Simpan nombor ini. Salinan dihantar melalui SMS & e-mel ke ' + m.emel + '.</span></div></div>'
+      + '<dl class="kv mt"><dt>Nama Anak</dt><dd>' + m.nama + '</dd><dt>PASTI</dt><dd>' + p.nama + '</dd><dt>Kelas Dipohon</dt><dd>' + m.kelas + '</dd><dt>Status</dt><dd><span class="badge b-blue">Dalam Semakan</span></dd></dl>'
+      + '<div class="muted mt" style="font-size:12.5px">Pentadbir ' + p.nama + ' akan menyemak permohonan. Bila diterima, akaun Portal Ibu Bapa dicipta dengan emel anda.</div></div>'
+      + '<div class="m-foot"><a class="btn btn-ghost" href="daftar-murid.html">Daftar anak lain</a><a class="btn btn-primary" href="semak-status.html?ref=' + ref + '&mykid=' + encodeURIComponent(m.mykid) + '">Semak Status</a></div></div>';
+    document.body.appendChild(ov);
+  });
+})();
+</script>
+</body>
+</html>

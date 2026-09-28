@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Yuran &amp; Pembayaran · ePASTI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/app.css?v=4">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#2fa308">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" href="../assets/img/icons/icon-192.png">
+</head>
+<body>
+<div class="pt-app" data-portal="parent" data-module="yuran" data-title="Yuran &amp; Pembayaran" data-subtitle="Portal Ibu Bapa PASTI">
+  <main class="pt-main">
+
+    <section class="pp-hero">
+      <div class="row">
+        <div style="flex:1;min-width:240px">
+          <div class="crumbs">Portal Ibu Bapa › Yuran &amp; Pembayaran</div>
+          <h1>Yuran &amp; Pembayaran</h1>
+          <div class="lead">Ahmad Zafran &amp; Nur Sofea · PASTI AL-TA'LIM · RM 60 seorang sebulan</div>
+          <div class="pp-months" id="ppMonths"></div>
+          <div style="font-size:11.5px;opacity:.8;margin-top:6px"><span style="color:#b8f59a">■</span> Dijelaskan &nbsp; <span style="color:#ffc46b">■</span> Tertunggak &nbsp; <span style="opacity:.6">■</span> Akan datang</div>
+        </div>
+        <div class="pp-glass" id="ppDue">
+          <div class="l">Jumlah tertunggak</div>
+          <div class="v" id="ppDueV">RM 0.00</div>
+          <div class="s" id="ppDueS">—</div>
+          <button type="button" class="btn btn-w" id="ppPayAll" data-own>Bayar Semua</button>
+        </div>
+      </div>
+    </section>
+
+    <div class="pp-tiles">
+      <div class="pp-tile"><div class="ic pp-c3" id="icDue"></div><div><div class="l">Tertunggak</div><div class="v" id="tDue">RM 0</div><div class="s" id="tDueS">—</div></div></div>
+      <div class="pp-tile"><div class="ic pp-c4" id="icBil"></div><div><div class="l">Bil Bulan Ini</div><div class="v">RM 120</div><div class="s">September 2026 · 2 anak</div></div></div>
+      <div class="pp-tile"><div class="ic pp-c1" id="icPaid"></div><div><div class="l">Dibayar Tahun Ini</div><div class="v">RM 1,140</div><div class="s">17 bil dijelaskan</div></div></div>
+    </div>
+
+    <!-- auto-debit -->
+    <div class="pp-auto" data-own>
+      <div class="ic pp-c2" id="icAuto"></div>
+      <div class="tx">
+        <b>Auto-debit bulanan</b>
+        <span id="autoTx">Yuran ditolak secara automatik setiap 5 haribulan melalui BayarCash terus ke akaun PASTI Al-Ta'lim (M-ALTALIM-0417). Boleh dibatalkan bila-bila masa.</span>
+      </div>
+      <label class="pp-switch" title="Auto-debit"><input type="checkbox" id="autoSw"><span></span></label>
+    </div>
+
+    <!-- bills table -->
+    <div class="card">
+      <div class="card-head"><div><h3>Senarai Bil Yuran</h3><div class="sub">Bulanan · RM 60 seorang</div></div><button class="btn btn-primary btn-sm" id="bayarAll">Bayar Semua</button></div>
+      <div class="table-wrap">
+        <table class="pt">
+          <thead>
+            <tr>
+              <th>No Bil</th>
+              <th>Anak</th>
+              <th>Bulan / Tempoh</th>
+              <th>Jenis</th>
+              <th class="right">Jumlah (RM)</th>
+              <th>Status</th>
+              <th>Tindakan</th>
+            </tr>
+          </thead>
+          <tbody id="billBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="muted" style="font-size:12px;margin-top:12px;display:flex;gap:8px;align-items:center"><span id="icShield" style="width:16px;height:16px;display:inline-block;color:var(--brand)"></span>Pembayaran selamat diproses oleh BayarCash · FPX, Kad Kredit/Debit &amp; DuitNow QR</div>
+
+  </main>
+</div>
+
+<script src="../assets/js/app.js?v=4"></script>
+<script src="../assets/js/parent-kids.js?v=2"></script>
+<script>
+  (function(){
+    const $ = id => document.getElementById(id), I = PK.I;
+    $('icDue').innerHTML = I.yuran; $('icBil').innerHTML = I.resit; $('icPaid').innerHTML = I.ok; $('icAuto').innerHTML = I.auto; $('icShield').innerHTML = I.shield;
+
+    const bills = [
+      { no:'BIL-2026-0912', anak:'Ahmad Zafran', bulan:'September 2026', jumlah:60, status:'Belum' },
+      { no:'BIL-2026-0911', anak:'Nur Sofea',    bulan:'September 2026', jumlah:60, status:'Sudah' },
+      { no:'BIL-2026-0812', anak:'Ahmad Zafran', bulan:'Ogos 2026',      jumlah:60, status:'Belum' },
+      { no:'BIL-2026-0811', anak:'Nur Sofea',    bulan:'Ogos 2026',      jumlah:60, status:'Sudah' },
+      { no:'BIL-2026-0712', anak:'Ahmad Zafran', bulan:'Julai 2026',     jumlah:60, status:'Sudah' },
+      { no:'BIL-2026-0711', anak:'Nur Sofea',    bulan:'Julai 2026',     jumlah:60, status:'Sudah' },
+      { no:'BIL-2026-0612', anak:'Ahmad Zafran', bulan:'Jun 2026',       jumlah:60, status:'Sudah' }
+    ];
+    const col = n => /zafran/i.test(n) ? 'pp-c1' : 'pp-c2';
+    $('billBody').innerHTML = bills.map(b => `<tr>
+        <td class="num">${b.no}</td>
+        <td><div class="cell-user"><div class="avatar ${col(b.anak)}" style="color:#fff">${PK.ini(b.anak)}</div><div><div class="nm">${b.anak}</div><div class="ml">PASTI AL-TA'LIM</div></div></div></td>
+        <td>${b.bulan}</td>
+        <td>Bulanan</td>
+        <td class="right num">${b.jumlah.toFixed(2)}</td>
+        <td>${b.status === 'Belum' ? '<span class="badge b-amber no-dot">Belum</span>' : '<span class="badge b-green no-dot">Sudah</span>'}</td>
+        <td>${b.status === 'Belum' ? '<button class="btn btn-primary btn-sm">Bayar</button>' : '<button class="btn btn-soft btn-sm" data-action="print">Resit</button>'}</td>
+      </tr>`).join('');
+
+    // Hero + tiles follow the table (so they update right after a BayarCash payment).
+    const MON = ['Jan','Feb','Mac','Apr','Mei','Jun','Jul','Ogos','Sep','Okt','Nov','Dis'], FULL = ['Januari','Februari','Mac','April','Mei','Jun','Julai','Ogos','September','Oktober','November','Disember'];
+    function sync(){
+      const rows = [...$('billBody').rows], open = rows.filter(r => /\bbelum\b/i.test((r.querySelector('.badge')||{}).textContent || ''));
+      const due = open.length * 60;
+      $('ppDueV').textContent = 'RM ' + due.toFixed(2);
+      $('ppDueS').textContent = open.length ? open.length + ' bil belum dijelaskan' : 'Semua bil telah dijelaskan — terima kasih!';
+      $('ppPayAll').style.display = open.length ? '' : 'none';
+      $('bayarAll').style.display = open.length ? '' : 'none';
+      $('tDue').textContent = 'RM ' + due; $('tDueS').textContent = open.length ? open.length + ' bil belum jelas' : 'Tiada tunggakan';
+      const dueMonths = new Set(open.map(r => FULL.findIndex(m => r.children[2].textContent.startsWith(m))));
+      const now = new Date().getMonth();
+      $('ppMonths').innerHTML = MON.map((m,i) => '<div class="' + (dueMonths.has(i) ? 'd' : i <= now ? 'p' : '') + '"><i></i>' + m + '</div>').join('');
+    }
+    sync(); setTimeout(sync, 50);
+    new MutationObserver(sync).observe($('billBody'), { subtree:true, childList:true, characterData:true });
+    $('ppPayAll').addEventListener('click', () => $('bayarAll').click());
+
+    // auto-debit toggle (per-browser preference)
+    const sw = $('autoSw'); try { sw.checked = localStorage.getItem('pt-autodebit') === '1'; } catch(e){}
+    const autoTx = () => { $('autoTx').innerHTML = sw.checked
+      ? '<b style="color:var(--brand-d);font-size:12.5px">Aktif</b> — yuran RM 120 ditolak automatik setiap 5 haribulan melalui BayarCash ke akaun PASTI Al-Ta\'lim (M-ALTALIM-0417).'
+      : 'Yuran ditolak secara automatik setiap 5 haribulan melalui BayarCash terus ke akaun PASTI Al-Ta\'lim (M-ALTALIM-0417). Boleh dibatalkan bila-bila masa.'; };
+    autoTx();
+    sw.addEventListener('change', () => { try { localStorage.setItem('pt-autodebit', sw.checked ? '1' : '0'); } catch(e){} autoTx();
+      PT.toast(sw.checked ? 'Auto-debit diaktifkan — bermula 5 Oktober 2026' : 'Auto-debit dibatalkan', sw.checked ? 'green' : 'red'); });
+  })();
+</script>
+</body>
+</html>

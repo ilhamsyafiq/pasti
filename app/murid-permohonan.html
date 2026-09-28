@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Senarai Murid — Permohonan · ePASTI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/app.css?v=4">
+</head>
+<body>
+<div class="pt-app" data-module="pengurusan" data-page="murid-permohonan" data-title="Senarai Murid — Permohonan" data-subtitle="Permohonan pendaftaran murid online">
+  <main class="pt-main">
+
+    <div class="page-head">
+      <div>
+        <div class="crumb">ePASTI <span>›</span> Pengurusan PASTI &amp; Murid <span>›</span> Senarai Murid — Permohonan</div>
+        <h1>Senarai Murid — Permohonan</h1>
+        <div class="lead">Permohonan pendaftaran murid secara online · PASTI Kawasan Kubang Kerian</div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <a href="#" class="active" data-tab="baharu">Permohonan Baharu</a>
+      <a href="#" data-tab="diterima">Diterima</a>
+      <a href="#" data-tab="ditolak">Ditolak</a>
+    </div>
+
+    <!-- Permohonan Baharu -->
+    <div data-panel="baharu">
+      <div class="toolbar">
+        <span class="muted">Jumlah Bilangan : 8</span>
+        <div class="spacer"></div>
+        <button class="btn btn-soft" data-action="export" title="Muat turun Excel">Excel</button>
+      </div>
+      <div class="card">
+        <div class="table-wrap">
+          <table class="pt" data-nosave>
+            <thead>
+              <tr>
+                <th>Bil</th><th>Tarikh Mohon</th><th>No. Rujukan</th><th>Nama Anak</th><th>PASTI</th>
+                <th>No. MyKid</th><th>Umur</th><th>Nama Bapa</th><th>No. KP Bapa</th>
+                <th>No. Telefon Bapa</th><th>Tarikh Daftar</th><th>Status</th><th>Tindakan</th>
+              </tr>
+            </thead>
+            <tbody id="baharuRows"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Diterima -->
+    <div data-panel="diterima" style="display:none">
+      <div class="toolbar">
+        <span class="muted">Jumlah Bilangan : 8</span>
+        <div class="spacer"></div>
+        <button class="btn btn-soft" data-action="export" title="Muat turun Excel">Excel</button>
+      </div>
+      <div class="card">
+        <div class="table-wrap">
+          <table class="pt" data-nosave>
+            <thead>
+              <tr>
+                <th>Bil</th><th>Tarikh Mohon</th><th>No. Rujukan</th><th>Nama Anak</th><th>PASTI</th>
+                <th>No. MyKid</th><th>Umur</th><th>Nama Bapa</th><th>No. KP Bapa</th>
+                <th>No. Telefon Bapa</th><th>Tarikh Daftar</th><th>Status</th><th>Tindakan</th>
+              </tr>
+            </thead>
+            <tbody id="diterimaRows"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ditolak -->
+    <div data-panel="ditolak" style="display:none">
+      <div class="toolbar">
+        <span class="muted">Jumlah Bilangan : 6</span>
+        <div class="spacer"></div>
+        <button class="btn btn-soft" data-action="export" title="Muat turun Excel">Excel</button>
+      </div>
+      <div class="card">
+        <div class="table-wrap">
+          <table class="pt" data-nosave>
+            <thead>
+              <tr>
+                <th>Bil</th><th>Tarikh Mohon</th><th>No. Rujukan</th><th>Nama Anak</th><th>PASTI</th>
+                <th>No. MyKid</th><th>Umur</th><th>Nama Bapa</th><th>No. KP Bapa</th>
+                <th>No. Telefon Bapa</th><th>Tarikh Daftar</th><th>Status</th><th>Tindakan</th>
+              </tr>
+            </thead>
+            <tbody id="ditolakRows"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script src="../assets/js/app.js?v=4"></script>
+<script>
+// Permohonan Murid — from the shared DB (public form daftar-murid.html feeds it).
+// Only Pentadbir Cawangan decides. Terima → akaun Portal Ibu Bapa dicipta automatik.
+(function(){
+  const tier = PT.tier, $ = id => document.getElementById(id);
+  const esc = s => String(s==null?'':s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const today = () => { const d = new Date(); return String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + d.getFullYear(); };
+  const cls = { Baharu:'b-blue', Diterima:'b-green', Ditolak:'b-red' };
+  function rows(list){
+    const all = DB.all('murid');
+    return list.map((m,i) => `<tr>
+      <td>${i+1}</td><td class="num">${m.tarikh}</td><td><b>${esc(m.ref)}</b></td><td>${esc(m.nama)}</td><td>${esc(m.pasti)}</td>
+      <td class="num">${esc(m.mykid)}</td><td class="center">${esc(m.umur)}</td><td>${esc(m.bapa)}</td><td class="num">${esc(m.kpBapa)}</td><td class="num">${esc(m.telBapa)}</td>
+      <td class="num">${m.tarikhDaftar||'—'}</td>
+      <td><span class="badge ${cls[m.status]}">${m.status}</span>${m.sebab ? '<div class="muted" style="font-size:11.5px;margin-top:3px">' + esc(m.sebab) + '</div>' : ''}</td>
+      <td class="flex gap wrap"><button class="btn btn-soft btn-sm">Lihat</button> <button class="btn btn-ghost btn-sm" data-action="print">Cetak</button>
+        ${m.status === 'Baharu' && tier === 'cawangan' ? '<span data-own class="flex gap"><button class="btn btn-primary btn-sm" data-mp="terima" data-i="' + all.indexOf(m) + '">Terima</button><button class="btn btn-red btn-sm" data-mp="tolak" data-i="' + all.indexOf(m) + '">Tolak</button></span>' : ''}</td>
+    </tr>`).join('') || '<tr><td colspan="13" class="empty">Tiada rekod.</td></tr>';
+  }
+  function draw(){
+    const me = DB.user(), mine = tier === 'cawangan' && me && me.peranan === 'cawangan' ? (m => m.pasti === me.skop) : (() => true);
+    const all = DB.all('murid').filter(mine);
+    $('baharuRows').innerHTML = rows(all.filter(m => m.status === 'Baharu'));
+    $('diterimaRows').innerHTML = rows(all.filter(m => m.status === 'Diterima'));
+    $('ditolakRows').innerHTML = rows(all.filter(m => m.status === 'Ditolak'));
+    const lead = document.querySelector('.page-head .lead');
+    if (lead && !lead.dataset.x) { lead.dataset.x = 1; lead.insertAdjacentHTML('beforeend', tier === 'cawangan' ? ' · Anda memutuskan permohonan (Terima / Tolak)' : ' · Keputusan dibuat oleh Pentadbir Cawangan'); }
+  }
+  function dialog(title, body, foot){
+    let ov = $('mpDlg'); if (!ov) { ov = document.createElement('div'); ov.className = 'modal-overlay'; ov.id = 'mpDlg'; document.body.appendChild(ov); }
+    ov.innerHTML = '<div class="modal"><div class="m-head"><h3>' + title + '</h3><button class="btn btn-ghost btn-sm" data-close>✕</button></div><div class="m-body">' + body + '</div><div class="m-foot" data-own>' + foot + '</div></div>';
+    ov.classList.add('open');
+  }
+  const titleCase = s => s.toLowerCase().replace(/\b\w/g, c => c.toUpperCase()).replace(/\bBin\b/g,'bin').replace(/\bBinti\b/g,'binti');
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-mp]'); if (!b) return;
+    const m = DB.all('murid')[+b.dataset.i]; if (!m) return;
+    if (b.dataset.mp === 'terima') {
+      m.status = 'Diterima'; m.tarikhDaftar = today();
+      let acc = m.emel && DB.find('users', u => u.emel.toLowerCase() === m.emel.toLowerCase()), made = false;
+      if (m.emel && !acc) { acc = DB.add('users', { nama: titleCase(m.bapa), emel: m.emel, peranan:'ibubapa', skop: m.pasti, oleh:'Automatik (murid diterima)', tarikh: today(), status:'Aktif' }); made = true; }
+      const p = DB.find('pasti', x => x.nama === m.pasti); if (p) p.murid = (p.murid||0) + 1;
+      DB.save(); draw();
+      dialog('Permohonan diterima', '<div class="notice"><div class="tx"><b>' + esc(m.nama) + ' kini murid ' + esc(m.pasti) + '.</b><span>' + esc(m.kelas) + ' · Tarikh daftar ' + m.tarikhDaftar + '</span></div></div>'
+        + (acc ? '<dl class="kv mt"><dt>Akaun Portal Ibu Bapa</dt><dd>' + (made ? 'Dicipta automatik' : 'Sudah wujud — anak dipautkan') + '</dd><dt>Nama</dt><dd>' + esc(acc.nama) + '</dd><dt>ID log masuk</dt><dd>' + esc(acc.emel) + '</dd>' + (made ? '<dt>Kata laluan sementara</dt><dd>Pasti@' + m.ref.slice(-4) + '</dd>' : '') + '</dl>' : '<div class="notice amber mt"><div class="tx"><b>Tiada emel ibu bapa</b><span>Akaun portal tidak dapat dicipta. Kemas kini emel dalam Ibu Bapa / Penjaga.</span></div></div>')
+        + '<div class="muted mt" style="font-size:12.5px">Ibu bapa dimaklumkan melalui SMS & e-mel. Mereka boleh semak status di halaman Semak Status.</div>',
+        '<button class="btn btn-primary" data-close>Selesai</button>');
+      PT.toast('Diterima — ' + m.nama);
+    }
+    if (b.dataset.mp === 'tolak') dialog('Tolak permohonan — ' + esc(m.nama), '<div class="field"><span class="label">Sebab <span class="req">*</span></span><textarea class="input" rows="3" id="mpWhy" placeholder="Akan dimaklumkan kepada ibu bapa"></textarea></div>',
+      '<button class="btn btn-ghost" data-close>Batal</button><button class="btn btn-red" data-mp="tolak-ok" data-i="' + b.dataset.i + '">Sahkan Tolak</button>');
+    if (b.dataset.mp === 'tolak-ok') { const w = $('mpWhy'); if (!w.value.trim()) { w.classList.add('pt-err'); PT.toast('Nyatakan sebab', 'red'); return; }
+      m.status = 'Ditolak'; m.sebab = w.value.trim(); DB.save(); $('mpDlg').classList.remove('open'); draw(); PT.toast('Permohonan ditolak', 'red'); }
+  });
+  draw();
+})();
+</script>
+</body>
+</html>

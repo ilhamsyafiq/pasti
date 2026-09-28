@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Notifikasi & Notis · ePASTI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/app.css?v=4">
+</head>
+<body>
+<div class="pt-app" data-module="operasi" data-page="notifikasi" data-title="Notifikasi & Notis" data-subtitle="Notis & peringatan pembayaran">
+  <main class="pt-main">
+
+    <div class="page-head">
+      <div>
+        <div class="crumb">ePASTI <span>›</span> Operasi <span>›</span> Notifikasi</div>
+        <h1>Notifikasi &amp; Notis</h1>
+        <div class="lead">Notis &amp; peringatan pembayaran kepada ibu bapa, guru &amp; petugas</div>
+      </div>
+      <div class="flex gap wrap">
+        <button class="btn btn-primary" data-modal="notisModal">Hantar Notis</button>
+        <button class="btn btn-soft" data-modal="popupModal">Papar Contoh Pop-up</button>
+      </div>
+    </div>
+
+    <!-- stat strip -->
+    <div class="grid g-3">
+      <div class="stat"><div class="top"><span class="label">Notis Aktif</span><div class="ic b">N</div></div><div class="value">12</div><div class="trend flat">Sedang dipaparkan</div></div>
+      <div class="stat"><div class="top"><span class="label">Peringatan Bayaran</span><div class="ic a">!</div></div><div class="value">5</div><div class="trend down">▼ Yuran tertunggak</div></div>
+      <div class="stat"><div class="top"><span class="label">Dihantar Bulan Ini</span><div class="ic g">↑</div></div><div class="value">38</div><div class="trend up">▲ Sepanjang Sept 2026</div></div>
+    </div>
+
+    <!-- tabs -->
+    <div class="tabs mt-lg">
+      <a href="#" class="active" data-tab="semua">Semua</a>
+      <a href="#" data-tab="notis">Notis</a>
+      <a href="#" data-tab="bayaran">Peringatan Bayaran</a>
+    </div>
+
+    <!-- PANEL: Semua -->
+    <div data-panel="semua">
+      <div class="card">
+        <div class="card-head"><div><h3>Semua Notis &amp; Peringatan</h3><span class="sub">Senarai terkini mengikut tarikh</span></div></div>
+        <div class="card-body" id="listSemua"></div>
+      </div>
+    </div>
+
+    <!-- PANEL: Notis -->
+    <div data-panel="notis" style="display:none">
+      <div class="card">
+        <div class="card-head"><div><h3>Notis</h3><span class="sub">Notis am &amp; pengumuman sistem</span></div></div>
+        <div class="card-body" id="listNotis"></div>
+      </div>
+    </div>
+
+    <!-- PANEL: Peringatan Bayaran -->
+    <div data-panel="bayaran" style="display:none">
+      <div class="card">
+        <div class="card-head"><div><h3>Peringatan Bayaran</h3><span class="sub">Peringatan yuran tertunggak</span></div></div>
+        <div class="card-body" id="listBayaran"></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- notis modal -->
+<div class="modal-overlay" id="notisModal">
+  <div class="modal">
+    <div class="m-head"><h3>Hantar Notis</h3><button class="btn btn-ghost btn-sm" data-close>✕</button></div>
+    <div class="m-body">
+      <div class="form-grid">
+        <div class="field full"><span class="label">Tajuk <span class="req">*</span></span><input class="input" placeholder="Tajuk notis"></div>
+        <div class="field full"><span class="label">Kandungan <span class="req">*</span></span><textarea class="input" rows="4" placeholder="Kandungan notis"></textarea></div>
+        <div class="field"><span class="label">Sasaran Peringkat <span class="req">*</span></span>
+          <select class="select">
+            <option>Malaysia</option>
+            <option>Negeri</option>
+            <option>Kawasan</option>
+            <option>Cawangan</option>
+          </select>
+        </div>
+        <div class="field"><span class="label">PASTI</span>
+          <select class="select">
+            <option>Semua PASTI</option>
+            <option>AL-TA'LIM</option>
+            <option>AS-SALAMAH</option>
+            <option>ITQAN</option>
+            <option>NURUL IMAN</option>
+            <option>NURUL HIDAYAH</option>
+          </select>
+        </div>
+        <div class="field full"><span class="label">Jenis <span class="req">*</span></span>
+          <select class="select">
+            <option>Notis</option>
+            <option>Peringatan Bayaran</option>
+            <option>Sistem</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="m-foot"><button class="btn btn-ghost" data-close>Batal</button><button class="btn btn-primary" id="ntSend" data-own>Hantar Notis</button></div>
+  </div>
+</div>
+
+<!-- pop-up preview modal -->
+<div class="modal-overlay" id="popupModal">
+  <div class="modal" style="max-width:440px">
+    <div class="m-head"><h3>🔔 Peringatan Pembayaran</h3><button class="btn btn-ghost btn-sm" data-close>✕</button></div>
+    <div class="m-body">
+      <div class="notice amber">
+        <div class="tx"><b>Yuran belum dijelaskan</b><span>Yuran bulan Ogos 2026 bagi Ahmad Zafran belum dijelaskan (RM 60).</span></div>
+      </div>
+    </div>
+    <div class="m-foot"><button class="btn btn-ghost" data-close>Tutup</button><button class="btn btn-primary" data-toast="Menghala ke pintu bayaran…">Bayar Sekarang</button></div>
+  </div>
+</div>
+
+<script src="../assets/js/app.js?v=4"></script>
+<script>
+(function(){
+  var badge = {Notis:'b-blue', 'Peringatan Bayaran':'b-amber', Sistem:'b-slate'};
+  var dot   = {Notis:'var(--info)', 'Peringatan Bayaran':'var(--accent)', Sistem:'var(--muted)'};
+
+  var items = [
+    {t:'Cuti Perayaan Maulidur Rasul', meta:'23/09/2026 · Semua Ibu Bapa (Kelantan)', jenis:'Notis'},
+    {t:'Peringatan Yuran Ogos 2026', meta:'22/09/2026 · Ibu Bapa Tertunggak (P025 Kubang Kerian)', jenis:'Peringatan Bayaran'},
+    {t:'Naik Taraf Sistem 25 Sept', meta:'21/09/2026 · Semua Pengguna (Malaysia)', jenis:'Sistem'},
+    {t:'Mesyuarat Guru Bulanan', meta:'20/09/2026 · Guru & Petugas (N44 Kota Lama)', jenis:'Notis'},
+    {t:'Peringatan Yuran Julai 2026', meta:'18/09/2026 · Ibu Bapa Tertunggak (AS-SALAMAH)', jenis:'Peringatan Bayaran'},
+    {t:'Program Khatam Al-Quran', meta:'16/09/2026 · Semua Ibu Bapa (P094 Kuala Kelantan)', jenis:'Notis'},
+    {t:'Peringatan Caruman SKSPS', meta:'15/09/2026 · Guru & Petugas (Kelantan)', jenis:'Peringatan Bayaran'}
+  ];
+
+  function rowHtml(it){
+    var b = badge[it.jenis] || 'b-slate';
+    var send = it.jenis === 'Peringatan Bayaran'
+      ? '<button class="btn btn-soft btn-sm" data-toast="Peringatan bayaran dihantar">Hantar Peringatan</button>'
+      : '';
+    return '<div class="list-row">'+
+      '<span class="tag-dot" style="background:'+dot[it.jenis]+'"></span>'+
+      '<div style="flex:1">'+
+        '<div class="strong">'+it.t+'</div>'+
+        '<div class="muted" style="font-size:12px;margin-top:2px">'+it.meta+'</div>'+
+      '</div>'+
+      '<span class="badge '+b+'">'+it.jenis+'</span>'+
+      send+
+    '</div>';
+  }
+  function render(el, list){
+    el.innerHTML = list.map(rowHtml).join('');
+  }
+
+  render(document.getElementById('listSemua'), items);
+  render(document.getElementById('listNotis'), items.filter(function(i){ return i.jenis === 'Notis' || i.jenis === 'Sistem'; }));
+  render(document.getElementById('listBayaran'), items.filter(function(i){ return i.jenis === 'Peringatan Bayaran'; }));
+})();
+</script>
+<script>
+(function(){
+  const md=document.getElementById('notisModal'), F=l=>{ const f=[...md.querySelectorAll('.field')].find(x=>x.querySelector('.label')&&x.querySelector('.label').textContent.toLowerCase().includes(l)); return f&&f.querySelector('input,select,textarea'); };
+  const KEY='pt-notis', load=()=>{ try{ return JSON.parse(localStorage.getItem(KEY)||'[]'); }catch(e){ return []; } };
+  const box=()=>document.querySelector('.list-row') && document.querySelector('.list-row').parentElement;
+  const DOT={'Notis':'#1a73e8','Peringatan Bayaran':'#f9ab00','Sistem':'#8430ce'}, BAD={'Notis':'b-blue','Peringatan Bayaran':'b-amber','Sistem':'b-violet'};
+  const row=n=>'<div class="list-row" data-mine><span class="tag-dot" style="background:'+(DOT[n.j]||'#2fa308')+'"></span><div style="flex:1"><div class="strong">'+n.t.replace(/</g,'&lt;')+'</div><div class="muted" style="font-size:12px;margin-top:2px">'+n.meta+'</div></div><span class="badge '+(BAD[n.j]||'b-slate')+'">'+n.j+'</span></div>';
+  function paint(){ const b=box(); if(!b) return; b.querySelectorAll('[data-mine]').forEach(x=>x.remove()); load().forEach(n=>b.insertAdjacentHTML('afterbegin',row(n))); }
+  document.getElementById('ntSend').onclick=()=>{
+    const tj=F('tajuk'), kd=F('kandungan'); [tj,kd].forEach(i=>i.classList.toggle('pt-err',!i.value.trim()));
+    if(!tj.value.trim()||!kd.value.trim()){ PT.toast('Isi tajuk dan kandungan notis','red'); return; }
+    const jn=F('jenis'), sp=F('sasaran'), ps=F('pasti'), d=new Date();
+    const n={ t:tj.value.trim(), j: jn ? jn.value : 'Notis', meta: String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear()+' · '+(sp?sp.value:'')+(ps&&ps.value&&!/semua/i.test(ps.value)?' ('+ps.value+')':'') };
+    const all=load(); all.unshift(n); try{ localStorage.setItem(KEY, JSON.stringify(all)); }catch(e){}
+    paint(); md.classList.remove('open'); tj.value=''; kd.value='';
+    PT.toast('Notis "'+n.t+'" dihantar kepada '+(sp?sp.value:'penerima'));
+  };
+  paint();
+})();
+</script>
+</body>
+</html>

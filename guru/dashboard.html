@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Utama · ePASTI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/app.css?v=4">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#2fa308">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" href="../assets/img/icons/icon-192.png">
+</head>
+<body>
+<div class="pt-app" data-portal="guru" data-module="dashboard" data-title="Utama" data-subtitle="Papan utama guru">
+  <main class="pt-main">
+
+    <div class="page-head">
+      <div>
+        <div class="crumb">Portal Guru <span>›</span> Utama</div>
+        <h1>Selamat Datang, Ustazah Siti Khadijah</h1>
+        <div class="lead">Guru PASTI AL-TA'LIM · Kubang Kerian, Kelantan · Dikemas kini sebentar tadi</div>
+      </div>
+    </div>
+
+    <!-- Clock In/Out card -->
+    <div class="card">
+      <div class="card-head"><h3>Kehadiran Bertugas Hari Ini</h3><span class="sub" id="todayDate">—</span></div>
+      <div class="card-body">
+        <div class="flex aic wrap between gap">
+          <div>
+            <div class="muted" style="font-size:12.5px">Masa Sekarang</div>
+            <span id="liveClock" style="font-size:34px;font-weight:800">--:--:--</span>
+            <div class="mt"><span id="dashStatus" class="badge b-amber">Belum Clock In</span></div>
+          </div>
+          <div class="flex gap wrap">
+            <button id="btnIn" data-own class="btn btn-primary btn-lg">Clock In</button>
+            <button id="btnOut" data-own class="btn btn-ghost btn-lg" disabled>Clock Out</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- stats -->
+    <div class="grid g-4 mt-lg">
+      <div class="stat"><div class="top"><span class="label">Murid Kelas</span><div class="ic t">M</div></div><div class="value">15</div><div class="trend flat">Kelas Tahun 5 — Al-Farabi</div></div>
+      <div class="stat"><div class="top"><span class="label">Hadir Hari Ini</span><div class="ic g">H</div></div><div class="value">14</div><div class="trend up">▲ 1 tidak hadir</div></div>
+      <div class="stat"><div class="top"><span class="label">Kehadiran Saya Bulan Ini</span><div class="ic b">%</div></div><div class="value">96%</div><div class="trend up">▲ 18 hari bekerja</div></div>
+      <div class="stat"><div class="top"><span class="label">Markah Belum Siap</span><div class="ic a">!</div></div><div class="value">4</div><div class="trend down">▼ Perlu dilengkapkan</div></div>
+    </div>
+
+    <!-- two column: schedule + news -->
+    <div class="mt-lg" style="display:grid;grid-template-columns:1.3fr 1fr;gap:18px">
+      <div class="card">
+        <div class="card-head"><h3>Jadual Kelas Hari Ini</h3></div>
+        <div class="card-body">
+          <div class="list-row"><span class="tag-dot" style="background:var(--brand)"></span><div><div class="strong">Iqra' / Al-Quran</div><div class="ml muted" style="font-size:12px">Bacaan &amp; tajwid</div></div><span class="badge b-green no-dot" style="margin-left:auto">8:00 pagi</span></div>
+          <div class="list-row"><span class="tag-dot" style="background:var(--teal)"></span><div><div class="strong">Jawi</div><div class="ml muted" style="font-size:12px">Tulisan &amp; latihan</div></div><span class="badge b-teal no-dot" style="margin-left:auto">9:30 pagi</span></div>
+          <div class="list-row"><span class="tag-dot" style="background:var(--info)"></span><div><div class="strong">Bahasa</div><div class="ml muted" style="font-size:12px">Bahasa Melayu &amp; Arab</div></div><span class="badge b-blue no-dot" style="margin-left:auto">10:45 pagi</span></div>
+          <div class="list-row"><span class="tag-dot" style="background:var(--accent)"></span><div><div class="strong">Akhlak</div><div class="ml muted" style="font-size:12px">Adab &amp; nilai murni</div></div><span class="badge b-amber no-dot" style="margin-left:auto">11:30 pagi</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3>Makluman</h3></div>
+        <div class="card-body">
+          <div class="news-item"><b>» Mesyuarat guru PASTI AL-TA'LIM</b><div class="dt">Isnin, 28 September 2026 · 2:30 petang</div></div>
+          <div class="news-item"><b>» Sila lengkapkan permarkahan penilaian pertengahan tahun</b><div class="dt">22 September 2026 · Hantar sebelum 30 September</div></div>
+          <div class="news-item"><b>» Program Hari Keluarga PASTI AL-TA'LIM</b><div class="dt">18 September 2026 · Sabtu, 4 Oktober 2026</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- quick links -->
+    <div class="hub-sec mt-lg">
+      <div class="t">Akses Pantas</div>
+      <div class="hub-grid">
+        <a class="hub green"  href="clock.html"><div class="ic"></div><div class="tx"><b>Clock In/Out</b><small>Rekod kehadiran bertugas</small></div></a>
+        <a class="hub teal"   href="murid.html"><div class="ic"></div><div class="tx"><b>Murid Kelas</b><small>Senarai &amp; kehadiran murid</small></div></a>
+        <a class="hub violet" href="markah.html"><div class="ic"></div><div class="tx"><b>Permarkahan</b><small>Markah &amp; penilaian</small></div></a>
+        <a class="hub blue"   href="takwim.html"><div class="ic"></div><div class="tx"><b>Takwim</b><small>Jadual &amp; program</small></div></a>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script src="../assets/js/app.js?v=4"></script>
+<script>
+  (function(){
+    var bulan=['Januari','Februari','Mac','April','Mei','Jun','Julai','Ogos','September','Oktober','November','Disember'];
+    var hari=['Ahad','Isnin','Selasa','Rabu','Khamis','Jumaat','Sabtu'];
+    var clock=document.getElementById('liveClock');
+    var dateEl=document.getElementById('todayDate');
+    function pad(n){return n<10?'0'+n:''+n;}
+    function tick(){
+      var d=new Date();
+      clock.textContent=pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds());
+      dateEl.textContent=hari[d.getDay()]+', '+d.getDate()+' '+bulan[d.getMonth()]+' '+d.getFullYear();
+    }
+    tick(); setInterval(tick,1000);
+
+    var status=document.getElementById('dashStatus');
+    var btnIn=document.getElementById('btnIn');
+    var btnOut=document.getElementById('btnOut');
+    function timeNow(){var d=new Date();return pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds());}
+    btnIn.addEventListener('click',function(){
+      var t=timeNow();
+      status.textContent='Sedang Bertugas'; status.className='badge b-green';
+      btnIn.disabled=true; btnOut.disabled=false;
+      if(window.PT&&PT.toast) PT.toast('Clock in direkod pada '+t,'green');
+    });
+    btnOut.addEventListener('click',function(){
+      var t=timeNow();
+      status.textContent='Selesai Bertugas'; status.className='badge b-slate';
+      btnOut.disabled=true;
+      if(window.PT&&PT.toast) PT.toast('Clock out direkod pada '+t,'green');
+    });
+  })();
+</script>
+</body>
+</html>

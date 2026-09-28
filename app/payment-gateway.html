@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Payment Gateway — BayarCash · ePASTI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/app.css?v=4">
+<style>
+  .src-opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+  .src-opt{display:flex;gap:12px;align-items:flex-start;border:1.5px solid var(--line);border-radius:13px;padding:14px 15px;cursor:pointer;background:#fff;transition:border-color .15s,background .15s}
+  .src-opt:hover{border-color:var(--brand)}
+  .src-opt input{margin-top:3px;accent-color:var(--brand);width:17px;height:17px;flex:none}
+  .src-opt b{display:block;color:var(--ink);font-size:14px}
+  .src-opt span{display:block;font-size:12.5px;color:var(--muted);line-height:1.5}
+  .src-opt code{font-size:12px;color:var(--brand-d);font-weight:600}
+  .src-opt.on{border-color:var(--brand);background:var(--brand-l)}
+  .src-opt.off{opacity:.55;cursor:not-allowed}
+  .chain{display:flex;align-items:center;flex-wrap:wrap;gap:8px;font-size:13px;font-weight:600;color:var(--ink)}
+  .chain .step{background:#fff;border:1px solid var(--line);border-radius:10px;padding:6px 12px}
+  .chain .arr{color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="pt-app" data-module="caruman" data-page="payment-gateway" data-title="Payment Gateway — BayarCash" data-subtitle="Akaun BayarCash mengikut cawangan">
+  <main class="pt-main">
+
+    <div class="page-head">
+      <div>
+        <div class="crumb">ePASTI <span>›</span> Caruman &amp; Yuran <span>›</span> Payment Gateway</div>
+        <h1>Payment Gateway — BayarCash</h1>
+        <div class="lead">Setiap cawangan (PASTI) memegang akaun BayarCash sendiri untuk kutipan yuran, caruman &amp; derma</div>
+      </div>
+    </div>
+
+    <!-- Rule -->
+    <div class="notice mb">
+      <div class="tx">
+        <b>Akaun kutipan ditentukan mengikut cawangan</b>
+        <span>Bayaran ibu bapa masuk terus ke akaun BayarCash cawangan. Jika cawangan belum ada akaun aktif, cawangan boleh memilih untuk menggunakan akaun <strong>DUN</strong> atau akaun <strong>Kawasan</strong> sebagai akaun sandaran. Pusat &amp; Negeri tidak memegang akaun kutipan — hanya memantau.</span>
+        <div class="chain mt">
+          <span class="step">1 · Akaun Cawangan</span><span class="arr">→ tiada?</span>
+          <span class="step">2 · Akaun DUN</span><span class="arr">atau</span>
+          <span class="step">3 · Akaun Kawasan</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ CAWANGAN: own account + source choice ============ -->
+    <div data-tiers="cawangan">
+      <div class="card">
+        <div class="card-head">
+          <div><h3>Akaun BayarCash Cawangan</h3><span class="sub">PASTI Al-Ta'lim · N44 Kota Lama · P025 Kubang Kerian</span></div>
+          <span class="badge b-green no-dot">Aktif</span>
+        </div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="field"><span class="label">Merchant ID</span><input class="input" type="text" value="M-ALTALIM-0417" readonly></div>
+            <div class="field"><span class="label">Portal Key</span><input class="input" type="text" value="pk_live_••••••••a417" readonly></div>
+            <div class="field"><span class="label">API Secret Key</span><input class="input" type="password" value="sk_live_altalim0417"></div>
+            <div class="field"><span class="label">Nama Akaun Bank</span><input class="input" type="text" value="PASTI AL-TA'LIM KUBANG KERIAN" readonly></div>
+            <div class="field"><span class="label">Mode</span><select class="select"><option>Sandbox</option><option selected>Live</option></select></div>
+          </div>
+          <div class="divider"></div>
+          <div class="flex gap wrap">
+            <button class="btn btn-soft" data-toast="Sambungan BayarCash cawangan berjaya">Uji Sambungan</button>
+            <button class="btn btn-primary">Simpan</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mt-lg">
+        <div class="card-head">
+          <div><h3>Akaun Kutipan Digunakan</h3><span class="sub">Pilih akaun yang menerima bayaran ibu bapa bagi PASTI ini</span></div>
+          <span class="badge b-green no-dot" id="srcBadge">Akaun Cawangan</span>
+        </div>
+        <div class="card-body">
+          <div class="src-opts" id="srcOpts">
+            <label class="src-opt on"><input type="radio" name="src" value="Akaun Cawangan" checked>
+              <div><b>Akaun Cawangan sendiri</b><span><code>M-ALTALIM-0417</code> · Aktif</span><span>Bayaran masuk terus ke akaun PASTI.</span></div></label>
+            <label class="src-opt"><input type="radio" name="src" value="Akaun DUN N44">
+              <div><b>Guna akaun DUN</b><span><code>M-DUN-N44-0112</code> · DUN N44 Kota Lama</span><span>DUN salurkan kutipan kepada PASTI.</span></div></label>
+            <label class="src-opt"><input type="radio" name="src" value="Akaun Kawasan P025">
+              <div><b>Guna akaun Kawasan</b><span><code>M-KWS-P025-0031</code> · P025 Kubang Kerian</span><span>Kawasan salurkan kutipan kepada PASTI.</span></div></label>
+          </div>
+          <div class="muted mt" style="font-size:12.5px">Perubahan berkuat kuasa untuk bil baharu. Bil yang telah dijana kekal pada akaun asal.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ DUN: own account (fallback for its PASTI) ============ -->
+    <div data-tiers="dun">
+      <div class="card">
+        <div class="card-head">
+          <div><h3>Akaun BayarCash DUN</h3><span class="sub">N44 Kota Lama · akaun sandaran untuk PASTI tanpa akaun sendiri</span></div>
+          <span class="badge b-green no-dot">Aktif</span>
+        </div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="field"><span class="label">Merchant ID</span><input class="input" type="text" value="M-DUN-N44-0112" readonly></div>
+            <div class="field"><span class="label">Portal Key</span><input class="input" type="text" value="pk_live_••••••••n044" readonly></div>
+            <div class="field"><span class="label">API Secret Key</span><input class="input" type="password" value="sk_live_dunn44"></div>
+            <div class="field"><span class="label">Nama Akaun Bank</span><input class="input" type="text" value="PASTI DUN KOTA LAMA" readonly></div>
+            <div class="field"><span class="label">Mode</span><select class="select"><option>Sandbox</option><option selected>Live</option></select></div>
+          </div>
+          <div class="divider"></div>
+          <div class="flex gap wrap">
+            <button class="btn btn-soft" data-toast="Sambungan BayarCash DUN berjaya">Uji Sambungan</button>
+            <button class="btn btn-primary">Simpan</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ KAWASAN: own account (fallback) ============ -->
+    <div data-tiers="kawasan">
+      <div class="card">
+        <div class="card-head">
+          <div><h3>Akaun BayarCash Kawasan</h3><span class="sub">P025 Kubang Kerian · akaun sandaran untuk PASTI tanpa akaun sendiri</span></div>
+          <span class="badge b-green no-dot">Aktif</span>
+        </div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="field"><span class="label">Merchant ID</span><input class="input" type="text" value="M-KWS-P025-0031" readonly></div>
+            <div class="field"><span class="label">Portal Key</span><input class="input" type="text" value="pk_live_••••••••p025" readonly></div>
+            <div class="field"><span class="label">API Secret Key</span><input class="input" type="password" value="sk_live_kwsp025"></div>
+            <div class="field"><span class="label">Nama Akaun Bank</span><input class="input" type="text" value="PASTI KAWASAN KUBANG KERIAN" readonly></div>
+            <div class="field"><span class="label">Mode</span><select class="select"><option>Sandbox</option><option selected>Live</option></select></div>
+          </div>
+          <div class="divider"></div>
+          <div class="flex gap wrap">
+            <button class="btn btn-soft" data-toast="Sambungan BayarCash Kawasan berjaya">Uji Sambungan</button>
+            <button class="btn btn-primary">Simpan</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ PUSAT / NEGERI: monitor only ============ -->
+    <div data-tiers="negeri">
+      <div class="grid g-4">
+        <div class="stat"><div class="top"><span class="label">Cawangan Akaun Sendiri</span><div class="ic g">✓</div></div><div class="value">3</div><div class="trend up">▲ daripada 9 PASTI</div></div>
+        <div class="stat"><div class="top"><span class="label">Guna Akaun DUN</span><div class="ic t">D</div></div><div class="value">4</div><div class="trend">Sandaran DUN</div></div>
+        <div class="stat"><div class="top"><span class="label">Guna Akaun Kawasan</span><div class="ic a">K</div></div><div class="value">2</div><div class="trend">Sandaran Kawasan</div></div>
+        <div class="stat"><div class="top"><span class="label">Permohonan Menunggu</span><div class="ic r">!</div></div><div class="value">2</div><div class="trend down">▼ perlu tindakan BayarCash</div></div>
+      </div>
+    </div>
+
+    <!-- Kaedah Bayaran Disokong -->
+    <div class="card mt-lg">
+      <div class="card-head"><h3>Kaedah Bayaran Disokong</h3><span class="sub">Semua diproses via BayarCash</span></div>
+      <div class="card-body">
+        <div class="grid g-3">
+          <div class="notice"><div class="tx"><b>FPX Online Banking</b><span>Perbankan internet semua bank utama · via BayarCash</span></div></div>
+          <div class="notice"><div class="tx"><b>Kad Kredit / Debit</b><span>Visa &amp; Mastercard · via BayarCash</span></div></div>
+          <div class="notice"><div class="tx"><b>DuitNow QR</b><span>Imbas &amp; bayar segera · via BayarCash</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Akaun sandaran DUN & Kawasan (Kawasan and above) -->
+    <div class="card mt-lg" data-tiers="negeri kawasan">
+      <div class="card-head">
+        <div><h3>Akaun Sandaran DUN &amp; Kawasan</h3><span class="sub">Digunakan oleh cawangan yang belum ada akaun BayarCash sendiri</span></div>
+      </div>
+      <div class="card-body">
+        <div class="table-wrap">
+          <table class="pt">
+            <thead><tr><th>Peringkat</th><th>Nama</th><th>Akaun BayarCash</th><th>Status</th><th>Cawangan Menggunakan</th><th>Tindakan</th></tr></thead>
+            <tbody>
+              <tr><td>Kawasan</td><td>P025 Kubang Kerian</td><td>M-KWS-P025-0031</td><td><span class="badge b-green">Aktif</span></td><td>2 cawangan</td>
+                <td><button class="btn btn-soft btn-sm" data-toast="Membuka tetapan akaun BayarCash Kawasan…">Set Akaun</button></td></tr>
+              <tr><td>DUN</td><td>N44 Kota Lama</td><td>M-DUN-N44-0112</td><td><span class="badge b-green">Aktif</span></td><td>4 cawangan</td>
+                <td><button class="btn btn-soft btn-sm" data-toast="Membuka tetapan akaun BayarCash DUN…">Set Akaun</button></td></tr>
+              <tr><td>DUN</td><td>N45 Bunut Payong</td><td>—</td><td><span class="badge b-slate">Tiada</span></td><td>0 cawangan</td>
+                <td><button class="btn btn-ghost btn-sm" data-toast="Menghantar permohonan akaun BayarCash DUN…">Mohon</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Akaun per Cawangan (hidden for Cawangan — it has its own card above) -->
+    <div class="card mt-lg" data-tiers="negeri kawasan dun">
+      <div class="card-head">
+        <div><h3>Akaun Bayaran per Cawangan</h3><span class="sub">Akaun sendiri, atau akaun sandaran DUN / Kawasan yang dipilih cawangan</span></div>
+      </div>
+      <div class="card-body">
+        <div class="table-wrap">
+          <table class="pt">
+            <thead><tr><th>Cawangan</th><th>DUN</th><th>Akaun Sendiri</th><th>Status</th><th>Akaun Kutipan Digunakan</th><th>Tindakan</th></tr></thead>
+            <tbody>
+              <tr><td>PASTI AL-TA'LIM</td><td>N44</td><td>M-ALTALIM-0417</td><td><span class="badge b-green">Aktif</span></td>
+                <td><span class="badge b-green no-dot">Cawangan</span></td><td><button class="btn btn-soft btn-sm" data-toast="Membuka butiran akaun…">Lihat</button></td></tr>
+              <tr><td>PASTI AS-SALAMAH</td><td>N44</td><td>M-SALAMAH-0418</td><td><span class="badge b-green">Aktif</span></td>
+                <td><span class="badge b-green no-dot">Cawangan</span></td><td><button class="btn btn-soft btn-sm" data-toast="Membuka butiran akaun…">Lihat</button></td></tr>
+              <tr><td>PASTI NURUL HIDAYAH</td><td>N44</td><td>M-HIDAYAH-0421</td><td><span class="badge b-green">Aktif</span></td>
+                <td><span class="badge b-green no-dot">Cawangan</span></td><td><button class="btn btn-soft btn-sm" data-toast="Membuka butiran akaun…">Lihat</button></td></tr>
+              <tr><td>PASTI NURUL IMAN</td><td>N44</td><td>—</td><td><span class="badge b-slate">Tiada</span></td>
+                <td><span class="badge b-blue no-dot">DUN · M-DUN-N44-0112</span></td><td><button class="btn btn-ghost btn-sm" data-toast="Peringatan dihantar kepada cawangan untuk memohon akaun BayarCash">Ingatkan</button></td></tr>
+              <tr><td>PASTI NADWAH HASSANAH</td><td>N44</td><td>—</td><td><span class="badge b-slate">Tiada</span></td>
+                <td><span class="badge b-blue no-dot">DUN · M-DUN-N44-0112</span></td><td><button class="btn btn-ghost btn-sm" data-toast="Peringatan dihantar kepada cawangan untuk memohon akaun BayarCash">Ingatkan</button></td></tr>
+              <tr><td>PASTI NURUL INSANIAH</td><td>N44</td><td>M-INSANIAH-0424</td><td><span class="badge b-amber">Menunggu</span></td>
+                <td><span class="badge b-blue no-dot">DUN · M-DUN-N44-0112</span></td><td><button class="btn btn-soft btn-sm" data-toast="Status permohonan: menunggu pengesahan BayarCash">Semak</button></td></tr>
+              <tr><td>PASTI BADROTIM</td><td>N44</td><td>—</td><td><span class="badge b-slate">Tiada</span></td>
+                <td><span class="badge b-blue no-dot">DUN · M-DUN-N44-0112</span></td><td><button class="btn btn-ghost btn-sm" data-toast="Peringatan dihantar kepada cawangan untuk memohon akaun BayarCash">Ingatkan</button></td></tr>
+              <tr><td>PASTI AN NUR PARIT 13</td><td>N44</td><td>—</td><td><span class="badge b-slate">Tiada</span></td>
+                <td><span class="badge b-violet no-dot">Kawasan · M-KWS-P025-0031</span></td><td><button class="btn btn-ghost btn-sm" data-toast="Peringatan dihantar kepada cawangan untuk memohon akaun BayarCash">Ingatkan</button></td></tr>
+              <tr><td>PASTI ITQAN</td><td>N45</td><td>M-ITQAN-0419</td><td><span class="badge b-amber">Menunggu</span></td>
+                <td><span class="badge b-violet no-dot">Kawasan · M-KWS-P025-0031</span></td><td><button class="btn btn-soft btn-sm" data-toast="Status permohonan: menunggu pengesahan BayarCash">Semak</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Transaksi Terkini -->
+    <div class="card mt-lg">
+      <div class="card-head"><h3>Transaksi Terkini</h3><span class="sub">Bayaran melalui BayarCash · akaun penerima mengikut cawangan</span></div>
+      <div class="card-body">
+        <div class="table-wrap">
+          <table class="pt">
+            <thead><tr>
+              <th>Ref BayarCash</th><th>Tarikh</th><th>Pembayar</th><th>PASTI</th><th>Tujuan</th><th>Akaun Penerima</th><th class="right">Jumlah (RM)</th><th>Kaedah</th><th>Status</th>
+            </tr></thead>
+            <tbody>
+              <tr><td>BC-2026-0104377</td><td>22/09/2026</td><td>Puan Rahimah Bt Sallehuddin</td><td>AL-TA'LIM</td><td>Yuran</td><td>M-ALTALIM-0417</td><td class="right num">60.00</td><td>FPX</td><td><span class="badge b-green">Berjaya</span></td></tr>
+              <tr><td>BC-2026-0104364</td><td>22/09/2026</td><td>Encik Shukri B Talib</td><td>NURUL IMAN</td><td>Yuran</td><td>M-DUN-N44-0112</td><td class="right num">150.00</td><td>Kad</td><td><span class="badge b-red">Gagal</span></td></tr>
+              <tr><td>BC-2026-0104352</td><td>22/09/2026</td><td>Puan Wardina Bt Jamal</td><td>AS-SALAMAH</td><td>Derma</td><td>M-SALAMAH-0418</td><td class="right num">120.00</td><td>DuitNow QR</td><td><span class="badge b-green">Berjaya</span></td></tr>
+              <tr><td>BC-2026-0104347</td><td>22/09/2026</td><td>Encik Azhar B Latif</td><td>ITQAN</td><td>Caruman</td><td>M-KWS-P025-0031</td><td class="right num">100.00</td><td>FPX</td><td><span class="badge b-amber">Menunggu</span></td></tr>
+              <tr><td>BC-2026-0104339</td><td>22/09/2026</td><td>Puan Suhaila Bt Karim</td><td>AL-TA'LIM</td><td>Yuran</td><td>M-ALTALIM-0417</td><td class="right num">70.00</td><td>Kad</td><td><span class="badge b-green">Berjaya</span></td></tr>
+              <tr><td>BC-2026-0104326</td><td>22/09/2026</td><td>Encik Hisham B Mokhtar</td><td>AN NUR PARIT 13</td><td>Derma</td><td>M-KWS-P025-0031</td><td class="right num">80.00</td><td>DuitNow QR</td><td><span class="badge b-green">Berjaya</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script src="../assets/js/app.js?v=4"></script>
+<script>
+// Cawangan: choose which BayarCash account collects its payments
+document.addEventListener('DOMContentLoaded', () => {
+  const box = document.getElementById('srcOpts'); if (!box) return;
+  box.addEventListener('change', e => {
+    if (e.target.name !== 'src') return;
+    box.querySelectorAll('.src-opt').forEach(l => l.classList.toggle('on', l.contains(e.target)));
+    document.getElementById('srcBadge').textContent = e.target.value;
+    window.PT && PT.toast('Akaun kutipan ditukar kepada ' + e.target.value);
+  });
+});
+</script>
+</body>
+</html>

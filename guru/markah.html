@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Permarkahan SPPM · ePASTI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/app.css?v=4">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#2fa308">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" href="../assets/img/icons/icon-192.png">
+<style>
+  .top-ctl{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin-bottom:12px}
+  .top-ctl .lbl{font-size:11.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-right:6px}
+  .stu-nav{display:grid;grid-template-columns:44px 1fr 44px;gap:8px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px;margin-bottom:12px;box-shadow:var(--shadow)}
+  .stu-nav>button{height:44px;border-radius:11px;border:1px solid var(--line);background:#fff;font-size:20px;color:var(--ink);cursor:pointer}
+  .stu-nav>button:disabled{opacity:.35}
+  .stu-nav .mid{display:flex;align-items:center;gap:10px;min-width:0}
+  .stu-nav .mid b{display:block;color:var(--ink);font-size:14px;line-height:1.25}
+  .stu-nav .mid span{font-size:11.5px;color:var(--muted)}
+  .stu-nav select{position:absolute;inset:0;opacity:0;cursor:pointer}
+  .bar{height:6px;border-radius:6px;background:var(--line2);overflow:hidden;margin-top:5px}
+  .bar i{display:block;height:100%;background:var(--brand);border-radius:6px}
+  .els{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:12px;scrollbar-width:thin}
+  .els button{flex:none;font-family:inherit;border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:8px 12px;cursor:pointer;text-align:left;font-size:13px;font-weight:700;color:var(--ink)}
+  .els button span{display:block;font-size:11px;font-weight:600;color:var(--muted)}
+  .els button.on{border-color:var(--c);background:color-mix(in srgb, var(--c) 10%, #fff)}
+  .els button i{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--c);margin-right:6px}
+  .sec{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:12px;overflow:hidden;box-shadow:var(--shadow)}
+  .sec h4{margin:0;padding:11px 14px;background:#fbf3d6;color:#6b5205;font-size:13px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+  .sec h4 .act{display:flex;gap:6px;align-items:center}
+  .sec h4 small{font-weight:600;opacity:.8}
+  .sec h4 button{font-family:inherit;font-size:11.5px;font-weight:700;border:1px solid #e8d79c;background:#fff;border-radius:8px;padding:4px 9px;cursor:pointer;color:#6b5205}
+  .row{display:grid;grid-template-columns:minmax(0,1fr) 190px;gap:10px;align-items:center;padding:10px 14px;border-top:1px solid var(--line2)}
+  .row:first-of-type{border-top:0}
+  .row .q{font-size:13.5px;color:var(--ink);line-height:1.35}
+  .row .q em{font-style:normal;color:var(--muted);font-weight:700;margin-right:6px;font-variant-numeric:tabular-nums}
+  .tag{display:inline-block;font-size:10.5px;font-weight:700;border-radius:6px;padding:1px 6px;margin-left:6px;vertical-align:1px}
+  .tag.now{background:#e3effd;color:#1d4ed8}.tag.flex{background:#e9f6e3;color:#3f7d1c}.tag.tb{background:#f1e8fb;color:#6d3fa3}
+  .legend{font-size:12px;color:var(--muted);display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+  .legend b{display:inline-grid;place-items:center;min-width:30px;height:22px;border-radius:6px;color:#fff;font-size:11px;margin-right:4px}
+  .box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px;box-shadow:var(--shadow)}
+  .box h4{margin:0 0 10px;font-size:14px;color:var(--ink)}
+  .score{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+  .score input{width:120px;text-align:center;font-size:24px!important;font-weight:800}
+  .tahap{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:13px;margin-top:12px}
+  .tahap div{padding:6px 10px;border-radius:8px;background:var(--line2)}
+  .tahap div.on{background:var(--brand-l);color:var(--brand-d);font-weight:700}
+  .akt{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 10px;padding:10px 0;border-top:1px solid var(--line2);font-size:13px}
+  .akt b{color:var(--ink)}.akt span{color:var(--muted);font-size:12px}
+  .akt button{align-self:center}
+  @media (max-width:560px){ .row{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<div class="pt-app" data-portal="guru" data-module="markah" data-title="Permarkahan SPPM" data-subtitle="Kelas Tahun 5 — Al-Farabi">
+  <main class="pt-main">
+
+    <div class="page-head">
+      <div>
+        <div class="crumb">Portal Guru <span>›</span> Permarkahan</div>
+        <h1>Permarkahan SPPM</h1>
+        <div class="lead">Sistem Perkembangan Prestasi Murid · Kelas Tahun 5 — Al-Farabi (buku rekod 5 Tahun) · setiap tekanan disimpan terus, hantar kepada ibu bapa bila siap</div>
+      </div>
+    </div>
+
+    <div data-own id="app">
+      <div class="top-ctl">
+        <div><span class="lbl">Penggal</span><span class="chips" id="pgChips" style="display:inline-flex"></span></div>
+        <div><span class="lbl">Isi</span><span class="chips" id="viewChips" style="display:inline-flex"></span></div>
+      </div>
+      <div id="stuNav"></div>
+      <div class="els" id="els"></div>
+      <div class="legend">
+        <span><b style="background:var(--accent-d)">AM</b>Ansur Maju</span>
+        <span><b style="background:#2563eb">M</b>Maju</span>
+        <span><b style="background:var(--brand)">SM</b>Sangat Maju</span>
+        <span><span class="tag now">Disarankan</span> tempoh disarankan · <span class="tag flex">Fleksibel</span> ikut kemampuan murid</span>
+      </div>
+      <div id="body"></div>
+
+      <div class="dock">
+        <div class="sum" id="sum"></div>
+        <button type="button" class="btn btn-soft" id="nextBtn">Murid seterusnya ›</button>
+        <button type="button" class="btn btn-primary" id="sendBtn">Hantar</button>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script src="../assets/js/app.js?v=4"></script>
+<script src="../assets/js/guru-kelas.js"></script>
+<script src="../assets/js/sppm.js?v=2"></script>
+<script>
+(function(){
+  const K = window.KELAS, M = K.murid, S = window.SPPM, UMUR = K.umur || 5;
+  const TPL = S.build(UMUR);
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const today = () => { const d = new Date(); return String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + d.getFullYear(); };
+  const ui = { pg:1, view:'murid', stu:0, el:'sahsiah', item:null };
+  const rec = i => S.rec(M[i].mykid, UMUR);
+  const chips = (list, on, attr) => list.map(([v,l]) => `<button type="button" data-${attr}="${v}" class="${String(v)===String(on)?'on':''}">${l}</button>`).join('');
+  const LV = [['AM','am'],['M','m'],['SM','sm']];
+  const pick = (val, key) => '<div class="pick" style="--n:3">' + LV.map(([v,c]) => '<button type="button" class="' + c + (val===v?' on':'') + '" data-set="' + esc(key) + '|' + v + '">' + v + '</button>').join('') + '</div>';
+  const ptag = (x, sec) => sec.tambahan ? '<span class="tag tb">Tambahan</span>' : x.p === 0 ? '' : x.p === ui.pg ? '<span class="tag now">Disarankan</span>' : '<span class="tag flex">Fleksibel</span>';
+  const elItems = el => { const e = TPL.find(x => x.key === el); return (e.sections || []).flatMap(s => s.items); };
+  function elProgress(r, e){
+    if (e.sections) { const it = e.sections.filter(s => !s.tambahan).flatMap(s => s.items).filter(x => x.p === 0 || x.p === ui.pg); return [it.filter(x => r.p[ui.pg][x.k]).length, it.length]; }
+    if (e.type === 'score') return [r.minda[ui.pg] != null ? 1 : 0, 1];
+    if (e.type === 'aulad') return [e.items.filter(x => r.aulad.items[x]).length + (r.aulad.skor ? 1 : 0), e.items.length + 1];
+    return [r.ulasan[ui.pg] ? 1 : 0, 1];
+  }
+
+  function drawTop(){
+    $('pgChips').innerHTML = chips([[1,'Penggal 1'],[2,'Penggal 2']], ui.pg, 'pg');
+    $('viewChips').innerHTML = chips([['murid','Ikut murid'],['item','Ikut item']], ui.view, 'view');
+    const r = rec(ui.stu), pr = S.progress(r, ui.pg);
+    $('stuNav').innerHTML = ui.view !== 'murid' ? '' : `<div class="stu-nav">
+      <button type="button" data-stu="${ui.stu-1}" ${ui.stu===0?'disabled':''} aria-label="Murid sebelum">‹</button>
+      <div class="mid" style="position:relative"><div class="avatar" style="width:38px;height:38px;border-radius:11px;background:var(--brand-l);color:var(--brand-d);display:grid;place-items:center;font-weight:700;flex:none">${K.initials(M[ui.stu].nama)}</div>
+        <div style="min-width:0;flex:1"><b>${esc(M[ui.stu].nama)}</b><span>Murid ${ui.stu+1}/${M.length} · ${pr.done}/${pr.total} item · ${r.sent[ui.pg] ? '✓ Dihantar ' + (r.sentAt[ui.pg]||'') : 'Draf'}</span><div class="bar"><i style="width:${pr.done/pr.total*100}%"></i></div></div>
+        <select id="stuSel" aria-label="Pilih murid">${M.map((m,i) => `<option value="${i}" ${i===ui.stu?'selected':''}>${esc(m.nama)}</option>`).join('')}</select></div>
+      <button type="button" data-stu="${ui.stu+1}" ${ui.stu===M.length-1?'disabled':''} aria-label="Murid seterusnya">›</button></div>`;
+    $('els').innerHTML = TPL.map(e => { const [a,b] = elProgress(r, e); return `<button type="button" data-el="${e.key}" class="${e.key===ui.el?'on':''}" style="--c:${e.color}"><i></i>${e.nama}<span>${ui.view==='murid' ? a + '/' + b : (e.sections ? 'tanda satu kelas' : 'ikut murid sahaja')}</span></button>`; }).join('');
+  }
+
+  function drawMurid(){
+    const r = rec(ui.stu), e = TPL.find(x => x.key === ui.el), P = r.p[ui.pg];
+    let h = '';
+    if (e.sections) h += e.sections.map((s, si) => `<div class="sec"><h4><span>${esc(s.title)}${s.tambahan ? ' <small>· bacaan tambahan, tiada penggal</small>' : ''}</span><span class="act"><small>${s.items.filter(x => P[x.k]).length}/${s.items.length}</small><button type="button" data-fill="${si}|M">Semua M</button></span></h4>
+      ${s.items.map(x => `<div class="row"><div class="q"><em>${esc(x.k.replace(/^[A-Z]+/,''))}</em>${esc(x.t)}${ptag(x, s)}</div>${pick(P[x.k], 'i:' + x.k)}</div>`).join('')}</div>`).join('');
+    if (e.aktiviti) h += `<div class="box"><h4>Aktiviti yang disertai</h4>
+      ${r.aktiviti.map((a,i) => `<div class="akt"><div><b>${esc(a.nama)}</b><br><span>Anjuran: ${esc(a.anjuran)} · Peringkat <b>${esc(a.peringkat)}</b>${a.catatan ? ' · ' + esc(a.catatan) : ''}</span></div><button type="button" class="btn btn-ghost btn-sm" data-akdel="${i}">Buang</button></div>`).join('') || '<div class="muted" style="font-size:13px">Belum ada aktiviti direkod.</div>'}
+      <div class="form-grid mt"><div class="field full"><span class="label">Aktiviti</span><input class="input" id="akNama" placeholder="cth: Pertandingan Hafazan Surah Lazim"></div>
+        <div class="field"><span class="label">Anjuran</span><input class="input" id="akAnj" placeholder="cth: PASTI Kawasan Kubang Kerian"></div>
+        <div class="field"><span class="label">Peringkat</span><select class="select" id="akPer">${S.PERINGKAT.map(p => `<option>${p}</option>`).join('')}</select></div>
+        <div class="field full"><span class="label">Catatan</span><input class="input" id="akCat" placeholder="cth: Johan / Penyertaan"></div></div>
+      <button type="button" class="btn btn-soft mt" id="akAdd">+ Tambah aktiviti</button></div>`;
+    if (e.type === 'score') { const v = r.minda[ui.pg], t = S.tahapMinda(v);
+      h += `<div class="box"><h4>${esc(e.label)} · Penggal ${ui.pg}</h4><div class="score"><input class="input" id="mindaIn" inputmode="numeric" maxlength="3" placeholder="0–100" value="${v ?? ''}" aria-label="Markah ujian"><div><div class="muted" style="font-size:12px">Tahap</div><b style="font-size:17px;color:var(--ink)" id="mindaT">${t || '—'}</b></div></div>
+        <div class="tahap">${[['0 – 39','Berpotensi Cemerlang'],['40 – 79','Cemerlang'],['80 – 100','Sangat Cemerlang']].map(([a,b]) => `<div>${a}</div><div class="${t===b?'on':''}">${b}</div>`).join('')}</div></div>`; }
+    if (e.type === 'aulad') h += `<div class="box"><h4>Sistem Penilaian Perkembangan Projek Aulad · ${UMUR} Tahun</h4>
+      <div class="form-grid"><div class="field"><span class="label">Tema Projek Aulad</span><input class="input" id="auTema" value="${esc(r.aulad.tema)}" placeholder="cth: Alam Sekitar Ciptaan Allah"></div><div class="field"><span class="label">Tajuk Projek</span><input class="input" id="auTajuk" value="${esc(r.aulad.tajuk)}" placeholder="cth: Taman Mini Kelasku"></div></div></div>
+      <div class="sec"><h4><span>Item yang dinilai</span></h4>${e.items.map((x,i) => `<div class="row"><div class="q"><em>${i+1}</em>${x}</div>${pick(r.aulad.items[x], 'a:' + x)}</div>`).join('')}
+      <div class="row" style="background:#f6f8f5"><div class="q"><b>Skor Keseluruhan</b> <button type="button" class="btn btn-ghost btn-sm" id="auAuto">Kira automatik</button></div>${pick(r.aulad.skor, 'as:x')}</div></div>`;
+    if (e.type === 'ulasan') h += `<div class="box"><h4>Ulasan Guru · Penggal ${ui.pg}</h4><textarea class="input" id="ulasanIn" rows="5" style="width:100%" placeholder="Ulasan perkembangan murid untuk ibu bapa">${esc(r.ulasan[ui.pg])}</textarea>
+      <div class="muted mt" style="font-size:12px">Ulasan ini dipaparkan dalam Rumusan Prestasi Peribadi di portal ibu bapa.</div></div>`;
+    $('body').innerHTML = h;
+  }
+
+  function drawItem(){
+    const e = TPL.find(x => x.key === ui.el);
+    if (!e.sections) { $('body').innerHTML = `<div class="box muted">"${e.nama}" diisi mengikut murid. Tukar ke <b>Ikut murid</b>.</div>`; return; }
+    const all = elItems(ui.el); if (!all.some(x => x.k === ui.item)) ui.item = all[0].k;
+    const x = all.find(y => y.k === ui.item), sec = e.sections.find(s => s.items.includes(x));
+    $('body').innerHTML = `<select class="select" id="itemSel" style="width:100%;margin-bottom:12px">${e.sections.map(s => `<optgroup label="${esc(s.title)}">${s.items.map(y => `<option value="${y.k}" ${y.k===ui.item?'selected':''}>${esc(y.k.replace(/^[A-Z]+/,''))} ${esc(y.t)}</option>`).join('')}</optgroup>`).join('')}</select>
+      <div class="flex gap wrap aic" style="margin-bottom:10px"><button type="button" class="btn btn-soft btn-sm" data-allm="M">Tanda semua murid M</button><span class="muted" style="font-size:12.5px">${esc(x.t)}${ptag(x, sec)} — ubah murid yang berbeza sahaja</span></div>
+      <div class="mlist">${M.map((m,i) => `<div class="mrow"><div class="who"><div class="avatar">${K.initials(m.nama)}</div><div><b>${esc(m.nama)}</b><span>${rec(i).sent[ui.pg] ? '✓ Dihantar' : 'Draf'}</span></div></div>${pick(rec(i).p[ui.pg][x.k], 's' + i + ':' + x.k)}</div>`).join('')}</div>`;
+  }
+
+  function drawSum(){
+    if (ui.view === 'murid') { const r = rec(ui.stu), pr = S.progress(r, ui.pg);
+      $('sum').innerHTML = `<b>${pr.done}/${pr.total} item sasaran ditanda</b> · Penggal ${ui.pg}<br>${r.sent[ui.pg] ? '✓ Ibu bapa sudah boleh lihat (dihantar ' + (r.sentAt[ui.pg]||'') + ')' : 'Draf — belum dilihat ibu bapa'}`;
+      $('sendBtn').textContent = r.sent[ui.pg] ? 'Kemas kini kepada ibu bapa' : 'Hantar Penggal ' + ui.pg; $('nextBtn').hidden = ui.stu === M.length - 1; }
+    else { const sent = M.filter((_,i) => rec(i).sent[ui.pg]).length;
+      $('sum').innerHTML = `<b>${sent}/${M.length} murid dihantar</b> · Penggal ${ui.pg}<br>Tanda satu item untuk satu kelas`; $('sendBtn').textContent = 'Hantar semua murid lengkap'; $('nextBtn').hidden = true; }
+  }
+  const draw = () => { drawTop(); ui.view === 'murid' ? drawMurid() : drawItem(); drawSum(); };
+  const persist = () => S.save();
+
+  function dialog(title, body, foot){
+    let ov = $('mkDlg'); if (!ov) { ov = document.createElement('div'); ov.className = 'modal-overlay'; ov.id = 'mkDlg'; document.body.appendChild(ov); }
+    ov.innerHTML = `<div class="modal"><div class="m-head"><h3>${title}</h3><button class="btn btn-ghost btn-sm" data-close>✕</button></div><div class="m-body">${body}</div><div class="m-foot" data-own>${foot}</div></div>`; ov.classList.add('open');
+  }
+  function send(i){ const r = rec(i); r.sent[ui.pg] = true; r.sentAt[ui.pg] = today(); persist(); }
+
+  $('app').addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b || b.disabled) return; const d = b.dataset;
+    if (d.pg)   { ui.pg = +d.pg; draw(); return; }
+    if (d.view) { ui.view = d.view; if (d.view === 'item' && !TPL.find(x => x.key === ui.el).sections) ui.el = 'sahsiah'; draw(); return; }
+    if (d.el)   { ui.el = d.el; draw(); return; }
+    if (d.stu)  { ui.stu = +d.stu; draw(); window.scrollTo({ top:0 }); return; }
+    if (d.set)  { const cut = d.set.lastIndexOf('|'), key = d.set.slice(0, cut), v = d.set.slice(cut + 1), [kind, k] = [key.slice(0, key.indexOf(':')), key.slice(key.indexOf(':') + 1)];
+      if (kind === 'i') { const P = rec(ui.stu).p[ui.pg]; P[k] = P[k] === v ? undefined : v; }
+      else if (kind === 'a') { const A = rec(ui.stu).aulad.items; A[k] = A[k] === v ? undefined : v; }
+      else if (kind === 'as') { const r = rec(ui.stu); r.aulad.skor = r.aulad.skor === v ? '' : v; }
+      else if (kind[0] === 's') { const P = rec(+kind.slice(1)).p[ui.pg]; P[k] = P[k] === v ? undefined : v; }
+      persist(); draw(); return; }
+    if (d.fill) { const [si, v] = d.fill.split('|'), s = TPL.find(x => x.key === ui.el).sections[+si], P = rec(ui.stu).p[ui.pg]; s.items.forEach(x => { if (!P[x.k]) P[x.k] = v; }); persist(); draw(); PT.toast('Item kosong ditanda ' + v + ' — ubah yang berbeza'); return; }
+    if (d.allm) { M.forEach((_,i) => { const P = rec(i).p[ui.pg]; if (!P[ui.item]) P[ui.item] = d.allm; }); persist(); draw(); return; }
+    if (d.akdel != null) { rec(ui.stu).aktiviti.splice(+d.akdel, 1); persist(); draw(); return; }
+    if (b.id === 'akAdd') { const n = $('akNama').value.trim(); if (!n) { $('akNama').classList.add('pt-err'); PT.toast('Isi nama aktiviti', 'red'); return; }
+      rec(ui.stu).aktiviti.push({ nama:n, anjuran:$('akAnj').value.trim() || '—', peringkat:$('akPer').value, catatan:$('akCat').value.trim() }); persist(); draw(); PT.toast('Aktiviti ditambah'); return; }
+    if (b.id === 'auAuto') { const r = rec(ui.stu), v = Object.values(r.aulad.items).filter(Boolean).map(x => S.LV[x]); if (!v.length) { PT.toast('Tanda item dahulu', 'red'); return; }
+      const a = v.reduce((p,c) => p+c, 0) / v.length; r.aulad.skor = a >= 2.5 ? 'SM' : a >= 1.5 ? 'M' : 'AM'; persist(); draw(); return; }
+    if (b.id === 'nextBtn') { ui.stu = Math.min(ui.stu + 1, M.length - 1); draw(); window.scrollTo({ top:0 }); return; }
+    if (b.id === 'sendBtn') {
+      if (ui.view === 'item') { const ready = M.map((_,i) => i).filter(i => { const p = S.progress(rec(i), ui.pg); return p.done === p.total; }); ready.forEach(send); draw();
+        PT.toast(ready.length ? ready.length + ' murid lengkap dihantar kepada ibu bapa' : 'Belum ada murid yang lengkap', ready.length ? 'green' : 'red'); if (ready.length) PT.queueSave('markah', 'SPPM Penggal ' + ui.pg + ' (' + ready.length + ' murid)'); return; }
+      const pr = S.progress(rec(ui.stu), ui.pg), left = pr.total - pr.done;
+      if (left) { dialog('Hantar walaupun belum lengkap?', `<p><b>${esc(M[ui.stu].nama)}</b> masih ada <b>${left} item</b> belum ditanda untuk Penggal ${ui.pg}. Item kosong dipaparkan sebagai "Belum dinilai" kepada ibu bapa.</p>`,
+        `<button class="btn btn-ghost" data-close>Semak dahulu</button><button class="btn btn-primary" id="sendAnyway">Hantar juga</button>`); return; }
+      send(ui.stu); draw(); PT.queueSave('markah', 'SPPM Penggal ' + ui.pg + ' — ' + M[ui.stu].nama); return;
+    }
+  });
+  document.addEventListener('click', e => { if (e.target.id === 'sendAnyway') { $('mkDlg').classList.remove('open'); send(ui.stu); draw(); PT.queueSave('markah', 'SPPM Penggal ' + ui.pg + ' — ' + M[ui.stu].nama); } });
+  $('app').addEventListener('change', e => {
+    if (e.target.id === 'stuSel') { ui.stu = +e.target.value; draw(); }
+    if (e.target.id === 'itemSel') { ui.item = e.target.value; draw(); }
+  });
+  $('app').addEventListener('input', e => {
+    const r = rec(ui.stu), id = e.target.id;
+    if (id === 'mindaIn') { const raw = e.target.value.replace(/\D/g, ''); e.target.value = raw; const v = raw === '' ? null : +raw; e.target.classList.toggle('pt-err', v > 100); if (v > 100) return;
+      r.minda[ui.pg] = v; persist(); const t = S.tahapMinda(v); $('mindaT').textContent = t || '—'; document.querySelectorAll('.tahap div').forEach(x => x.classList.toggle('on', x.textContent === t)); drawSum(); }
+    if (id === 'auTema') { r.aulad.tema = e.target.value; persist(); }
+    if (id === 'auTajuk') { r.aulad.tajuk = e.target.value; persist(); }
+    if (id === 'ulasanIn') { r.ulasan[ui.pg] = e.target.value; persist(); }
+  });
+  draw();
+})();
+</script>
+</body>
+</html>

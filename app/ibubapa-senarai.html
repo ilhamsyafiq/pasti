@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Senarai Ibu Bapa / Penjaga · ePASTI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/app.css?v=4">
+</head>
+<body>
+<div class="pt-app" data-module="pengurusan" data-page="ibubapa-senarai" data-title="Senarai Ibu Bapa / Penjaga" data-subtitle="Rekod ibu bapa dan penjaga murid">
+  <main class="pt-main">
+
+    <div class="page-head">
+      <div>
+        <div class="crumb">ePASTI <span>›</span> Pengurusan PASTI &amp; Murid <span>›</span> Senarai Ibu Bapa / Penjaga</div>
+        <h1>Senarai Ibu Bapa / Penjaga</h1>
+        <div class="lead"><span class="muted">Jumlah Bilangan = 818</span> · PASTI Kawasan Kubang Kerian</div>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <div class="input-group">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input type="text" placeholder="Cari nama, MyKad, PASTI…">
+      </div>
+      <div class="spacer"></div>
+      <button class="btn btn-soft" data-action="export" title="Muat turun Excel">Excel</button>
+      <button class="btn btn-ghost" data-action="print" title="Cetak">Cetak</button>
+    </div>
+
+    <div class="card">
+      <div class="table-wrap">
+        <table class="pt">
+          <thead>
+            <tr>
+              <th>Bil</th><th>Nama Bapa / Penjaga</th><th>MyKad Bapa / Penjaga</th>
+              <th>Telefon Bapa / Penjaga</th><th>Nama Ibu</th><th>MyKad Ibu</th>
+              <th>Telefon Ibu</th><th>PASTI</th><th class="right">Pendapatan Isi Rumah (RM)</th><th>Tindakan</th>
+            </tr>
+          </thead>
+          <tbody id="ibubapaRows"></tbody>
+        </table>
+      </div>
+      <div class="pager">
+        <div class="info">Memaparkan 1–12 daripada 818 rekod</div>
+        <div class="pages">
+          <button class="active">1</button>
+          <button>2</button>
+          <button>3</button>
+          <button>4</button>
+          <button>…</button>
+          <button>69</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script src="../assets/js/app.js?v=4"></script>
+<script>
+(function(){
+  const data = [
+    ['TAJUDDIN BIN MAHMUD','840203105671','013-7729143','SUHANA BINTI MARZUKI','860715105382','019-2287604','AL-TA\'LIM','3,350'],
+    ['SAIFUL BIN MANSOR','821014105398','019-2287604','NORHASLINA BINTI JAAFAR','840528106127','012-8871043','AS-SALAMAH','4,950'],
+    ['HAFIZ BIN RAMBLI','850926085462','012-8890271','AIDA BINTI SAAD','870411105638','013-6640221','ITQAN','2,650'],
+    ['NASIR BIN LATIFF','830705106184','017-6640932','ZAWIAH BINTI HUSSIN','850919105417','018-3390390','NURUL IMAN','5,750'],
+    ['IZWAN BIN SAPAWI','860128105023','011-27650418','FARAHANA BINTI RASHID','880314106248','019-7761204','AL-TA\'LIM','4,050'],
+    ['FADZLI BIN JOHARI','800917105712','013-3390875','ZULAIKHA BINTI HANAFI','820605105523','012-2290875','AS-SALAMAH','6,300'],
+    ['HELMI BIN SANUSI','870514106347','018-4432110','NABILAH BINTI SUKRI','890227105681','017-3340933','ITQAN','2,300'],
+    ['TARMIZI BIN WAHAB','790822105569','014-7723318','ROSNANI BINTI DOLLAH','810301106253','011-33940845','NURUL IMAN','4,450'],
+    ['GHAZALI BIN SUKOR','810319105628','013-6690214','MAHIRAH BINTI SALIM','830822105129','019-2247640','AL-TA\'LIM','3,650'],
+    ['NORDIN BIN JAAFAR','831207105241','019-8871053','SURIANI BINTI OSMAN','850117106634','012-6690921','AS-SALAMAH','5,200'],
+    ['ZAKARIA BIN HAMDAN','840716086172','012-3341097','AZIMAH BINTI IDRIS','860403105348','018-3348097','ITQAN','2,850'],
+    ['SHAFIE BIN OSMAN','801003105841','017-2298640','RAHIMAH BINTI TALIB','820128105476','013-7749033','NURUL IMAN','4,800'],
+  ];
+  function initials(name){ const p=name.trim().split(' '); return (p[0][0]+(p[1]?p[1][0]:'')).toUpperCase(); }
+  document.getElementById('ibubapaRows').innerHTML = data.map((r,i)=>`<tr>
+    <td>${i+1}</td>
+    <td>
+      <div class="cell-user">
+        <div class="avatar">${initials(r[0])}</div>
+        <div><div class="nm">${r[0].trim()}</div><div class="ml">Bapa / Penjaga</div></div>
+      </div>
+    </td>
+    <td class="num">${r[1]}</td>
+    <td class="num">${r[2]}</td>
+    <td>${r[3].trim()}</td>
+    <td class="num">${r[4]}</td>
+    <td class="num">${r[5]}</td>
+    <td>PASTI ${r[6]}</td>
+    <td class="right num">${r[7]}</td>
+    <td><button class="btn btn-soft btn-sm" title="Lihat">Lihat</button></td>
+  </tr>`).join('');
+})();
+</script>
+</body>
+</html>

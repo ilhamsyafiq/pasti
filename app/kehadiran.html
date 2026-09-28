@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kehadiran — Check-in / Check-out · ePASTI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/app.css?v=4">
+</head>
+<body>
+<div class="pt-app" data-module="operasi" data-page="kehadiran" data-title="Kehadiran — Check-in / Check-out" data-subtitle="Rekod kehadiran murid, guru & petugas">
+  <main class="pt-main">
+
+    <div class="page-head">
+      <div>
+        <div class="crumb">ePASTI <span>›</span> Operasi <span>›</span> Kehadiran</div>
+        <h1>Kehadiran — Check-in / Check-out</h1>
+        <div class="lead">Rekod kehadiran murid, guru &amp; petugas mengikut lokaliti</div>
+      </div>
+    </div>
+
+    <!-- stat strip -->
+    <div class="grid g-4">
+      <div class="stat"><div class="top"><span class="label">Hadir Hari Ini</span><div class="ic g">✓</div></div><div class="value">148</div><div class="trend up">▲ Kehadiran terkini</div></div>
+      <div class="stat"><div class="top"><span class="label">Lewat</span><div class="ic a">!</div></div><div class="value">9</div><div class="trend flat">Selepas 8:15 pagi</div></div>
+      <div class="stat"><div class="top"><span class="label">Tidak Hadir</span><div class="ic r">✕</div></div><div class="value">4</div><div class="trend down">▼ Tanpa maklum</div></div>
+      <div class="stat"><div class="top"><span class="label">Peratus Kehadiran</span><div class="ic t">%</div></div><div class="value">92%</div><div class="trend up">▲ Purata hari ini</div></div>
+    </div>
+
+    <!-- toolbar: locality filter + tarikh + search -->
+    <div class="toolbar mt-lg">
+      <div class="filter-bar">
+        <select class="select">
+          <option>Semua Negeri</option>
+          <option>KELANTAN</option>
+        </select>
+        <select class="select">
+          <option>Semua Kawasan</option>
+          <option>P025 KUBANG KERIAN</option>
+          <option>P026 BACHOK</option>
+        </select>
+        <select class="select">
+          <option>Semua DUN</option>
+          <option>N44 KOTA LAMA</option>
+          <option>N45 BUNUT PAYONG</option>
+        </select>
+        <select class="select">
+          <option>Semua PASTI</option>
+          <option>AL-TA'LIM</option>
+          <option>AS-SALAMAH</option>
+          <option>ITQAN</option>
+          <option>NURUL IMAN</option>
+          <option>NURUL HIDAYAH</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        <input type="text" value="24/09/2026" aria-label="Tarikh">
+      </div>
+      <div class="spacer"></div>
+      <div class="input-group">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input type="text" placeholder="Cari nama…">
+      </div>
+    </div>
+
+    <!-- tabs -->
+    <div class="tabs">
+      <a href="#" class="active" data-tab="murid">Murid</a>
+      <a href="#" data-tab="guru">Guru &amp; Petugas</a>
+    </div>
+
+    <!-- PANEL: Murid -->
+    <div data-panel="murid">
+      <div class="card">
+        <div class="card-head"><div><h3>Kehadiran Murid</h3><span class="sub">Rekod check-in / check-out murid</span></div></div>
+        <div class="card-body">
+          <div class="table-wrap">
+            <table class="pt">
+              <thead><tr>
+                <th>Bil</th><th>Nama</th><th>PASTI</th><th>Kelas</th><th>Masa Masuk</th><th>Masa Keluar</th><th>Status</th><th>Tindakan</th>
+              </tr></thead>
+              <tbody id="muridRows"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL: Guru & Petugas -->
+    <div data-panel="guru" style="display:none">
+      <div class="card">
+        <div class="card-head"><div><h3>Kehadiran Guru &amp; Petugas</h3><span class="sub">Rekod check-in / check-out guru &amp; petugas</span></div></div>
+        <div class="card-body">
+          <div class="table-wrap">
+            <table class="pt">
+              <thead><tr>
+                <th>Bil</th><th>Nama</th><th>PASTI</th><th>Jawatan</th><th>Masa Masuk</th><th>Masa Keluar</th><th>Status</th><th>Tindakan</th>
+              </tr></thead>
+              <tbody id="guruRows"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script src="../assets/js/app.js?v=4"></script>
+<script>
+(function(){
+  var badge = {Hadir:'b-green', Lewat:'b-amber', 'Tidak Hadir':'b-red'};
+  function initials(n){ return n.replace(/^(Ustaz(?:ah)?|Cikgu)\s+/i,'').split(' ').slice(0,2).map(function(w){return w[0];}).join('').toUpperCase(); }
+  function actions(){
+    return '<div class="flex gap">'+
+      '<button class="btn btn-soft btn-sm" data-toast="Waktu masuk direkod">Check-in</button>'+
+      '<button class="btn btn-ghost btn-sm" data-toast="Waktu keluar direkod">Check-out</button>'+
+      '</div>';
+  }
+  function rows(data, unitLabel){
+    return data.map(function(r,i){
+      var b = badge[r.status] || 'b-slate';
+      return '<tr>'+
+        '<td>'+(i+1)+'</td>'+
+        '<td><div class="cell-user"><div class="avatar">'+initials(r.nm)+'</div><div><div class="nm">'+r.nm+'</div><div class="ml">'+r.ml+'</div></div></div></td>'+
+        '<td>'+r.pasti+'</td>'+
+        '<td>'+r.unit+'</td>'+
+        '<td>'+r.masuk+'</td>'+
+        '<td>'+r.keluar+'</td>'+
+        '<td><span class="badge '+b+'">'+r.status+'</span></td>'+
+        '<td>'+actions()+'</td>'+
+      '</tr>';
+    }).join('');
+  }
+
+  var murid = [
+    {nm:'Ahmad Zafran Bin Roslan', ml:'MyKid 220314-10-0871', pasti:"AL-TA'LIM", unit:'Kelas Iqra 5A', masuk:'07:52', keluar:'12:30', status:'Hadir'},
+    {nm:'Nur Aisyah Binti Kamal', ml:'MyKid 210628-10-1244', pasti:'AS-SALAMAH', unit:'Kelas Iqra 4B', masuk:'07:58', keluar:'12:30', status:'Hadir'},
+    {nm:'Muhammad Haikal Bin Aziz', ml:'MyKid 220102-14-0533', pasti:'ITQAN', unit:'Kelas Iqra 5B', masuk:'08:21', keluar:'12:30', status:'Lewat'},
+    {nm:'Siti Khadijah Binti Faiz', ml:'MyKid 210915-10-0928', pasti:'NURUL IMAN', unit:'Kelas Iqra 6A', masuk:'07:49', keluar:'12:30', status:'Hadir'},
+    {nm:'Danial Hakim Bin Suhaimi', ml:'MyKid 220421-10-0716', pasti:'NURUL HIDAYAH', unit:'Kelas Iqra 3A', masuk:'—', keluar:'—', status:'Tidak Hadir'},
+    {nm:'Alya Sofea Binti Ridzuan', ml:'MyKid 211130-10-1382', pasti:"AL-TA'LIM", unit:'Kelas Iqra 4A', masuk:'07:55', keluar:'12:30', status:'Hadir'},
+    {nm:'Imran Hadif Bin Zulkifli', ml:'MyKid 220208-10-0459', pasti:'AS-SALAMAH', unit:'Kelas Iqra 5A', masuk:'08:17', keluar:'12:30', status:'Lewat'},
+    {nm:'Nur Balqis Binti Hamzah', ml:'MyKid 210719-14-1197', pasti:'ITQAN', unit:'Kelas Iqra 6B', masuk:'07:51', keluar:'12:30', status:'Hadir'}
+  ];
+  var guru = [
+    {nm:'Ustazah Munirah Sohaimi', ml:'012-3348871', pasti:"AL-TA'LIM", unit:'Guru Besar', masuk:'07:30', keluar:'13:00', status:'Hadir'},
+    {nm:'Ustaz Firdaus Rahim', ml:'013-7729045', pasti:'AS-SALAMAH', unit:'Guru Iqra', masuk:'07:41', keluar:'13:00', status:'Hadir'},
+    {nm:'Ustazah Wardah Zainuddin', ml:'019-6612380', pasti:'ITQAN', unit:'Guru Iqra', masuk:'08:19', keluar:'13:00', status:'Lewat'},
+    {nm:'Ustaz Hakimi Roslan', ml:'011-28840173', pasti:'NURUL IMAN', unit:'Guru Iqra', masuk:'07:38', keluar:'13:00', status:'Hadir'},
+    {nm:'Cikgu Salbiah Jaafar', ml:'017-4491206', pasti:'NURUL HIDAYAH', unit:'Petugas Pentadbiran', masuk:'—', keluar:'—', status:'Tidak Hadir'},
+    {nm:'Cikgu Taufiq Nordin', ml:'014-9903577', pasti:'NURUL HIDAYAH', unit:'Petugas Keselamatan', masuk:'07:22', keluar:'13:00', status:'Hadir'}
+  ];
+
+  document.getElementById('muridRows').innerHTML = rows(murid);
+  document.getElementById('guruRows').innerHTML = rows(guru);
+})();
+</script>
+</body>
+</html>

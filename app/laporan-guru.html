@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Laporan Guru PASTI · ePASTI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/app.css?v=4">
+</head>
+<body>
+<div class="pt-app" data-module="pelaporan" data-page="laporan-guru" data-title="Laporan Guru PASTI" data-subtitle="Statistik guru mengikut elaun &amp; jantina">
+  <main class="pt-main">
+
+    <div class="page-head">
+      <div>
+        <div class="crumb">ePASTI <span>›</span> Pelaporan <span>›</span> Guru PASTI</div>
+        <h1>Laporan Guru PASTI</h1>
+        <div class="lead">Statistik guru PASTI Kawasan Kubang Kerian mengikut DUN</div>
+      </div>
+      <div class="toolbar" style="margin-bottom:0">
+        <button class="btn btn-ghost" data-action="print">Cetak</button>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <a href="#" class="active" data-tab="elaun">Saguhati / Elaun</a>
+      <a href="#" data-tab="jantina">Mengikut Jantina</a>
+    </div>
+
+    <!-- Panel: Saguhati / Elaun -->
+    <div data-panel="elaun">
+      <div class="card">
+        <div class="card-head">
+          <div><h3>Saguhati / Elaun</h3><div class="sub">Berdasarkan Elaun Tetap &amp; Tambahan Tahun 2026</div></div>
+        </div>
+        <div class="card-body">
+          <div class="chart-ph">Carta Bar — Jumlah Guru mengikut julat elaun</div>
+        </div>
+      </div>
+
+      <div class="card mt-lg">
+        <div class="card-head"><h3>Bilangan Guru Mengikut Julat Elaun (RM)</h3></div>
+        <div class="table-wrap">
+          <table class="pt">
+            <thead>
+              <tr>
+                <th>DUN</th>
+                <th class="right">0</th>
+                <th class="right">1 - 400</th>
+                <th class="right">401 - 800</th>
+                <th class="right">801 - 1200</th>
+                <th class="right">1201 ke atas</th>
+                <th class="right">Bilangan Guru</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>N44 KOTA LAMA</td><td class="right num">2</td><td class="right num">5</td><td class="right num">7</td><td class="right num">3</td><td class="right num">1</td><td class="right num">18</td></tr>
+              <tr><td>N45 BUNUT PAYONG</td><td class="right num">0</td><td class="right num">1</td><td class="right num">1</td><td class="right num">0</td><td class="right num">0</td><td class="right num">2</td></tr>
+              <tr class="strong"><td>JUMLAH</td><td class="right num">2</td><td class="right num">6</td><td class="right num">8</td><td class="right num">3</td><td class="right num">1</td><td class="right num">20</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel: Mengikut Jantina -->
+    <div data-panel="jantina" style="display:none">
+      <div class="card">
+        <div class="card-head"><h3>Guru Mengikut Jantina</h3></div>
+        <div class="card-body">
+          <div class="chart-ph">Carta — Guru mengikut Jantina</div>
+          <div class="notice mt"><div class="tx"><b>Carta Donat</b><span>Perempuan 23 (100%) · Lelaki 0 (0%) — majoriti guru PASTI adalah muslimah.</span></div></div>
+        </div>
+      </div>
+
+      <div class="card mt-lg">
+        <div class="card-head"><h3>Bilangan Guru Mengikut Jantina &amp; DUN</h3></div>
+        <div class="table-wrap">
+          <table class="pt">
+            <thead>
+              <tr>
+                <th>DUN</th>
+                <th class="right">Lelaki</th>
+                <th class="right">Perempuan</th>
+                <th class="right">Bilangan Guru</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>N44 KOTA LAMA</td><td class="right num">0</td><td class="right num">20</td><td class="right num">20</td></tr>
+              <tr><td>N45 BUNUT PAYONG</td><td class="right num">0</td><td class="right num">3</td><td class="right num">3</td></tr>
+              <tr class="strong"><td>JUMLAH</td><td class="right num">0</td><td class="right num">23</td><td class="right num">23</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script src="../assets/js/app.js?v=4"></script>
+</body>
+</html>

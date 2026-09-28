@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Petugas PASTI · ePASTI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/app.css?v=4">
+</head>
+<body>
+<div class="pt-app" data-module="warga" data-page="warga-petugas" data-title="Petugas PASTI" data-subtitle="Petugas kawasan & cawangan">
+  <main class="pt-main">
+
+    <div class="page-head">
+      <div>
+        <div class="crumb">ePASTI <span>›</span> Warga PASTI <span>›</span> Petugas</div>
+        <h1>Petugas PASTI</h1>
+        <div class="lead">Senarai petugas mengikut bidang tugas di peringkat kawasan dan cawangan</div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <a href="#" class="active" data-tab="kawasan">Petugas Kawasan</a>
+      <a href="#" data-tab="cawangan">Petugas Cawangan</a>
+    </div>
+
+    <!-- Panel: Petugas Kawasan -->
+    <div data-panel="kawasan">
+      <div class="card">
+        <div class="card-body">
+          <div class="toolbar">
+            <select class="select"><option>Status</option><option>Aktif</option><option>Tidak Aktif</option></select>
+            <select class="select"><option>Bidang Tugas</option><option>Pentadbiran</option><option>Kewangan</option><option>Kebajikan</option><option>Dakwah</option><option>Teknikal / IT</option></select>
+            <div class="input-group"><input type="text" placeholder="Cari nama atau No KP…"></div>
+            <div class="spacer"></div>
+            <button class="btn btn-primary" data-modal="addPetugasModal">+ Tambah Petugas</button>
+          </div>
+          <div class="table-wrap">
+            <table class="pt">
+              <thead><tr><th>Bil</th><th>Nama</th><th>No KP/Passport</th><th>Bidang Tugas</th><th>Cawangan</th><th>Status</th><th class="right">Tindakan</th></tr></thead>
+              <tbody id="petugasKawasanRows"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel: Petugas Cawangan -->
+    <div data-panel="cawangan" style="display:none">
+      <div class="card">
+        <div class="card-body">
+          <div class="toolbar">
+            <select class="select"><option>Status</option><option>Aktif</option><option>Tidak Aktif</option></select>
+            <select class="select"><option>Bidang Tugas</option><option>Pentadbiran</option><option>Kewangan</option><option>Kebajikan</option><option>Dakwah</option><option>Teknikal / IT</option></select>
+            <div class="input-group"><input type="text" placeholder="Cari nama atau No KP…"></div>
+            <div class="spacer"></div>
+            <button class="btn btn-primary" data-modal="addPetugasModal">+ Tambah Petugas</button>
+          </div>
+          <div class="table-wrap">
+            <table class="pt">
+              <thead><tr><th>Bil</th><th>Nama</th><th>No KP/Passport</th><th>Bidang Tugas</th><th>Cawangan</th><th>Status</th><th class="right">Tindakan</th></tr></thead>
+              <tbody id="petugasCawanganRows"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Add Petugas modal -->
+<div class="modal-overlay" id="addPetugasModal">
+  <div class="modal">
+    <div class="m-head"><h3>Tambah Petugas PASTI</h3><button class="btn btn-ghost btn-sm" data-close>✕</button></div>
+    <div class="m-body">
+      <div class="form-grid">
+        <div class="field full"><span class="label">Nama Penuh <span class="req">*</span></span><input class="input" placeholder="Nama seperti dalam MyKad"></div>
+        <div class="field"><span class="label">No KP <span class="req">*</span></span><input class="input" placeholder="Cth: 850322106742"></div>
+        <div class="field"><span class="label">Bidang Tugas</span>
+          <select class="select"><option>Pentadbiran</option><option>Kewangan</option><option>Kebajikan</option><option>Dakwah</option><option>Teknikal / IT</option></select>
+        </div>
+        <div class="field"><span class="label">Cawangan</span>
+          <select class="select"><option>AL-TA'LIM</option><option>AS-SALAMAH</option><option>ITQAN</option><option>NURUL IMAN</option><option>NURUL HIDAYAH</option></select>
+        </div>
+        <div class="field"><span class="label">Telefon</span><input class="input" placeholder="013-xxxxxxx"></div>
+        <div class="field"><span class="label">Status</span>
+          <select class="select"><option>Aktif</option><option>Tidak Aktif</option></select>
+        </div>
+      </div>
+    </div>
+    <div class="m-foot"><button class="btn btn-ghost" data-close>Batal</button><button class="btn btn-primary">Simpan</button></div>
+  </div>
+</div>
+
+<script src="../assets/js/app.js?v=4"></script>
+<script>
+  const kawasan = [
+    ['USTAZ SYAMSUL KAMAL BIN DERIS','800718086027','Pentadbiran','AL-TA\'LIM','Aktif'],
+    ['HALIMATON BINTI SAADIAH','820914105833','Kewangan','AS-SALAMAH','Aktif'],
+    ['USTAZ RUSLI BIN MANAP','790522086318','Dakwah','ITQAN','Aktif'],
+    ['NORAZWANI BINTI HASHIM','881007108129','Kebajikan','NURUL IMAN','Aktif'],
+    ['MOHD FADZLI BIN SUHAIMI','831119085744','Teknikal / IT','NURUL HIDAYAH','Tidak Aktif'],
+    ['SUHAILA BINTI MAT ISA','910403104611','Pentadbiran','AL-TA\'LIM','Aktif'],
+  ];
+  const cawangan = [
+    ['RAFIDAH BINTI KAMARUZAMAN','850811106825','Pentadbiran','ITQAN','Aktif'],
+    ['USTAZ NAJMI BIN ABDUL HALIM','780217086233','Dakwah','NURUL IMAN','Aktif'],
+    ['IZYAN NADHIRAH BINTI ROSLI','890628108317','Kewangan','AS-SALAMAH','Aktif'],
+    ['MOHD SYUKRI BIN BAHARIN','820930085428','Kebajikan','AL-TA\'LIM','Tidak Aktif'],
+    ['NURSHAFIQAH BINTI ZAINUDIN','930715104822','Teknikal / IT','NURUL HIDAYAH','Aktif'],
+    ['USTAZ AZIM BIN MOHD SANI','801204086711','Pentadbiran','ITQAN','Aktif'],
+  ];
+  function initials(n){ const p=n.replace(/^(USTAZ|USTAZAH)\s+/,'').split(' '); return (p[0][0]+(p[1]?p[1][0]:'')).toUpperCase(); }
+  function badge(s){ return s==='Aktif' ? '<span class="badge b-green">Aktif</span>' : '<span class="badge b-slate">Tidak Aktif</span>'; }
+  function render(id, rows){
+    document.getElementById(id).innerHTML = rows.map((r,i)=>`
+      <tr>
+        <td class="num">${i+1}</td>
+        <td><div class="cell-user"><span class="avatar">${initials(r[0])}</span><div><div class="nm">${r[0]}</div><div class="ml">${r[3]}</div></div></div></td>
+        <td class="num">${r[1]}</td>
+        <td>${r[2]}</td>
+        <td>${r[3]}</td>
+        <td>${badge(r[4])}</td>
+        <td class="right"><button class="btn btn-soft btn-sm">Edit</button></td>
+      </tr>`).join('');
+  }
+  render('petugasKawasanRows', kawasan);
+  render('petugasCawanganRows', cawangan);
+</script>
+</body>
+</html>

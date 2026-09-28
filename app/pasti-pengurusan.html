@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pengurusan PASTI · ePASTI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/app.css?v=4">
+</head>
+<body>
+<div class="pt-app" data-module="pengurusan" data-page="pasti-pengurusan" data-title="Pengurusan PASTI" data-subtitle="Permohonan, kelulusan &amp; senarai PASTI cawangan">
+  <main class="pt-main">
+
+    <div class="page-head">
+      <div>
+        <div class="crumb">ePASTI <span>›</span> Pengurusan PASTI &amp; Murid <span>›</span> Pengurusan PASTI</div>
+        <h1>Pengurusan PASTI</h1>
+        <div class="lead">Kawasan Kubang Kerian · Parlimen P025 Kubang Kerian · Kelantan</div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <a href="#" class="active" data-tab="baharu">Senarai PASTI Baharu</a>
+      <a href="#" data-tab="semakan">Semakan Kelulusan</a>
+      <a href="#" data-tab="cawangan">Senarai PASTI Cawangan</a>
+    </div>
+
+    <!-- Panel 1: Senarai PASTI Baharu -->
+    <div data-panel="baharu">
+      <div class="card">
+        <div class="card-body">
+          <div class="toolbar">
+            <button class="btn btn-primary" data-action="goto" data-goto="pasti-daftar-baharu.html" data-tiers="kawasan">+ Permohonan Baru</button>
+            <div class="input-group"><input type="text" placeholder="Cari nama / no pendaftaran…"></div>
+            <div class="spacer"></div>
+            <button class="btn btn-ghost btn-sm" data-toast="Menyediakan Excel…">Excel</button>
+            <button class="btn btn-ghost btn-sm" data-action="print">Cetak</button>
+          </div>
+          <div class="table-wrap">
+            <table class="pt" data-nosave>
+              <thead>
+                <tr>
+                  <th>Bil</th><th>No. Pendaftaran</th><th>Tarikh Mohon</th><th>Nama PASTI</th><th>Alamat</th><th>No Telefon</th><th>Negeri</th><th>Parlimen</th><th>DUN</th><th>Status Permohonan</th><th>Tindakan</th>
+                </tr>
+              </thead>
+              <tbody id="pp1"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel 2: Semakan Kelulusan -->
+    <div data-panel="semakan" style="display:none">
+      <div class="card">
+        <div class="card-body">
+          <div class="toolbar">
+            <div class="input-group"><input type="text" placeholder="Cari permohonan diluluskan…"></div>
+            <div class="spacer"></div>
+            <button class="btn btn-ghost btn-sm" data-action="print">Cetak</button>
+          </div>
+          <div class="table-wrap">
+            <table class="pt" data-nosave>
+              <thead>
+                <tr>
+                  <th>No Pendaftaran</th><th>Tarikh Mohon</th><th>Nama PASTI</th><th>Alamat</th><th>Negeri</th><th>Parlimen</th><th>DUN</th><th>Status</th><th>Tindakan</th>
+                </tr>
+              </thead>
+              <tbody id="pp2"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel 3: Senarai PASTI Cawangan -->
+    <div data-panel="cawangan" style="display:none">
+      <div class="card">
+        <div class="card-body">
+          <div class="toolbar">
+            <div class="input-group"><input type="text" placeholder="Cari kod / nama PASTI…"></div>
+            <div class="spacer"></div>
+            <button class="btn btn-ghost btn-sm" data-toast="Menyediakan Excel…">Excel</button>
+            <button class="btn btn-ghost btn-sm" data-action="print">Cetak</button>
+          </div>
+          <div class="table-wrap">
+            <table class="pt" data-nosave>
+              <thead>
+                <tr>
+                  <th>Bil</th><th>Kod PASTI</th><th>No Pendaftaran</th><th>Nama PASTI</th><th>Bil Guru</th><th>Bil Murid</th><th>Alamat</th><th>No Telefon</th><th>Negeri</th><th>Parlimen</th><th>DUN</th><th>Pentadbir Cawangan</th><th>Pendaftaran</th><th>Tindakan</th>
+                </tr>
+              </thead>
+              <tbody id="pp3"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script src="../assets/js/app.js?v=4"></script>
+<script>
+// Pengurusan PASTI — driven by the shared DB.
+// Flow: Kawasan daftar → Negeri Sokong → Pusat Lulus (Kod PASTI) → DUN cipta Pentadbir Cawangan → Kawasan buka pendaftaran murid.
+(function(){
+  const tier = PT.tier, $ = id => document.getElementById(id);
+  const esc = s => String(s==null?'':s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const today = () => { const d = new Date(); return String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + d.getFullYear(); };
+  const cls = s => /lulus|buka/i.test(s) ? 'b-green' : /tolak|tutup/i.test(s) ? 'b-red' : /disokong/i.test(s) ? 'b-amber' : 'b-blue';
+  const badge = s => `<span class="badge ${cls(s)}">${esc(s)}</span>`;
+  const admin = p => DB.find('users', u => u.peranan === 'cawangan' && u.skop === p.nama);
+
+  function decisionCell(p, i){
+    if (p.status === 'Baharu')  return tier === 'negeri' ? `<button class="btn btn-primary btn-sm" data-pp="sokong" data-i="${i}">Sokong</button> <button class="btn btn-red btn-sm" data-pp="tolak" data-i="${i}">Tolak</button>` : '<span class="muted" style="font-size:12px">Menunggu sokongan Negeri</span>';
+    if (p.status === 'Disokong Negeri') return tier === 'pusat' ? `<button class="btn btn-primary btn-sm" data-pp="lulus" data-i="${i}">Lulus</button> <button class="btn btn-red btn-sm" data-pp="tolak" data-i="${i}">Tolak</button>` : '<span class="muted" style="font-size:12px">Menunggu kelulusan Pusat</span>';
+    return '';
+  }
+  function draw(){
+    const all = DB.all('pasti');
+    const idx = p => all.indexOf(p);
+    const open = all.filter(p => p.status === 'Baharu' || p.status === 'Disokong Negeri');
+    $('pp1').innerHTML = open.map((p,n) => `<tr><td class="num">${n+1}</td><td><b>${esc(p.no)}</b></td><td class="num">${p.tarikh}</td><td>${esc(p.nama)}</td><td>${esc(p.alamat)}</td><td class="num">${esc(p.tel)}</td>
+      <td>${p.negeri}</td><td>${p.kawasan}</td><td>${p.dun}</td><td>${badge(p.status)}</td>
+      <td class="flex gap wrap"><button class="btn btn-soft btn-sm">Lihat</button> <span data-own class="flex gap wrap">${decisionCell(p, idx(p))}</span></td></tr>`).join('')
+      || '<tr><td colspan="11" class="empty">Tiada permohonan dalam proses.</td></tr>';
+    const done = all.filter(p => p.status === 'Lulus' || p.status === 'Ditolak').sort((a,b) => (b.sejarah||[]).length - (a.sejarah||[]).length);
+    $('pp2').innerHTML = done.map(p => `<tr><td><b>${esc(p.no)}</b></td><td class="num">${p.tarikh}</td><td>${esc(p.nama)}</td><td>${esc(p.alamat)}</td><td>${p.negeri}</td><td>${p.kawasan}</td><td>${p.dun}</td>
+      <td>${badge(p.status === 'Lulus' ? 'LULUS' : 'DITOLAK')}${p.sebab ? `<div class="muted" style="font-size:11.5px;margin-top:3px">${esc(p.sebab)}</div>` : ''}</td>
+      <td class="flex gap wrap"><button class="btn btn-soft btn-sm">Lihat</button> <button class="btn btn-ghost btn-sm" data-action="print">Cetak</button></td></tr>`).join('');
+    const live = all.filter(p => p.status === 'Lulus' && p.kod);
+    $('pp3').innerHTML = live.map((p,n) => { const a = admin(p);
+      return `<tr><td class="num">${n+1}</td><td><b>${p.kod}</b></td><td>${esc(p.no)}</td><td>${esc(p.nama)}</td><td class="num">${p.guru||0}</td><td class="num">${p.murid||0}</td><td>${esc(p.alamat)}</td><td class="num">${esc(p.tel)}</td>
+      <td>${p.negeri}</td><td>${p.kawasan}</td><td>${p.dun}</td>
+      <td>${a ? esc(a.nama) : '<span class="badge b-amber no-dot">Belum ada</span><div class="muted" style="font-size:11.5px;margin-top:3px">DUN perlu cipta akaun</div>'}</td>
+      <td>${badge(p.daftar || 'TUTUP')}</td>
+      <td class="flex gap wrap"><button class="btn btn-soft btn-sm">Lihat</button>${tier === 'kawasan' ? ` <span data-own><button class="btn btn-ghost btn-sm" data-pp="daftar" data-i="${idx(p)}">${p.daftar === 'BUKA' ? 'Tutup Pendaftaran' : 'Buka Pendaftaran'}</button></span>` : ''}${tier === 'dun' && !a ? ' <a class="btn btn-primary btn-sm" href="tetapan.html?t=pentadbir">Cipta Pentadbir</a>' : ''}</td></tr>`; }).join('');
+  }
+
+  // reason / result dialog
+  function dialog(title, body, foot){
+    let ov = $('ppDlg'); if (!ov) { ov = document.createElement('div'); ov.className = 'modal-overlay'; ov.id = 'ppDlg'; document.body.appendChild(ov); }
+    ov.innerHTML = `<div class="modal"><div class="m-head"><h3>${title}</h3><button class="btn btn-ghost btn-sm" data-close>✕</button></div><div class="m-body">${body}</div><div class="m-foot" data-own>${foot}</div></div>`;
+    ov.classList.add('open'); return ov;
+  }
+  const by = { negeri:'Pentadbir Negeri', pusat:'Pentadbir Pusat', kawasan:'Pentadbir Kawasan' }[tier] || tier;
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-pp]'); if (!b) return;
+    const p = DB.all('pasti')[+b.dataset.i]; if (!p) return;
+    const act = b.dataset.pp;
+    if (act === 'sokong') { p.status = 'Disokong Negeri'; (p.sejarah = p.sejarah || []).push({ by, act:'Sokong', at: today() }); DB.save(); draw(); PT.toast(p.nama + ' disokong — dihantar ke Pusat untuk kelulusan'); }
+    if (act === 'lulus') { p.status = 'Lulus'; p.kod = DB.nextKod(); p.daftar = 'TUTUP'; p.guru = 0; p.murid = 0; (p.sejarah = p.sejarah || []).push({ by, act:'Lulus', at: today() }); DB.save(); draw();
+      dialog('PASTI diluluskan', `<div class="notice"><div class="tx"><b>${esc(p.nama)} kini cawangan PASTI berdaftar.</b><span>Kod PASTI: <b>${p.kod}</b> — ibu bapa guna kod ini semasa mendaftar murid.</span></div></div>
+        <div class="mt" style="font-size:13px"><b>Langkah seterusnya</b><ol style="margin:6px 0 0;padding-left:18px;line-height:1.8"><li>Pentadbir DUN ${esc(p.dun)} cipta akaun <b>Pentadbir Cawangan</b> (Tetapan → Pengguna).</li><li>Pentadbir Cawangan cipta akaun guru.</li><li>Pentadbir Kawasan <b>buka pendaftaran murid</b> untuk cawangan ini.</li></ol></div>`,
+        '<button class="btn btn-primary" data-close>Faham</button>'); }
+    if (act === 'tolak') { dialog('Tolak — ' + esc(p.nama), '<div class="field"><span class="label">Sebab penolakan <span class="req">*</span></span><textarea class="input" rows="3" id="ppWhy" placeholder="Sebab akan dimaklumkan kepada Kawasan"></textarea></div>',
+        `<button class="btn btn-ghost" data-close>Batal</button><button class="btn btn-red" data-pp="tolak-ok" data-i="${b.dataset.i}">Sahkan Tolak</button>`); }
+    if (act === 'tolak-ok') { const w = $('ppWhy'); if (!w.value.trim()) { w.classList.add('pt-err'); PT.toast('Nyatakan sebab penolakan', 'red'); return; }
+      p.status = 'Ditolak'; p.sebab = w.value.trim(); (p.sejarah = p.sejarah || []).push({ by, act:'Tolak', at: today() }); DB.save(); $('ppDlg').classList.remove('open'); draw(); PT.toast(p.nama + ' ditolak', 'red'); }
+    if (act === 'daftar') { p.daftar = p.daftar === 'BUKA' ? 'TUTUP' : 'BUKA'; DB.save(); draw(); PT.toast('Pendaftaran murid ' + p.nama + ' ' + (p.daftar === 'BUKA' ? 'dibuka' : 'ditutup'), p.daftar === 'BUKA' ? 'green' : 'red'); }
+  });
+  draw();
+})();
+</script>
+</body>
+</html>

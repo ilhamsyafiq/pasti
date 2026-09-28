@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Senarai Guru · ePASTI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/app.css?v=4">
+</head>
+<body>
+<div class="pt-app" data-module="warga" data-page="warga-guru" data-title="Senarai Guru" data-subtitle="Guru & pembantu guru PASTI">
+  <main class="pt-main">
+
+    <div class="page-head">
+      <div>
+        <div class="crumb">ePASTI <span>›</span> Warga PASTI <span>›</span> Senarai Guru</div>
+        <h1>Senarai Guru PASTI</h1>
+        <div class="lead">Guru dan pembantu guru berdaftar bagi Kawasan Kubang Kerian</div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <a href="#" class="active" data-tab="guru">Senarai Guru</a>
+      <a href="#" data-tab="pembantu">Senarai Pembantu Guru</a>
+    </div>
+
+    <!-- Panel: Guru -->
+    <div data-panel="guru">
+      <div class="card">
+        <div class="card-body">
+          <div class="toolbar">
+            <span class="muted">Jumlah Bilangan = 38</span>
+            <div class="spacer"></div>
+            <button class="btn btn-soft">Excel</button>
+            <button class="btn btn-ghost" data-action="print">Cetak</button>
+            <div class="input-group"><input type="text" placeholder="Cari nama, MyKad atau PASTI…"></div>
+          </div>
+          <div class="table-wrap">
+            <table class="pt">
+              <thead><tr><th>Bil</th><th>MyKad/Dokumen Rasmi</th><th>Nama</th><th>Jantina</th><th>Kaum</th><th>Telefon</th><th>PASTI</th><th>Status</th><th class="right">Tindakan</th></tr></thead>
+              <tbody id="guruRows"></tbody>
+            </table>
+          </div>
+          <div class="pager">
+            <div class="info">Memaparkan 1–10 daripada 38 rekod</div>
+            <div class="pages">
+              <button class="active">1</button>
+              <button>2</button>
+              <button>3</button>
+              <button>4</button>
+              <button>›</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel: Pembantu Guru -->
+    <div data-panel="pembantu" style="display:none">
+      <div class="card">
+        <div class="card-body">
+          <div class="toolbar">
+            <span class="muted">Jumlah Bilangan = 4</span>
+            <div class="spacer"></div>
+            <button class="btn btn-soft">Excel</button>
+            <button class="btn btn-ghost" data-action="print">Cetak</button>
+            <div class="input-group"><input type="text" placeholder="Cari nama, MyKad atau PASTI…"></div>
+          </div>
+          <div class="table-wrap">
+            <table class="pt">
+              <thead><tr><th>Bil</th><th>MyKad/Dokumen Rasmi</th><th>Nama</th><th>Jantina</th><th>Kaum</th><th>Telefon</th><th>PASTI</th><th>Status</th><th class="right">Tindakan</th></tr></thead>
+              <tbody id="pembantuRows"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script src="../assets/js/app.js?v=4"></script>
+<script>
+  // [MyKad, Nama, Jantina, Kaum, Telefon, PASTI, Status]
+  const guru = [
+    ['860714106823','SALWA BINTI ABDUL RAHIM','Perempuan','Melayu','013-7742180','AL-TA\'LIM','Aktif'],
+    ['830229105417','ZARINA BINTI MOHD YUSOFF','Perempuan','Melayu','013-3358091','AS-SALAMAH','Aktif'],
+    ['910506108236','HANISAH BINTI ROSMAN','Perempuan','Melayu','012-6690472','ITQAN','Aktif'],
+    ['880821106519','NURFARHANA BINTI SAIDIN','Perempuan','Melayu','013-8817265','NURUL IMAN','Aktif'],
+    ['930312104728','AZLINDA BINTI ZAKARIA','Perempuan','Melayu','019-5523140','NURUL HIDAYAH','Aktif'],
+    ['840610108334','RUHAYA BINTI KASSIM','Perempuan','Melayu','013-6647029','AL-TA\'LIM','Tidak Aktif'],
+    ['891127106822','MASLINDA BINTI ARSHAD','Perempuan','Melayu','017-3098514','AS-SALAMAH','Aktif'],
+    ['920904104613','FARAHANA BINTI IDRIS','Perempuan','Melayu','013-7724863','ITQAN','Aktif'],
+    ['870418108927','JULIANA BINTI SAMSUDIN','Perempuan','Melayu','012-2245097','NURUL IMAN','Aktif'],
+    ['940207104518','SITI NADIAH BINTI HAMDAN','Perempuan','Melayu','013-6689230','NURUL HIDAYAH','Tidak Aktif'],
+  ];
+  const pembantu = [
+    ['960925104736','ATIKAH BINTI MOHD FAUZI','Perempuan','Melayu','013-4478812','AL-TA\'LIM','Aktif'],
+    ['970513106029','DZULHUSNA BINTI RASHDAN','Perempuan','Melayu','018-8813974','ITQAN','Aktif'],
+    ['950830108214','NAJWA BINTI HALIM','Perempuan','Melayu','013-2216480','AS-SALAMAH','Aktif'],
+    ['980119104563','LIYANA BINTI SUKRI','Perempuan','Melayu','011-16690325','NURUL IMAN','Tidak Aktif'],
+  ];
+  function initials(n){ const p=n.split(' '); return (p[0][0]+(p[1]?p[1][0]:'')).toUpperCase(); }
+  function badge(s){ return s==='Aktif' ? '<span class="badge b-green">Aktif</span>' : '<span class="badge b-slate">Tidak Aktif</span>'; }
+  function render(id, rows){
+    document.getElementById(id).innerHTML = rows.map((r,i)=>`
+      <tr>
+        <td class="num">${i+1}</td>
+        <td class="num">${r[0]}</td>
+        <td><div class="cell-user"><span class="avatar">${initials(r[1])}</span><div class="nm">${r[1]}</div></div></td>
+        <td>${r[2]}</td>
+        <td>${r[3]}</td>
+        <td class="num">${r[4]}</td>
+        <td>${r[5]}</td>
+        <td>${badge(r[6])}</td>
+        <td class="right"><a class="btn btn-soft btn-sm" href="#">Profil</a> <button class="btn btn-ghost btn-sm">Edit</button></td>
+      </tr>`).join('');
+  }
+  render('guruRows', guru);
+  render('pembantuRows', pembantu);
+</script>
+</body>
+</html>

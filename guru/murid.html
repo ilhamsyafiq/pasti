@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kehadiran Murid · ePASTI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/app.css?v=4">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#2fa308">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" href="../assets/img/icons/icon-192.png">
+<style>
+  .att-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+  .days{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}
+  .days button{flex:none;font-family:inherit;border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:7px 12px;cursor:pointer;text-align:center;min-width:62px}
+  .days button b{display:block;font-size:15px;color:var(--ink)}
+  .days button span{font-size:11px;color:var(--muted);font-weight:600}
+  .days button.on{border-color:var(--brand);background:var(--brand-l)}
+  .days button.on b{color:var(--brand-d)}
+  .days button.lock{opacity:.5}
+  .att-extra{display:grid;gap:8px}
+  .att-extra input{width:100%}
+  .lockmsg{font-size:12.5px;color:var(--accent-d);background:var(--accent-l);border-radius:10px;padding:9px 12px;margin-bottom:10px}
+</style>
+</head>
+<body>
+<div class="pt-app" data-portal="guru" data-module="murid" data-title="Kehadiran Murid" data-subtitle="Kelas Tahun 5 — Al-Farabi">
+  <main class="pt-main">
+
+    <div class="page-head">
+      <div>
+        <div class="crumb">Portal Guru <span>›</span> Kehadiran Murid</div>
+        <h1>Kehadiran Murid</h1>
+        <div class="lead">Kelas Tahun 5 — Al-Farabi · PASTI AL-TA'LIM · semua murid bermula sebagai <b>Hadir</b>, tanda yang lain sahaja</div>
+      </div>
+    </div>
+
+    <div data-own>
+      <div class="att-head">
+        <div class="days" id="days"></div>
+        <button type="button" class="btn btn-soft btn-sm" id="allHadir">Tanda semua hadir</button>
+      </div>
+      <div class="lockmsg" id="lockMsg" hidden>Rekod lebih 3 hari hanya boleh dilihat. Hubungi pentadbir PASTI untuk pembetulan.</div>
+
+      <div class="mlist" id="list"></div>
+
+      <div class="dock">
+        <div class="sum" id="sum"></div>
+        <button type="button" class="btn btn-primary" id="saveBtn">Simpan</button>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script src="../assets/js/app.js?v=4"></script>
+<script src="../assets/js/guru-kelas.js"></script>
+<script>
+(function(){
+  const K = window.KELAS, M = K.murid;
+  const DOW = ['Ahd','Isn','Sel','Rab','Kha','Jum','Sab'];
+  const BLN = ['Jan','Feb','Mac','Apr','Mei','Jun','Jul','Ogo','Sep','Okt','Nov','Dis'];
+  const REASONS = ['Sakit','Cuti keluarga','Kecemasan','Tiada maklum'];
+  const pad = n => String(n).padStart(2,'0');
+  const keyOf = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+
+  // last 5 school days (Ahad–Khamis in Kelantan), today first
+  const days = []; const d = new Date();
+  while (days.length < 5) { if (d.getDay() !== 5 && d.getDay() !== 6) days.push(new Date(d)); d.setDate(d.getDate()-1); }
+  let cur = 0;
+
+  const store = K.load('pt-kehadiran', {});
+  // demo history so earlier days are not empty
+  days.slice(1).forEach((dd,i) => { const k = keyOf(dd); if (!store[k]) store[k] = { saved:true, rows: M.map((_,j) => (j === (i*4+2)%15 ? {s:'T',r:'Sakit'} : j === (i*3+7)%15 ? {s:'L'} : {s:'H'})) }; });
+
+  const rec = () => { const k = keyOf(days[cur]); if (!store[k]) store[k] = { saved:false, rows: M.map(() => ({s:'H'})) }; return store[k]; };
+  const locked = () => cur > 3;
+
+  function drawDays(){
+    document.getElementById('days').innerHTML = days.map((dd,i) =>
+      `<button type="button" data-day="${i}" class="${i===cur?'on':''} ${i>3?'lock':''}"><span>${i===0?'Hari ini':DOW[dd.getDay()]}</span><b>${dd.getDate()}</b><span>${BLN[dd.getMonth()]}</span></button>`).join('');
+  }
+  function drawList(){
+    const r = rec(), lk = locked();
+    document.getElementById('lockMsg').hidden = !lk;
+    document.getElementById('list').innerHTML = M.map((m,i) => {
+      const x = r.rows[i];
+      const extra = x.s === 'T'
+        ? `<div class="att-extra"><div class="chips">${REASONS.map(t => `<button type="button" data-r="${i}" data-v="${t}" class="${x.r===t?'on':''}" ${lk?'disabled':''}>${t}</button>`).join('')}</div></div>`
+        : x.s === 'L' ? `<div class="att-extra"><input class="input" data-c="${i}" placeholder="Masa tiba / catatan (pilihan)" value="${x.c||''}" ${lk?'disabled':''}></div>` : '';
+      return `<div class="mrow ${x.s==='T'?'flag':''}">
+        <div class="who"><div class="avatar">${K.initials(m.nama)}</div><div><b>${m.nama}</b><span>MyKid ${m.mykid}</span></div></div>
+        <div class="pick" style="--n:3">
+          <button type="button" class="h ${x.s==='H'?'on':''}" data-s="${i}" data-v="H" ${lk?'disabled':''}>Hadir</button>
+          <button type="button" class="l ${x.s==='L'?'on':''}" data-s="${i}" data-v="L" ${lk?'disabled':''}>Lewat</button>
+          <button type="button" class="t ${x.s==='T'?'on':''}" data-s="${i}" data-v="T" ${lk?'disabled':''}>Tidak Hadir</button>
+        </div>${extra}</div>`;
+    }).join('');
+    drawSum();
+  }
+  function drawSum(){
+    const r = rec(), n = s => r.rows.filter(x => x.s === s).length;
+    document.getElementById('sum').innerHTML = `<b>${n('H')} Hadir</b> · ${n('L')} Lewat · ${n('T')} Tidak Hadir<br>${r.saved ? '✓ Sudah disimpan' : 'Belum disimpan'}`;
+    const b = document.getElementById('saveBtn'); b.disabled = locked(); b.textContent = r.saved ? 'Kemas kini' : 'Simpan';
+  }
+  const persist = () => K.save('pt-kehadiran', store);
+
+  document.querySelector('[data-own]').addEventListener('click', e => {
+    const t = e.target.closest('button'); if (!t || t.disabled) return;
+    const r = rec();
+    if (t.dataset.day != null) { cur = +t.dataset.day; drawDays(); drawList(); return; }
+    if (t.id === 'allHadir') { if (locked()) return; r.rows = M.map(() => ({s:'H'})); r.saved = false; drawList(); persist(); return; }
+    if (t.dataset.s != null) { const i = +t.dataset.s; r.rows[i] = { s: t.dataset.v, r: t.dataset.v === 'T' ? 'Tiada maklum' : undefined }; r.saved = false; drawList(); persist(); return; }
+    if (t.dataset.r != null) { r.rows[+t.dataset.r].r = t.dataset.v; r.saved = false; drawList(); persist(); return; }
+    if (t.id === 'saveBtn') {
+      r.saved = true; persist(); drawSum();
+      const dd = days[cur], absent = r.rows.filter(x => x.s === 'T').length;
+      PT.queueSave('kehadiran', `Kehadiran ${dd.getDate()} ${BLN[dd.getMonth()]} (${M.length} murid)`);
+      if (absent && navigator.onLine) setTimeout(() => PT.toast(`Makluman dihantar kepada ${absent} ibu bapa murid tidak hadir`), 900);
+    }
+  });
+  document.querySelector('[data-own]').addEventListener('input', e => {
+    const i = e.target.dataset.c; if (i == null) return; rec().rows[+i].c = e.target.value; rec().saved = false; persist(); drawSum();
+  });
+
+  drawDays(); drawList();
+})();
+</script>
+</body>
+</html>

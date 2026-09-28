@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Utama · ePASTI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/app.css?v=4">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#2fa308">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" href="../assets/img/icons/icon-192.png">
+</head>
+<body>
+<div class="pt-app" data-portal="parent" data-module="dashboard" data-title="Utama" data-subtitle="Portal Ibu Bapa PASTI">
+  <main class="pt-main">
+
+    <!-- hero -->
+    <section class="pp-hero">
+      <div class="row">
+        <div>
+          <div class="crumbs" id="ppSalam">Selamat pagi,</div>
+          <h1 id="ppNama">Puan Nurul Aina</h1>
+          <div class="lead" id="ppDate">—</div>
+          <div class="mini" id="ppMini"></div>
+        </div>
+        <div class="pp-glass" id="ppDue"></div>
+      </div>
+    </section>
+
+    <!-- quick actions -->
+    <div class="pp-quick" id="ppQuick"></div>
+
+    <div class="pp-2col" style="margin-top:18px">
+      <!-- children -->
+      <div class="card">
+        <div class="card-head"><h3>Anak Saya</h3><a class="btn btn-soft btn-sm" href="anak.html">Lihat Semua</a></div>
+        <div class="card-body" id="ppKids" style="padding-top:4px;padding-bottom:4px"></div>
+      </div>
+
+      <!-- latest news -->
+      <div class="card">
+        <div class="card-head"><h3>Makluman Terkini</h3><a class="btn btn-soft btn-sm" href="pemakluman.html">Papar Semua</a></div>
+        <div class="card-body pp-feed" style="padding-top:4px;padding-bottom:4px" id="ppFeed"></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script src="../assets/js/app.js?v=4"></script>
+<script src="../assets/js/parent-kids.js?v=2"></script>
+<script>
+(function(){
+  const { me, kids } = PK.load(), esc = PK.esc, I = PK.I, $ = id => document.getElementById(id);
+  const accepted = kids.filter(k => k.status === 'Diterima');
+  const due = kids.reduce((a,k) => a + k.tertunggak, 0), bil = kids.reduce((a,k) => a + k.bil, 0);
+
+  $('ppSalam').textContent = PK.salam() + ',';
+  $('ppNama').textContent = PK.title(me.nama);
+  $('ppDate').textContent = PK.hari() + ' · ' + (kids[0] ? kids[0].pasti : 'Portal Ibu Bapa');
+  const hadir = accepted.filter(k => k.hadir != null);
+  $('ppMini').innerHTML = '<div>Anak berdaftar<b>' + kids.length + '</b></div>'
+    + (hadir.length ? '<div>Purata kehadiran<b>' + Math.round(hadir.reduce((a,k) => a + k.hadir, 0) / hadir.length) + '%</b></div>' : '')
+    + '<div>Bil bulan ini<b>RM ' + (accepted.length * 60) + '</b></div>';
+
+  $('ppDue').innerHTML = due
+    ? '<div class="l">Yuran perlu dijelaskan</div><div class="v">RM ' + due.toFixed(2) + '</div><div class="s">' + bil + ' bil belum dijelaskan</div>'
+      + '<button class="btn btn-w" data-amount="' + due + '">Bayar</button>'
+    : '<div class="l">Status yuran</div><div class="v" style="font-size:24px">Tiada tunggakan</div><div class="s">Terima kasih kerana menjelaskan yuran tepat pada masanya.</div>'
+      + '<a class="btn btn-o" href="resit.html">Lihat Resit</a>';
+
+  const Q = [['anak.html','Anak Saya','Butiran anak','pp-c1',I.anak],['prestasi.html','Prestasi','Penilaian SPPM','pp-c2',I.prestasi],['yuran.html','Bayar Yuran','Bil & bayaran','pp-c3',I.yuran],
+    ['resit.html','Resit','Sejarah bayaran','pp-c4',I.resit],['pemakluman.html','Makluman','Berita & notis','pp-c5',I.makluman],['../daftar-murid.html','Daftar Anak','Anak baharu','pp-c6',I.daftar]];
+  $('ppQuick').style.gridTemplateColumns = '';
+  $('ppQuick').innerHTML = Q.map(q => '<a class="pp-q" href="' + q[0] + '"><div class="ic ' + q[3] + '">' + q[4] + '</div><b>' + q[1] + '</b><small>' + q[2] + '</small></a>').join('');
+
+  $('ppKids').innerHTML = kids.map((k,i) => {
+    const st = k.status !== 'Diterima' ? '<span class="badge b-blue no-dot">Dalam semakan</span>'
+      : k.tertunggak ? '<span class="badge b-amber no-dot">RM ' + k.tertunggak + ' tertunggak</span>' : '<span class="badge b-green no-dot">Yuran selesai</span>';
+    return '<div class="pp-krow"><div class="av ' + PK.COLORS[i % 6] + '">' + PK.ini(k.nama) + '</div><div style="min-width:0"><div class="nm">' + esc(k.nama) + '</div><div class="ml">' + esc(k.kelas) + (k.hadir != null ? ' · Hadir ' + k.hadir + '%' : '') + '</div></div><div class="r">' + st + '</div></div>';
+  }).join('') || '<div class="muted" style="padding:14px 0">Tiada anak berdaftar. <a href="../daftar-murid.html" style="color:var(--brand-d);font-weight:700">Daftar anak</a></div>';
+
+  const F = [
+    ['pp-c3', I.yuran, 'Bil yuran September 2026 telah dikeluarkan', 'Sila jelaskan sebelum 30 September 2026.', '22 Sep 2026'],
+    ['pp-c4', I.program, "Program Hari Keluarga PASTI AL-TA'LIM", 'Sabtu, 4 Oktober 2026 · 8:00 pagi di padang PASTI.', '18 Sep 2026'],
+    ['pp-c2', I.prestasi, 'Penilaian SPPM Penggal 1 telah dihantar', 'Guru kelas telah menghantar penilaian Ahmad Zafran.', '15 Sep 2026'],
+  ];
+  $('ppFeed').innerHTML = F.map(f => '<div class="pp-fi"><div class="ic ' + f[0] + '">' + f[1] + '</div><div class="tx"><b>' + esc(f[2]) + '</b><p>' + esc(f[3]) + '</p><div class="dt">' + f[4] + '</div></div></div>').join('');
+})();
+</script>
+</body>
+</html>

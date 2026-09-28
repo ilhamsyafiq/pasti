@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Prestasi Anak · ePASTI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/app.css?v=4">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#2fa308">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" href="../assets/img/icons/icon-192.png">
+<style>
+  .kids{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+  .kids button{font-family:inherit;display:flex;align-items:center;gap:10px;border:1.5px solid var(--line);background:#fff;border-radius:14px;padding:8px 14px 8px 8px;cursor:pointer;text-align:left}
+  .kids button b{display:block;color:var(--ink);font-size:13.5px}.kids button span{font-size:11.5px;color:var(--muted)}
+  .kids button.on{border-color:var(--brand);background:var(--brand-l)}
+  .kids .avatar{width:36px;height:36px;border-radius:11px;background:var(--brand-l);color:var(--brand-d);display:grid;place-items:center;font-weight:700;font-size:12px}
+  .rum{border-radius:16px;overflow:hidden;border:1px solid var(--line);box-shadow:var(--shadow);background:#fff}
+  .rum-h{padding:14px 16px;background:linear-gradient(135deg,var(--brand),var(--brand-d));color:#fff}
+  .rum-h b{display:block;font-size:15px}.rum-h span{font-size:12px;opacity:.9}
+  .rum-r{display:grid;grid-template-columns:130px 1fr;border-top:1px solid var(--line2)}
+  .rum-r .e{padding:12px 14px;font-weight:800;font-size:12.5px;color:#fff;letter-spacing:.02em;display:flex;align-items:center}
+  .rum-r .v{padding:12px 14px;font-size:13.5px;color:var(--ink);line-height:1.55}
+  .rum-r .v small{color:var(--muted)}
+  .lvl{display:inline-grid;place-items:center;min-width:34px;height:24px;border-radius:7px;color:#fff;font-size:11.5px;font-weight:800;padding:0 7px}
+  .lvl.AM{background:var(--accent-d)}.lvl.M{background:#2563eb}.lvl.SM{background:var(--brand)}.lvl.none{background:#dfe5dc;color:#6b776f;font-weight:700}
+  details.el{background:#fff;border:1px solid var(--line);border-radius:14px;margin-top:12px;box-shadow:var(--shadow);overflow:hidden}
+  details.el summary{list-style:none;cursor:pointer;padding:13px 16px;display:flex;align-items:center;gap:12px}
+  details.el summary::-webkit-details-marker{display:none}
+  details.el summary .dot{width:10px;height:10px;border-radius:50%;flex:none}
+  details.el summary b{flex:1;color:var(--ink);font-size:14px}
+  details.el summary .mix{display:flex;height:8px;border-radius:6px;overflow:hidden;width:120px;background:var(--line2)}
+  details.el summary .mix i{display:block;height:100%}
+  details.el[open] summary{border-bottom:1px solid var(--line2)}
+  .sec-t{padding:10px 16px;background:#fbf3d6;color:#6b5205;font-size:12.5px;font-weight:700}
+  .it{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:9px 16px;border-top:1px solid var(--line2);font-size:13px;color:var(--ink)}
+  .it em{font-style:normal;color:var(--muted);font-weight:700;margin-right:6px}
+  .empty-note{padding:18px;border-radius:14px;background:#fff;border:1px dashed var(--line);color:var(--muted);text-align:center}
+  @media (max-width:560px){ .rum-r{grid-template-columns:1fr} .rum-r .e{padding:8px 14px} details.el summary .mix{width:70px} }
+  @media print{ .pt-side,.pt-top,.pt-tabbar,.kids,.no-print{display:none!important} .pt-main{margin:0;padding:0} details.el{break-inside:avoid} }
+</style>
+</head>
+<body>
+<div class="pt-app" data-portal="parent" data-module="prestasi" data-title="Prestasi Anak" data-subtitle="Sistem Perkembangan Prestasi Murid (SPPM)">
+  <main class="pt-main">
+    <section class="pp-hero">
+      <div class="row">
+        <div>
+          <div class="crumbs">Portal Ibu Bapa › Prestasi Anak</div>
+          <h1>Prestasi Anak</h1>
+          <div class="lead">Penilaian guru mengikut buku rekod SPPM · dipaparkan selepas guru menghantar penilaian penggal</div>
+          <div class="mini"><div>Tahap<b>AM · M · SM</b></div><div>Elemen<b>6 Celik</b></div></div>
+        </div>
+        <button class="btn btn-w no-print" data-own onclick="window.print()">Cetak / Simpan PDF</button>
+      </div>
+    </section>
+
+    <div class="kids" id="kids" data-own></div>
+    <div class="chips no-print" id="pgs" data-own style="margin-bottom:12px"></div>
+    <div id="view"></div>
+  </main>
+</div>
+
+<script src="../assets/js/app.js?v=4"></script>
+<script src="../assets/js/sppm.js?v=2"></script>
+<script>
+(function(){
+  const S = window.SPPM, $ = id => document.getElementById(id);
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const me = DB.user();
+  // children of the signed-in parent (demo parent → sample children)
+  let KIDS = [{ nama:'AHMAD ZAFRAN BIN MOHD IDRIS', mykid:'210512100713', umur:5, kelas:'Tahun 5 · PASTI AL-TA\'LIM' }, { nama:'NUR SOFEA BINTI MOHD IDRIS', mykid:'220814080552', umur:4, kelas:'Tahun 4 · PASTI AL-TA\'LIM' }];
+  if (me && me.peranan === 'ibubapa' && me.emel !== 'ibubapa@pasti.org')
+    KIDS = DB.all('murid').filter(m => (m.emel||'').toLowerCase() === me.emel.toLowerCase() && m.status === 'Diterima').map(m => ({ nama:m.nama, mykid:m.mykid, umur: +(String(m.kelas).match(/\d/)||[5])[0], kelas: m.kelas + ' · ' + m.pasti }));
+  const ui = { k:0, pg:null };
+  const ini = n => n.split(' ').filter(w => !/^(bin|binti)$/i.test(w)).slice(0,2).map(w => w[0]).join('');
+  const lvl = v => v ? `<span class="lvl ${v}" title="${S.LVN[v]}">${v}</span>` : '<span class="lvl none">Belum dinilai</span>';
+
+  function draw(){
+    if (!KIDS.length) { $('view').innerHTML = '<div class="empty-note">Tiada anak berdaftar dengan akaun ini.</div>'; return; }
+    $('kids').innerHTML = KIDS.map((k,i) => `<button type="button" data-k="${i}" class="${i===ui.k?'on':''}"><div class="avatar">${ini(k.nama)}</div><div><b>${esc(k.nama)}</b><span>${esc(k.kelas)}</span></div></button>`).join('');
+    const kid = KIDS[ui.k];
+    if (kid.umur !== 5 && kid.umur !== 6) { $('pgs').innerHTML = ''; $('view').innerHTML = `<div class="empty-note">Buku rekod SPPM untuk <b>${kid.umur} Tahun</b> belum dimuatkan ke dalam sistem. Penilaian akan dipaparkan di sini bila tersedia.</div>`; return; }
+    const r = S.has(kid.mykid) ? S.rec(kid.mykid, kid.umur) : null;
+    const sent = r ? [1,2].filter(p => r.sent[p]) : [];
+    if (!sent.length) { $('pgs').innerHTML = ''; $('view').innerHTML = `<div class="empty-note">Guru belum menghantar penilaian SPPM untuk <b>${esc(kid.nama)}</b>. Anda akan menerima makluman bila penilaian penggal dihantar.</div>`; return; }
+    if (!sent.includes(ui.pg)) ui.pg = sent[sent.length - 1];
+    $('pgs').innerHTML = [1,2].map(p => `<button type="button" data-pg="${p}" class="${p===ui.pg?'on':''}" ${sent.includes(p)?'':'disabled title="Belum dihantar guru"'}>Penggal ${p}${sent.includes(p) ? '' : ' · belum'}</button>`).join('');
+    const pg = ui.pg, h = S.report(kid, r, pg);
+    $('view').innerHTML = h;
+  }
+  document.addEventListener('click', e => { const b = e.target.closest('[data-k],[data-pg]'); if (!b || b.disabled) return; if (b.dataset.k) { ui.k = +b.dataset.k; ui.pg = null; } if (b.dataset.pg) ui.pg = +b.dataset.pg; draw(); });
+  draw();
+})();
+</script>
+</body>
+</html>

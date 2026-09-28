@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Takwim & Program · ePASTI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/app.css?v=4">
+</head>
+<body>
+<div class="pt-app" data-module="operasi" data-page="calendar" data-title="Takwim & Program" data-subtitle="Disegerakkan dengan Google Calendar for Education">
+  <main class="pt-main">
+
+    <div class="page-head">
+      <div>
+        <div class="crumb">ePASTI <span>›</span> Operasi <span>›</span> Takwim & Program</div>
+        <h1>Takwim & Program</h1>
+        <div class="lead">Kalendar rasmi PASTI Kawasan Kubang Kerian · disegerakkan dua-hala dengan Google Calendar</div>
+      </div>
+      <div class="flex gap wrap aic">
+        <button class="btn btn-soft btn-sm" id="calPrev" data-own aria-label="Bulan sebelum">‹</button>
+        <span class="strong" id="calLbl" style="min-width:120px;text-align:center">September 2026</span>
+        <button class="btn btn-soft btn-sm" id="calNext" data-own aria-label="Bulan seterusnya">›</button>
+        <button class="btn btn-primary" data-modal="addEventModal">+ Tambah Program</button>
+      </div>
+    </div>
+
+    <!-- Google Calendar integration bar -->
+    <div class="gcal-bar">
+      <div class="gcal-id">
+        <svg viewBox="0 0 48 48" width="38" height="38"><rect x="8" y="10" width="32" height="30" rx="5" fill="#fff" stroke="#dadce0" stroke-width="1.5"/><rect x="8" y="10" width="32" height="9" rx="5" fill="#1a73e8"/><text x="24" y="35" font-size="15" font-weight="700" text-anchor="middle" fill="#1a73e8" font-family="Arial">31</text></svg>
+        <div class="t">
+          <b>Google Calendar for Education</b>
+          <span>Akaun disambung: <strong>pasti.kubangkerian@moe-dl.edu.my</strong></span>
+        </div>
+      </div>
+      <div class="gcal-actions">
+        <span class="g-badge">Disegerakkan · kemas kini 2 minit lalu</span>
+        <button class="btn btn-soft btn-sm" data-toast="Menyegerak dengan Google Calendar…">Segerak Sekarang</button>
+        <button class="btn btn-ghost btn-sm" data-toast="Membuka Google Calendar…">Buka di Google Calendar</button>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 320px;gap:18px" class="cal-wrap">
+      <!-- calendar -->
+      <div class="card">
+        <div class="card-head"><h3>September 2026</h3><span class="sub">PASTI Kawasan Kubang Kerian</span></div>
+        <div class="card-body"><table class="cal" id="cal"></table></div>
+      </div>
+
+      <!-- sidebar -->
+      <div>
+        <div class="card">
+          <div class="card-head"><h3>Kalendar Saya</h3></div>
+          <div class="card-body" style="padding:10px 12px">
+            <label class="gcal-cal"><span class="sw" style="background:#d93025"></span> Cuti Umum &amp; Sekolah</label>
+            <label class="gcal-cal"><span class="sw" style="background:#1a73e8"></span> Program PASTI</label>
+            <label class="gcal-cal"><span class="sw" style="background:#2fa308"></span> Jadual Kelas</label>
+            <label class="gcal-cal"><span class="sw" style="background:#f9ab00"></span> Peperiksaan</label>
+            <label class="gcal-cal"><span class="sw" style="background:#8430ce"></span> Mesyuarat</label>
+          </div>
+        </div>
+
+        <div class="card mt">
+          <div class="card-head"><h3>Acara Akan Datang</h3></div>
+          <div class="card-body">
+            <div class="gcal-ev"><span class="bar" style="background:#1a73e8"></span><div style="flex:1"><div class="nm">Bengkel e-PASTI Kawasan</div><div class="mt2">24 Sep 2026 · 9:00 pagi</div></div><button class="g-add" data-toast="Ditambah ke Google Calendar">+ Google</button></div>
+            <div class="gcal-ev"><span class="bar" style="background:#f9ab00"></span><div style="flex:1"><div class="nm">Peperiksaan Akhir Tahun</div><div class="mt2">6–10 Okt 2026</div></div><button class="g-add" data-toast="Ditambah ke Google Calendar">+ Google</button></div>
+            <div class="gcal-ev"><span class="bar" style="background:#8430ce"></span><div style="flex:1"><div class="nm">Mesyuarat Jemaah Pengurus</div><div class="mt2">17 Sep 2026 · 8:30 malam</div></div><button class="g-add" data-toast="Ditambah ke Google Calendar">+ Google</button></div>
+            <div class="gcal-ev"><span class="bar" style="background:#d93025"></span><div style="flex:1"><div class="nm">Cuti Pertengahan Penggal</div><div class="mt2">5 &amp; 12 Sep 2026</div></div><button class="g-add" data-toast="Ditambah ke Google Calendar">+ Google</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Add event modal -->
+<div class="modal-overlay" id="addEventModal">
+  <div class="modal">
+    <div class="m-head"><h3>Tambah Program / Acara</h3><button class="btn btn-ghost btn-sm" data-close>✕</button></div>
+    <div class="m-body">
+      <div class="notice mb"><div class="tx"><b>Disegerakkan ke Google Calendar</b><span>Acara ini akan ditolak ke kalendar Google sekolah secara automatik.</span></div></div>
+      <div class="form-grid">
+        <div class="field full"><span class="label">Tajuk Acara <span class="req">*</span></span><input class="input" placeholder="cth: Bengkel e-PASTI Kawasan"></div>
+        <div class="field"><span class="label">Kalendar</span><select class="select"><option>Program PASTI</option><option>Cuti Umum &amp; Sekolah</option><option>Jadual Kelas</option><option>Peperiksaan</option><option>Mesyuarat</option></select></div>
+        <div class="field"><span class="label">Peringkat</span><select class="select"><option>Kawasan</option><option>Negeri</option><option>Malaysia</option><option>Cawangan</option></select></div>
+        <div class="field"><span class="label">Tarikh Mula</span><input class="input" type="text" value="24/09/2026"></div>
+        <div class="field"><span class="label">Tarikh Tamat</span><input class="input" type="text" value="24/09/2026"></div>
+        <div class="field full"><span class="label">Catatan</span><textarea class="input" rows="3" placeholder="Butiran acara"></textarea></div>
+      </div>
+    </div>
+    <div class="m-foot"><button class="btn btn-ghost" data-close>Batal</button><button class="btn btn-primary" id="evSave" data-own>Simpan &amp; Segerak</button></div>
+  </div>
+</div>
+
+<script src="../assets/js/app.js?v=4"></script>
+<script>
+  // Month calendar with the PASTI programmes; new programmes are saved (per browser) and appear on the grid & list.
+  (function(){
+    const MON=['Januari','Februari','Mac','April','Mei','Jun','Julai','Ogos','September','Oktober','November','Disember'];
+    const dow=['Ahad','Isnin','Sel','Rabu','Khamis','Jum','Sabtu'];
+    const BASE={'2026-9-5':['cuti','Cuti'],'2026-9-12':['cuti','Cuti'],'2026-9-17':['mesy','Mesyuarat JP'],'2026-9-24':['prog','Bengkel e-PASTI'],'2026-9-8':['kelas','Kelas Tahfiz'],'2026-9-29':['exam','Ujian Bulanan'],'2026-10-6':['exam','Peperiksaan Akhir']};
+    const load=()=>{ try{ return JSON.parse(localStorage.getItem('pt-events')||'[]'); }catch(e){ return []; } };
+    let y=2026, m=8; const now=new Date();
+    function draw(){
+      document.getElementById('calLbl').textContent=MON[m]+' '+y;
+      const ev=Object.assign({},BASE); load().forEach(e=>{ ev[e.k]=['prog',e.t]; });
+      const first=new Date(y,m,1).getDay(), days=new Date(y,m+1,0).getDate();
+      let h='<thead><tr>'+dow.map(d=>'<th>'+d+'</th>').join('')+'</tr></thead><tbody><tr>', col=first;
+      for(let i=0;i<first;i++) h+='<td class="mut"></td>';
+      for(let d=1;d<=days;d++){ const e=ev[y+'-'+(m+1)+'-'+d], td=(y===now.getFullYear()&&m===now.getMonth()&&d===now.getDate());
+        h+='<td class="'+(td?'today':'')+'"><span class="d">'+d+'</span>'+(e?'<div class="ev '+e[0]+'">'+e[1]+'</div>':'')+'</td>'; col++; if(col===7&&d<days){ h+='</tr><tr>'; col=0; } }
+      while(col<7&&col>0){ h+='<td class="mut"></td>'; col++; }
+      document.getElementById('cal').innerHTML=h+'</tr></tbody>';
+    }
+    function list(){
+      const box=document.querySelector('.gcal-ev') && document.querySelector('.gcal-ev').parentElement; if(!box) return;
+      box.querySelectorAll('.gcal-ev[data-mine]').forEach(x=>x.remove());
+      load().forEach(e=>box.insertAdjacentHTML('afterbegin','<div class="gcal-ev" data-mine><span class="bar" style="background:#2fa308"></span><div style="flex:1"><div class="nm">'+e.t.replace(/</g,'&lt;')+'</div><div class="mt2">'+e.label+'</div></div><button class="g-add">+ Google</button></div>'));
+    }
+    document.getElementById('calPrev').onclick=()=>{ if(--m<0){ m=11; y--; } draw(); };
+    document.getElementById('calNext').onclick=()=>{ if(++m>11){ m=0; y++; } draw(); };
+    document.getElementById('evSave').onclick=()=>{
+      const md=document.getElementById('addEventModal'); const F=l=>{ const f=[...md.querySelectorAll('.field')].find(x=>x.querySelector('.label')&&x.querySelector('.label').textContent.toLowerCase().includes(l)); return f&&f.querySelector('input,select,textarea'); };
+      const tj=F('tajuk'), tm=F('tarikh mula'); const dm=(tm.value||'').match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/) || (tm.value||'').match(/(\d{4})-(\d{1,2})-(\d{1,2})/);
+      [tj,tm].forEach(i=>i.classList.toggle('pt-err', !i.value.trim())); if(!tj.value.trim()||!dm){ PT.toast('Isi tajuk dan tarikh mula (hh/bb/tttt)','red'); if(!dm) tm.classList.add('pt-err'); return; }
+      const [dd,mm,yy]= dm[1].length===4 ? [+dm[3],+dm[2],+dm[1]] : [+dm[1],+dm[2],+dm[3]];
+      const ev=load(); ev.push({ k:yy+'-'+mm+'-'+dd, t:tj.value.trim(), label:dd+' '+MON[mm-1].slice(0,3)+' '+yy+' · '+(F('peringkat')?F('peringkat').value:'') });
+      try{ localStorage.setItem('pt-events', JSON.stringify(ev)); }catch(e){}
+      y=yy; m=mm-1; draw(); list(); md.classList.remove('open'); tj.value=''; tm.value='';
+      PT.toast('Program disimpan & disegerakkan ke Google Calendar');
+    };
+    draw(); list();
+  })();
+</script>
+</body>
+</html>

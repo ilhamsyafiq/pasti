@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Log Akses (Audit) · ePASTI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/app.css?v=4">
+</head>
+<body>
+<div class="pt-app" data-module="operasi" data-page="log-akses" data-title="Log Akses (Audit)" data-subtitle="Semua tindakan pengguna direkod">
+  <main class="pt-main">
+
+    <div class="page-head">
+      <div>
+        <div class="crumb">ePASTI <span>›</span> Operasi <span>›</span> Log Akses</div>
+        <h1>Log Akses (Audit)</h1>
+        <div class="lead" id="logLead">Rekod audit setiap tindakan pengguna dalam skop anda</div>
+      </div>
+    </div>
+
+    <div class="notice amber mb">
+      <div class="tx">
+        <b>Setiap tindakan pengguna direkod (audit trail) dan tidak boleh diubah.</b>
+        <span id="logScope">Anda melihat log bagi skop peranan anda sahaja. Akses pentadbir tamat (di-flush) secara automatik selepas 2 tahun dan perlu diperbaharui.</span>
+      </div>
+    </div>
+
+    <!-- stat strip -->
+    <div class="grid g-4" id="logStats"></div>
+
+    <div class="card mt-lg">
+      <div class="card-head"><div><h3>Rekod Audit</h3><span class="sub">Log akses baca sahaja — tidak boleh diubah</span></div></div>
+      <div class="card-body">
+
+        <div class="toolbar">
+          <div class="input-group">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z"/><path d="M21 21l-4.3-4.3"/></svg>
+            <input type="text" placeholder="Cari pengguna, tindakan atau IP…">
+          </div>
+          <div class="filter-bar">
+            <select class="select" id="fUser"><option>Semua Pengguna</option></select>
+            <select class="select" id="fModul"><option>Semua Modul</option></select>
+            <select class="select" id="fAct"><option>Semua Tindakan</option></select>
+            <select class="select" id="fDate"><option>Semua Tarikh</option></select>
+          </div>
+          <div class="spacer"></div>
+          <button class="btn btn-soft" data-action="print">Eksport</button>
+        </div>
+
+        <div class="table-wrap">
+          <table class="pt">
+            <thead><tr>
+              <th>Tarikh &amp; Masa</th><th>Pengguna</th><th>Peranan</th><th>Lokasi</th><th>Tindakan</th><th>Modul</th><th>Alamat IP</th><th>Status</th>
+            </tr></thead>
+            <tbody id="logBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script src="../assets/js/app.js?v=4"></script>
+<script>
+(function(){
+  // Each entry records WHERE it happened, so every tier sees only its own area:
+  // Pusat = all · Negeri = its state · Kawasan = its kawasan · DUN = its DUN · Cawangan = its PASTI (incl. guru & ibu bapa).
+  var L = {
+    hq:   { n:'—',        k:'—',                  d:'—',               p:'—',                 lbl:'Ibu Pejabat (Pusat)' },
+    ktn:  { n:'Kelantan', k:'—',                  d:'—',               p:'—',                 lbl:'Negeri Kelantan' },
+    trg:  { n:'Terengganu',k:'—',                 d:'—',               p:'—',                 lbl:'Negeri Terengganu' },
+    kdh:  { n:'Kedah',    k:'P015 Sungai Petani', d:'N33 Tanjong Dawai',p:'PASTI AN NUR',       lbl:"PASTI An Nur · Sungai Petani" },
+    kk:   { n:'Kelantan', k:'P025 Kubang Kerian', d:'—',               p:'—',                 lbl:'Kawasan P025 Kubang Kerian' },
+    bch:  { n:'Kelantan', k:'P026 Bachok',        d:'—',               p:'—',                 lbl:'Kawasan P026 Bachok' },
+    n44:  { n:'Kelantan', k:'P025 Kubang Kerian', d:'N44 Kota Lama',   p:'—',                 lbl:'DUN N44 Kota Lama' },
+    tal:  { n:'Kelantan', k:'P025 Kubang Kerian', d:'N44 Kota Lama',   p:"PASTI AL-TA'LIM",   lbl:"PASTI Al-Ta'lim" },
+    sal:  { n:'Kelantan', k:'P025 Kubang Kerian', d:'N44 Kota Lama',   p:'PASTI AS-SALAMAH',  lbl:'PASTI As-Salamah' },
+    itq:  { n:'Kelantan', k:'P025 Kubang Kerian', d:'N45 Bunut Payong',p:'PASTI ITQAN',       lbl:'PASTI Itqan' },
+  };
+  var tierCls = { Pusat:'b-violet', Negeri:'b-blue', Kawasan:'b-teal', DUN:'b-amber', Cawangan:'b-slate', Guru:'b-green', 'Ibu Bapa':'b-green' };
+  var R = [
+    ['27/09/2026 09:41','Dato\' Hj Ahmad Zaki','Pusat','Log Masuk','Papan Pemuka','175.140.22.14','Berjaya','hq'],
+    ['27/09/2026 09:38','Ustaz Faizal Rahman','Negeri','Sokong','Pengurusan PASTI','210.19.88.203','Berjaya','ktn'],
+    ['27/09/2026 09:31','Ustazah Siti Khadijah','Guru','Simpan','Kehadiran Murid','115.164.30.12','Berjaya','tal'],
+    ['27/09/2026 09:22','Muhamad Khairi bin Azman','Kawasan','Cipta','Warga','113.210.45.77','Berjaya','kk'],
+    ['27/09/2026 09:12','Puan Nurul Aina','Ibu Bapa','Bayar','Yuran','60.50.211.8','Berjaya','tal'],
+    ['27/09/2026 09:05','Ustazah Mariam Hassan','Cawangan','Cetak','Yuran','60.51.132.9','Berjaya','tal'],
+    ['27/09/2026 08:57','Ustaz Ismail Kassim','DUN','Log Masuk','Papan Pemuka','115.164.7.221','Gagal','n44'],
+    ['27/09/2026 08:50','Ustaz Hakim Yusof','Cawangan','Kemaskini','Payment Gateway','175.143.9.40','Berjaya','sal'],
+    ['27/09/2026 08:44','Ustaz Faizal Rahman','Negeri','Lulus','Caruman','210.19.88.203','Berjaya','ktn'],
+    ['27/09/2026 08:30','Dato\' Hj Ahmad Zaki','Pusat','Lulus','Pengurusan PASTI','175.140.22.14','Berjaya','hq'],
+    ['27/09/2026 08:21','Ustazah Rahmah Ali','Cawangan','Log Masuk','Kehadiran','118.100.2.61','Gagal','itq'],
+    ['27/09/2026 08:18','Muhamad Khairi bin Azman','Kawasan','Padam','Warga','113.210.45.77','Gagal','kk'],
+    ['27/09/2026 08:02','Ustazah Mariam Hassan','Cawangan','Cipta','Permohonan Murid','60.51.132.9','Berjaya','tal'],
+    ['26/09/2026 17:49','Ustaz Ismail Kassim','DUN','Kemaskini','Payment Gateway','115.164.7.221','Berjaya','n44'],
+    ['26/09/2026 17:31','Ustaz Zulkifli Omar','Kawasan','Cipta','Pendaftaran PASTI','202.188.4.19','Berjaya','bch'],
+    ['26/09/2026 16:58','Ustaz Faizal Rahman','Negeri','Cetak','Laporan','210.19.88.203','Berjaya','ktn'],
+    ['26/09/2026 16:20','Ustaz Harun Salleh','Negeri','Log Masuk','Papan Pemuka','183.171.8.5','Berjaya','trg'],
+    ['26/09/2026 15:47','Puan Faridah Ismail','Cawangan','Bayar','Caruman','175.139.66.2','Berjaya','kdh'],
+    ['26/09/2026 15:02','Ustazah Siti Khadijah','Guru','Hantar','Permarkahan','115.164.30.12','Berjaya','tal'],
+    ['26/09/2026 11:15','Dato\' Hj Ahmad Zaki','Pusat','Kemaskini','Tetapan','175.140.22.14','Berjaya','hq'],
+  ];
+
+  var tier = (window.PT && PT.tier) || 'kawasan';
+  var SCOPE = {
+    pusat:    { see: function(){ return true; },                       txt:'semua negeri, kawasan, DUN & cawangan', mult: 64 },
+    negeri:   { see: function(l){ return l.n === 'Kelantan'; },          txt:'Negeri Kelantan (kawasan, DUN & cawangan di bawahnya)', mult: 15 },
+    kawasan:  { see: function(l){ return l.k === 'P025 Kubang Kerian'; },txt:'Kawasan P025 Kubang Kerian (DUN & cawangan di bawahnya)', mult: 3 },
+    dun:      { see: function(l){ return l.d === 'N44 Kota Lama'; },     txt:'DUN N44 Kota Lama (cawangan di bawahnya)', mult: 2 },
+    cawangan: { see: function(l){ return l.p === "PASTI AL-TA'LIM"; },   txt:"PASTI Al-Ta'lim (pentadbir, guru & ibu bapa)", mult: 1 },
+  }[tier] || { see: function(){ return true; }, txt:'', mult: 1 };
+
+  var rows = R.filter(function(r){ return SCOPE.see(L[r[7]]); });
+  document.getElementById('logScope').innerHTML = 'Skop log anda: <b>' + SCOPE.txt + '</b>. Akses pentadbir tamat (di-flush) secara automatik selepas 2 tahun dan perlu diperbaharui.';
+
+  // stats (today's volume scales with the size of the scope)
+  var fail = rows.filter(function(r){ return r[6] === 'Gagal'; }).length;
+  var users = {}; rows.forEach(function(r){ users[r[1]] = 1; });
+  var today = rows.filter(function(r){ return r[0].indexOf('27/09/2026') === 0; }).length;
+  var st = [
+    ['Log Hari Ini', (today * SCOPE.mult * 21).toLocaleString('en-MY'), '▲ 6% dari semalam', 'up', 'g', 'L'],
+    ['Log Gagal/Ditolak', String(fail * SCOPE.mult), fail ? '▼ Perlu semakan' : 'Tiada isu', fail ? 'down' : 'flat', 'r', '!'],
+    ['Pengguna Aktif', String(Object.keys(users).length * SCOPE.mult * 3), 'Dalam 24 jam', 'flat', 't', 'P'],
+    ['Akses Akan Tamat 30 hari', String(Math.max(1, Math.round(SCOPE.mult / 4))), 'Perlu perbaharui', 'flat', 'a', 'T'],
+  ];
+  document.getElementById('logStats').innerHTML = st.map(function(s){
+    return '<div class="stat"><div class="top"><span class="label">'+s[0]+'</span><div class="ic '+s[4]+'">'+s[5]+'</div></div><div class="value">'+s[1]+'</div><div class="trend '+s[3]+'">'+s[2]+'</div></div>';
+  }).join('');
+
+  // filter options come from the rows in scope
+  function fill(id, idx){ var seen = {}, sel = document.getElementById(id);
+    rows.forEach(function(r){ var v = idx === 0 ? r[0].slice(0,10) : r[idx]; if (!seen[v]) { seen[v] = 1; var o = document.createElement('option'); o.textContent = v; sel.appendChild(o); } }); }
+  fill('fUser', 1); fill('fModul', 4); fill('fAct', 3); fill('fDate', 0);
+
+  document.getElementById('logBody').innerHTML = rows.map(function(r){
+    var l = L[r[7]];
+    return '<tr>'
+      + '<td class="num">'+r[0]+'</td>'
+      + '<td><div class="cell-user"><div class="avatar">'+r[1].replace(/^(Dato' Hj|Ustazah|Ustaz|Puan|Encik)\s+/,'').split(' ').slice(0,2).map(function(w){return w[0];}).join('').toUpperCase()+'</div><div><div class="nm">'+r[1]+'</div><div class="ml">'+r[2]+'</div></div></div></td>'
+      + '<td><span class="badge '+(tierCls[r[2]]||'b-slate')+'">'+r[2]+'</span></td>'
+      + '<td>'+l.lbl+'</td>'
+      + '<td>'+r[3]+'</td>'
+      + '<td>'+r[4]+'</td>'
+      + '<td class="num">'+r[5]+'</td>'
+      + '<td>'+(r[6] === 'Berjaya' ? '<span class="badge b-green">Berjaya</span>' : '<span class="badge b-red">Gagal</span>')+'</td>'
+      + '</tr>';
+  }).join('');
+})();
+</script>
+</body>
+</html>

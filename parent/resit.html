@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Resit & Sejarah Pembayaran · ePASTI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/app.css?v=4">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#2fa308">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" href="../assets/img/icons/icon-192.png">
+</head>
+<body>
+<div class="pt-app" data-portal="parent" data-module="resit" data-title="Resit & Sejarah Pembayaran" data-subtitle="Rekod pembayaran dalam talian">
+  <main class="pt-main">
+
+    <section class="pp-hero">
+      <div class="row">
+        <div>
+          <div class="crumbs">Portal Ibu Bapa › Resit &amp; Sejarah Pembayaran</div>
+          <h1>Resit &amp; Sejarah Pembayaran</h1>
+          <div class="lead">Semua transaksi yuran melalui BayarCash · resit rasmi boleh dimuat turun</div>
+          <div class="mini" id="ppMini"></div>
+        </div>
+        <a class="btn btn-w" href="yuran.html">Bayar Yuran</a>
+      </div>
+    </section>
+
+    <div class="pp-tiles" id="ppTiles"></div>
+
+    <div class="card">
+      <div class="card-head">
+        <div><h3>Rekod Transaksi</h3><div class="sub">Tekan "Resit" untuk papar &amp; cetak resit rasmi</div></div>
+      </div>
+      <div class="card-body">
+        <div class="toolbar">
+          <div class="input-group">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z"/><path d="M21 21l-4.3-4.3"/></svg>
+            <input type="text" placeholder="Cari ref, anak atau tujuan…">
+          </div>
+          <span class="spacer"></span>
+          <select class="select">
+            <option value="">Semua Tahun</option>
+            <option>2026</option>
+            <option>2025</option>
+          </select>
+        </div>
+
+        <div class="table-wrap">
+          <table class="pt">
+            <thead>
+              <tr>
+                <th>No. Rujukan</th>
+                <th>Tarikh &amp; Masa</th>
+                <th>Anak</th>
+                <th>Tujuan</th>
+                <th class="right">Jumlah (RM)</th>
+                <th>Kaedah</th>
+                <th>Status</th>
+                <th class="right">Muat Turun</th>
+              </tr>
+            </thead>
+            <tbody id="resitBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script src="../assets/js/app.js?v=4"></script>
+<script src="../assets/js/parent-kids.js?v=2"></script>
+<script>
+  (function(){
+    const I = PK.I, $ = id => document.getElementById(id);
+    const rows = [
+      { ref:'BC-2026-0104582', dt:'15 Sep 2026, 9:14 PG',   anak:'AHMAD ZAFRAN BIN MOHD IDRIS', tujuan:'Yuran Bulanan · Julai',  jumlah:60,  kaedah:'FPX' },
+      { ref:'BC-2026-0104571', dt:'15 Sep 2026, 9:12 PG',   anak:'NUR SOFEA BINTI MOHD IDRIS',  tujuan:'Yuran Bulanan · September', jumlah:60,  kaedah:'FPX' },
+      { ref:'BC-2026-0103890', dt:'12 Ogos 2026, 8:47 MLM', anak:'AHMAD ZAFRAN BIN MOHD IDRIS', tujuan:'Yuran Bulanan · Jun',    jumlah:60,  kaedah:'DuitNow QR' },
+      { ref:'BC-2026-0103877', dt:'12 Ogos 2026, 8:45 MLM', anak:'NUR SOFEA BINTI MOHD IDRIS',  tujuan:'Yuran Bulanan · Ogos',   jumlah:60,  kaedah:'DuitNow QR' },
+      { ref:'BC-2026-0103104', dt:'10 Julai 2026, 2:31 PTG',anak:'AHMAD ZAFRAN BIN MOHD IDRIS', tujuan:'Yuran Bulanan · Mei',    jumlah:60,  kaedah:'Kad' },
+      { ref:'BC-2026-0103098', dt:'10 Julai 2026, 2:28 PTG',anak:'NUR SOFEA BINTI MOHD IDRIS',  tujuan:'Yuran Bulanan · Julai',  jumlah:60,  kaedah:'Kad' },
+      { ref:'BC-2026-0100215', dt:'8 Jan 2026, 10:02 PG',   anak:'AHMAD ZAFRAN BIN MOHD IDRIS', tujuan:'Yuran Pendaftaran',      jumlah:150, kaedah:'FPX' },
+      { ref:'BC-2026-0100207', dt:'8 Jan 2026, 9:58 PG',    anak:'NUR SOFEA BINTI MOHD IDRIS',  tujuan:'Yuran Pendaftaran',      jumlah:150, kaedah:'FPX' }
+    ];
+    const total = rows.reduce((a,r) => a + r.jumlah, 0), kaedah = {};
+    rows.forEach(r => kaedah[r.kaedah] = (kaedah[r.kaedah] || 0) + 1);
+    const top = Object.keys(kaedah).sort((a,b) => kaedah[b] - kaedah[a])[0];
+    $('ppMini').innerHTML = '<div>Jumlah dibayar 2026<b>RM ' + total.toFixed(2) + '</b></div><div>Transaksi<b>' + rows.length + '</b></div><div>Semua berjaya<b>100%</b></div>';
+    $('ppTiles').innerHTML =
+        '<div class="pp-tile"><div class="ic pp-c1">' + I.ok + '</div><div><div class="l">Bayaran Terakhir</div><div class="v">RM ' + rows[0].jumlah.toFixed(2) + '</div><div class="s">' + rows[0].dt + '</div></div></div>'
+      + '<div class="pp-tile"><div class="ic pp-c4">' + I.yuran + '</div><div><div class="l">Kaedah Kerap</div><div class="v">' + top + '</div><div class="s">' + kaedah[top] + ' daripada ' + rows.length + ' transaksi</div></div></div>'
+      + '<div class="pp-tile"><div class="ic pp-c5">' + I.resit + '</div><div><div class="l">Resit Tersedia</div><div class="v">' + rows.length + '</div><div class="s">Boleh dicetak / simpan PDF</div></div></div>';
+    const col = n => /zafran/i.test(n) ? 'pp-c1' : 'pp-c2';
+    $('resitBody').innerHTML = rows.map(r => `
+      <tr>
+        <td class="strong num">${r.ref}</td>
+        <td class="muted">${r.dt}</td>
+        <td>
+          <div class="cell-user">
+            <div class="avatar ${col(r.anak)}" style="color:#fff">${PK.ini(r.anak)}</div>
+            <div><div class="nm">${r.anak}</div><div class="ml">Tahun ${r.anak.includes('ZAFRAN')?'5':'4'} · PASTI AL-TA'LIM</div></div>
+          </div>
+        </td>
+        <td>${r.tujuan}</td>
+        <td class="right num strong">${r.jumlah.toFixed(2)}</td>
+        <td>${r.kaedah}</td>
+        <td><span class="badge b-green no-dot">Berjaya</span></td>
+        <td class="right"><button class="btn btn-soft btn-sm" data-action="print">Resit</button></td>
+      </tr>`).join('');
+  })();
+</script>
+</body>
+</html>

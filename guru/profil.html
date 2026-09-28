@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Profil Guru · ePASTI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/app.css?v=4">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#2fa308">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" href="../assets/img/icons/icon-192.png">
+</head>
+<body>
+<div class="pt-app" data-portal="guru" data-module="profil" data-title="Profil Guru" data-subtitle="Maklumat &amp; saguhati">
+  <main class="pt-main">
+
+    <div class="page-head">
+      <div>
+        <div class="crumb">Portal Guru <span>›</span> Profil</div>
+        <h1>Profil Guru</h1>
+        <div class="lead">Maklumat peribadi, saguhati / elaun &amp; keselamatan akaun</div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <a class="active" data-tab="profil">Profil</a>
+      <a data-tab="saguhati">Saguhati / Elaun</a>
+      <a data-tab="katalaluan">Tukar Kata Laluan</a>
+    </div>
+
+    <!-- Profil -->
+    <div data-panel="profil">
+      <div class="card">
+        <div class="card-head"><div><h3>Maklumat Guru</h3><span class="sub">Kemas kini maklumat peribadi anda</span></div></div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="field full"><span class="label">Nama Penuh <span class="req">*</span></span><input class="input" value="USTAZAH SITI KHADIJAH BINTI OMAR"></div>
+            <div class="field"><span class="label">No. Kad Pengenalan <span class="req">*</span></span><input class="input" value="850614-03-5128"></div>
+            <div class="field"><span class="label">Jantina</span>
+              <select class="select"><option>Perempuan</option><option>Lelaki</option></select>
+            </div>
+            <div class="field"><span class="label">No. Telefon</span><input class="input" value="013-9284517"></div>
+            <div class="field"><span class="label">Emel</span><input class="input" type="email" value="guru@pasti.org"></div>
+            <div class="field"><span class="label">PASTI</span><input class="input" value="AL-TA'LIM" readonly></div>
+            <div class="field"><span class="label">Jawatan</span><input class="input" value="Guru" readonly></div>
+            <div class="field"><span class="label">Kelas</span><input class="input" value="Tahun 5 — Al-Farabi" readonly></div>
+            <div class="field"><span class="label">Tarikh Lantikan</span><input class="input" value="02/01/2019" readonly></div>
+            <div class="field full"><span class="label">Alamat</span><input class="input" value="Lot 214, Jalan Kubang Kerian, 16150 Kubang Kerian, Kelantan"></div>
+          </div>
+          <div class="divider"></div>
+          <div class="right"><button class="btn btn-primary" data-toast="Profil dikemas kini.">Simpan</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Saguhati / Elaun -->
+    <div data-panel="saguhati" style="display:none">
+      <div class="card">
+        <div class="card-head"><div><h3>Saguhati / Elaun</h3><span class="sub">Rekod saguhati bulanan guru PASTI</span></div></div>
+        <div class="card-body">
+          <div class="notice mb">
+            <div class="tx"><b>Saguhati dibayar melalui pindahan bank</b><span>Elaun tetap bagi guru PASTI serta elaun tambahan mengikut program &amp; kehadiran.</span></div>
+          </div>
+          <div class="table-wrap">
+            <table class="pt">
+              <thead><tr>
+                <th>Bulan</th><th class="right">Elaun Tetap (RM)</th><th class="right">Elaun Tambahan (RM)</th><th class="right">Jumlah (RM)</th><th>Status</th>
+              </tr></thead>
+              <tbody>
+                <tr><td>April 2026</td><td class="right num">600.00</td><td class="right num">80.00</td><td class="right num strong">680.00</td><td><span class="badge b-green">Dibayar</span></td></tr>
+                <tr><td>Mei 2026</td><td class="right num">600.00</td><td class="right num">50.00</td><td class="right num strong">650.00</td><td><span class="badge b-green">Dibayar</span></td></tr>
+                <tr><td>Jun 2026</td><td class="right num">600.00</td><td class="right num">120.00</td><td class="right num strong">720.00</td><td><span class="badge b-green">Dibayar</span></td></tr>
+                <tr><td>Julai 2026</td><td class="right num">600.00</td><td class="right num">60.00</td><td class="right num strong">660.00</td><td><span class="badge b-green">Dibayar</span></td></tr>
+                <tr><td>Ogos 2026</td><td class="right num">600.00</td><td class="right num">100.00</td><td class="right num strong">700.00</td><td><span class="badge b-green">Dibayar</span></td></tr>
+                <tr><td>September 2026</td><td class="right num">600.00</td><td class="right num">90.00</td><td class="right num strong">690.00</td><td><span class="badge b-amber">Belum</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tukar Kata Laluan -->
+    <div data-panel="katalaluan" style="display:none">
+      <div class="card">
+        <div class="card-head"><div><h3>Tukar Kata Laluan</h3><span class="sub">Pastikan akaun anda kekal selamat</span></div></div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="field full"><span class="label">Kata Laluan Semasa <span class="req">*</span></span><input class="input" type="password" placeholder="••••••••"></div>
+            <div class="field"><span class="label">Kata Laluan Baharu <span class="req">*</span></span><input class="input" type="password" placeholder="••••••••"></div>
+            <div class="field"><span class="label">Sahkan Kata Laluan Baharu <span class="req">*</span></span><input class="input" type="password" placeholder="••••••••"></div>
+          </div>
+          <div class="field mt"><span class="hint">Kata laluan mesti sekurang-kurangnya 8 aksara dengan gabungan huruf &amp; nombor.</span></div>
+          <div class="divider"></div>
+          <div class="right"><button class="btn btn-primary" data-toast="Kata laluan dikemas kini.">Simpan</button></div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script src="../assets/js/app.js?v=4"></script>
+</body>
+</html>

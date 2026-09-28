@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Profil Saya · ePASTI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/app.css?v=4">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#2fa308">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" href="../assets/img/icons/icon-192.png">
+</head>
+<body>
+<div class="pt-app" data-portal="parent" data-module="profil" data-title="Profil Saya" data-subtitle="Maklumat akaun & keutamaan">
+  <main class="pt-main">
+
+    <section class="pp-hero">
+      <div class="row">
+        <div class="pp-prof">
+          <div class="av">NA</div>
+          <div>
+            <div class="crumbs">Portal Ibu Bapa › Profil Saya</div>
+            <h1>Puan Nurul Aina binti Halim</h1>
+            <div class="lead">ibubapa@pasti.org · 013-2298 471</div>
+            <div class="mini"><div>Anak berdaftar<b>2</b></div><div>PASTI<b>AL-TA'LIM</b></div><div>Ahli sejak<b>Jan 2024</b></div></div>
+          </div>
+        </div>
+        <span class="pp-chip"><i></i>Akaun disahkan</span>
+      </div>
+    </section>
+
+    <div class="card">
+      <div class="card-body">
+        <div class="tabs">
+          <button class="active" data-tab="profil">Profil</button>
+          <button data-tab="kata">Tukar Kata Laluan</button>
+          <button data-tab="consent">Persetujuan Data</button>
+        </div>
+
+        <!-- Profil -->
+        <div data-panel="profil">
+          <form>
+            <div class="form-grid">
+              <div class="field full"><span class="label">Nama Penuh <span class="req">*</span></span><input class="input" value="PUAN NURUL AINA BINTI HALIM"></div>
+              <div class="field"><span class="label">No. Kad Pengenalan <span class="req">*</span></span><input class="input" value="850312-10-5482"></div>
+              <div class="field"><span class="label">No. Telefon <span class="req">*</span></span><input class="input" value="013-2298 471"></div>
+              <div class="field"><span class="label">Emel</span><input class="input" type="email" value="ibubapa@pasti.org"></div>
+              <div class="field"><span class="label">Pekerjaan</span><input class="input" value="Penolong Pegawai Tadbir"></div>
+              <div class="field full"><span class="label">Pendapatan Isi Rumah (RM)</span><input class="input num" value="5,800"></div>
+              <div class="field full">
+                <span class="label">Alamat</span>
+                <input class="input mb" value="No. 24, Jalan Seri Kenangan 3/2, Taman Seri Kenangan">
+                <input class="input" value="16150 Kubang Kerian, Kelantan">
+              </div>
+            </div>
+            <div class="divider"></div>
+            <button type="submit" class="btn btn-primary">Simpan</button>
+          </form>
+        </div>
+
+        <!-- Tukar Kata Laluan -->
+        <div data-panel="kata" style="display:none">
+          <form>
+            <div class="form-grid">
+              <div class="field full"><span class="label">Kata Laluan Semasa <span class="req">*</span></span><input class="input" type="password" placeholder="••••••••"></div>
+              <div class="field"><span class="label">Kata Laluan Baharu <span class="req">*</span></span><input class="input" type="password" placeholder="••••••••"></div>
+              <div class="field"><span class="label">Sahkan Kata Laluan Baharu <span class="req">*</span></span><input class="input" type="password" placeholder="••••••••"></div>
+              <div class="field full"><span class="hint">Kata laluan mesti sekurang-kurangnya 8 aksara, mengandungi huruf besar, huruf kecil dan nombor.</span></div>
+            </div>
+            <div class="divider"></div>
+            <button type="submit" class="btn btn-primary">Simpan</button>
+          </form>
+        </div>
+
+        <!-- Persetujuan Data -->
+        <div data-panel="consent" style="display:none">
+          <div class="notice mb">
+            <div class="tx"><b>Perlindungan Data Peribadi (PDPA)</b><span>Maklumat anda diproses mengikut Akta Perlindungan Data Peribadi 2010. Anda boleh menarik balik persetujuan pada bila-bila masa.</span></div>
+          </div>
+          <form>
+            <label class="check mt"><input type="checkbox" checked> Saya bersetuju maklumat anak & keluarga direkod dan diproses oleh Jabatan PASTI Malaysia (Data Consent)</label>
+            <label class="check mt"><input type="checkbox" checked> Saya benarkan maklumat dikongsi dengan PASTI cawangan berkaitan</label>
+            <label class="check mt"><input type="checkbox" checked> Terima peringatan bayaran melalui pintu bayaran & e-mel</label>
+            <div class="divider"></div>
+            <button type="submit" class="btn btn-primary">Simpan Keutamaan</button>
+          </form>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script src="../assets/js/app.js?v=4"></script>
+<script src="../assets/js/parent-kids.js?v=2"></script>
+<script>
+(function(){
+  const { me, kids, demo } = PK.load(); if (demo) return;
+  const h = document.querySelector('.pp-hero');
+  h.querySelector('.av').textContent = PK.ini(me.nama);
+  h.querySelector('h1').textContent = PK.title(me.nama);
+  h.querySelector('.lead').textContent = me.emel;
+  h.querySelector('.mini').innerHTML = '<div>Anak berdaftar<b>' + kids.length + '</b></div>' + (kids[0] ? '<div>PASTI<b>' + PK.esc(kids[0].pasti.replace(/^PASTI /,'')) + '</b></div>' : '');
+  const f = document.querySelector('[data-panel="profil"]');
+  const set = (i, v) => { const x = f.querySelectorAll('input')[i]; if (x) x.value = v; };
+  set(0, me.nama.toUpperCase()); set(3, me.emel);
+})();
+</script>
+</body>
+</html>
