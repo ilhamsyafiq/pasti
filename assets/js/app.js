@@ -766,20 +766,80 @@
   }
 
   // ---- printable documents (resit, slip, sijil, surat)
-  function docFor(kind, tr){
-    const pairs = tr ? cellsOf(tr).filter(c => !/^(bil|no\.?|#)$/i.test(c.h)).map(c => [c.h, esc(c.td.querySelector('.badge') ? c.td.querySelector('.badge').textContent : cellText(c.td))]) : [];
-    const T = { borang:'SALINAN BORANG PERMOHONAN', resit:'RESIT RASMI PEMBAYARAN', slip:'SLIP KEPUTUSAN PEPERIKSAAN', sijil:'SIJIL', surat:'SURAT PELANTIKAN' }[kind];
-    const intro = { borang:'Salinan rasmi permohonan seperti yang direkodkan dalam sistem ePASTI.', resit:'Terima kasih. Pembayaran berikut telah diterima melalui BayarCash.', slip:'Keputusan penilaian murid bagi penggal semasa.',
-      sijil:'Adalah disahkan bahawa murid berikut telah menamatkan pengajian di PASTI.', surat:'Dengan segala hormatnya, tuan/puan dilantik ke jawatan berikut bagi penggal semasa.' }[kind];
+  // One printable document (resit / slip / surat / sijil / borang) built from a table row.
+  function docHtml(kind, tr, opt){
+    opt = opt || {};
+    const cells = tr ? cellsOf(tr) : [], get = re => { const c = cells.find(c => re.test(c.h)); return c ? cellText(c.td) : ''; };
     const logo = document.querySelector('.side-brand img') ? document.querySelector('.side-brand img').src : '';
-    const body = `<div class="pt-doc"><div class="pd-head">${logo?`<img src="${logo}" alt="">`:''}<div><b>JABATAN PASTI MALAYSIA</b><span>Sistem Pengurusan PASTI (ePASTI)</span></div></div>
+    if (kind === 'sijil') {
+      const nama = get(/nama murid \(rumi\)|nama murid|^nama/i) || '—', jawi = get(/jawi/i), mykid = (get(/mykid/i).match(/\d{6,}/) || [''])[0];
+      const pasti = get(/^pasti/i) || '', no = ref('SJL');
+      if (opt.jawi) return `<div class="pt-doc pt-cert jawi" dir="rtl">${logo?`<img class="cert-logo" src="${logo}" alt="">`:''}
+        <div class="cert-org">جابتن ڤستي مليسيا</div><div class="cert-t">سيجيل تامت ڤڠاجين</div>
+        <p class="cert-l">دڠن اين دصحکن بهاوا</p><div class="cert-name">${esc(jawi || nama)}</div><div class="cert-sub" dir="ltr">${esc(nama)} · MyKid ${esc(mykid)}</div>
+        <p class="cert-l">تله منمتکن ڤڠاجين دڤوست اسوهن تونس اسلام (ڤستي)</p><div class="cert-p" dir="ltr">${esc(pasti)}</div><p class="cert-l">بݢي سيسي ٢٠٢٦</p>
+        <div class="cert-sign"><div><i></i>ڤنتدبير چاواڠن</div><div><i></i>ڤڠروسي ڤستي کاوسن</div></div>
+        <div class="cert-no" dir="ltr">No. Sijil: ${no} · Tarikh: ${today()}</div></div>`;
+      return `<div class="pt-doc pt-cert">${logo?`<img class="cert-logo" src="${logo}" alt="">`:''}
+        <div class="cert-org">JABATAN PASTI MALAYSIA</div><div class="cert-t">SIJIL TAMAT PENGAJIAN</div>
+        <p class="cert-l">Dengan ini disahkan bahawa</p><div class="cert-name">${esc(nama)}</div><div class="cert-sub">MyKid ${esc(mykid)}</div>
+        <p class="cert-l">telah menamatkan pengajian di Pusat Asuhan Tunas Islam (PASTI)</p><div class="cert-p">${esc(pasti)}</div><p class="cert-l">bagi Sesi 2026</p>
+        <div class="cert-sign"><div><i></i>Pentadbir Cawangan</div><div><i></i>Pengerusi PASTI Kawasan</div></div>
+        <div class="cert-no">No. Sijil: ${no} · Tarikh: ${today()}</div></div>`;
+    }
+    const pairs = cells.filter(c => !/^(bil|no\.?|#|tindakan|muat turun|cetak.*|)$/i.test(c.h) && !c.td.querySelector('input[type=checkbox]'))
+      .map(c => [c.h, esc(c.td.querySelector('.badge') ? c.td.querySelector('.badge').textContent : cellText(c.td))]);
+    const T = { borang:'SALINAN BORANG PERMOHONAN', resit:'RESIT RASMI PEMBAYARAN', slip:'SLIP KEPUTUSAN PEPERIKSAAN', surat:'SURAT PELANTIKAN' }[kind];
+    const intro = { borang:'Salinan rasmi permohonan seperti yang direkodkan dalam sistem ePASTI.', resit:'Terima kasih. Pembayaran berikut telah diterima melalui BayarCash.', slip:'Keputusan penilaian murid bagi penggal semasa.',
+      surat:'Dengan segala hormatnya, tuan/puan dilantik ke jawatan berikut bagi penggal semasa.' }[kind];
+    return `<div class="pt-doc"><div class="pd-head">${logo?`<img src="${logo}" alt="">`:''}<div><b>JABATAN PASTI MALAYSIA</b><span>Sistem Pengurusan PASTI (ePASTI)</span></div></div>
       <h2>${T}</h2><div class="pd-meta">No. Dokumen: <b>${ref(kind.slice(0,3).toUpperCase())}</b> · Tarikh: <b>${today()}</b></div>
       <p>${intro}</p>${kv(pairs.length ? pairs : [['Rujukan', esc(document.title)]])}
+      ${kind === 'surat' ? '<div class="pd-sign"><div><i></i>Pengerusi PASTI Kawasan</div><div><i></i>Setiausaha</div></div>' : ''}
       <div class="pd-foot">Dokumen ini dijana oleh komputer dan tidak memerlukan tandatangan.</div></div>`;
-    dyn(kind === 'sijil' ? 'Sijil Murid' : kind === 'surat' ? 'Surat Pelantikan' : kind === 'slip' ? 'Slip Peperiksaan' : kind === 'borang' ? 'Borang Permohonan' : 'Resit Pembayaran', body,
+  }
+  const DOC_TITLE = { sijil:'Sijil Tamat Pengajian', surat:'Surat Pelantikan', slip:'Slip Peperiksaan', borang:'Borang Permohonan', resit:'Resit Pembayaran' };
+  function docFor(kind, tr, opt){
+    dyn(DOC_TITLE[kind] + (opt && opt.jawi ? ' (Jawi)' : ''), docHtml(kind, tr, opt),
       '<button class="btn btn-ghost" data-close>Tutup</button><button class="btn btn-primary" data-kit="print-doc">Cetak / Simpan PDF</button>', 'lg');
   }
-  function printDoc(){ document.body.classList.add('pt-printing'); window.print(); setTimeout(() => document.body.classList.remove('pt-printing'), 500); }
+  // Bulk: one document per selected row (or every visible row), one per page.
+  function bulkDocs(kind, btn, opt){
+    const tb = tableNear(btn) || document.querySelector('table.pt');
+    let rows = tb ? [...tb.tBodies[0].rows].filter(r => r.style.display !== 'none' && r.cells.length > 1) : [];
+    const picked = rows.filter(r => r.querySelector('input[type=checkbox]:checked'));
+    if (picked.length) rows = picked;
+    if (!rows.length) { toast('Tiada rekod untuk dicetak', 'red'); return; }
+    dyn(DOC_TITLE[kind] + (opt && opt.jawi ? ' (Jawi)' : '') + ' — ' + rows.length + ' dokumen', `<div class="pt-docs">${rows.map(r => docHtml(kind, r, opt)).join('')}</div>`,
+      `<span class="muted" style="font-size:12px;margin-right:auto">${picked.length ? 'Baris yang ditanda' : 'Semua baris dipaparkan'} · satu dokumen setiap muka surat</span><button class="btn btn-ghost" data-close>Tutup</button><button class="btn btn-primary" data-kit="print-doc">Cetak / Simpan PDF (${rows.length})</button>`, 'lg');
+  }
+  function preparePagePrint(){
+    if (document.body.classList.contains('pt-printing') || document.body.classList.contains('pm-printing')) return;
+    const main = document.querySelector('.pt-main'); if (!main) return;
+    document.body.classList.add('pt-has-printhead');
+    let hd = document.getElementById('ptPrintHead');
+    if (!hd) { hd = document.createElement('div'); hd.id = 'ptPrintHead'; hd.className = 'pt-print-head'; main.prepend(hd); }
+    const logo = document.querySelector('.side-brand img'), u = DB.user(), T = TIERS[getTier()];
+    const h1 = document.querySelector('.pt-main .page-head h1, .pt-main .pp-hero h1, .pt-main h1'), lead = document.querySelector('.pt-main .page-head .lead, .pt-main .pp-hero .lead');
+    const tab = document.querySelector('.tabs .active, .tabs [aria-selected=true]');
+    hd.innerHTML = `${logo ? `<img src="${logo.src}" alt="">` : ''}<div class="t"><b>JABATAN PASTI MALAYSIA · ePASTI</b><h1>${esc(h1 ? h1.textContent : document.title)}${tab ? ' — ' + esc(tab.textContent.trim()) : ''}</h1>
+      ${lead ? `<span>${esc(lead.textContent)}</span>` : ''}</div><div class="m">Dicetak: ${today()} ${nowTime()}<br>${u ? esc(u.nama) + '<br>' : ''}${esc(u ? (ROLE_LABEL[u.peranan] || '') + ' · ' + u.skop : (T ? T.label : ''))}</div>`;
+    // hide action / checkbox columns
+    document.querySelectorAll('.pt-print-np').forEach(x => x.classList.remove('pt-print-np'));
+    let wide = false;
+    document.querySelectorAll('table.pt').forEach(tb => {
+      if (!tb.offsetParent) return;
+      const hr = tb.tHead && tb.tHead.rows[tb.tHead.rows.length - 1]; if (!hr) return;
+      const cols = [...hr.cells].map((c,i) => /^(tindakan|muat turun|cetak sijil (jawi|rumi)|)$/i.test(c.textContent.trim()) || c.querySelector('input[type=checkbox]') ? i : -1).filter(i => i >= 0);
+      if (hr.cells.length - cols.length >= 8) wide = true;
+      [...tb.rows].forEach(r => { if (r.cells.length !== hr.cells.length) return; cols.forEach(i => r.cells[i] && r.cells[i].classList.add('pt-print-np')); });
+      if (tb.tHead.rows.length > 1) [...tb.tHead.rows[0].cells].forEach(c => { if (/^(tindakan|)$/i.test(c.textContent.trim()) || c.querySelector('input[type=checkbox]')) c.classList.add('pt-print-np'); });
+    });
+    let pg = document.getElementById('ptPageSize'); if (!pg) { pg = document.createElement('style'); pg.id = 'ptPageSize'; document.head.appendChild(pg); }
+    pg.textContent = '@page{size:A4 ' + (wide ? 'landscape' : 'portrait') + ';margin:12mm}';
+  }
+  window.addEventListener('beforeprint', preparePagePrint);
+  function printDoc(){ document.body.classList.add('pt-printing'); const pg = document.getElementById('ptPageSize'); if (pg) pg.textContent = '@page{size:A4 portrait;margin:12mm}'; window.print(); setTimeout(() => document.body.classList.remove('pt-printing'), 500); }
 
   // ---- BayarCash checkout
   const money = s => { const m = String(s).replace(/,/g,'').match(/(\d+(\.\d+)?)/); return m ? +m[1] : 0; };
@@ -914,7 +974,10 @@
     }
     if (tr && btn.dataset.action === 'approve') { decide(tr, true, btn.dataset.status || 'Diterima', btn); return stop(); }
     if (tr && btn.dataset.action === 'reject')  { decide(tr, false, 'Ditolak', btn); return stop(); }
-    if (tr && btn.dataset.action === 'print')   { docFor(/slip/i.test(l) ? 'slip' : /sijil/i.test(l) ? 'sijil' : /surat/i.test(l) ? 'surat' : /bayar|resit|bil|rcp|inv/i.test(tr.textContent) ? 'resit' : 'borang', tr); return stop(); }
+    if (tr && btn.dataset.action === 'print')   { docFor(/slip/i.test(l) ? 'slip' : /sijil/i.test(l) ? 'sijil' : /surat/i.test(l) ? 'surat' : /bayar|resit|bil|rcp|inv/i.test(tr.textContent) ? 'resit' : 'borang', tr, { jawi: /jawi/i.test(l) }); return stop(); }
+    // bulk documents (page-level buttons)
+    if (/^(cetak sijil tamat sekolah (jawi|rumi)|cetak sijil( tamat)?|jana slip peperiksaan \(pukal\)|cetak surat pelantikan \(pukal\))/.test(l)) {
+      bulkDocs(/sijil/.test(l) ? 'sijil' : /slip/.test(l) ? 'slip' : 'surat', btn, { jawi: /jawi/.test(l) }); return stop(); }
     if (btn.dataset.action) return false;                                                   // explicit engine actions
 
     // row-level actions
@@ -957,7 +1020,6 @@
     if (/^(uji sambungan|segerak sekarang|semak id)$/.test(l)) { const old = btn.textContent; btn.disabled = true; btn.textContent = 'Menyemak…';
       setTimeout(() => { btn.disabled = false; btn.textContent = old; toast(btn.dataset.toast || (l === 'semak id' ? 'ID tersedia untuk digunakan' : l === 'segerak sekarang' ? 'Disegerakkan · ' + nowTime() : 'Sambungan berjaya')); }, 900); return stop(); }
     if (/^kongsi$/.test(l)) { const u = location.href; (navigator.clipboard ? navigator.clipboard.writeText(u) : Promise.reject()).then(() => toast('Pautan kempen disalin')).catch(() => toast('Pautan: ' + u)); return stop(); }
-    if (/^(jana slip peperiksaan \(pukal\)|cetak surat pelantikan \(pukal\)|cetak sijil|cetak sijil tamat)/.test(l)) { window.print(); return stop(); }
     return false;
   }
 

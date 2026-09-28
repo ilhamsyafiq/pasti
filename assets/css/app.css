@@ -718,3 +718,71 @@ details.el[open] summary{border-bottom:1px solid var(--line2)}
 .card-body > .chart-box:last-child{margin-bottom:0}
 .grid > .card{min-width:0}
 .chart-box canvas{max-width:100%}
+
+/* ==========================================================================
+   Print / Simpan PDF
+   ========================================================================== */
+.pt-print-head{display:none}
+/* certificate */
+.pt-cert{text-align:center;padding:38px 40px 28px;border:3px double var(--brand-d)!important;border-radius:6px!important;position:relative;
+  background:radial-gradient(circle at 50% 38%,rgba(47,163,8,.06),transparent 60%),#fff}
+.pt-cert::before{content:"";position:absolute;inset:8px;border:1px solid rgba(35,122,6,.35);border-radius:3px;pointer-events:none}
+.pt-cert .cert-logo{display:block;width:78px;height:78px;object-fit:contain;margin:0 auto 8px}
+.pt-cert .cert-org{font-size:13px;font-weight:700;letter-spacing:.14em;color:var(--brand-d)}
+.pt-cert .cert-t{font-size:26px;font-weight:800;color:var(--ink);letter-spacing:.08em;margin:6px 0 18px}
+.pt-cert .cert-l{font-size:13px;color:var(--body);margin:6px 0}
+.pt-cert .cert-name{font-size:22px;font-weight:800;color:var(--brand-d);margin:8px 0 2px;letter-spacing:.02em}
+.pt-cert .cert-sub{font-size:12px;color:var(--muted);margin-bottom:10px}
+.pt-cert .cert-p{font-size:16px;font-weight:700;color:var(--ink);margin:4px 0}
+.pt-cert .cert-sign,.pd-sign{display:flex;justify-content:space-around;gap:30px;margin-top:40px;font-size:12px;color:var(--body)}
+.pt-cert .cert-sign div,.pd-sign div{flex:1;max-width:200px;text-align:center}
+.pt-cert .cert-sign i,.pd-sign i{display:block;border-top:1px solid #9aa79f;margin-bottom:6px;height:0}
+.pt-cert .cert-no{margin-top:22px;font-size:10.5px;color:var(--faint)}
+.pt-cert.jawi{font-family:'Amiri','Traditional Arabic','Scheherazade New','Times New Roman',serif}
+.pt-cert.jawi .cert-t{font-size:30px;letter-spacing:0}.pt-cert.jawi .cert-org{letter-spacing:0;font-size:16px}
+.pt-cert.jawi .cert-l{font-size:17px}.pt-cert.jawi .cert-name{font-size:28px;letter-spacing:0}
+.pt-cert.jawi .cert-sign{font-size:15px}
+.pt-docs{display:flex;flex-direction:column;gap:16px}
+
+@media print{
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  html,body{background:#fff!important}
+  /* app chrome & controls */
+  .pt-side,.pt-top,.pt-tabbar,.pt-sheet,.pt-toasts,.notif-panel,.toolbar,.tabs,.chips,.pager,.filter-bar,.input-group,.hub-sec,
+  .page-head .btn,.page-head select,.page-head .toolbar,.page-head .crumb,.pp-hero .btn,.pp-filter,.no-print,[data-noprint],
+  .pt-main .btn,.pt-main select,.legend .btn,.pt-print-np,[data-action="print"],[data-action="export"],.modal-overlay:not(.open){display:none!important}
+  .pt-main{margin:0!important;padding:0!important;max-width:none!important}
+  .pt-app{display:block!important}
+  /* letterhead */
+  .pt-print-head{display:flex!important;align-items:center;gap:14px;border-bottom:2px solid #2fa308;padding:0 0 10px;margin:0 0 14px}
+  .pt-print-head img{width:46px;height:46px;object-fit:contain}
+  .pt-print-head .t{flex:1}
+  .pt-print-head .t b{display:block;font-size:10.5px;letter-spacing:.08em;color:#237a06}
+  .pt-print-head h1{font-size:17px;margin:2px 0;color:#122019}
+  .pt-print-head .t span{font-size:10.5px;color:#5b6a61}
+  .pt-print-head .m{font-size:9.5px;color:#5b6a61;text-align:right;line-height:1.5}
+  body.pt-has-printhead .pt-main .page-head{display:none!important}
+  body.pt-printing #ptDyn,body.pt-printing #ptDyn .modal,body.pt-printing #ptDyn .m-body{max-height:none!important;overflow:visible!important;height:auto!important}
+  body.pt-printing #ptDyn .m-body{padding:0!important;background:none!important}
+  /* content */
+  .card,.stat,.pp-tile,.pp-kid,.ck-stat,.hq-pipe,.notice,.pt-doc{box-shadow:none!important}
+  .card{border:1px solid #d9dfd6!important;break-inside:avoid;margin-bottom:10px}
+  .card:has(table.pt){break-inside:auto}
+  .card-head{padding:10px 12px!important}
+  .table-wrap{overflow:visible!important;border:0!important}
+  table.pt{width:100%!important;font-size:9.5px!important;border-collapse:collapse}
+  table.pt th,table.pt td{padding:5px 6px!important;white-space:normal!important}
+  table.pt thead{display:table-header-group}
+  table.pt tr{break-inside:avoid}
+  table.pt thead th{background:#eef3ec!important;color:#122019!important}
+  .cell-user .avatar{display:none!important}
+  .chart-box,canvas{break-inside:avoid}
+  .pp-hero{box-shadow:none!important;border-radius:10px!important}
+  /* parent/guru portal phone layout never applies on paper */
+  .pt-portal .pt-main{padding:0!important}
+  /* documents */
+  .pt-docs{display:block}
+  .pt-docs .pt-doc{break-after:page;page-break-after:always;margin:0}
+  .pt-docs .pt-doc:last-child{break-after:auto;page-break-after:auto}
+  body.pt-printing .pt-cert{min-height:245mm;display:flex;flex-direction:column;justify-content:center}
+}
