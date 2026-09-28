@@ -6,7 +6,7 @@
 <title>Laporan Murid PASTI · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=4">
+<link rel="stylesheet" href="../assets/css/app.css?v=5">
 </head>
 <body>
 <div class="pt-app" data-module="pelaporan" data-page="laporan-murid" data-title="Laporan Murid PASTI" data-subtitle="Statistik murid mengikut kategori">
@@ -35,7 +35,7 @@
 
         <!-- ===== Status Yatim ===== -->
         <div data-panel="yatim">
-          <div class="chart-ph mb">Carta Bar — Bilangan Murid Yatim & Bukan Yatim mengikut DUN</div>
+          <div class="chart-t">Bilangan Murid mengikut Tahun &amp; Jantina</div><div class="chart-box" id="cTahun" style="height:250px;position:relative"></div>
           <div class="table-wrap">
             <table class="pt">
               <thead>
@@ -81,7 +81,7 @@
 
         <!-- ===== Jantina ===== -->
         <div data-panel="jantina" style="display:none">
-          <div class="chart-ph mb">Carta Pai — Nisbah Lelaki vs Perempuan mengikut DUN</div>
+          <div class="chart-t">Lelaki vs Perempuan mengikut DUN</div><div class="chart-box" id="cJantina" style="height:170px;position:relative"></div>
           <div class="table-wrap">
             <table class="pt">
               <thead>
@@ -118,7 +118,7 @@
 
         <!-- ===== Bangsa ===== -->
         <div data-panel="bangsa" style="display:none">
-          <div class="chart-ph mb">Carta Bar — Taburan Murid mengikut Bangsa</div>
+          <div class="chart-t">Taburan Murid mengikut Bangsa</div><div class="chart-box" id="cBangsa" style="height:240px;position:relative"></div>
           <div class="table-wrap">
             <table class="pt">
               <thead>
@@ -215,7 +215,25 @@
   </main>
 </div>
 
-<script src="../assets/js/app.js?v=4"></script>
+<script src="../assets/js/app.js?v=5"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="../assets/js/charts.js?v=2"></script>
+<script>
+(function(){
+  const panel = k => document.querySelector('[data-panel="' + k + '"] table.pt');
+  // Tahun 4/5/6 × L/P — header row 2 holds L,P pairs; sum across DUN
+  const ty = [...panel('yatim').tBodies[0].rows].filter(r => !/jumlah/i.test(r.textContent)).map(r => [...r.cells].slice(1, 7).map(c => +c.textContent.trim() || 0));
+  const sum = i => ty.reduce((a,r) => a + r[i], 0);
+  PTChart.bar(document.getElementById('cTahun'), { labels:['Tahun 4','Tahun 5','Tahun 6'],
+    series:[{ name:'Lelaki', data:[sum(0), sum(2), sum(4)] }, { name:'Perempuan', data:[sum(1), sum(3), sum(5)] }] });
+  const J = PTChart.readTable(panel('jantina'));
+  PTChart.bar(document.getElementById('cJantina'), { labels:J.labels, horizontal:true, stacked:true,
+    series:[{ name:'Lelaki', data:J.rows.map(r => r[0]) }, { name:'Perempuan', data:J.rows.map(r => r[1]) }] });
+  const B = PTChart.readTable(panel('bangsa')), names = B.heads.slice(1, -1);
+  PTChart.bar(document.getElementById('cBangsa'), { labels:names, horizontal:true,
+    series:[{ name:'Murid', data:names.map((_,i) => B.rows.reduce((a,r) => a + r[i], 0)) }] });
+})();
+</script>
 <script>/* laporan-murid: interactions handled by app.js (tabs, filter, print, export toast) */</script>
 </body>
 </html>

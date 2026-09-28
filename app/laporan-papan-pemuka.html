@@ -6,7 +6,7 @@
 <title>Papan Pemuka · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=4">
+<link rel="stylesheet" href="../assets/css/app.css?v=5">
 </head>
 <body>
 <div class="pt-app" data-module="pelaporan" data-page="laporan-papan-pemuka" data-title="Papan Pemuka" data-subtitle="Ringkasan statistik PASTI mengikut DUN">
@@ -29,16 +29,16 @@
 
     <div class="grid g-3">
       <div class="card">
-        <div class="card-head"><h3>Bilangan PASTI</h3><a class="muted" href="#" data-action="print" style="font-size:12.5px">Cetak</a></div>
-        <div class="card-body"><div class="chart-ph">Carta Pai — Bilangan PASTI mengikut DUN</div></div>
+        <div class="card-head"><div><h3>Bilangan PASTI</h3><span class="sub">Mengikut DUN</span></div><a class="muted" href="#" data-action="print" style="font-size:12.5px">Cetak</a></div>
+        <div class="card-body"><div class="chart-box" id="cPasti" style="height:200px;position:relative"></div></div>
       </div>
       <div class="card">
-        <div class="card-head"><h3>Bilangan Guru</h3><a class="muted" href="#" data-action="print" style="font-size:12.5px">Cetak</a></div>
-        <div class="card-body"><div class="chart-ph">Carta Pai — Bilangan Guru mengikut DUN</div></div>
+        <div class="card-head"><div><h3>Bilangan Guru</h3><span class="sub">Mengikut DUN</span></div><a class="muted" href="#" data-action="print" style="font-size:12.5px">Cetak</a></div>
+        <div class="card-body"><div class="chart-box" id="cGuru" style="height:200px;position:relative"></div></div>
       </div>
       <div class="card">
-        <div class="card-head"><h3>Bilangan Murid</h3><a class="muted" href="#" data-action="print" style="font-size:12.5px">Cetak</a></div>
-        <div class="card-body"><div class="chart-ph">Carta Pai — Bilangan Murid mengikut DUN</div></div>
+        <div class="card-head"><div><h3>Bilangan Murid</h3><span class="sub">Mengikut DUN</span></div><a class="muted" href="#" data-action="print" style="font-size:12.5px">Cetak</a></div>
+        <div class="card-body"><div class="chart-box" id="cMurid" style="height:200px;position:relative"></div></div>
       </div>
     </div>
 
@@ -68,6 +68,15 @@
   </main>
 </div>
 
-<script src="../assets/js/app.js?v=4"></script>
+<script src="../assets/js/app.js?v=5"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="../assets/js/charts.js?v=2"></script>
+<script>
+(function(){
+  const T = PTChart.readTable(document.querySelector('table.pt'), { skipZeroRows:true, labelCol:1 });
+  [['cPasti',0,'PASTI'],['cGuru',1,'Guru'],['cMurid',2,'Murid']].forEach(([id,col,name]) =>
+    PTChart.bar(document.getElementById(id), { labels:T.labels, series:[{ name, data:T.rows.map(r => r[col]) }], horizontal:true }));
+})();
+</script>
 </body>
 </html>

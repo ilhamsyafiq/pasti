@@ -695,3 +695,26 @@ details.el[open] summary{border-bottom:1px solid var(--line2)}
 .it em{font-style:normal;color:var(--muted);font-weight:700;margin-right:6px}
 .empty-note{padding:18px;border-radius:14px;background:#fff;border:1px dashed var(--line);color:var(--muted);text-align:center}
 @media (max-width:560px){ .rum-r{grid-template-columns:1fr} .rum-r .e{padding:8px 14px} details.el summary .mix{width:70px} }
+
+/* sidebar scroll — thin translucent scrollbar, visible on hover, fade hints at the edges */
+.side-nav{scrollbar-width:thin;scrollbar-color:transparent transparent;margin-right:-8px;padding-right:6px;overscroll-behavior:contain;scroll-behavior:smooth;
+  -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 var(--fade-t,0px),#000 calc(100% - var(--fade-b,0px)),transparent 100%);
+          mask-image:linear-gradient(180deg,transparent 0,#000 var(--fade-t,0px),#000 calc(100% - var(--fade-b,0px)),transparent 100%)}
+.side-nav.fade-t{--fade-t:22px}.side-nav.fade-b{--fade-b:28px}
+.pt-side:hover .side-nav{scrollbar-color:rgba(255,255,255,.28) transparent}
+.side-nav::-webkit-scrollbar{width:6px}
+.side-nav::-webkit-scrollbar-track{background:transparent;margin:6px 0}
+.side-nav::-webkit-scrollbar-thumb{background:transparent;border-radius:10px;transition:background .2s}
+.pt-side:hover .side-nav::-webkit-scrollbar-thumb{background:rgba(255,255,255,.24)}
+.side-nav::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.42)!important}
+.side-nav::-webkit-scrollbar-button{display:none;height:0}
+/* sub-menus open/close smoothly */
+.nav-children{animation:navIn .22s ease}
+@keyframes navIn{from{opacity:0;transform:translateY(-4px)}}
+
+/* report charts */
+.chart-t{font-size:13px;font-weight:700;color:var(--ink);margin:4px 0 8px}
+.chart-box{margin-bottom:18px}
+.card-body > .chart-box:last-child{margin-bottom:0}
+.grid > .card{min-width:0}
+.chart-box canvas{max-width:100%}

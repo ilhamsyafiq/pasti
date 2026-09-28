@@ -6,7 +6,7 @@
 <title>Tetapan · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=4">
+<link rel="stylesheet" href="../assets/css/app.css?v=5">
 </head>
 <body>
 <div class="pt-app" data-module="tetapan" data-page="tetapan" data-title="Tetapan" data-subtitle="Profil & pentadbir">
@@ -100,7 +100,7 @@
       </div>
     </div>
 
-    <!-- ===== Pengguna & Akaun (cascading: each tier creates the tier below) ===== -->
+    <!-- ===== Pengguna & Akaun (each tier creates every account below it) ===== -->
     <div data-panel="pentadbir" style="display:none">
       <div class="card mb">
         <div class="card-body">
@@ -153,86 +153,157 @@
   .chainx .a{color:var(--faint);font-weight:700}
 </style>
 
-<script src="../assets/js/app.js?v=4"></script>
+<script src="../assets/js/app.js?v=5"></script>
 <script>
 (function(){
-  const tier = PT.tier, DB = window.DB, H = DB.HIER, RL = DB.ROLE_LABEL;
-  const child = H[tier];
+  const tier = PT.tier, DB = window.DB, RL = DB.ROLE_LABEL;
   const ME = DB.user();                                   // the signed-in account decides its own scope
   const MY = (ME && ME.peranan === tier) ? ME.skop : { pusat:'JABATAN PASTI MALAYSIA', negeri:'KELANTAN', kawasan:'P025 KUBANG KERIAN', dun:'N44 KOTA LAMA', cawangan:"PASTI AL-TA'LIM" }[tier];
   const $ = id => document.getElementById(id);
-  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
-  // who-creates-who strip
-  const ORDER = ['pusat','negeri','kawasan','dun','cawangan','guru'];
-  $('uChain').innerHTML = ORDER.map((k,i) => `${i?'<span class="a">→</span>':''}<span class="c ${k===tier?'me':k===child?'kid':''}">${RL[k].replace('Pentadbir ','')}${k===tier?' (anda)':''}</span>`).join('') + '<span class="a">→</span><span class="c">Ibu Bapa (automatik bila murid diterima)</span>';
-  $('uRule').innerHTML = `Sebagai <b>${RL[tier]}</b>, anda boleh cipta akaun <b>${RL[child]}${child==='guru'?' & Pembantu Guru':''}</b> dalam skop <b>${esc(MY)}</b> sahaja. Akaun peringkat lain dicipta oleh peringkat di atasnya.`;
-  $('uNew').textContent = '+ Cipta Akaun ' + (child === 'guru' ? 'Guru' : RL[child].replace('Pentadbir ',''));
+  // ---- hierarchy: every tier can create every account BELOW it (not only the next one)
+  const LEVELS = ['pusat','negeri','kawasan','dun','cawangan','guru'];        // guru = guru & pembantu guru
+  const lv = r => r === 'pembantu' || r === 'ibubapa' ? 5 : LEVELS.indexOf(r);
+  const myLv = lv(tier);
+  const CREATABLE = LEVELS.slice(myLv + 1);                                  // e.g. pusat → negeri, kawasan, dun, cawangan, guru
 
-  // scope choices for the account being created
-  const KELANTAN_KAW = ['P025 KUBANG KERIAN','P026 BACHOK','TUMPAT','PENGKALAN CHEPA','KOTA BHARU','PASIR MAS','RANTAU PANJANG','KETEREH','TANAH MERAH','PASIR PUTEH','MACHANG','JELI','KUALA KRAI','GUA MUSANG'];
+  // ---- geography (mockup): negeri → kawasan → dun. PASTI rows carry their own negeri/kawasan/dun.
   const NEGERI = ['JOHOR','KEDAH','KELANTAN','MELAKA','NEGERI SEMBILAN','PAHANG','PERAK','PERLIS','PULAU PINANG','SABAH','SARAWAK','SELANGOR','TERENGGANU','WP KUALA LUMPUR & PUTRAJAYA'];
-  function scopes(){
-    if (child === 'negeri') return NEGERI;
-    if (child === 'kawasan') return KELANTAN_KAW;
-    if (child === 'dun') return ['N44 KOTA LAMA','N45 BUNUT PAYONG'];
-    if (child === 'cawangan') return DB.all('pasti').filter(p => p.status === 'Lulus' && p.dun === MY).map(p => p.nama);
-    return [MY];
-  }
-  const inScope = u => {
-    if (tier === 'pusat') return u.peranan === 'negeri';
-    if (tier === 'negeri') return u.peranan === 'kawasan' && KELANTAN_KAW.includes(u.skop);
-    if (tier === 'kawasan') return u.peranan === 'dun' && ['N44 KOTA LAMA','N45 BUNUT PAYONG'].includes(u.skop);
-    if (tier === 'dun') return u.peranan === 'cawangan' && DB.all('pasti').some(p => p.nama === u.skop && p.dun === MY);
-    if (tier === 'cawangan') return /guru|pembantu|ibubapa/.test(u.peranan) && u.skop === MY;
-    return false;
+  const GEO = {
+    KELANTAN: { 'P025 KUBANG KERIAN':['N44 KOTA LAMA','N45 BUNUT PAYONG'], 'P026 BACHOK':['N25 TAWANG','N26 PANTAI IRAMA','N27 JELAWAT'], 'P021 KOTA BHARU':['N09 KOTA LAMA TENGAH','N10 BUNUT PAYONG UTARA'],
+      'P022 PENGKALAN CHEPA':['N11 PANTAI CHEPA','N12 KADOK'], 'P023 RANTAU PANJANG':['N13 GUAL PERIOK','N14 APAM PUTRA'], 'P024 KUBANG KERIAN TIMUR':[], 'P020 TUMPAT':['N01 PENGKALAN KUBOR','N02 KELABORAN'],
+      'P027 PASIR MAS':['N15 KUBANG GADONG','N16 CHETOK'], 'P028 KETEREH':['N28 MELOR','N29 KADOK TIMUR'], 'P029 TANAH MERAH':['N30 KEMAHANG','N31 BUKIT PANAU'], 'P030 PASIR PUTEH':['N32 SELISING','N33 LIMBONGAN'],
+      'P031 MACHANG':['N34 PULAI CHONDONG','N35 TEMANGAN'], 'P032 JELI':['N36 BUKIT BUNGA','N37 AIR LANAS'], 'P033 KUALA KRAI':['N38 DABONG','N39 MENGKEBANG'], 'P034 GUA MUSANG':['N40 GALAS','N41 PALOH'] },
+    TERENGGANU: { 'P036 KUALA TERENGGANU':['N14 BANDAR','N15 LADANG'], 'P035 KUALA NERUS':['N11 TELUK PASU','N12 SEBERANG TAKIR'] },
   };
+  const kawOf = n => Object.keys(GEO[n] || {});
+  const dunOf = (n, k) => (GEO[n] && GEO[n][k]) || [];
+  const findKaw = k => { for (const n in GEO) if (GEO[n][k]) return n; return null; };
+  const findDun = d => { for (const n in GEO) for (const k in GEO[n]) if (GEO[n][k].includes(d)) return { negeri:n, kawasan:k }; return null; };
+  const pastiOf = d => DB.all('pasti').filter(p => p.status === 'Lulus' && p.kod && p.dun === d).map(p => p.nama);
+
+  // where an account sits: { negeri, kawasan, dun, pasti }
+  function chainOf(u){
+    const c = { negeri:u.negeri || null, kawasan:u.kawasan || null, dun:u.dun || null, pasti:null };
+    if (u.peranan === 'negeri') c.negeri = u.skop;
+    if (u.peranan === 'kawasan') { c.kawasan = u.skop; c.negeri = c.negeri || findKaw(u.skop); }
+    if (u.peranan === 'dun') { c.dun = u.skop; const f = findDun(u.skop); if (f) { c.kawasan = c.kawasan || f.kawasan; c.negeri = c.negeri || f.negeri; } }
+    if (lv(u.peranan) >= 4) { c.pasti = u.skop; const p = DB.find('pasti', x => x.nama === u.skop); if (p) { c.dun = p.dun; c.kawasan = p.kawasan; c.negeri = p.negeri; } }
+    return c;
+  }
+  const KEY = { negeri:'negeri', kawasan:'kawasan', dun:'dun', cawangan:'pasti' };
+  const inScope = u => lv(u.peranan) > myLv && (tier === 'pusat' || chainOf(u)[KEY[tier]] === MY);
+  const myChain = chainOf({ peranan:tier, skop:MY });                        // fixed parts of the location picker
+
+  // ---- who-creates-who strip + rule
+  $('uChain').innerHTML = LEVELS.map((k,i) => `${i?'<span class="a">→</span>':''}<span class="c ${k===tier?'me':i>myLv?'kid':''}">${k==='guru'?'Guru & Pembantu':RL[k].replace('Pentadbir ','')}${k===tier?' (anda)':''}</span>`).join('')
+    + '<span class="a">→</span><span class="c">Ibu Bapa (automatik bila murid diterima)</span>';
+  $('uRule').innerHTML = CREATABLE.length
+    ? `Sebagai <b>${RL[tier]}</b>, anda boleh cipta <b>semua akaun di bawah anda</b> — ${CREATABLE.map(k => k === 'guru' ? 'Guru & Pembantu Guru' : RL[k].replace('Pentadbir ','')).join(', ')} — dalam skop <b>${esc(MY)}</b>.`
+    : 'Peringkat anda tidak mencipta akaun lain.';
+  $('uNew').textContent = '+ Cipta Akaun';
+  $('uNew').style.display = CREATABLE.length ? '' : 'none';
+
+  // ---- role filter chips above the table
+  let roleF = '';
+  const toolbar = $('uNew').closest('.toolbar');
+  const chips = document.createElement('div'); chips.className = 'chips'; chips.id = 'uChips'; chips.setAttribute('data-own', ''); chips.style.margin = '0 0 12px';
+  toolbar.after(chips);
+
   const roleBadge = r => `<span class="badge ${r==='ibubapa'?'b-violet':r==='guru'||r==='pembantu'?'b-green':'b-blue'} no-dot">${RL[r]}</span>`;
+  const where = u => { const c = chainOf(u); return [c.pasti, c.dun, c.kawasan, c.negeri].filter(Boolean).filter((v,i,a) => a.indexOf(v) === i).map(esc).join(' <span class="muted">·</span> '); };
 
   function draw(){
-    const rows = DB.all('users').filter(inScope);
+    const all = DB.all('users').filter(inScope);
+    const groups = ['negeri','kawasan','dun','cawangan','guru','ibubapa'].filter(k => all.some(u => (k === 'guru' ? /guru|pembantu/ : new RegExp('^' + k + '$')).test(u.peranan)));
+    chips.innerHTML = [['', 'Semua', all.length]].concat(groups.map(k => [k, k === 'guru' ? 'Guru & Pembantu' : k === 'ibubapa' ? 'Ibu Bapa' : RL[k].replace('Pentadbir ',''),
+      all.filter(u => k === 'guru' ? /guru|pembantu/.test(u.peranan) : u.peranan === k).length]))
+      .map(([k,n,c]) => `<button type="button" data-rf="${k}" class="${k===roleF?'on':''}">${n} <span class="muted">${c}</span></button>`).join('');
+    const q = (toolbar.querySelector('.input-group input').value || '').toLowerCase();
+    const rows = all.filter(u => (!roleF || (roleF === 'guru' ? /guru|pembantu/.test(u.peranan) : u.peranan === roleF)) && (!q || (u.nama + u.emel).toLowerCase().includes(q)))
+      .sort((a,b) => lv(a.peranan) - lv(b.peranan));
     $('uRows').innerHTML = rows.map((u,i) => `<tr>
       <td class="num">${i+1}</td><td><b style="color:var(--ink)">${esc(u.nama)}</b></td><td class="num">${esc(u.emel)}</td><td>${roleBadge(u.peranan)}</td>
-      <td>${esc(u.skop)}</td><td>${esc(u.oleh)}</td><td class="num">${u.tarikh}</td>
+      <td>${where(u)}</td><td>${esc(u.oleh)}</td><td class="num">${u.tarikh}</td>
       <td><span class="badge ${u.status==='Aktif'?'b-green':'b-red'}">${u.status}</span></td>
       <td class="flex gap wrap" data-own>${u.peranan === 'ibubapa' ? '<span class="muted" style="font-size:12px">Dicipta automatik</span>' :
         `<button class="btn btn-soft btn-sm" data-u="${esc(u.emel)}" data-do="toggle">${u.status==='Aktif'?'Nyahaktif':'Aktifkan'}</button>
          <button class="btn btn-ghost btn-sm" data-u="${esc(u.emel)}" data-do="reset">Set Semula Kata Laluan</button>
          <button class="btn btn-ghost btn-sm" data-u="${esc(u.emel)}" data-do="as">Log masuk sebagai</button>`}</td></tr>`).join('')
-      || `<tr><td colspan="9" class="empty">Belum ada akaun ${RL[child]} dalam skop anda.</td></tr>`;
+      || `<tr><td colspan="9" class="empty">Tiada akaun dalam skop anda.</td></tr>`;
   }
 
+  // ---- create modal: Peranan → cascading location (levels above you are locked to your scope)
+  const selOpts = (list, v, ph) => `<option value="">${ph}</option>` + list.map(x => `<option value="${esc(x)}" ${x === v ? 'selected' : ''}>${esc(x)}</option>`).join('');
+  function formHtml(){
+    return `<div class="form-grid">
+      <div class="field full"><span class="label">Peranan akaun <span class="req">*</span></span>
+        <select class="select" id="uRole">${CREATABLE.map(k => k === 'guru' ? '<option value="guru">Guru PASTI</option><option value="pembantu">Pembantu Guru</option>' : `<option value="${k}">${RL[k]}</option>`).join('')}</select></div>
+      <div class="field full"><span class="label">Nama Penuh <span class="req">*</span></span><input class="input" id="uNama" placeholder="Nama penuh seperti dalam KP"></div>
+      <div class="field"><span class="label">Emel (ID log masuk) <span class="req">*</span></span><input class="input" id="uEmel" type="email" placeholder="nama@pasti.org"></div>
+      <div class="field"><span class="label">No. Telefon</span><input class="input" id="uTel" placeholder="01x-xxxxxxx"></div>
+      <div class="field full" style="margin-top:4px"><span class="label" style="font-size:13px">Lokasi / skop akaun</span></div>
+      <div class="field" id="fNeg"><span class="label">Negeri <span class="req">*</span></span><select class="select" id="uNeg"></select></div>
+      <div class="field" id="fKaw"><span class="label">Kawasan (Parlimen) <span class="req">*</span></span><select class="select" id="uKaw"></select><input class="input" id="uKawT" placeholder="Nama kawasan" hidden></div>
+      <div class="field" id="fDun"><span class="label">DUN <span class="req">*</span></span><select class="select" id="uDun"></select><input class="input" id="uDunT" placeholder="Nama DUN" hidden></div>
+      <div class="field" id="fPas"><span class="label">PASTI <span class="req">*</span></span><select class="select" id="uPas"></select></div>
+    </div>
+    <div class="notice mt" id="uHint"><div class="tx"><b>Kata laluan sementara dijana automatik.</b><span>Pengguna perlu menukar kata laluan pada log masuk pertama.</span></div></div>`;
+  }
+  const need = r => ({ negeri:1, kawasan:2, dun:3, cawangan:4, guru:4, pembantu:4 })[r];      // how deep the location goes
+  function cascade(){
+    const role = $('uRole').value, depth = need(role);
+    const lock = { negeri: myLv >= 1, kawasan: myLv >= 2, dun: myLv >= 3, pasti: myLv >= 4 };
+    // negeri
+    const n = lock.negeri ? myChain.negeri : $('uNeg').value;
+    $('uNeg').innerHTML = selOpts(lock.negeri ? [myChain.negeri] : NEGERI, n, '— Pilih negeri —'); $('uNeg').disabled = lock.negeri;
+    $('fNeg').style.display = depth >= 1 ? '' : 'none';
+    // kawasan (free text if the negeri has no kawasan list in the mockup)
+    const kl = lock.kawasan ? [myChain.kawasan] : kawOf(n), freeK = !lock.kawasan && n && !kl.length;
+    const k = lock.kawasan ? myChain.kawasan : (freeK ? $('uKawT').value : $('uKaw').value);
+    $('uKaw').innerHTML = selOpts(kl, k, n ? '— Pilih kawasan —' : '— Pilih negeri dahulu —'); $('uKaw').disabled = lock.kawasan || !n;
+    $('uKaw').hidden = freeK; $('uKawT').hidden = !freeK; $('fKaw').style.display = depth >= 2 ? '' : 'none';
+    // dun
+    const dl = lock.dun ? [myChain.dun] : dunOf(n, k), freeD = !lock.dun && k && !dl.length;
+    const d = lock.dun ? myChain.dun : (freeD ? $('uDunT').value : $('uDun').value);
+    $('uDun').innerHTML = selOpts(dl, d, k ? '— Pilih DUN —' : '— Pilih kawasan dahulu —'); $('uDun').disabled = lock.dun || !k;
+    $('uDun').hidden = freeD; $('uDunT').hidden = !freeD; $('fDun').style.display = depth >= 3 ? '' : 'none';
+    // pasti (only approved PASTI with a Kod PASTI)
+    const pl = lock.pasti ? [MY] : pastiOf(d), p = lock.pasti ? MY : $('uPas').value;
+    $('uPas').innerHTML = pl.length ? selOpts(pl, p, '— Pilih PASTI —') : `<option value="">${d ? 'Tiada PASTI diluluskan dalam DUN ini' : '— Pilih DUN dahulu —'}</option>`;
+    $('uPas').disabled = lock.pasti || !pl.length; $('fPas').style.display = depth >= 4 ? '' : 'none';
+    // one Pentadbir per place — warn (not block) if the place already has one
+    const skop = [n, k, d, p][depth - 1], dup = role !== 'guru' && role !== 'pembantu' && skop && DB.find('users', u => u.peranan === role && u.skop === skop);
+    $('uHint').className = 'notice mt' + (dup ? ' amber' : '');
+    $('uHint').innerHTML = dup ? `<div class="tx"><b>${esc(skop)} sudah ada ${RL[role]}</b><span>${esc(dup.nama)} (${esc(dup.emel)}). Akaun kedua akan berkongsi skop yang sama.</span></div>`
+      : '<div class="tx"><b>Kata laluan sementara dijana automatik.</b><span>Pengguna perlu menukar kata laluan pada log masuk pertama.</span></div>';
+    return { role, depth, n, k, d, p, skop };
+  }
   function openNew(){
-    $('uModalT').textContent = 'Cipta Akaun ' + (child === 'guru' ? 'Guru / Pembantu Guru' : RL[child]);
-    $('uRoleF').hidden = child !== 'guru';
-    $('uSkopL').innerHTML = ({negeri:'Negeri',kawasan:'Kawasan',dun:'DUN',cawangan:'Cawangan PASTI',guru:'PASTI'}[child]) + ' <span class="req">*</span>';
-    const taken = DB.all('users').filter(u => u.peranan === child).map(u => u.skop);
-    $('uSkop').innerHTML = scopes().map(s => `<option value="${esc(s)}">${esc(s)}${child!=='guru' && taken.includes(s) ? ' — sudah ada pentadbir' : ''}</option>`).join('')
-      || '<option value="">Tiada PASTI berstatus Lulus dalam DUN anda</option>';
-    $('uSkop').disabled = child === 'guru';
-    ['uNama','uEmel','uTel'].forEach(id => { $(id).value = ''; $(id).classList.remove('pt-err'); });
+    $('uModalT').textContent = 'Cipta Akaun Baharu';
+    $('uModalB').innerHTML = formHtml();
     $('uModalF').innerHTML = '<button class="btn btn-ghost" data-close>Batal</button><button class="btn btn-primary" id="uCreate">Cipta Akaun</button>';
+    cascade();
     $('uModal').classList.add('open');
   }
   function create(){
-    const nama = $('uNama').value.trim(), emel = $('uEmel').value.trim().toLowerCase(), skop = $('uSkop').value;
+    const nama = $('uNama').value.trim(), emel = $('uEmel').value.trim().toLowerCase(), c = cascade();
     let bad = 0; [['uNama', nama], ['uEmel', /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(emel) ? emel : '']].forEach(([id,v]) => { $(id).classList.toggle('pt-err', !v); if (!v) bad++; });
     if (bad) { PT.toast('Isi nama dan emel yang sah', 'red'); return; }
-    if (!skop) { PT.toast('Tiada skop untuk dipilih', 'red'); return; }
+    if (!c.skop) { PT.toast('Lengkapkan lokasi akaun', 'red'); return; }
     if (DB.find('users', u => u.emel.toLowerCase() === emel)) { $('uEmel').classList.add('pt-err'); PT.toast('Emel ini sudah digunakan oleh akaun lain', 'red'); return; }
-    const peranan = child === 'guru' ? $('uRole').value : child;
     const d = new Date(), tarikh = String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + d.getFullYear();
-    DB.add('users', { nama, emel, tel: $('uTel').value.trim(), peranan, skop, oleh: RL[tier], tarikh, status:'Aktif' });
+    const u = { nama, emel, tel: $('uTel').value.trim(), peranan: c.role, skop: c.skop, oleh: RL[tier], tarikh, status:'Aktif' };
+    if (c.depth >= 2) u.negeri = c.n; if (c.depth >= 3) u.kawasan = c.k; if (c.depth >= 4) u.dun = c.d;   // keeps the chain for free-text places
+    DB.add('users', u);
     const pw = 'Pasti@' + (1000 + Math.floor(Math.random()*9000));
     $('uModalT').textContent = 'Akaun berjaya dicipta';
-    $('uModalB').insertAdjacentHTML('afterbegin', '');
-    $('uModalB').dataset.keep = '1';
-    const card = `<div class="notice"><div class="tx"><b>${esc(nama)} — ${RL[peranan]}</b><span>Skop: ${esc(skop)}</span></div></div>
+    $('uModalB').innerHTML = `<div class="notice"><div class="tx"><b>${esc(nama)} — ${RL[c.role]}</b><span>Skop: ${where(u)}</span></div></div>
       <div class="kv mt" style="grid-template-columns:150px 1fr"><dt>ID log masuk</dt><dd>${esc(emel)}</dd><dt>Kata laluan sementara</dt><dd>${pw}</dd><dt>Log masuk di</dt><dd>Halaman log masuk ePASTI</dd></div>
       <div class="muted mt" style="font-size:12.5px">Butiran ini juga dihantar ke emel pengguna. Rekod penciptaan dicatat dalam Log Akses.</div>`;
-    $('uModalB').innerHTML = card;
     $('uModalF').innerHTML = `<button class="btn btn-ghost" data-close>Tutup</button><button class="btn btn-primary" data-u="${esc(emel)}" data-do="as">Log masuk sebagai akaun ini</button>`;
-    draw(); PT.toast('Akaun ' + RL[peranan] + ' dicipta');
+    draw(); PT.toast('Akaun ' + RL[c.role] + ' dicipta');
   }
   function loginAs(emel){
     const u = DB.find('users', x => x.emel === emel); if (!u) return;
@@ -241,11 +312,12 @@
     localStorage.setItem('pt-tier', u.peranan); location.href = 'dashboard.html';
   }
 
-  // the modal body is rebuilt after a create; restore it on the next open
-  const FORM = $('uModalB').innerHTML;
+  document.addEventListener('change', e => { if (e.target.closest('#uModal select')) { if (e.target.id === 'uNeg') { $('uKaw').value = ''; $('uKawT').value = ''; } if (/uNeg|uKaw/.test(e.target.id)) { $('uDun').value = ''; $('uDunT').value = ''; } if (e.target.id !== 'uPas') $('uPas').value = ''; cascade(); } });
+  document.addEventListener('input', e => { if (/uKawT|uDunT/.test(e.target.id)) cascade(); if (e.target.closest('.toolbar .input-group')) draw(); });
   document.addEventListener('click', e => {
+    const f = e.target.closest('[data-rf]'); if (f) { roleF = f.dataset.rf; draw(); return; }
     const b = e.target.closest('button'); if (!b) return;
-    if (b.id === 'uNew') { $('uModalB').innerHTML = FORM; openNew(); return; }
+    if (b.id === 'uNew') { openNew(); return; }
     if (b.id === 'uCreate') { create(); return; }
     if (b.id === 'uExcel') return;
     const emel = b.dataset.u, act = b.dataset.do; if (!emel || !act) return;

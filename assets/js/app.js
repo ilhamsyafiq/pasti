@@ -154,10 +154,10 @@
       P('B/447/2021','08/03/2021','PASTI NURUL INSANIAH','Parit 9, Kubang Kerian','03-3226 3384',KK,'N44 KOTA LAMA','Lulus',{kod:'B020115',guru:8,murid:44,daftar:'BUKA'}),
       P('B/448/2021','15/03/2021','PASTI BADROTIM','Kg Kubang Kerian Darat','03-3226 9027',KK,'N44 KOTA LAMA','Lulus',{kod:'B020116',guru:9,murid:51,daftar:'BUKA'}),
       // applications in progress
-      P('B/452/2026','16/09/2026','PASTI AL-HIKMAH','Lot 51, Kg Pulau Belanga, Kubang Kerian','09-765 2231',KK,'N44 KOTA LAMA','Disokong Negeri',{sejarah:[{by:'Pentadbir Kawasan',act:'Daftar',at:'16/09/2026'},{by:'Pentadbir Negeri',act:'Sokong',at:'22/09/2026'}]}),
-      P('B/453/2026','20/09/2026','PASTI DARUL FALAH','No 7, Jalan Bayam, Kubang Kerian','09-765 8804',KK,'N44 KOTA LAMA','Baharu',{sejarah:[{by:'Pentadbir Kawasan',act:'Daftar',at:'20/09/2026'}]}),
-      P('B/454/2026','24/09/2026','PASTI NUR IHSAN','Kg Bunut Payong Dalam','09-743 1180',KK,'N45 BUNUT PAYONG','Baharu',{sejarah:[{by:'Pentadbir Kawasan',act:'Daftar',at:'24/09/2026'}]}),
-      P('B/449/2026','02/09/2026','PASTI RAUDHAH','Kg Kota, Kubang Kerian','09-765 3345',KK,'N44 KOTA LAMA','Ditolak',{sebab:'Premis belum mendapat kelulusan PBT.',sejarah:[{by:'Pentadbir Kawasan',act:'Daftar',at:'02/09/2026'},{by:'Pentadbir Negeri',act:'Tolak',at:'06/09/2026'}]}),
+      P('B/452/2026','16/09/2026','PASTI AL-HIKMAH','Lot 51, Kg Pulau Belanga, Kubang Kerian','09-765 2231',KK,'N44 KOTA LAMA','Disokong Kawasan',{sejarah:[{by:'Pentadbir DUN',act:'Daftar',at:'16/09/2026'},{by:'Pentadbir Kawasan',act:'Sokong',at:'22/09/2026'}]}),
+      P('B/453/2026','20/09/2026','PASTI DARUL FALAH','No 7, Jalan Bayam, Kubang Kerian','09-765 8804',KK,'N44 KOTA LAMA','Baharu',{sejarah:[{by:'Pentadbir DUN',act:'Daftar',at:'20/09/2026'}]}),
+      P('B/454/2026','24/09/2026','PASTI NUR IHSAN','Kg Bunut Payong Dalam','09-743 1180',KK,'N45 BUNUT PAYONG','Baharu',{sejarah:[{by:'Pentadbir DUN',act:'Daftar',at:'24/09/2026'}]}),
+      P('B/449/2026','02/09/2026','PASTI RAUDHAH','Kg Kota, Kubang Kerian','09-765 3345',KK,'N44 KOTA LAMA','Ditolak',{sebab:'Premis belum mendapat kelulusan PBT.',sejarah:[{by:'Pentadbir DUN',act:'Daftar',at:'02/09/2026'},{by:'Pentadbir Kawasan',act:'Sokong',at:'03/09/2026'},{by:'Pentadbir Negeri',act:'Tolak',at:'06/09/2026'}]}),
     ];
     const PIDX = ["PASTI AL-TA'LIM","PASTI AL-TA'LIM","PASTI AS-SALAMAH","PASTI AL-TA'LIM","PASTI ITQAN","PASTI NURUL IMAN","PASTI AL-TA'LIM","PASTI NADWAH HASSANAH"];
     const M = (r,st,i,extra) => Object.assign({ tarikh:r[0], ref:r[1], nama:r[2], mykid:r[3], umur:r[4], bapa:r[5], kpBapa:r[6], telBapa:r[7], tarikhDaftar:r[8], status:st, pasti:PIDX[i%PIDX.length], kelas:'Tahun '+(10-+r[4]) }, extra||{});
@@ -194,7 +194,8 @@
   }
   function loadDB(){
     try { if (/[?&]reset=1/.test(location.search)) localStorage.removeItem(DBKEY);
-      const s = localStorage.getItem(DBKEY); if (s) return JSON.parse(s); } catch(e){}
+      const s = localStorage.getItem(DBKEY);
+      if (s) { const d = JSON.parse(s); (d.pasti || []).forEach(p => { if (p.status === 'Disokong Negeri') p.status = 'Disokong Kawasan'; }); return d; } } catch(e){}
     const d = seedDB(); try { localStorage.setItem(DBKEY, JSON.stringify(d)); } catch(e){} return d;
   }
   const DB = {
@@ -215,13 +216,13 @@
   // Each tier has a different role → sees only the modules/pages it may use.
   const TIERS = {
     pusat: { label:'Pentadbir Pusat (HQ)', scope:'Semua Negeri PASTI', name:"DATO' HJ AHMAD ZAKI",
-      allow:['dashboard','pasti-pengurusan','caruman','laporan-papan-pemuka','laporan-guru','laporan-murid','laporan-warga','calendar','notifikasi','log-akses','kempen','tetapan'] },
+      allow:['dashboard','caruman','laporan-papan-pemuka','laporan-guru','laporan-murid','laporan-warga','calendar','notifikasi','log-akses','kempen','tetapan'] },
     negeri: { label:'Pentadbir Negeri', scope:'KELANTAN', name:'USTAZ FAIZAL RAHMAN',
       allow:['dashboard','warga-jawatankuasa','pasti-pengurusan','caruman','payment-gateway','laporan-papan-pemuka','laporan-guru','laporan-murid','laporan-warga','calendar','notifikasi','log-akses','kempen','tetapan'] },
     kawasan: { label:'Pentadbir Kawasan', scope:'P025 Kubang Kerian', name:'MUHAMAD KHAIRI BIN AZMAN',
-      allow:['dashboard','warga-jawatankuasa','warga-petugas','warga-guru','pasti-pengurusan','pasti-daftar-baharu','murid-permohonan','murid-senarai','murid-sijil','ibubapa-senarai','permarkahan','caruman','yuran','payment-gateway','kehadiran','calendar','notifikasi','log-akses','kempen','derma','laporan-papan-pemuka','laporan-guru','laporan-murid','tetapan'] },
+      allow:['dashboard','warga-jawatankuasa','warga-petugas','warga-guru','pasti-pengurusan','murid-permohonan','murid-senarai','murid-sijil','ibubapa-senarai','permarkahan','caruman','yuran','payment-gateway','kehadiran','calendar','notifikasi','log-akses','kempen','derma','laporan-papan-pemuka','laporan-guru','laporan-murid','tetapan'] },
     dun: { label:'Pentadbir DUN', scope:'N44 Kota Lama', name:'USTAZ ISMAIL KASSIM', pasti:["AL-TA'LIM","AS-SALAMAH","NURUL IMAN","NURUL HIDAYAH","NADWAH HASSANAH","AN NUR PARIT 13","NURUL INSANIAH","PASTI BADROTIM"],
-      allow:['dashboard','warga-petugas','warga-guru','murid-permohonan','murid-senarai','ibubapa-senarai','permarkahan','caruman','yuran','payment-gateway','kehadiran','calendar','notifikasi','log-akses','tetapan','derma','laporan-papan-pemuka','laporan-murid'] },
+      allow:['dashboard','warga-petugas','warga-guru','pasti-pengurusan','pasti-daftar-baharu','murid-permohonan','murid-senarai','ibubapa-senarai','permarkahan','caruman','yuran','payment-gateway','kehadiran','calendar','notifikasi','log-akses','tetapan','derma','laporan-papan-pemuka','laporan-murid'] },
     cawangan: { label:'Pentadbir Cawangan', scope:"PASTI Al-Ta'lim", name:'USTAZAH MARIAM HASSAN', pasti:["AL-TA'LIM"],
       allow:['dashboard','warga-guru','murid-permohonan','murid-senarai','murid-sijil','ibubapa-senarai','permarkahan','caruman','yuran','payment-gateway','kehadiran','calendar','notifikasi','log-akses','tetapan','kempen','derma'] },
   };
@@ -457,6 +458,20 @@
     // live clock
     setInterval(() => { const c = document.getElementById('ptClock'); if (c) c.textContent = fmtNow(); }, 1000);
     document.title = title + ' · ePASTI';
+
+    // sidebar: fade hints at the scroll edges + keep the active item in view
+    const sn = document.querySelector('.side-nav');
+    if (sn) {
+      const edge = () => { sn.classList.toggle('fade-t', sn.scrollTop > 4); sn.classList.toggle('fade-b', sn.scrollTop + sn.clientHeight < sn.scrollHeight - 4); };
+      sn.addEventListener('scroll', edge, { passive:true }); window.addEventListener('resize', edge);
+      sn.addEventListener('click', () => setTimeout(edge, 30));
+      const act = sn.querySelector('.nav-children a.active, a.nav-link.active');
+      requestAnimationFrame(() => {
+        if (act) { const r = act.getBoundingClientRect(), b = sn.getBoundingClientRect();
+          if (r.bottom > b.bottom - 24) { sn.style.scrollBehavior = 'auto'; sn.scrollTop += r.top - b.top - sn.clientHeight / 2 + r.height / 2; sn.style.scrollBehavior = ''; } }
+        edge();
+      });
+    }
 
     // Nudge the payment reminder on the parent's first dashboard view this session.
     // Only while something is still unread — once opened it counts as read and never pops up again.

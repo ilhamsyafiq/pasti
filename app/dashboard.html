@@ -6,7 +6,7 @@
 <title>Utama · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=4">
+<link rel="stylesheet" href="../assets/css/app.css?v=5">
 </head>
 <body>
 <div class="pt-app" data-module="dashboard" data-page="dashboard" data-title="Utama" data-subtitle="Papan utama ePASTI">
@@ -148,6 +148,22 @@
         </div>
       </div>
 
+      <!-- Permohonan PASTI baharu (read-only for HQ) -->
+      <div class="card mt-lg">
+        <div class="card-head"><div><h3>Permohonan PASTI Baharu</h3><span class="sub" id="hqPipeSub">—</span></div><a class="btn btn-soft btn-sm" id="hqPipeBtn" href="pasti-pengurusan.html" style="display:none">Pengurusan PASTI</a></div>
+        <div class="card-body"><div class="hq-pipes" id="hqPipe"></div></div>
+      </div>
+      <style>
+        .hq-pipes{display:flex;align-items:stretch;gap:8px;flex-wrap:wrap}
+        .hq-pipe{flex:1;min-width:170px;display:flex;gap:12px;align-items:center;background:#f8faf7;border:1px solid var(--line2);border-radius:14px;padding:14px}
+        .hq-pipe .n{width:30px;height:30px;border-radius:50%;color:#fff;display:grid;place-items:center;font-weight:800;font-size:13px;flex:none}
+        .hq-pipe span{display:block;font-size:12px;color:var(--muted);font-weight:600}
+        .hq-pipe b{display:block;font-size:24px;color:var(--ink);line-height:1.2}
+        .hq-pipe small{font-size:11px;color:var(--faint)}
+        .hq-pipe-arrow{display:grid;place-items:center;color:var(--faint);font-size:22px}
+        @media(max-width:900px){.hq-pipe-arrow{display:none}}
+      </style>
+
       <!-- Alerts + applications + rankings -->
       <div class="hq-row r111">
         <div class="card">
@@ -276,7 +292,7 @@
   </div>
 </div>
 
-<script src="../assets/js/app.js?v=4"></script>
+<script src="../assets/js/app.js?v=5"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
   // Pusat (HQ) master dashboard — national figures, all derived from the tables below so totals always agree.
@@ -457,12 +473,27 @@
     const lowAtt = STATES.filter(s=>s[4]<89.5).map(s=>s[0]);
     const noAcc = [...STATES].sort((a,b)=>b[7][3]/b[1]-a[7][3]/a[1]).slice(0,2);
     const bigOut = Object.entries(OUT).map(([k,v])=>[k,v[last]/v[last-1]-1]).sort((a,b)=>b[1]-a[1])[0];
+    // ---- Permohonan PASTI baharu (DUN daftar → Kawasan semak → Negeri lulus). HQ sees totals only.
+    const PIPE = (() => {
+      if (!NEG) return { baharu:21, negeri:17, lulus:38, tolak:6 };             // national (mock)
+      const P = (window.DB ? DB.all('pasti') : []), yr = String(new Date().getFullYear());
+      return { baharu: P.filter(p => p.status === 'Baharu').length, negeri: P.filter(p => p.status === 'Disokong Kawasan').length,
+        lulus: P.filter(p => p.status === 'Lulus' && String(p.tarikh||'').endsWith(yr)).length, tolak: P.filter(p => p.status === 'Ditolak').length };
+    })();
+    const pipeEl = document.getElementById('hqPipe');
+    if (pipeEl) {
+      const T = [['Menunggu semakan Kawasan', PIPE.baharu, '#2563eb', 'Didaftar oleh DUN'], ['Menunggu kelulusan Negeri', PIPE.negeri, '#e0912a', 'Disokong Kawasan'],
+                 ['Diluluskan ' + new Date().getFullYear(), PIPE.lulus, '#2fa308', 'Kod PASTI dijana'], ['Ditolak', PIPE.tolak, '#c0392b', 'Oleh Kawasan / Negeri']];
+      pipeEl.innerHTML = T.map((t,i) => `<div class="hq-pipe"><div class="n" style="background:${t[2]}">${i+1}</div><div><span>${t[0]}</span><b>${t[1]}</b><small>${t[3]}</small></div></div>`).join('<div class="hq-pipe-arrow">›</div>');
+      document.getElementById('hqPipeSub').textContent = NEG ? 'Negeri meluluskan permohonan yang telah disokong Kawasan' : 'Makluman sahaja — kelulusan dibuat oleh Negeri';
+      document.getElementById('hqPipeBtn').style.display = NEG ? '' : 'none';
+    }
     const ALERTS = [
       ['#c0392b', `Tertunggak tertinggi: ${worstDebt[0]}`, `${Math.round(worstDebt[6]/worstDebt[5]*100)}% daripada kutipan (RM ${fmt(worstDebt[6]*1000)}) belum dijelaskan.`],
       ['#e0912a', `Perbelanjaan naik: ${bigOut[0]}`, `▲ ${(bigOut[1]*100).toFixed(1)}% berbanding bulan lalu — semak ${NEG ? 'tuntutan & perbelanjaan kawasan' : 'kelulusan Negeri'}.`],
       ['#e0912a', `${fmt(bcT[3])} cawangan belum ada akaun kutipan`, `Tertinggi: ${noAcc.map(s=>`${s[0]} (${s[7][3]})`).join(', ')}. Galakkan guna akaun DUN/Kawasan sementara.`],
       ['#e0912a', `Kehadiran di bawah 89.5%`, `${lowAtt.join(', ')} — semak laporan kehadiran ${NEG ? 'kawasan' : 'negeri'}.`],
-      NEG ? ['#2563eb', `6 permohonan cawangan PASTI baharu`, `Menunggu sokongan Negeri sebelum ke Pusat — buka Pengurusan PASTI.`] : ['#2563eb', `38 permohonan cawangan PASTI baharu`, `Menunggu kelulusan peringkat Negeri &amp; Pusat.`],
+      NEG ? ['#2563eb', `${PIPE.negeri} permohonan PASTI menunggu kelulusan Negeri`, `Telah disemak & disokong Kawasan — buka Pengurusan PASTI untuk lulus / tolak.`] : ['#2563eb', `${PIPE.baharu + PIPE.negeri} permohonan PASTI baharu dalam proses`, `Disemak oleh Kawasan & diluluskan oleh Negeri — makluman sahaja.`],
       ['#2563eb', `${fmt(APPS[1][1])} permohonan murid belum diproses`, `Pendaftaran online Sesi 2026 di semua ${NEG ? 'kawasan' : 'negeri'}.`],
     ];
     document.getElementById('hqAlerts').innerHTML = ALERTS.map(a=>`<div class="hq-alert"><div class="dot" style="background:${a[0]}"></div><div><b>${a[1]}</b><span>${a[2]}</span></div></div>`).join('');

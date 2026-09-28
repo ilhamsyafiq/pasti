@@ -6,7 +6,7 @@
 <title>Daftar PASTI Baharu · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=4">
+<link rel="stylesheet" href="../assets/css/app.css?v=5">
 </head>
 <body>
 <div class="pt-app" data-module="pengurusan" data-page="pasti-daftar-baharu" data-title="Daftar PASTI Baharu" data-subtitle="Borang penubuhan PASTI cawangan baharu">
@@ -185,9 +185,18 @@
   </main>
 </div>
 
-<script src="../assets/js/app.js?v=4"></script>
+<script src="../assets/js/app.js?v=5"></script>
 <script>
-// Kawasan submits a new PASTI → it enters Pengurusan PASTI as 'Baharu' for Negeri to support.
+// DUN submits a new PASTI → it enters Pengurusan PASTI as 'Baharu' for Kawasan to review, then Negeri approves.
+// A DUN can only register inside its own DUN, so the DUN field is fixed to it.
+(function(){
+  const me = DB.user(); if (PT.tier !== 'dun' || !me) return;
+  const f = [...document.querySelectorAll('[data-step-panel="1"] .field')].find(x => /^DUN/.test(x.querySelector('.label').textContent.trim()));
+  const sel = f && f.querySelector('select'); if (!sel) return;
+  if (![...sel.options].some(o => o.value === me.skop || o.text === me.skop)) sel.add(new Option(me.skop, me.skop));
+  sel.value = me.skop; sel.disabled = true; sel.title = 'Ditetapkan kepada DUN anda';
+  document.querySelector('.page-head .lead').textContent = 'Daftar PASTI baharu di bawah ' + me.skop + ' · permohonan disemak oleh Kawasan, kemudian diluluskan oleh Negeri';
+})();
 document.getElementById('pdSend').addEventListener('click', () => {
   const val = lbl => { const f = [...document.querySelectorAll('[data-step-panel="1"] .field')].find(x => x.querySelector('.label') && x.querySelector('.label').textContent.replace('*','').trim().toLowerCase().startsWith(lbl)); const i = f && f.querySelector('input, select, textarea'); return i ? { i, v: i.value.trim() } : { v:'' }; };
   const need = ['nama pasti','alamat','no telefon','dun','cawangan','tarikh penubuhan'].map(val);
@@ -198,8 +207,8 @@ document.getElementById('pdSend').addEventListener('click', () => {
   const d = new Date(), tg = String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + d.getFullYear();
   const nama = need[0].v.toUpperCase().startsWith('PASTI') ? need[0].v.toUpperCase() : 'PASTI ' + need[0].v.toUpperCase();
   const no = DB.nextNo();
-  DB.add('pasti', { no, tarikh: tg, nama, alamat: need[1].v, tel: need[2].v, negeri:'KELANTAN', kawasan:'P025 KUBANG KERIAN', dun: need[3].v.toUpperCase(), status:'Baharu', sejarah:[{ by:'Pentadbir Kawasan', act:'Daftar', at: tg }] });
-  try { sessionStorage.setItem('pt-flash', 'Permohonan ' + nama + ' (' + no + ') dihantar kepada Negeri untuk sokongan'); } catch(e){}
+  DB.add('pasti', { no, tarikh: tg, nama, alamat: need[1].v, tel: need[2].v, negeri:'KELANTAN', kawasan:'P025 KUBANG KERIAN', dun: need[3].v.toUpperCase(), status:'Baharu', sejarah:[{ by: PT.tier === 'dun' ? 'Pentadbir DUN' : 'Pentadbir Kawasan', act:'Daftar', at: tg }] });
+  try { sessionStorage.setItem('pt-flash', 'Permohonan ' + nama + ' (' + no + ') dihantar kepada Kawasan untuk semakan'); } catch(e){}
   location.href = 'pasti-pengurusan.html';
 });
 </script>

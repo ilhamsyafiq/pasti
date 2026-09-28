@@ -6,7 +6,7 @@
 <title>Laporan Guru PASTI · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=4">
+<link rel="stylesheet" href="../assets/css/app.css?v=5">
 </head>
 <body>
 <div class="pt-app" data-module="pelaporan" data-page="laporan-guru" data-title="Laporan Guru PASTI" data-subtitle="Statistik guru mengikut elaun &amp; jantina">
@@ -35,7 +35,7 @@
           <div><h3>Saguhati / Elaun</h3><div class="sub">Berdasarkan Elaun Tetap &amp; Tambahan Tahun 2026</div></div>
         </div>
         <div class="card-body">
-          <div class="chart-ph">Carta Bar — Jumlah Guru mengikut julat elaun</div>
+          <div class="chart-box" id="cElaun" style="height:260px;position:relative"></div>
         </div>
       </div>
 
@@ -69,8 +69,8 @@
       <div class="card">
         <div class="card-head"><h3>Guru Mengikut Jantina</h3></div>
         <div class="card-body">
-          <div class="chart-ph">Carta — Guru mengikut Jantina</div>
-          <div class="notice mt"><div class="tx"><b>Carta Donat</b><span>Perempuan 23 (100%) · Lelaki 0 (0%) — majoriti guru PASTI adalah muslimah.</span></div></div>
+          <div class="chart-box" id="cJantina" style="height:170px;position:relative"></div>
+          <div class="notice mt"><div class="tx"><b>Ringkasan</b><span>Perempuan 20 (100%) · Lelaki 0 (0%) — majoriti guru PASTI adalah muslimah.</span></div></div>
         </div>
       </div>
 
@@ -87,9 +87,9 @@
               </tr>
             </thead>
             <tbody>
-              <tr><td>N44 KOTA LAMA</td><td class="right num">0</td><td class="right num">20</td><td class="right num">20</td></tr>
-              <tr><td>N45 BUNUT PAYONG</td><td class="right num">0</td><td class="right num">3</td><td class="right num">3</td></tr>
-              <tr class="strong"><td>JUMLAH</td><td class="right num">0</td><td class="right num">23</td><td class="right num">23</td></tr>
+              <tr><td>N44 KOTA LAMA</td><td class="right num">0</td><td class="right num">18</td><td class="right num">18</td></tr>
+              <tr><td>N45 BUNUT PAYONG</td><td class="right num">0</td><td class="right num">2</td><td class="right num">2</td></tr>
+              <tr class="strong"><td>JUMLAH</td><td class="right num">0</td><td class="right num">20</td><td class="right num">20</td></tr>
             </tbody>
           </table>
         </div>
@@ -99,6 +99,19 @@
   </main>
 </div>
 
-<script src="../assets/js/app.js?v=4"></script>
+<script src="../assets/js/app.js?v=5"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="../assets/js/charts.js?v=2"></script>
+<script>
+(function(){
+  const tabs = document.querySelectorAll('table.pt');
+  const E = PTChart.readTable(tabs[0]), ranges = E.heads.slice(1, -1);
+  PTChart.bar(document.getElementById('cElaun'), { labels: ranges.map(r => 'RM ' + r), stacked:true,
+    series: E.labels.map((dun,i) => ({ name: dun, data: E.rows[i].slice(0, ranges.length) })) });
+  const J = PTChart.readTable(tabs[1]);
+  PTChart.bar(document.getElementById('cJantina'), { labels: J.labels, horizontal:true, stacked:true,
+    series: [{ name:'Lelaki', data: J.rows.map(r => r[0]) }, { name:'Perempuan', data: J.rows.map(r => r[1]) }] });
+})();
+</script>
 </body>
 </html>
