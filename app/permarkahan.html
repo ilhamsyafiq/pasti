@@ -6,7 +6,7 @@
 <title>Permarkahan SPPM · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=7">
+<link rel="stylesheet" href="../assets/css/app.css?v=8">
 </head>
 <body>
 <div class="pt-app" data-module="pengurusan" data-page="permarkahan" data-title="Permarkahan SPPM" data-subtitle="Pemantauan penilaian SPPM murid PASTI">
@@ -77,7 +77,7 @@
   <div class="modal lg" style="max-width:860px">
     <div class="m-head"><h3 id="pmModalT">Rumusan Prestasi</h3><button class="btn btn-ghost btn-sm" data-close>✕</button></div>
     <div class="m-body" id="pmModalB" style="background:var(--canvas)"></div>
-    <div class="m-foot"><button class="btn btn-ghost" data-close>Tutup</button><button class="btn btn-primary" data-own onclick="window.print()">Cetak</button></div>
+    <div class="m-foot"><button class="btn btn-ghost" data-close>Tutup</button><button class="btn btn-primary" data-own onclick="PT.printHtml(document.getElementById('pmModalT').textContent, document.getElementById('pmModalB').innerHTML)">Cetak / Simpan PDF</button></div>
   </div>
 </div>
 
@@ -94,7 +94,7 @@
   @media print{body.pm-printing .pt-app{display:none}body.pm-printing #pmModal{position:static;background:none}body.pm-printing #pmModal .m-foot,body.pm-printing #pmModal .m-head button{display:none}}
 </style>
 
-<script src="../assets/js/app.js?v=7"></script>
+<script src="../assets/js/app.js?v=8"></script>
 <script src="../assets/js/sppm.js?v=3"></script>
 <script src="../assets/js/guru-kelas.js"></script>
 <script src="../assets/js/parent-kids.js?v=3"></script>

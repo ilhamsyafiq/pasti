@@ -6,7 +6,7 @@
 <title>Prestasi Anak · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=7">
+<link rel="stylesheet" href="../assets/css/app.css?v=8">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#2fa308">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -54,7 +54,7 @@
           <div class="lead">Penilaian guru mengikut buku rekod SPPM · dipaparkan selepas guru menghantar penilaian penggal</div>
           <div class="mini"><div>Tahap<b>AM · M · SM</b></div><div>Elemen<b>6 Celik</b></div></div>
         </div>
-        <button class="btn btn-w no-print" data-own onclick="window.print()">Cetak / Simpan PDF</button>
+        <button class="btn btn-w no-print" data-own id="pdfBtn">Cetak / Simpan PDF</button>
       </div>
     </section>
 
@@ -64,7 +64,7 @@
   </main>
 </div>
 
-<script src="../assets/js/app.js?v=7"></script>
+<script src="../assets/js/app.js?v=8"></script>
 <script src="../assets/js/sppm.js?v=3"></script>
 <script>
 (function(){
@@ -92,6 +92,11 @@
     const pg = ui.pg, h = S.report(kid, r, pg);
     $('view').innerHTML = h;
   }
+  document.getElementById('pdfBtn').addEventListener('click', () => {
+    const v = document.getElementById('view'), kid = KIDS[ui.k];
+    if (!v || !v.querySelector('.rum')) { PT.toast('Tiada penilaian untuk dicetak', 'red'); return; }
+    PT.printHtml('Rumusan Prestasi — ' + (kid ? kid.nama : '') + ' · Penggal ' + ui.pg, v.innerHTML);
+  });
   document.addEventListener('click', e => { const b = e.target.closest('[data-k],[data-pg]'); if (!b || b.disabled) return; if (b.dataset.k) { ui.k = +b.dataset.k; ui.pg = null; } if (b.dataset.pg) ui.pg = +b.dataset.pg; draw(); });
   draw();
 })();

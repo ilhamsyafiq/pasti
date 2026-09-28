@@ -478,11 +478,11 @@ table.pt .empty{text-align:center;color:var(--muted);padding:26px;font-style:ita
 
 /* ---------------- Action kit: forms, documents, BayarCash checkout ---------------- */
 .pt-err{border-color:var(--bad)!important;background:#fdecea!important}
-#ptDyn .kv{display:grid;grid-template-columns:minmax(120px,38%) 1fr;gap:0;border:1px solid var(--line);border-radius:12px;overflow:hidden}
-#ptDyn .kv .k,#ptDyn .kv .v{padding:10px 13px;border-top:1px solid var(--line2);font-size:13px}
-#ptDyn .kv .k{background:#f6f8f5;color:var(--muted);font-weight:600}
-#ptDyn .kv .v{color:var(--ink);overflow-wrap:anywhere}
-#ptDyn .kv .k:nth-child(1),#ptDyn .kv .v:nth-child(2){border-top:0}
+#ptDyn .kv,.pt-standalone .kv{display:grid;grid-template-columns:minmax(120px,38%) 1fr;gap:0;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+#ptDyn .kv .k,#ptDyn .kv .v,.pt-standalone .kv .k,.pt-standalone .kv .v{padding:10px 13px;border-top:1px solid var(--line2);font-size:13px}
+#ptDyn .kv .k,.pt-standalone .kv .k{background:#f6f8f5;color:var(--muted);font-weight:600}
+#ptDyn .kv .v,.pt-standalone .kv .v{color:var(--ink);overflow-wrap:anywhere}
+#ptDyn .kv .k:nth-child(1),#ptDyn .kv .v:nth-child(2),.pt-standalone .kv .k:nth-child(1),.pt-standalone .kv .v:nth-child(2){border-top:0}
 .pt-doc{border:1px solid var(--line);border-radius:12px;padding:22px 24px;background:#fff}
 .pd-head{display:flex;align-items:center;gap:14px;border-bottom:2px solid var(--brand);padding-bottom:12px;margin-bottom:14px}
 .pd-head img{width:52px;height:52px;object-fit:contain}

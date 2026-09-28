@@ -839,7 +839,28 @@
     pg.textContent = '@page{size:A4 ' + (wide ? 'landscape' : 'portrait') + ';margin:12mm}';
   }
   window.addEventListener('beforeprint', preparePagePrint);
-  function printDoc(){ document.body.classList.add('pt-printing'); const pg = document.getElementById('ptPageSize'); if (pg) pg.textContent = '@page{size:A4 portrait;margin:12mm}'; window.print(); setTimeout(() => document.body.classList.remove('pt-printing'), 500); }
+  // PDF view: the document opens in its own tab (only the document, never the page behind it) and the
+  // print dialog — "Save as PDF" — opens automatically. Works the same on desktop and phones.
+  function printHtml(title, html, opt){
+    opt = opt || {};
+    // print.html sits at the project root; find it from the stylesheet path so it works from any folder
+    const css = document.querySelector('link[rel="stylesheet"][href*="assets/css/app.css"]');
+    const url = css ? css.href.replace(/assets\/css\/app\.css.*$/, 'print.html') : 'print.html';
+    try { localStorage.setItem('pt-print-job', JSON.stringify({ title, html, landscape: !!opt.landscape, t: Date.now() })); } catch(e){}
+    let w = null; try { w = window.open(url, '_blank'); } catch(e){}
+    if (w) return;
+    // pop-up blocked → print in place; keep the document-only view until printing has really finished
+    document.body.classList.add('pt-printing');
+    const done = () => { document.body.classList.remove('pt-printing'); window.removeEventListener('afterprint', done); };
+    window.addEventListener('afterprint', done);
+    window.print();
+  }
+  function printDoc(){
+    const ov = document.getElementById('ptDyn'); if (!ov) return;
+    const body = ov.querySelector('.m-body'), t = ov.querySelector('.m-head h3');
+    printHtml(t ? t.textContent : 'Dokumen', body ? body.innerHTML : '');
+  }
+  function printDocLegacy(){ document.body.classList.add('pt-printing'); const pg = document.getElementById('ptPageSize'); if (pg) pg.textContent = '@page{size:A4 portrait;margin:12mm}'; window.print(); setTimeout(() => document.body.classList.remove('pt-printing'), 500); }
 
   // ---- BayarCash checkout
   const money = s => { const m = String(s).replace(/,/g,'').match(/(\d+(\.\d+)?)/); return m ? +m[1] : 0; };
@@ -1108,5 +1129,5 @@
     document.addEventListener('submit',(e)=>{ e.preventDefault(); if(e.target.closest('[data-own]')) return; toast('Berjaya disimpan','green'); const ov=e.target.closest('.modal-overlay'); ov&&ov.classList.remove('open'); });
   }
 
-  window.PT = { svg, I, toast, queueSave, tier: getTier(), can: (k) => { const t = TIERS[getTier()]; return !t || !t.allow || t.allow.includes(k); } };
+  window.PT = { svg, I, toast, queueSave, printHtml, tier: getTier(), can: (k) => { const t = TIERS[getTier()]; return !t || !t.allow || t.allow.includes(k); } };
 })();

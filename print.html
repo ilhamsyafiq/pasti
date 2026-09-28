@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dokumen · ePASTI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/app.css?v=8">
+<style id="pvSize">@page{size:A4 portrait;margin:12mm}</style>
+<style>
+  /* PDF view: only the document, with a bar to print / save as PDF */
+  body.pt-standalone{background:#e9eee7;margin:0;padding:0 0 30px}
+  .pv-bar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:10px;padding:12px 18px;background:#153f08;color:#fff;box-shadow:0 4px 14px rgba(0,0,0,.18)}
+  .pv-bar img{width:30px;height:30px;border-radius:8px;background:#fff;padding:2px}
+  .pv-bar b{flex:1;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .pv-bar button{font-family:inherit;font-size:13px;font-weight:700;border:0;border-radius:10px;padding:9px 14px;cursor:pointer}
+  .pv-bar .p{background:#fff;color:#237a06}.pv-bar .c{background:rgba(255,255,255,.14);color:#fff}
+  .pv-hint{max-width:820px;margin:14px auto 0;padding:0 14px;font-size:12px;color:#5b6a61}
+  .pv-page{max-width:820px;margin:14px auto;padding:0 14px}
+  .pv-page > .pt-doc,.pv-page .pt-docs > .pt-doc,.pv-page > .rum,.pv-page > .notice{box-shadow:0 10px 30px -14px rgba(0,0,0,.35)}
+  .pv-page .pt-docs{gap:22px}
+  .pv-empty{max-width:520px;margin:60px auto;text-align:center;color:#5b6a61}
+  @media print{
+    body.pt-standalone{background:#fff;padding:0}
+    .pv-bar,.pv-hint{display:none!important}
+    .pv-page{max-width:none;margin:0;padding:0}
+    .pv-page > .pt-doc,.pv-page .pt-docs > .pt-doc,.pv-page > .rum,.pv-page > .notice{box-shadow:none}
+    .pt-standalone .pt-cert{min-height:245mm;display:flex;flex-direction:column;justify-content:center}
+    .pt-standalone details.el{break-inside:avoid}
+  }
+  @media(max-width:600px){.pv-bar{padding:10px 12px}.pv-bar b{font-size:12.5px}.pv-page{margin:10px auto;padding:0 8px}}
+</style>
+</head>
+<body class="pt-standalone">
+<div class="pv-bar">
+  <img src="assets/img/pasti-logo.png" alt="">
+  <b id="pvTitle">Dokumen</b>
+  <button class="p" onclick="window.print()">Cetak / Simpan PDF</button>
+  <button class="c" id="pvClose">Tutup</button>
+</div>
+<div class="pv-hint">Untuk simpan sebagai PDF, pilih <b>“Simpan sebagai PDF” / “Save as PDF”</b> pada destinasi pencetak.</div>
+<div class="pv-page" id="pvPage"></div>
+<script>
+(function(){
+  let job = null;
+  try { job = JSON.parse(localStorage.getItem('pt-print-job') || 'null'); } catch(e){}
+  const page = document.getElementById('pvPage');
+  if (!job || !job.html) { page.innerHTML = '<div class="pv-empty"><b>Tiada dokumen untuk dipaparkan.</b><br>Buka semula dokumen daripada sistem ePASTI.</div>'; return; }
+  document.title = job.title + ' · ePASTI';
+  document.getElementById('pvTitle').textContent = job.title;
+  if (job.landscape) document.getElementById("pvSize").textContent = '@page{size:A4 landscape;margin:12mm}';
+  page.innerHTML = job.html.replace(/<details class="el">/g, '<details class="el" open>');
+  document.getElementById('pvClose').onclick = () => { window.close(); setTimeout(() => history.length > 1 ? history.back() : null, 150); };
+  // open the print dialog once fonts & images are ready (only for a fresh job)
+  const fresh = Date.now() - (job.t || 0) < 15000;
+  if (fresh) window.addEventListener('load', () => (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => setTimeout(() => window.print(), 300)));
+})();
+</script>
+</body>
+</html>
