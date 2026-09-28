@@ -6,7 +6,7 @@
 <title>Petugas PASTI · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=5">
+<link rel="stylesheet" href="../assets/css/app.css?v=6">
 </head>
 <body>
 <div class="pt-app" data-module="warga" data-page="warga-petugas" data-title="Petugas PASTI" data-subtitle="Petugas kawasan & cawangan">
@@ -77,12 +77,12 @@
     <div class="m-body">
       <div class="form-grid">
         <div class="field full"><span class="label">Nama Penuh <span class="req">*</span></span><input class="input" placeholder="Nama seperti dalam MyKad"></div>
-        <div class="field"><span class="label">No KP <span class="req">*</span></span><input class="input" placeholder="Cth: 850322106742"></div>
+        <div class="field"><span class="label">No KP <span class="req">*</span></span><input class="input" placeholder="Cth: 850322039358"></div>
         <div class="field"><span class="label">Bidang Tugas</span>
           <select class="select"><option>Pentadbiran</option><option>Kewangan</option><option>Kebajikan</option><option>Dakwah</option><option>Teknikal / IT</option></select>
         </div>
         <div class="field"><span class="label">Cawangan</span>
-          <select class="select"><option>AL-TA'LIM</option><option>AS-SALAMAH</option><option>ITQAN</option><option>NURUL IMAN</option><option>NURUL HIDAYAH</option></select>
+          <select class="select"><option>AR-RAIHAN</option><option>AL-QAYYUM</option><option>AL-MUNAWWARAH</option><option>BAITUL ILMI</option><option>AL-IKHLAS</option></select>
         </div>
         <div class="field"><span class="label">Telefon</span><input class="input" placeholder="013-xxxxxxx"></div>
         <div class="field"><span class="label">Status</span>
@@ -94,23 +94,23 @@
   </div>
 </div>
 
-<script src="../assets/js/app.js?v=5"></script>
+<script src="../assets/js/app.js?v=6"></script>
 <script>
   const kawasan = [
-    ['USTAZ SYAMSUL KAMAL BIN DERIS','800718086027','Pentadbiran','AL-TA\'LIM','Aktif'],
-    ['HALIMATON BINTI SAADIAH','820914105833','Kewangan','AS-SALAMAH','Aktif'],
-    ['USTAZ RUSLI BIN MANAP','790522086318','Dakwah','ITQAN','Aktif'],
-    ['NORAZWANI BINTI HASHIM','881007108129','Kebajikan','NURUL IMAN','Aktif'],
-    ['MOHD FADZLI BIN SUHAIMI','831119085744','Teknikal / IT','NURUL HIDAYAH','Tidak Aktif'],
-    ['SUHAILA BINTI MAT ISA','910403104611','Pentadbiran','AL-TA\'LIM','Aktif'],
+    ['USTAZ ZAKWAN ZULFAQAR BIN SYAZWAN','800718033097','Pentadbiran','AR-RAIHAN','Aktif'],
+    ['MARLINA BINTI AMSYAR','820914031213','Kewangan','AL-QAYYUM','Aktif'],
+    ['USTAZ AMANI BIN BUSYRA','790522031563','Dakwah','AL-MUNAWWARAH','Aktif'],
+    ['ZABIDAH BINTI RAYYAN','881007035414','Kebajikan','BAITUL ILMI','Aktif'],
+    ['MOHD MUAZ BIN AMSYAR','831119034295','Teknikal / IT','AL-IKHLAS','Tidak Aktif'],
+    ['BATRISYIA BINTI MAT SHUKOR','910403030642','Pentadbiran','AR-RAIHAN','Aktif'],
   ];
   const cawangan = [
-    ['RAFIDAH BINTI KAMARUZAMAN','850811106825','Pentadbiran','ITQAN','Aktif'],
-    ['USTAZ NAJMI BIN ABDUL HALIM','780217086233','Dakwah','NURUL IMAN','Aktif'],
-    ['IZYAN NADHIRAH BINTI ROSLI','890628108317','Kewangan','AS-SALAMAH','Aktif'],
-    ['MOHD SYUKRI BIN BAHARIN','820930085428','Kebajikan','AL-TA\'LIM','Tidak Aktif'],
-    ['NURSHAFIQAH BINTI ZAINUDIN','930715104822','Teknikal / IT','NURUL HIDAYAH','Aktif'],
-    ['USTAZ AZIM BIN MOHD SANI','801204086711','Pentadbiran','ITQAN','Aktif'],
+    ['SYUHADA BINTI MIRZA','850811030062','Pentadbiran','AL-MUNAWWARAH','Aktif'],
+    ['USTAZ FADHIL BIN ABDUL HAFIZUDDIN','780217033467','Dakwah','BAITUL ILMI','Aktif'],
+    ['KAMILAH ROSMANIZA BINTI FAUZI','890628034653','Kewangan','AL-QAYYUM','Aktif'],
+    ['MOHD TALHAH BIN SUFYAN','820930033442','Kebajikan','AR-RAIHAN','Tidak Aktif'],
+    ['MARYAM BINTI FARHAN','930715030738','Teknikal / IT','AL-IKHLAS','Aktif'],
+    ['USTAZ MAHADZIR BIN MOHD JOHAN','801204034303','Pentadbiran','AL-MUNAWWARAH','Aktif'],
   ];
   function initials(n){ const p=n.replace(/^(USTAZ|USTAZAH)\s+/,'').split(' '); return (p[0][0]+(p[1]?p[1][0]:'')).toUpperCase(); }
   function badge(s){ return s==='Aktif' ? '<span class="badge b-green">Aktif</span>' : '<span class="badge b-slate">Tidak Aktif</span>'; }

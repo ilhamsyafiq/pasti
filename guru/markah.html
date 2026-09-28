@@ -6,7 +6,7 @@
 <title>Permarkahan SPPM · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=5">
+<link rel="stylesheet" href="../assets/css/app.css?v=6">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#2fa308">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -92,9 +92,9 @@
   </main>
 </div>
 
-<script src="../assets/js/app.js?v=5"></script>
+<script src="../assets/js/app.js?v=6"></script>
 <script src="../assets/js/guru-kelas.js"></script>
-<script src="../assets/js/sppm.js?v=2"></script>
+<script src="../assets/js/sppm.js?v=3"></script>
 <script>
 (function(){
   const K = window.KELAS, M = K.murid, S = window.SPPM, UMUR = K.umur || 5;
@@ -137,7 +137,7 @@
     if (e.aktiviti) h += `<div class="box"><h4>Aktiviti yang disertai</h4>
       ${r.aktiviti.map((a,i) => `<div class="akt"><div><b>${esc(a.nama)}</b><br><span>Anjuran: ${esc(a.anjuran)} · Peringkat <b>${esc(a.peringkat)}</b>${a.catatan ? ' · ' + esc(a.catatan) : ''}</span></div><button type="button" class="btn btn-ghost btn-sm" data-akdel="${i}">Buang</button></div>`).join('') || '<div class="muted" style="font-size:13px">Belum ada aktiviti direkod.</div>'}
       <div class="form-grid mt"><div class="field full"><span class="label">Aktiviti</span><input class="input" id="akNama" placeholder="cth: Pertandingan Hafazan Surah Lazim"></div>
-        <div class="field"><span class="label">Anjuran</span><input class="input" id="akAnj" placeholder="cth: PASTI Kawasan Kubang Kerian"></div>
+        <div class="field"><span class="label">Anjuran</span><input class="input" id="akAnj" placeholder="cth: PASTI Kawasan Kota Bharu"></div>
         <div class="field"><span class="label">Peringkat</span><select class="select" id="akPer">${S.PERINGKAT.map(p => `<option>${p}</option>`).join('')}</select></div>
         <div class="field full"><span class="label">Catatan</span><input class="input" id="akCat" placeholder="cth: Johan / Penyertaan"></div></div>
       <button type="button" class="btn btn-soft mt" id="akAdd">+ Tambah aktiviti</button></div>`;

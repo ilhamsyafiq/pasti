@@ -6,7 +6,7 @@
 <title>Pendaftaran Murid PASTI Baharu · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/app.css?v=5">
+<link rel="stylesheet" href="assets/css/app.css?v=6">
 </head>
 <body>
 
@@ -45,11 +45,11 @@
         <div class="form-grid">
           <div class="field full">
             <label class="label">Nama Penuh Murid <span class="req">*</span></label>
-            <input class="input" type="text" placeholder="cth: Muhammad Aqil bin Ahmad Firdaus" required>
+            <input class="input" type="text" placeholder="cth: Muhammad Idham bin Ahmad Qayyum" required>
           </div>
           <div class="field">
             <label class="label">No. MyKid / Passport <span class="req">*</span></label>
-            <input class="input" type="text" placeholder="cth: 190312-10-1234" required>
+            <input class="input" type="text" placeholder="cth: 190312-03-5107" required>
           </div>
           <div class="field">
             <label class="label">Tarikh Lahir <span class="req">*</span></label>
@@ -103,15 +103,15 @@
         <div class="form-grid">
           <div class="field">
             <label class="label">Nama Bapa / Penjaga <span class="req">*</span></label>
-            <input class="input" type="text" placeholder="cth: Ahmad Firdaus bin Ismail" required>
+            <input class="input" type="text" placeholder="cth: Ahmad Qayyum bin Darwisy" required>
           </div>
           <div class="field">
             <label class="label">No. Kad Pengenalan Bapa <span class="req">*</span></label>
-            <input class="input" type="text" placeholder="cth: 850214-10-5567" required>
+            <input class="input" type="text" placeholder="cth: 850214-03-5415" required>
           </div>
           <div class="field">
             <label class="label">No. Telefon Bapa <span class="req">*</span></label>
-            <input class="input" type="tel" placeholder="cth: 012-3456789" required>
+            <input class="input" type="tel" placeholder="cth: 012-2161111" required>
           </div>
           <div class="field">
             <label class="label">Pekerjaan Bapa</label>
@@ -119,15 +119,15 @@
           </div>
           <div class="field">
             <label class="label">Nama Ibu <span class="req">*</span></label>
-            <input class="input" type="text" placeholder="cth: Siti Nurhaliza binti Kamal" required>
+            <input class="input" type="text" placeholder="cth: Siti Aniza binti Zulfaqar" required>
           </div>
           <div class="field">
             <label class="label">No. Kad Pengenalan Ibu <span class="req">*</span></label>
-            <input class="input" type="text" placeholder="cth: 880922-14-6688" required>
+            <input class="input" type="text" placeholder="cth: 880922-03-4042" required>
           </div>
           <div class="field">
             <label class="label">No. Telefon Ibu</label>
-            <input class="input" type="tel" placeholder="cth: 019-8765432">
+            <input class="input" type="tel" placeholder="cth: 019-2935318">
           </div>
           <div class="field">
             <label class="label">Emel Ibu Bapa / Penjaga <span class="req">*</span></label>
@@ -152,7 +152,7 @@
         <div class="form-grid">
           <div class="field">
             <label class="label">Kod PASTI <span class="req">*</span></label>
-            <input class="input" type="text" placeholder="cth: B020108" required autocomplete="off" style="text-transform:uppercase">
+            <input class="input" type="text" placeholder="cth: D030108" required autocomplete="off" style="text-transform:uppercase">
             <span class="hint">Kod diberikan oleh pihak PASTI. PASTI dikenal pasti secara automatik daripada kod ini.</span>
           </div>
           <div class="field">
@@ -204,7 +204,7 @@
       </div>
       <div class="field">
         <label class="label">Kod PASTI</label>
-        <input class="input" type="text" placeholder="cth: B020108" style="text-transform:uppercase">
+        <input class="input" type="text" placeholder="cth: D030108" style="text-transform:uppercase">
         <span class="hint">Masukkan kod yang diberikan untuk meneruskan pendaftaran.</span>
       </div>
     </div>
@@ -215,7 +215,7 @@
   </div>
 </div>
 
-<script src="assets/js/app.js?v=5"></script>
+<script src="assets/js/app.js?v=6"></script>
 <script>
 // Public registration → creates an application in the shared DB (status Baharu) and gives the parent a No. Rujukan.
 (function(){
@@ -249,7 +249,7 @@
     PT.toast('Kod sah — ' + r.p.nama);
   });
 
-  // Deep link: daftar-murid.html?kod=B020108 fills the code and skips the modal.
+  // Deep link: daftar-murid.html?kod=D030108 fills the code and skips the modal.
   const qk = new URLSearchParams(location.search).get('kod');
   if (qk) { kodIn.value = qk.toUpperCase(); showInfo(); if (!check(qk).err) document.getElementById('kodModal').classList.remove('open'); }
 

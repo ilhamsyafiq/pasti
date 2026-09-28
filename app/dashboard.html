@@ -6,7 +6,7 @@
 <title>Utama · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=5">
+<link rel="stylesheet" href="../assets/css/app.css?v=6">
 </head>
 <body>
 <div class="pt-app" data-module="dashboard" data-page="dashboard" data-title="Utama" data-subtitle="Papan utama ePASTI">
@@ -189,8 +189,8 @@
     <div class="page-head">
       <div>
         <div class="crumb">ePASTI <span>›</span> Utama</div>
-        <h1>Selamat Datang, Ustaz Khairi</h1>
-        <div class="lead">Pentadbir Parlimen P.025 Kubang Kerian · Kelantan · Dikemas kini sebentar tadi</div>
+        <h1>Selamat Datang, Ustaz Razlan</h1>
+        <div class="lead">Pentadbir Parlimen P.021 Kota Bharu · Kelantan · Dikemas kini sebentar tadi</div>
       </div>
     </div>
 
@@ -240,10 +240,10 @@
           <div class="news-item muted">Tiada pemakluman buat masa ini.</div>
           <div class="fieldset-t mt">PASTI Negeri Kelantan</div>
           <div class="news-item muted">Tiada pemakluman buat masa ini.</div>
-          <div class="fieldset-t mt">PASTI Kawasan Kubang Kerian
+          <div class="fieldset-t mt">PASTI Kawasan Kota Bharu
             <button class="btn btn-soft btn-sm" style="float:right;margin-top:-4px" data-modal="addNewsModal">+ Tambah</button>
           </div>
-          <div class="news-item"><b>» BENGKEL e-PASTI KAWASAN KUBANG KERIAN</b><div class="dt">20 September 2026</div></div>
+          <div class="news-item"><b>» BENGKEL e-PASTI KAWASAN KOTA BHARU</b><div class="dt">20 September 2026</div></div>
           <div class="right"><a class="muted" href="calendar.html" style="font-size:12.5px">Papar semua…</a></div>
         </div>
       </div>
@@ -292,7 +292,7 @@
   </div>
 </div>
 
-<script src="../assets/js/app.js?v=5"></script>
+<script src="../assets/js/app.js?v=6"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
   // Pusat (HQ) master dashboard — national figures, all derived from the tables below so totals always agree.
@@ -318,9 +318,9 @@
       ['Sabah',26,740,64,88.3,96,21,[9,6,5,6],25,73],
       ['Sarawak',18,540,55,87.9,72,15,[6,4,3,5],31,82],
     ];
-    // Negeri view: Kelantan split into its 14 Kawasan (Kubang Kerian matches the Kawasan dashboard: 11 PASTI, 181 murid)
+    // Negeri view: Kelantan split into its 14 Kawasan (Kota Bharu matches the Kawasan dashboard: 11 PASTI, 181 murid)
     function kawasanRows(k){
-      const NAMES = ['Tumpat','Pengkalan Chepa','Kota Bharu','Pasir Mas','Rantau Panjang','Kubang Kerian','Bachok','Ketereh','Tanah Merah','Pasir Puteh','Machang','Jeli','Kuala Krai','Gua Musang'];
+      const NAMES = ['Tumpat','Pengkalan Chepa','Kota Bharu','Pasir Mas','Rantau Panjang','Kota Bharu','Bachok','Ketereh','Tanah Merah','Pasir Puteh','Machang','Jeli','Kuala Krai','Gua Musang'];
       const KK = 5, fixed = { c:11, m:181, g:38, a:92.0, y:26.8, t:6.3, bc:[3,5,2,1], d:2 };
       const W  = [1.28,1.07,1.41,1.22,0.93,0,1.02,1.15,0.97,0.88,1.04,0.62,0.83,0.71];
       const TW = [1.1,1.3,1.2,1.5,1.0,0,0.8,1.2,1.4,0.9,1.3,0.7,1.1,0.9];   // tertunggak varies by kawasan
@@ -363,15 +363,15 @@
       ['out','Saguhati guru September — Kelantan','1,016 guru · pindahan pukal',196300,'25 Sep'],
       ['out','Caruman Skim PASTI kepada Pusat','Invois INV-2026-KTN-09',96400,'25 Sep'],
       ['in','Caruman ahli daripada Kawasan','14 kawasan · bulan September',88200,'24 Sep'],
-      ['in','Kempen Tabung Banjir PASTI Nurul Hidayah','Derma awam · 1,204 penderma',38650,'23 Sep'],
+      ['in','Kempen Tabung Banjir PASTI Al-Ikhlas','Derma awam · 1,204 penderma',38650,'23 Sep'],
       ['out','Tuntutan khairat kematian ahli — Machang','Diluluskan Negeri',5000,'23 Sep'],
-      ['out','Bengkel e-PASTI Kawasan Kubang Kerian','Program & latihan',4200,'20 Sep'],
+      ['out','Bengkel e-PASTI Kawasan Kota Bharu','Program & latihan',4200,'20 Sep'],
     ] : [
       ['in','Kutipan yuran September — Kelantan','412 cawangan · BayarCash FPX/DuitNow',486200,'26 Sep'],
       ['out','Saguhati guru September — semua negeri','4,318 guru · pindahan pukal',834000,'25 Sep'],
       ['in','Caruman Skim PASTI — Terengganu','Invois INV-2026-TRG-09',96400,'25 Sep'],
       ['out','Caruman PERKESO / SKSPS — September','Remit bulanan',326000,'24 Sep'],
-      ['in','Kempen Tabung Banjir PASTI Nurul Hidayah','Derma awam · 1,204 penderma',38650,'23 Sep'],
+      ['in','Kempen Tabung Banjir PASTI Al-Ikhlas','Derma awam · 1,204 penderma',38650,'23 Sep'],
       ['out','Tuntutan khairat kematian ahli — Kedah','Diluluskan Negeri Kedah',5000,'23 Sep'],
       ['out','Bengkel e-PASTI Kawasan (6 negeri)','Program & latihan',18400,'22 Sep'],
     ];

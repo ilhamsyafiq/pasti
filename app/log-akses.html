@@ -6,7 +6,7 @@
 <title>Log Akses (Audit) · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=5">
+<link rel="stylesheet" href="../assets/css/app.css?v=6">
 </head>
 <body>
 <div class="pt-app" data-module="operasi" data-page="log-akses" data-title="Log Akses (Audit)" data-subtitle="Semua tindakan pengguna direkod">
@@ -63,7 +63,7 @@
   </main>
 </div>
 
-<script src="../assets/js/app.js?v=5"></script>
+<script src="../assets/js/app.js?v=6"></script>
 <script>
 (function(){
   // Each entry records WHERE it happened, so every tier sees only its own area:
@@ -72,45 +72,45 @@
     hq:   { n:'—',        k:'—',                  d:'—',               p:'—',                 lbl:'Ibu Pejabat (Pusat)' },
     ktn:  { n:'Kelantan', k:'—',                  d:'—',               p:'—',                 lbl:'Negeri Kelantan' },
     trg:  { n:'Terengganu',k:'—',                 d:'—',               p:'—',                 lbl:'Negeri Terengganu' },
-    kdh:  { n:'Kedah',    k:'P015 Sungai Petani', d:'N33 Tanjong Dawai',p:'PASTI AN NUR',       lbl:"PASTI An Nur · Sungai Petani" },
-    kk:   { n:'Kelantan', k:'P025 Kubang Kerian', d:'—',               p:'—',                 lbl:'Kawasan P025 Kubang Kerian' },
-    bch:  { n:'Kelantan', k:'P026 Bachok',        d:'—',               p:'—',                 lbl:'Kawasan P026 Bachok' },
-    n44:  { n:'Kelantan', k:'P025 Kubang Kerian', d:'N44 Kota Lama',   p:'—',                 lbl:'DUN N44 Kota Lama' },
-    tal:  { n:'Kelantan', k:'P025 Kubang Kerian', d:'N44 Kota Lama',   p:"PASTI AL-TA'LIM",   lbl:"PASTI Al-Ta'lim" },
-    sal:  { n:'Kelantan', k:'P025 Kubang Kerian', d:'N44 Kota Lama',   p:'PASTI AS-SALAMAH',  lbl:'PASTI As-Salamah' },
-    itq:  { n:'Kelantan', k:'P025 Kubang Kerian', d:'N45 Bunut Payong',p:'PASTI ITQAN',       lbl:'PASTI Itqan' },
+    kdh:  { n:'Kedah',    k:'P015 Sungai Petani', d:'N33 Tanjong Dawai',p:'PASTI AN-NAJAH',       lbl:"PASTI An-Najah · Sungai Petani" },
+    kk:   { n:'Kelantan', k:'P021 Kota Bharu', d:'—',               p:'—',                 lbl:'Kawasan P021 Kota Bharu' },
+    bch:  { n:'Kelantan', k:'P025 Bachok',        d:'—',               p:'—',                 lbl:'Kawasan P025 Bachok' },
+    n44:  { n:'Kelantan', k:'P021 Kota Bharu', d:'N09 Kota Lama',   p:'—',                 lbl:'DUN N09 Kota Lama' },
+    tal:  { n:'Kelantan', k:'P021 Kota Bharu', d:'N09 Kota Lama',   p:"PASTI AR-RAIHAN",   lbl:"PASTI Ar-Raihan" },
+    sal:  { n:'Kelantan', k:'P021 Kota Bharu', d:'N09 Kota Lama',   p:'PASTI AL-QAYYUM',  lbl:'PASTI Al-Qayyum' },
+    itq:  { n:'Kelantan', k:'P021 Kota Bharu', d:'N10 Bunut Payong',p:'PASTI AL-MUNAWWARAH',       lbl:'PASTI Al-Munawwarah' },
   };
   var tierCls = { Pusat:'b-violet', Negeri:'b-blue', Kawasan:'b-teal', DUN:'b-amber', Cawangan:'b-slate', Guru:'b-green', 'Ibu Bapa':'b-green' };
   var R = [
-    ['27/09/2026 09:41','Dato\' Hj Ahmad Zaki','Pusat','Log Masuk','Papan Pemuka','175.140.22.14','Berjaya','hq'],
-    ['27/09/2026 09:38','Ustaz Faizal Rahman','Negeri','Sokong','Pengurusan PASTI','210.19.88.203','Berjaya','ktn'],
-    ['27/09/2026 09:31','Ustazah Siti Khadijah','Guru','Simpan','Kehadiran Murid','115.164.30.12','Berjaya','tal'],
-    ['27/09/2026 09:22','Muhamad Khairi bin Azman','Kawasan','Cipta','Warga','113.210.45.77','Berjaya','kk'],
-    ['27/09/2026 09:12','Puan Nurul Aina','Ibu Bapa','Bayar','Yuran','60.50.211.8','Berjaya','tal'],
-    ['27/09/2026 09:05','Ustazah Mariam Hassan','Cawangan','Cetak','Yuran','60.51.132.9','Berjaya','tal'],
-    ['27/09/2026 08:57','Ustaz Ismail Kassim','DUN','Log Masuk','Papan Pemuka','115.164.7.221','Gagal','n44'],
-    ['27/09/2026 08:50','Ustaz Hakim Yusof','Cawangan','Kemaskini','Payment Gateway','175.143.9.40','Berjaya','sal'],
-    ['27/09/2026 08:44','Ustaz Faizal Rahman','Negeri','Lulus','Caruman','210.19.88.203','Berjaya','ktn'],
-    ['27/09/2026 08:30','Dato\' Hj Ahmad Zaki','Pusat','Lihat','Papan Pemuka','175.140.22.14','Berjaya','hq'],
-    ['27/09/2026 08:21','Ustazah Rahmah Ali','Cawangan','Log Masuk','Kehadiran','118.100.2.61','Gagal','itq'],
-    ['27/09/2026 08:18','Muhamad Khairi bin Azman','Kawasan','Padam','Warga','113.210.45.77','Gagal','kk'],
-    ['27/09/2026 08:02','Ustazah Mariam Hassan','Cawangan','Cipta','Permohonan Murid','60.51.132.9','Berjaya','tal'],
-    ['26/09/2026 17:49','Ustaz Ismail Kassim','DUN','Kemaskini','Payment Gateway','115.164.7.221','Berjaya','n44'],
-    ['26/09/2026 17:31','Ustaz Zulkifli Omar','Kawasan','Cipta','Pendaftaran PASTI','202.188.4.19','Berjaya','bch'],
-    ['26/09/2026 16:58','Ustaz Faizal Rahman','Negeri','Cetak','Laporan','210.19.88.203','Berjaya','ktn'],
-    ['26/09/2026 16:20','Ustaz Harun Salleh','Negeri','Log Masuk','Papan Pemuka','183.171.8.5','Berjaya','trg'],
-    ['26/09/2026 15:47','Puan Faridah Ismail','Cawangan','Bayar','Caruman','175.139.66.2','Berjaya','kdh'],
-    ['26/09/2026 15:02','Ustazah Siti Khadijah','Guru','Hantar','Permarkahan','115.164.30.12','Berjaya','tal'],
-    ['26/09/2026 11:15','Dato\' Hj Ahmad Zaki','Pusat','Kemaskini','Tetapan','175.140.22.14','Berjaya','hq'],
+    ['27/09/2026 09:41','Dato\' Hj Kamaruddin Yaakub','Pusat','Log Masuk','Papan Pemuka','175.140.22.14','Berjaya','hq'],
+    ['27/09/2026 09:38','Ustaz Asri Zamri','Negeri','Sokong','Pengurusan PASTI','210.19.88.203','Berjaya','ktn'],
+    ['27/09/2026 09:31','Ustazah Siti Iffah','Guru','Simpan','Kehadiran Murid','115.164.30.12','Berjaya','tal'],
+    ['27/09/2026 09:22','Muhamad Razlan bin Kamil','Kawasan','Cipta','Warga','113.210.45.77','Berjaya','kk'],
+    ['27/09/2026 09:12','Puan Nurul Nabihah','Ibu Bapa','Bayar','Yuran','60.50.211.8','Berjaya','tal'],
+    ['27/09/2026 09:05','Ustazah Husna Mardhiah','Cawangan','Cetak','Yuran','60.51.132.9','Berjaya','tal'],
+    ['27/09/2026 08:57','Ustaz Darwisy Yusri','DUN','Log Masuk','Papan Pemuka','115.164.7.221','Gagal','n44'],
+    ['27/09/2026 08:50','Ustaz Fahmi Taqiuddin','Cawangan','Kemaskini','Payment Gateway','175.143.9.40','Berjaya','sal'],
+    ['27/09/2026 08:44','Ustaz Asri Zamri','Negeri','Lulus','Caruman','210.19.88.203','Berjaya','ktn'],
+    ['27/09/2026 08:30','Dato\' Hj Kamaruddin Yaakub','Pusat','Lihat','Papan Pemuka','175.140.22.14','Berjaya','hq'],
+    ['27/09/2026 08:21','Ustazah Wafa Faqih','Cawangan','Log Masuk','Kehadiran','118.100.2.61','Gagal','itq'],
+    ['27/09/2026 08:18','Muhamad Razlan bin Kamil','Kawasan','Padam','Warga','113.210.45.77','Gagal','kk'],
+    ['27/09/2026 08:02','Ustazah Husna Mardhiah','Cawangan','Cipta','Permohonan Murid','60.51.132.9','Berjaya','tal'],
+    ['26/09/2026 17:49','Ustaz Darwisy Yusri','DUN','Kemaskini','Payment Gateway','115.164.7.221','Berjaya','n44'],
+    ['26/09/2026 17:31','Ustaz Aizat Rizqi','Kawasan','Cipta','Pendaftaran PASTI','202.188.4.19','Berjaya','bch'],
+    ['26/09/2026 16:58','Ustaz Asri Zamri','Negeri','Cetak','Laporan','210.19.88.203','Berjaya','ktn'],
+    ['26/09/2026 16:20','Ustaz Rafie Sufyan','Negeri','Log Masuk','Papan Pemuka','183.171.8.5','Berjaya','trg'],
+    ['26/09/2026 15:47','Puan Madihah Darwisy','Cawangan','Bayar','Caruman','175.139.66.2','Berjaya','kdh'],
+    ['26/09/2026 15:02','Ustazah Siti Iffah','Guru','Hantar','Permarkahan','115.164.30.12','Berjaya','tal'],
+    ['26/09/2026 11:15','Dato\' Hj Kamaruddin Yaakub','Pusat','Kemaskini','Tetapan','175.140.22.14','Berjaya','hq'],
   ];
 
   var tier = (window.PT && PT.tier) || 'kawasan';
   var SCOPE = {
     pusat:    { see: function(){ return true; },                       txt:'semua negeri, kawasan, DUN & cawangan', mult: 64 },
     negeri:   { see: function(l){ return l.n === 'Kelantan'; },          txt:'Negeri Kelantan (kawasan, DUN & cawangan di bawahnya)', mult: 15 },
-    kawasan:  { see: function(l){ return l.k === 'P025 Kubang Kerian'; },txt:'Kawasan P025 Kubang Kerian (DUN & cawangan di bawahnya)', mult: 3 },
-    dun:      { see: function(l){ return l.d === 'N44 Kota Lama'; },     txt:'DUN N44 Kota Lama (cawangan di bawahnya)', mult: 2 },
-    cawangan: { see: function(l){ return l.p === "PASTI AL-TA'LIM"; },   txt:"PASTI Al-Ta'lim (pentadbir, guru & ibu bapa)", mult: 1 },
+    kawasan:  { see: function(l){ return l.k === 'P021 Kota Bharu'; },txt:'Kawasan P021 Kota Bharu (DUN & cawangan di bawahnya)', mult: 3 },
+    dun:      { see: function(l){ return l.d === 'N09 Kota Lama'; },     txt:'DUN N09 Kota Lama (cawangan di bawahnya)', mult: 2 },
+    cawangan: { see: function(l){ return l.p === "PASTI AR-RAIHAN"; },   txt:"PASTI Ar-Raihan (pentadbir, guru & ibu bapa)", mult: 1 },
   }[tier] || { see: function(){ return true; }, txt:'', mult: 1 };
 
   var rows = R.filter(function(r){ return SCOPE.see(L[r[7]]); });

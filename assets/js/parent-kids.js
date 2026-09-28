@@ -7,16 +7,16 @@
   const COLORS = ['pp-c1','pp-c2','pp-c3','pp-c4','pp-c5','pp-c6'];
 
   const SAMPLE = [
-    { nama:'AHMAD ZAFRAN BIN MOHD IDRIS', pendek:'Ahmad Zafran', mykid:'210512100713', pasti:"PASTI AL-TA'LIM", kelas:'Tahun 5 · Kelas Amanah', guru:'Ustazah Mariam Hassan',
+    { nama:'AHMAD UMAIR BIN MOHD SAFWAN', pendek:'Ahmad Umair', mykid:'210512035411', pasti:"PASTI AR-RAIHAN", kelas:'Tahun 5 · Kelas Amanah', guru:'Ustazah Husna Mardhiah',
       ref:'PST-2024-0187', daftar:'05 Januari 2024', status:'Diterima', hadir:94, tertunggak:120, bil:2, prestasi:'Penggal 1' },
-    { nama:'NUR SOFEA BINTI MOHD IDRIS', pendek:'Nur Sofea', mykid:'220814080552', pasti:"PASTI AL-TA'LIM", kelas:'Tahun 4 · Kelas Ikhlas', guru:'Ustazah Siti Aminah Yusof',
+    { nama:'NUR SURAYA BINTI MOHD SAFWAN', pendek:'Nur Suraya', mykid:'220814030432', pasti:"PASTI AR-RAIHAN", kelas:'Tahun 4 · Kelas Ikhlas', guru:'Ustazah Siti Nabila Taqiuddin',
       ref:'PST-2024-0188', daftar:'05 Januari 2024', status:'Diterima', hadir:98, tertunggak:0, bil:0, prestasi:'Belum' },
   ];
 
   function load(){
     const me = window.DB && DB.user();
     const demo = !me || me.peranan !== 'ibubapa' || me.emel === 'ibubapa@pasti.org';
-    if (demo) return { me: me || { nama:'Puan Nurul Aina binti Halim', emel:'ibubapa@pasti.org' }, demo:true, kids: SAMPLE };
+    if (demo) return { me: me || { nama:'Puan Nurul Nabihah binti Hafizuddin', emel:'ibubapa@pasti.org' }, demo:true, kids: SAMPLE };
     const kids = DB.all('murid').filter(m => (m.emel||'').toLowerCase() === me.emel.toLowerCase() && m.status !== 'Ditolak').map(m => {
       const ok = m.status === 'Diterima';
       return { nama:m.nama, pendek:m.nama.split(' ').filter(w => !/^(bin|binti)$/i.test(w)).slice(0,2).join(' ').replace(/\b\w+/g, w => w[0] + w.slice(1).toLowerCase()),

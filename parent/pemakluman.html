@@ -6,7 +6,7 @@
 <title>Makluman & Pemberitahuan · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=5">
+<link rel="stylesheet" href="../assets/css/app.css?v=6">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#2fa308">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -22,7 +22,7 @@
         <div>
           <div class="crumbs">Portal Ibu Bapa › Makluman &amp; Pemberitahuan</div>
           <h1>Makluman &amp; Pemberitahuan</h1>
-          <div class="lead">Pengumuman sekolah, program dan peringatan bayaran daripada PASTI AL-TA'LIM</div>
+          <div class="lead">Pengumuman sekolah, program dan peringatan bayaran daripada PASTI AR-RAIHAN</div>
           <div class="mini" id="ppMini"></div>
         </div>
         <button class="btn btn-w" id="markAll">Tandakan semua dibaca</button>
@@ -39,17 +39,17 @@
   </main>
 </div>
 
-<script src="../assets/js/app.js?v=5"></script>
-<script src="../assets/js/parent-kids.js?v=2"></script>
+<script src="../assets/js/app.js?v=6"></script>
+<script src="../assets/js/parent-kids.js?v=3"></script>
 <script>
   (function(){
     const I = PK.I, esc = PK.esc, $ = id => document.getElementById(id);
     const CAT = { bayaran:['Bayaran','pp-c3',I.yuran], makluman:['Makluman','pp-c5',I.makluman], program:['Program','pp-c4',I.program], prestasi:['Prestasi','pp-c2',I.prestasi] };
     const items = [
-      { id:'y-ogos', c:'bayaran',  t:'Yuran Ogos 2026 belum dijelaskan', p:'Yuran Ahmad Zafran bagi bulan Ogos (RM 60) masih tertunggak. Sila jelaskan segera.', dt:'23 Sep 2026', pay:60 },
-      { id:'mag',    c:'makluman', t:"Mesyuarat Agung PASTI AL-TA'LIM", p:'Semua ibu bapa dijemput hadir pada Ahad, 5 Oktober 2026, 9:00 pagi di dewan PASTI.', dt:'20 Sep 2026' },
+      { id:'y-ogos', c:'bayaran',  t:'Yuran Ogos 2026 belum dijelaskan', p:'Yuran Ahmad Umair bagi bulan Ogos (RM 60) masih tertunggak. Sila jelaskan segera.', dt:'23 Sep 2026', pay:60 },
+      { id:'mag',    c:'makluman', t:"Mesyuarat Agung PASTI AR-RAIHAN", p:'Semua ibu bapa dijemput hadir pada Ahad, 5 Oktober 2026, 9:00 pagi di dewan PASTI.', dt:'20 Sep 2026' },
       { id:'hk',     c:'program',  t:'Program Motivasi & Hari Keluarga', p:'Sabtu, 4 Oktober 2026 · aktiviti keluarga, sukaneka dan jamuan. Pakaian: baju sukan PASTI.', dt:'16 Sep 2026' },
-      { id:'sppm1',  c:'prestasi', t:'Penilaian SPPM Penggal 1 dihantar', p:'Guru kelas telah menghantar penilaian Penggal 1 bagi Ahmad Zafran. Semak di Prestasi Anak.', dt:'15 Sep 2026', go:'prestasi.html' },
+      { id:'sppm1',  c:'prestasi', t:'Penilaian SPPM Penggal 1 dihantar', p:'Guru kelas telah menghantar penilaian Penggal 1 bagi Ahmad Umair. Semak di Prestasi Anak.', dt:'15 Sep 2026', go:'prestasi.html' },
       { id:'cuti',   c:'makluman', t:'Cuti Pertengahan Penggal', p:'PASTI ditutup 13–21 September 2026. Kelas bermula semula Isnin, 22 September.', dt:'12 Sep 2026' },
       { id:'y-jul',  c:'bayaran',  t:'Yuran Julai 2026 telah dijelaskan — terima kasih', p:'Pembayaran RM 120 melalui Kad diterima. Resit boleh dimuat turun.', dt:'10 Julai 2026', go:'resit.html', done:true },
       { id:'daftar', c:'makluman', t:'Sesi Pendaftaran Semula Sesi 2026 dibuka', p:'Pendaftaran semula murid lama dibuka sehingga 31 Januari 2026.', dt:'5 Jan 2026' },

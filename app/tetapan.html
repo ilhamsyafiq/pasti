@@ -6,7 +6,7 @@
 <title>Tetapan · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=5">
+<link rel="stylesheet" href="../assets/css/app.css?v=6">
 </head>
 <body>
 <div class="pt-app" data-module="tetapan" data-page="tetapan" data-title="Tetapan" data-subtitle="Profil & pentadbir">
@@ -33,8 +33,8 @@
         <div class="card-body">
           <form>
             <div class="form-grid">
-              <div class="field"><span class="label">Nama <span class="req">*</span></span><input class="input" value="AMIRUL MUKMININ BIN SAHAK"></div>
-              <div class="field"><span class="label">No. KP <span class="req">*</span></span><input class="input" value="830924-10-5417"></div>
+              <div class="field"><span class="label">Nama <span class="req">*</span></span><input class="input" value="GHAZI AIZAT BIN HAMDI"></div>
+              <div class="field"><span class="label">No. KP <span class="req">*</span></span><input class="input" value="830924-03-5349"></div>
               <div class="field"><span class="label">Tarikh Lahir</span><input class="input" type="text" value="24/09/1983"></div>
               <div class="field"><span class="label">Gelaran</span>
                 <select class="select">
@@ -60,15 +60,15 @@
                   <option>Lain-lain</option>
                 </select>
               </div>
-              <div class="field"><span class="label">Telefon</span><input class="input" value="013-7729481"></div>
-              <div class="field"><span class="label">Telefon Pejabat</span><input class="input" value="03-32256640"></div>
-              <div class="field"><span class="label">Faks</span><input class="input" value="03-32256641"></div>
-              <div class="field"><span class="label">Facebook</span><input class="input" value="fb.com/pastiassalamahsb"></div>
-              <div class="field"><span class="label">Homepage / Blog</span><input class="input" value="pastiassalamahsb.blogspot.com"></div>
-              <div class="field"><span class="label">Email <span class="req">*</span></span><input class="input" type="email" value="pastiassalamahsb@gmail.com"></div>
+              <div class="field"><span class="label">Telefon</span><input class="input" value="013-3384551"></div>
+              <div class="field"><span class="label">Telefon Pejabat</span><input class="input" value="09-55044655"></div>
+              <div class="field"><span class="label">Faks</span><input class="input" value="09-08581583"></div>
+              <div class="field"><span class="label">Facebook</span><input class="input" value="fb.com/pastialqayyum.demo"></div>
+              <div class="field"><span class="label">Homepage / Blog</span><input class="input" value="pastialqayyum-demo.blogspot.com"></div>
+              <div class="field"><span class="label">Email <span class="req">*</span></span><input class="input" type="email" value="pastialqayyum@contoh.my"></div>
               <div class="field full"><span class="label">Alamat</span>
                 <input class="input mb" value="NO 12, JALAN BESTARI 3">
-                <input class="input" value="TAMAN SRI MAKMUR, 16150 KUBANG KERIAN, KELANTAN">
+                <input class="input" value="TAMAN SRI MAKMUR, 15200 KOTA BHARU, KELANTAN">
               </div>
               <div class="field full"><span class="label">Gambar</span>
                 <input class="input" type="file" accept="image/jpeg,image/png">
@@ -153,12 +153,12 @@
   .chainx .a{color:var(--faint);font-weight:700}
 </style>
 
-<script src="../assets/js/app.js?v=5"></script>
+<script src="../assets/js/app.js?v=6"></script>
 <script>
 (function(){
   const tier = PT.tier, DB = window.DB, RL = DB.ROLE_LABEL;
   const ME = DB.user();                                   // the signed-in account decides its own scope
-  const MY = (ME && ME.peranan === tier) ? ME.skop : { pusat:'JABATAN PASTI MALAYSIA', negeri:'KELANTAN', kawasan:'P025 KUBANG KERIAN', dun:'N44 KOTA LAMA', cawangan:"PASTI AL-TA'LIM" }[tier];
+  const MY = (ME && ME.peranan === tier) ? ME.skop : { pusat:'JABATAN PASTI MALAYSIA', negeri:'KELANTAN', kawasan:'P021 KOTA BHARU', dun:'N09 KOTA LAMA', cawangan:"PASTI AR-RAIHAN" }[tier];
   const $ = id => document.getElementById(id);
   const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
@@ -170,12 +170,26 @@
 
   // ---- geography (mockup): negeri → kawasan → dun. PASTI rows carry their own negeri/kawasan/dun.
   const NEGERI = ['JOHOR','KEDAH','KELANTAN','MELAKA','NEGERI SEMBILAN','PAHANG','PERAK','PERLIS','PULAU PINANG','SABAH','SARAWAK','SELANGOR','TERENGGANU','WP KUALA LUMPUR & PUTRAJAYA'];
+  // Kelantan: 14 Parlimen / 45 DUN. Other states: a few sample kawasan only.
   const GEO = {
-    KELANTAN: { 'P025 KUBANG KERIAN':['N44 KOTA LAMA','N45 BUNUT PAYONG'], 'P026 BACHOK':['N25 TAWANG','N26 PANTAI IRAMA','N27 JELAWAT'], 'P021 KOTA BHARU':['N09 KOTA LAMA TENGAH','N10 BUNUT PAYONG UTARA'],
-      'P022 PENGKALAN CHEPA':['N11 PANTAI CHEPA','N12 KADOK'], 'P023 RANTAU PANJANG':['N13 GUAL PERIOK','N14 APAM PUTRA'], 'P024 KUBANG KERIAN TIMUR':[], 'P020 TUMPAT':['N01 PENGKALAN KUBOR','N02 KELABORAN'],
-      'P027 PASIR MAS':['N15 KUBANG GADONG','N16 CHETOK'], 'P028 KETEREH':['N28 MELOR','N29 KADOK TIMUR'], 'P029 TANAH MERAH':['N30 KEMAHANG','N31 BUKIT PANAU'], 'P030 PASIR PUTEH':['N32 SELISING','N33 LIMBONGAN'],
-      'P031 MACHANG':['N34 PULAI CHONDONG','N35 TEMANGAN'], 'P032 JELI':['N36 BUKIT BUNGA','N37 AIR LANAS'], 'P033 KUALA KRAI':['N38 DABONG','N39 MENGKEBANG'], 'P034 GUA MUSANG':['N40 GALAS','N41 PALOH'] },
-    TERENGGANU: { 'P036 KUALA TERENGGANU':['N14 BANDAR','N15 LADANG'], 'P035 KUALA NERUS':['N11 TELUK PASU','N12 SEBERANG TAKIR'] },
+    KELANTAN: {
+      'P019 TUMPAT':['N01 PENGKALAN KUBOR','N02 KELABORAN','N03 PASIR PEKAN','N04 WAKAF BHARU'],
+      'P020 PENGKALAN CHEPA':['N05 KIJANG','N06 CHEMPAKA','N07 PANCHOR'],
+      'P021 KOTA BHARU':['N08 TANJONG MAS','N09 KOTA LAMA','N10 BUNUT PAYONG'],
+      'P022 PASIR MAS':['N11 TENDONG','N12 PENGKALAN PASIR','N13 MERANTI'],
+      'P023 RANTAU PANJANG':['N14 CHETOK','N15 GUAL PERIOK','N16 APAM PUTRA'],
+      'P024 KUBANG KERIAN':['N17 SALOR','N18 PASIR TUMBOH','N19 DEMIT'],
+      'P025 BACHOK':['N20 TAWANG','N21 PANTAI IRAMA','N22 JELAWAT'],
+      'P026 KETEREH':['N23 MELOR','N24 KADOK','N25 KOK LANAS'],
+      'P027 TANAH MERAH':['N26 BUKIT PANAU','N27 GUAL IPOH','N28 KEMAHANG'],
+      'P028 PASIR PUTEH':['N29 SELISING','N30 LIMBONGAN','N31 SEMERAK','N32 GAAL'],
+      'P029 MACHANG':['N33 PULAI CHONDONG','N34 TEMANGAN','N35 KEMUNING'],
+      'P030 JELI':['N36 BUKIT BUNGA','N37 AIR LANAS','N38 KUALA BALAH'],
+      'P031 KUALA KRAI':['N39 MENGKEBANG','N40 GUCHIL','N41 MANEK URAI','N42 DABONG'],
+      'P032 GUA MUSANG':['N43 NENGGIRI','N44 PALOH','N45 GALAS'],
+    },
+    TERENGGANU: { 'P036 KUALA TERENGGANU':['N15 BANDAR','N16 LADANG'], 'P038 HULU TERENGGANU':['N19 TELEMONG','N20 MANIR'] },
+    KEDAH: { 'P009 ALOR SETAR':['N13 DERGA','N14 BAKAR BATA'] },
   };
   const kawOf = n => Object.keys(GEO[n] || {});
   const dunOf = (n, k) => (GEO[n] && GEO[n][k]) || [];

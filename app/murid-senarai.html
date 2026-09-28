@@ -6,7 +6,7 @@
 <title>Senarai Murid · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=5">
+<link rel="stylesheet" href="../assets/css/app.css?v=6">
 </head>
 <body>
 <div class="pt-app" data-module="pengurusan" data-page="murid-senarai" data-title="Senarai Murid" data-subtitle="Senarai penuh murid berdaftar">
@@ -16,7 +16,7 @@
       <div>
         <div class="crumb">ePASTI <span>›</span> Pengurusan PASTI &amp; Murid <span>›</span> Senarai Murid</div>
         <h1>Senarai Murid</h1>
-        <div class="lead"><span class="muted">Jumlah Bilangan = 179</span> · PASTI Kawasan Kubang Kerian</div>
+        <div class="lead"><span class="muted">Jumlah Bilangan = 179</span> · PASTI Kawasan Kota Bharu</div>
       </div>
     </div>
 
@@ -58,22 +58,22 @@
   </main>
 </div>
 
-<script src="../assets/js/app.js?v=5"></script>
+<script src="../assets/js/app.js?v=6"></script>
 <script>
 (function(){
   const data = [
-    ['DANIA HUMAIRA BINTI TAJUDDIN','210817100455','TAJUDDIN BIN MAHMUD','AL-TA\'LIM'],
-    ['MUHAMMAD RAFIQ HAIKAL BIN SAIFUL','200629100812','SAIFUL BIN MANSOR','AS-SALAMAH'],
-    ['BALQIS NASUHA BINTI HAFIZ','211105100237','HAFIZ BIN RAMBLI','ITQAN'],
-    ['AMMAR ZIKRULLAH BIN NASIR','200418100109','NASIR BIN LATIFF','NURUL IMAN'],
-    ['KHADIJAH SAFIYYAH BINTI IZWAN','210312100788','IZWAN BIN SAPAWI','AL-TA\'LIM'],
-    ['MUHAMMAD UWAIS BIN FADZLI','201002100546','FADZLI BIN JOHARI','AS-SALAMAH'],
-    ['SUMAYYAH DARWISHA BINTI HELMI','211220100893','HELMI BIN SANUSI','ITQAN'],
-    ['MUHAMMAD ILHAN BIN TARMIZI','200521100271','TARMIZI BIN WAHAB','NURUL IMAN'],
-    ['SOFEA NADHIRAH BINTI GHAZALI','200811100164','GHAZALI BIN SUKOR','AL-TA\'LIM'],
-    ['MUHAMMAD ZHAFRAN BIN NORDIN','201118100927','NORDIN BIN JAAFAR','AS-SALAMAH'],
-    ['MAISARAH QALESYA BINTI ZAKARIA','210206100348','ZAKARIA BIN HAMDAN','ITQAN'],
-    ['MUHAMMAD DANIYAL BIN SHAFIE','200924100416','SHAFIE BIN OSMAN','NURUL IMAN'],
+    ['ROZITA ASMA BINTI IZZUDDIN','210817032711','IZZUDDIN BIN LUTFI','AR-RAIHAN'],
+    ['MUHAMMAD ZAKWAN IQMAL BIN RAFIE','200629031454','RAFIE BIN MUSTAQIM','AL-QAYYUM'],
+    ['RAIHANA FAUZIAH BINTI WAFIY','211105035584','WAFIY BIN AFIQ','AL-MUNAWWARAH'],
+    ['ZAIM TAQIUDDIN BIN MARWAN','200418037706','MARWAN BIN MAZLAN','BAITUL ILMI'],
+    ['IFFAH MAWADDAH BINTI HUZAIFAH','210312033105','HUZAIFAH BIN RASYDAN','AR-RAIHAN'],
+    ['MUHAMMAD OMAR BIN MUAZ','201002038396','MUAZ BIN IKHWAN','AL-QAYYUM'],
+    ['DHIA HANA BINTI JAZLI','211220034016','JAZLI BIN DARWISY','AL-MUNAWWARAH'],
+    ['MUHAMMAD LUQMANUL BIN NASRUL','200521037863','NASRUL BIN KAMIL','BAITUL ILMI'],
+    ['SURAYA ROSMANIZA BINTI UMAIR','200811032159','UMAIR BIN FIRDAUS','AR-RAIHAN'],
+    ['MUHAMMAD GHAZI BIN NUAIM','201118034346','NUAIM BIN ZIKRI','AL-QAYYUM'],
+    ['ZAHRA QISTINA BINTI ASRI','210206035117','ASRI BIN YAZID','AL-MUNAWWARAH'],
+    ['MUHAMMAD ANAS BIN FADHIL','200924034237','FADHIL BIN WAJDI','BAITUL ILMI'],
   ];
   function initials(name){ const p=name.split(' '); return (p[0][0]+(p[1]?p[1][0]:'')).toUpperCase(); }
   document.getElementById('muridRows').innerHTML = data.map((r,i)=>`<tr>

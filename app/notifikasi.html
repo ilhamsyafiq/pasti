@@ -6,7 +6,7 @@
 <title>Notifikasi & Notis · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=5">
+<link rel="stylesheet" href="../assets/css/app.css?v=6">
 </head>
 <body>
 <div class="pt-app" data-module="operasi" data-page="notifikasi" data-title="Notifikasi & Notis" data-subtitle="Notis & peringatan pembayaran">
@@ -84,11 +84,11 @@
         <div class="field"><span class="label">PASTI</span>
           <select class="select">
             <option>Semua PASTI</option>
-            <option>AL-TA'LIM</option>
-            <option>AS-SALAMAH</option>
-            <option>ITQAN</option>
-            <option>NURUL IMAN</option>
-            <option>NURUL HIDAYAH</option>
+            <option>AR-RAIHAN</option>
+            <option>AL-QAYYUM</option>
+            <option>AL-MUNAWWARAH</option>
+            <option>BAITUL ILMI</option>
+            <option>AL-IKHLAS</option>
           </select>
         </div>
         <div class="field full"><span class="label">Jenis <span class="req">*</span></span>
@@ -110,14 +110,14 @@
     <div class="m-head"><h3>🔔 Peringatan Pembayaran</h3><button class="btn btn-ghost btn-sm" data-close>✕</button></div>
     <div class="m-body">
       <div class="notice amber">
-        <div class="tx"><b>Yuran belum dijelaskan</b><span>Yuran bulan Ogos 2026 bagi Ahmad Zafran belum dijelaskan (RM 60).</span></div>
+        <div class="tx"><b>Yuran belum dijelaskan</b><span>Yuran bulan Ogos 2026 bagi Ahmad Umair belum dijelaskan (RM 60).</span></div>
       </div>
     </div>
     <div class="m-foot"><button class="btn btn-ghost" data-close>Tutup</button><button class="btn btn-primary" data-toast="Menghala ke pintu bayaran…">Bayar Sekarang</button></div>
   </div>
 </div>
 
-<script src="../assets/js/app.js?v=5"></script>
+<script src="../assets/js/app.js?v=6"></script>
 <script>
 (function(){
   var badge = {Notis:'b-blue', 'Peringatan Bayaran':'b-amber', Sistem:'b-slate'};
@@ -125,10 +125,10 @@
 
   var items = [
     {t:'Cuti Perayaan Maulidur Rasul', meta:'23/09/2026 · Semua Ibu Bapa (Kelantan)', jenis:'Notis'},
-    {t:'Peringatan Yuran Ogos 2026', meta:'22/09/2026 · Ibu Bapa Tertunggak (P025 Kubang Kerian)', jenis:'Peringatan Bayaran'},
+    {t:'Peringatan Yuran Ogos 2026', meta:'22/09/2026 · Ibu Bapa Tertunggak (P021 Kota Bharu)', jenis:'Peringatan Bayaran'},
     {t:'Naik Taraf Sistem 25 Sept', meta:'21/09/2026 · Semua Pengguna (Malaysia)', jenis:'Sistem'},
-    {t:'Mesyuarat Guru Bulanan', meta:'20/09/2026 · Guru & Petugas (N44 Kota Lama)', jenis:'Notis'},
-    {t:'Peringatan Yuran Julai 2026', meta:'18/09/2026 · Ibu Bapa Tertunggak (AS-SALAMAH)', jenis:'Peringatan Bayaran'},
+    {t:'Mesyuarat Guru Bulanan', meta:'20/09/2026 · Guru & Petugas (N09 Kota Lama)', jenis:'Notis'},
+    {t:'Peringatan Yuran Julai 2026', meta:'18/09/2026 · Ibu Bapa Tertunggak (AL-QAYYUM)', jenis:'Peringatan Bayaran'},
     {t:'Program Khatam Al-Quran', meta:'16/09/2026 · Semua Ibu Bapa (P094 Kuala Kelantan)', jenis:'Notis'},
     {t:'Peringatan Caruman SKSPS', meta:'15/09/2026 · Guru & Petugas (Kelantan)', jenis:'Peringatan Bayaran'}
   ];

@@ -6,7 +6,7 @@
 <title>Permarkahan SPPM · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=5">
+<link rel="stylesheet" href="../assets/css/app.css?v=6">
 </head>
 <body>
 <div class="pt-app" data-module="pengurusan" data-page="permarkahan" data-title="Permarkahan SPPM" data-subtitle="Pemantauan penilaian SPPM murid PASTI">
@@ -94,10 +94,10 @@
   @media print{body.pm-printing .pt-app{display:none}body.pm-printing #pmModal{position:static;background:none}body.pm-printing #pmModal .m-foot,body.pm-printing #pmModal .m-head button{display:none}}
 </style>
 
-<script src="../assets/js/app.js?v=5"></script>
-<script src="../assets/js/sppm.js?v=2"></script>
+<script src="../assets/js/app.js?v=6"></script>
+<script src="../assets/js/sppm.js?v=3"></script>
 <script src="../assets/js/guru-kelas.js"></script>
-<script src="../assets/js/parent-kids.js?v=2"></script>
+<script src="../assets/js/parent-kids.js?v=3"></script>
 <script>
 (function(){
   const S = window.SPPM, $ = id => document.getElementById(id), esc = PK.esc, I = PK.I;
@@ -105,14 +105,16 @@
 
   // ---- PASTI in scope for this tier
   let PASTI = DB.all('pasti').filter(p => p.status === 'Lulus' && p.kod);
+  if (tier === 'negeri' && me) PASTI = PASTI.filter(p => p.negeri === me.skop);
+  if (tier === 'kawasan' && me) PASTI = PASTI.filter(p => p.kawasan === me.skop);
   if (tier === 'dun' && me) PASTI = PASTI.filter(p => p.dun === me.skop);
   if (tier === 'cawangan' && me) PASTI = PASTI.filter(p => p.nama === me.skop);
 
-  // ---- roster: real class from the guru portal (Al-Ta'lim, 5 Tahun) + demo classes for the other PASTI
+  // ---- roster: real class from the guru portal (Ar-Raihan, 5 Tahun) + demo classes for the other PASTI
   const hash = s => { let h = 7; for (const c of String(s)) h = (h * 31 + c.charCodeAt(0)) >>> 0; return h; };
-  const FIRST_L = ['Muhammad Adam','Ahmad Irfan','Muhammad Harith','Ahmad Luqman','Muhammad Rayyan','Umar Al-Faruq','Muhammad Fateh','Ahmad Naufal','Muhammad Aqil','Yusuf Hakimi'];
-  const FIRST_P = ['Nur Aisyah','Nur Hana','Siti Maryam','Nur Iman','Aleesya Sofea','Nur Damia','Hana Safiyya','Nur Qistina','Nur Batrisyia','Fatimah Zahra'];
-  const BAPA = ['Abdullah','Ismail','Zulkifli','Hassan','Rahman','Yusof','Omar','Hamzah','Ibrahim','Salleh'];
+  const FIRST_L = ['Muhammad Syahmi','Ahmad Nazmi','Muhammad Harith','Ahmad Luqman','Muhammad Rayyan','Umar Al-Faruq','Muhammad Fateh','Ahmad Naufal','Muhammad Idham','Yusuf Mukhriz'];
+  const FIRST_P = ['Nur Solehah','Nur Hana','Siti Maryam','Nur Iman','Aleesya Suraya','Nur Zawani','Hana Safiyya','Nur Qistina','Nur Batrisyia','Fatimah Zahra'];
+  const BAPA = ['Baihaqi','Darwisy','Aizat','Mardhiah','Zamri','Taqiuddin','Rizqi','Hanif','Ibrahim','Sufyan'];
   const roster = [];
   PASTI.forEach((p, pi) => {
     if (p.nama === window.KELAS.pasti) window.KELAS.murid.forEach(m => roster.push({ nama:m.nama, mykid:m.mykid, umur:5, pasti:p, kelas:window.KELAS.nama, real:true }));

@@ -6,7 +6,7 @@
 <title>Prestasi Anak · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=5">
+<link rel="stylesheet" href="../assets/css/app.css?v=6">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#2fa308">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -64,15 +64,15 @@
   </main>
 </div>
 
-<script src="../assets/js/app.js?v=5"></script>
-<script src="../assets/js/sppm.js?v=2"></script>
+<script src="../assets/js/app.js?v=6"></script>
+<script src="../assets/js/sppm.js?v=3"></script>
 <script>
 (function(){
   const S = window.SPPM, $ = id => document.getElementById(id);
   const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const me = DB.user();
   // children of the signed-in parent (demo parent → sample children)
-  let KIDS = [{ nama:'AHMAD ZAFRAN BIN MOHD IDRIS', mykid:'210512100713', umur:5, kelas:'Tahun 5 · PASTI AL-TA\'LIM' }, { nama:'NUR SOFEA BINTI MOHD IDRIS', mykid:'220814080552', umur:4, kelas:'Tahun 4 · PASTI AL-TA\'LIM' }];
+  let KIDS = [{ nama:'AHMAD UMAIR BIN MOHD SAFWAN', mykid:'210512035411', umur:5, kelas:'Tahun 5 · PASTI AR-RAIHAN' }, { nama:'NUR SURAYA BINTI MOHD SAFWAN', mykid:'220814030432', umur:4, kelas:'Tahun 4 · PASTI AR-RAIHAN' }];
   if (me && me.peranan === 'ibubapa' && me.emel !== 'ibubapa@pasti.org')
     KIDS = DB.all('murid').filter(m => (m.emel||'').toLowerCase() === me.emel.toLowerCase() && m.status === 'Diterima').map(m => ({ nama:m.nama, mykid:m.mykid, umur: +(String(m.kelas).match(/\d/)||[5])[0], kelas: m.kelas + ' · ' + m.pasti }));
   const ui = { k:0, pg:null };

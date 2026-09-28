@@ -6,7 +6,7 @@
 <title>Kehadiran — Check-in / Check-out · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=5">
+<link rel="stylesheet" href="../assets/css/app.css?v=6">
 </head>
 <body>
 <div class="pt-app" data-module="operasi" data-page="kehadiran" data-title="Kehadiran — Check-in / Check-out" data-subtitle="Rekod kehadiran murid, guru & petugas">
@@ -37,21 +37,21 @@
         </select>
         <select class="select">
           <option>Semua Kawasan</option>
-          <option>P025 KUBANG KERIAN</option>
-          <option>P026 BACHOK</option>
+          <option>P021 KOTA BHARU</option>
+          <option>P025 BACHOK</option>
         </select>
         <select class="select">
           <option>Semua DUN</option>
-          <option>N44 KOTA LAMA</option>
-          <option>N45 BUNUT PAYONG</option>
+          <option>N09 KOTA LAMA</option>
+          <option>N10 BUNUT PAYONG</option>
         </select>
         <select class="select">
           <option>Semua PASTI</option>
-          <option>AL-TA'LIM</option>
-          <option>AS-SALAMAH</option>
-          <option>ITQAN</option>
-          <option>NURUL IMAN</option>
-          <option>NURUL HIDAYAH</option>
+          <option>AR-RAIHAN</option>
+          <option>AL-QAYYUM</option>
+          <option>AL-MUNAWWARAH</option>
+          <option>BAITUL ILMI</option>
+          <option>AL-IKHLAS</option>
         </select>
       </div>
       <div class="input-group">
@@ -108,7 +108,7 @@
   </main>
 </div>
 
-<script src="../assets/js/app.js?v=5"></script>
+<script src="../assets/js/app.js?v=6"></script>
 <script>
 (function(){
   var badge = {Hadir:'b-green', Lewat:'b-amber', 'Tidak Hadir':'b-red'};
@@ -136,22 +136,22 @@
   }
 
   var murid = [
-    {nm:'Ahmad Zafran Bin Roslan', ml:'MyKid 220314-10-0871', pasti:"AL-TA'LIM", unit:'Kelas Iqra 5A', masuk:'07:52', keluar:'12:30', status:'Hadir'},
-    {nm:'Nur Aisyah Binti Kamal', ml:'MyKid 210628-10-1244', pasti:'AS-SALAMAH', unit:'Kelas Iqra 4B', masuk:'07:58', keluar:'12:30', status:'Hadir'},
-    {nm:'Muhammad Haikal Bin Aziz', ml:'MyKid 220102-14-0533', pasti:'ITQAN', unit:'Kelas Iqra 5B', masuk:'08:21', keluar:'12:30', status:'Lewat'},
-    {nm:'Siti Khadijah Binti Faiz', ml:'MyKid 210915-10-0928', pasti:'NURUL IMAN', unit:'Kelas Iqra 6A', masuk:'07:49', keluar:'12:30', status:'Hadir'},
-    {nm:'Danial Hakim Bin Suhaimi', ml:'MyKid 220421-10-0716', pasti:'NURUL HIDAYAH', unit:'Kelas Iqra 3A', masuk:'—', keluar:'—', status:'Tidak Hadir'},
-    {nm:'Alya Sofea Binti Ridzuan', ml:'MyKid 211130-10-1382', pasti:"AL-TA'LIM", unit:'Kelas Iqra 4A', masuk:'07:55', keluar:'12:30', status:'Hadir'},
-    {nm:'Imran Hadif Bin Zulkifli', ml:'MyKid 220208-10-0459', pasti:'AS-SALAMAH', unit:'Kelas Iqra 5A', masuk:'08:17', keluar:'12:30', status:'Lewat'},
-    {nm:'Nur Balqis Binti Hamzah', ml:'MyKid 210719-14-1197', pasti:'ITQAN', unit:'Kelas Iqra 6B', masuk:'07:51', keluar:'12:30', status:'Hadir'}
+    {nm:'Ahmad Umair Bin Adib', ml:'MyKid 220314-03-8318', pasti:"AR-RAIHAN", unit:'Kelas Iqra 5A', masuk:'07:52', keluar:'12:30', status:'Hadir'},
+    {nm:'Nur Solehah Binti Zulfaqar', ml:'MyKid 210628-03-2657', pasti:'AL-QAYYUM', unit:'Kelas Iqra 4B', masuk:'07:58', keluar:'12:30', status:'Hadir'},
+    {nm:'Muhammad Iqmal Bin Nasrul', ml:'MyKid 220102-03-1505', pasti:'AL-MUNAWWARAH', unit:'Kelas Iqra 5B', masuk:'08:21', keluar:'12:30', status:'Lewat'},
+    {nm:'Siti Iffah Binti Asyraf', ml:'MyKid 210915-03-0395', pasti:'BAITUL ILMI', unit:'Kelas Iqra 6A', masuk:'07:49', keluar:'12:30', status:'Hadir'},
+    {nm:'Radhi Fahmi Bin Amsyar', ml:'MyKid 220421-03-2103', pasti:'AL-IKHLAS', unit:'Kelas Iqra 3A', masuk:'—', keluar:'—', status:'Tidak Hadir'},
+    {nm:'Afiqah Suraya Binti Aqil', ml:'MyKid 211130-03-5029', pasti:"AR-RAIHAN", unit:'Kelas Iqra 4A', masuk:'07:55', keluar:'12:30', status:'Hadir'},
+    {nm:'Amani Izzuddin Bin Aizat', ml:'MyKid 220208-03-0091', pasti:'AL-QAYYUM', unit:'Kelas Iqra 5A', masuk:'08:17', keluar:'12:30', status:'Lewat'},
+    {nm:'Nur Raihana Binti Hanif', ml:'MyKid 210719-03-1445', pasti:'AL-MUNAWWARAH', unit:'Kelas Iqra 6B', masuk:'07:51', keluar:'12:30', status:'Hadir'}
   ];
   var guru = [
-    {nm:'Ustazah Munirah Sohaimi', ml:'012-3348871', pasti:"AL-TA'LIM", unit:'Guru Besar', masuk:'07:30', keluar:'13:00', status:'Hadir'},
-    {nm:'Ustaz Firdaus Rahim', ml:'013-7729045', pasti:'AS-SALAMAH', unit:'Guru Iqra', masuk:'07:41', keluar:'13:00', status:'Hadir'},
-    {nm:'Ustazah Wardah Zainuddin', ml:'019-6612380', pasti:'ITQAN', unit:'Guru Iqra', masuk:'08:19', keluar:'13:00', status:'Lewat'},
-    {nm:'Ustaz Hakimi Roslan', ml:'011-28840173', pasti:'NURUL IMAN', unit:'Guru Iqra', masuk:'07:38', keluar:'13:00', status:'Hadir'},
-    {nm:'Cikgu Salbiah Jaafar', ml:'017-4491206', pasti:'NURUL HIDAYAH', unit:'Petugas Pentadbiran', masuk:'—', keluar:'—', status:'Tidak Hadir'},
-    {nm:'Cikgu Taufiq Nordin', ml:'014-9903577', pasti:'NURUL HIDAYAH', unit:'Petugas Keselamatan', masuk:'07:22', keluar:'13:00', status:'Hadir'}
+    {nm:'Ustazah Norazlina Saidatul', ml:'012-7512852', pasti:"AR-RAIHAN", unit:'Guru Besar', masuk:'07:30', keluar:'13:00', status:'Hadir'},
+    {nm:'Ustaz Qayyum Kamarul', ml:'013-6366557', pasti:'AL-QAYYUM', unit:'Guru Iqra', masuk:'07:41', keluar:'13:00', status:'Hadir'},
+    {nm:'Ustazah Mardhiah Zawani', ml:'019-1026434', pasti:'AL-MUNAWWARAH', unit:'Guru Iqra', masuk:'08:19', keluar:'13:00', status:'Lewat'},
+    {nm:'Ustaz Mukhriz Adib', ml:'011-42556403', pasti:'BAITUL ILMI', unit:'Guru Iqra', masuk:'07:38', keluar:'13:00', status:'Hadir'},
+    {nm:'Cikgu Hisyam Zikri', ml:'017-7363602', pasti:'AL-IKHLAS', unit:'Petugas Pentadbiran', masuk:'—', keluar:'—', status:'Tidak Hadir'},
+    {nm:'Cikgu Yazid Nuaim', ml:'014-8122554', pasti:'AL-IKHLAS', unit:'Petugas Keselamatan', masuk:'07:22', keluar:'13:00', status:'Hadir'}
   ];
 
   document.getElementById('muridRows').innerHTML = rows(murid);

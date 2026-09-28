@@ -6,7 +6,7 @@
 <title>Ahli Jawatankuasa · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=5">
+<link rel="stylesheet" href="../assets/css/app.css?v=6">
 </head>
 <body>
 <div class="pt-app" data-module="warga" data-page="warga-jawatankuasa" data-title="Ahli Jawatankuasa" data-subtitle="AJK Kawasan & Jemaah Pengurus Cawangan">
@@ -85,12 +85,12 @@
     <div class="m-body">
       <div class="form-grid">
         <div class="field full"><span class="label">Nama Penuh <span class="req">*</span></span><input class="input" placeholder="Nama seperti dalam MyKad"></div>
-        <div class="field"><span class="label">No KP <span class="req">*</span></span><input class="input" placeholder="Cth: 800512105533"></div>
+        <div class="field"><span class="label">No KP <span class="req">*</span></span><input class="input" placeholder="Cth: 800512031473"></div>
         <div class="field"><span class="label">Jawatan</span>
           <select class="select"><option>Pengerusi</option><option>Naib Pengerusi</option><option>Setiausaha</option><option>Bendahari</option><option>AJK</option></select>
         </div>
         <div class="field"><span class="label">Cawangan</span>
-          <select class="select"><option>AL-TA'LIM</option><option>AS-SALAMAH</option><option>ITQAN</option><option>NURUL IMAN</option><option>NURUL HIDAYAH</option></select>
+          <select class="select"><option>AR-RAIHAN</option><option>AL-QAYYUM</option><option>AL-MUNAWWARAH</option><option>BAITUL ILMI</option><option>AL-IKHLAS</option></select>
         </div>
         <div class="field"><span class="label">Telefon</span><input class="input" placeholder="013-xxxxxxx"></div>
         <div class="field"><span class="label">Penggal</span>
@@ -105,24 +105,24 @@
   </div>
 </div>
 
-<script src="../assets/js/app.js?v=5"></script>
+<script src="../assets/js/app.js?v=6"></script>
 <script>
   const ajk = [
-    ['USTAZ RIDZUAN BIN MAT SALLEH','810204107215','Pengerusi','AL-TA\'LIM','Aktif'],
-    ['USTAZ SHAHRUL NIZAM BIN LATIF','830617085492','Naib Pengerusi','AS-SALAMAH','Aktif'],
-    ['ROHAIDA BINTI MUSTAFFA','870913106318','Setiausaha','ITQAN','Aktif'],
-    ['WAN NORHASLINDA BINTI WAHAB','860428104627','Bendahari','NURUL IMAN','Aktif'],
-    ['USTAZ TAJUL ARIFIN BIN SABRI','800311086154','AJK','NURUL HIDAYAH','Aktif'],
-    ['MASTURA BINTI GHAZALI','910726108031','AJK','AL-TA\'LIM','Tidak Aktif'],
-    ['KHAIRUL ANWAR BIN TALIB','890502107448','AJK','AS-SALAMAH','Aktif'],
+    ['USTAZ AQIL BIN MAT SUFYAN','810204032342','Pengerusi','AR-RAIHAN','Aktif'],
+    ['USTAZ FARIS AZLAN BIN RASYDAN','830617033051','Naib Pengerusi','AL-QAYYUM','Aktif'],
+    ['JUNAIDAH BINTI AZRI','870913030654','Setiausaha','AL-MUNAWWARAH','Aktif'],
+    ['WAN FARZANA BINTI KAMIL','860428032472','Bendahari','BAITUL ILMI','Aktif'],
+    ['USTAZ BUKHARI IZHAR BIN IKHWAN','800311030972','AJK','AL-IKHLAS','Aktif'],
+    ['JUWAIRIYAH BINTI UMAIR','910726035115','AJK','AR-RAIHAN','Tidak Aktif'],
+    ['FARIS ILYAS BIN AMANI','890502033827','AJK','AL-QAYYUM','Aktif'],
   ];
   const jemaah = [
-    ['USTAZ ZULHILMI BIN BAHARUDDIN','820825085973','Pengurus','ITQAN','Aktif'],
-    ['SITI RAHMAH BINTI JUSOH','880114106204','Penolong Pengurus','NURUL IMAN','Aktif'],
-    ['NURAZLIN BINTI KADIR','840719108726','Setiausaha','AL-TA\'LIM','Aktif'],
-    ['USTAZ HELMI BIN ABD RAZAK','810306086537','Bendahari','AS-SALAMAH','Aktif'],
-    ['ZAHARAH BINTI OTHMAN','930221104815','AJK','NURUL HIDAYAH','Aktif'],
-    ['FIKRI HAKIMI BIN NORDIN','900610107022','AJK','ITQAN','Tidak Aktif'],
+    ['USTAZ MUSTAQIM BIN ARIF','820825031125','Pengurus','AL-MUNAWWARAH','Aktif'],
+    ['SITI WAFA BINTI EZANI','880114036408','Penolong Pengurus','BAITUL ILMI','Aktif'],
+    ['KHAIRUNNISA BINTI JOHAN','840719031033','Setiausaha','AR-RAIHAN','Aktif'],
+    ['USTAZ JAZLI BIN ABD FAUZI','810306033230','Bendahari','AL-QAYYUM','Aktif'],
+    ['RAIHANA BINTI SHAMIL','930221036894','AJK','AL-IKHLAS','Aktif'],
+    ['ADIB MUKHRIZ BIN NUAIM','900610035842','AJK','AL-MUNAWWARAH','Tidak Aktif'],
   ];
   function initials(n){ const p=n.replace(/^(USTAZ|USTAZAH)\s+/,'').split(' '); return (p[0][0]+(p[1]?p[1][0]:'')).toUpperCase(); }
   function badge(s){ return s==='Aktif' ? '<span class="badge b-green">Aktif</span>' : '<span class="badge b-slate">Tidak Aktif</span>'; }

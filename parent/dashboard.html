@@ -6,7 +6,7 @@
 <title>Utama · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=5">
+<link rel="stylesheet" href="../assets/css/app.css?v=6">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#2fa308">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -22,7 +22,7 @@
       <div class="row">
         <div>
           <div class="crumbs" id="ppSalam">Selamat pagi,</div>
-          <h1 id="ppNama">Puan Nurul Aina</h1>
+          <h1 id="ppNama">Puan Nurul Nabihah</h1>
           <div class="lead" id="ppDate">—</div>
           <div class="mini" id="ppMini"></div>
         </div>
@@ -50,8 +50,8 @@
   </main>
 </div>
 
-<script src="../assets/js/app.js?v=5"></script>
-<script src="../assets/js/parent-kids.js?v=2"></script>
+<script src="../assets/js/app.js?v=6"></script>
+<script src="../assets/js/parent-kids.js?v=3"></script>
 <script>
 (function(){
   const { me, kids } = PK.load(), esc = PK.esc, I = PK.I, $ = id => document.getElementById(id);
@@ -85,8 +85,8 @@
 
   const F = [
     ['pp-c3', I.yuran, 'Bil yuran September 2026 telah dikeluarkan', 'Sila jelaskan sebelum 30 September 2026.', '22 Sep 2026'],
-    ['pp-c4', I.program, "Program Hari Keluarga PASTI AL-TA'LIM", 'Sabtu, 4 Oktober 2026 · 8:00 pagi di padang PASTI.', '18 Sep 2026'],
-    ['pp-c2', I.prestasi, 'Penilaian SPPM Penggal 1 telah dihantar', 'Guru kelas telah menghantar penilaian Ahmad Zafran.', '15 Sep 2026'],
+    ['pp-c4', I.program, "Program Hari Keluarga PASTI AR-RAIHAN", 'Sabtu, 4 Oktober 2026 · 8:00 pagi di padang PASTI.', '18 Sep 2026'],
+    ['pp-c2', I.prestasi, 'Penilaian SPPM Penggal 1 telah dihantar', 'Guru kelas telah menghantar penilaian Ahmad Umair.', '15 Sep 2026'],
   ];
   $('ppFeed').innerHTML = F.map(f => '<div class="pp-fi"><div class="ic ' + f[0] + '">' + f[1] + '</div><div class="tx"><b>' + esc(f[2]) + '</b><p>' + esc(f[3]) + '</p><div class="dt">' + f[4] + '</div></div></div>').join('');
 })();

@@ -6,7 +6,7 @@
 <title>Yuran &amp; Pembayaran · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=5">
+<link rel="stylesheet" href="../assets/css/app.css?v=6">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#2fa308">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -22,7 +22,7 @@
         <div style="flex:1;min-width:240px">
           <div class="crumbs">Portal Ibu Bapa › Yuran &amp; Pembayaran</div>
           <h1>Yuran &amp; Pembayaran</h1>
-          <div class="lead">Ahmad Zafran &amp; Nur Sofea · PASTI AL-TA'LIM · RM 60 seorang sebulan</div>
+          <div class="lead">Ahmad Umair &amp; Nur Suraya · PASTI AR-RAIHAN · RM 60 seorang sebulan</div>
           <div class="pp-months" id="ppMonths"></div>
           <div style="font-size:11.5px;opacity:.8;margin-top:6px"><span style="color:#b8f59a">■</span> Dijelaskan &nbsp; <span style="color:#ffc46b">■</span> Tertunggak &nbsp; <span style="opacity:.6">■</span> Akan datang</div>
         </div>
@@ -46,7 +46,7 @@
       <div class="ic pp-c2" id="icAuto"></div>
       <div class="tx">
         <b>Auto-debit bulanan</b>
-        <span id="autoTx">Yuran ditolak secara automatik setiap 5 haribulan melalui BayarCash terus ke akaun PASTI Al-Ta'lim (M-ALTALIM-0417). Boleh dibatalkan bila-bila masa.</span>
+        <span id="autoTx">Yuran ditolak secara automatik setiap 5 haribulan melalui BayarCash terus ke akaun PASTI Ar-Raihan (M-ARRAIHAN-0417). Boleh dibatalkan bila-bila masa.</span>
       </div>
       <label class="pp-switch" title="Auto-debit"><input type="checkbox" id="autoSw"><span></span></label>
     </div>
@@ -77,26 +77,26 @@
   </main>
 </div>
 
-<script src="../assets/js/app.js?v=5"></script>
-<script src="../assets/js/parent-kids.js?v=2"></script>
+<script src="../assets/js/app.js?v=6"></script>
+<script src="../assets/js/parent-kids.js?v=3"></script>
 <script>
   (function(){
     const $ = id => document.getElementById(id), I = PK.I;
     $('icDue').innerHTML = I.yuran; $('icBil').innerHTML = I.resit; $('icPaid').innerHTML = I.ok; $('icAuto').innerHTML = I.auto; $('icShield').innerHTML = I.shield;
 
     const bills = [
-      { no:'BIL-2026-0912', anak:'Ahmad Zafran', bulan:'September 2026', jumlah:60, status:'Belum' },
-      { no:'BIL-2026-0911', anak:'Nur Sofea',    bulan:'September 2026', jumlah:60, status:'Sudah' },
-      { no:'BIL-2026-0812', anak:'Ahmad Zafran', bulan:'Ogos 2026',      jumlah:60, status:'Belum' },
-      { no:'BIL-2026-0811', anak:'Nur Sofea',    bulan:'Ogos 2026',      jumlah:60, status:'Sudah' },
-      { no:'BIL-2026-0712', anak:'Ahmad Zafran', bulan:'Julai 2026',     jumlah:60, status:'Sudah' },
-      { no:'BIL-2026-0711', anak:'Nur Sofea',    bulan:'Julai 2026',     jumlah:60, status:'Sudah' },
-      { no:'BIL-2026-0612', anak:'Ahmad Zafran', bulan:'Jun 2026',       jumlah:60, status:'Sudah' }
+      { no:'BIL-2026-0912', anak:'Ahmad Umair', bulan:'September 2026', jumlah:60, status:'Belum' },
+      { no:'BIL-2026-0911', anak:'Nur Suraya',    bulan:'September 2026', jumlah:60, status:'Sudah' },
+      { no:'BIL-2026-0812', anak:'Ahmad Umair', bulan:'Ogos 2026',      jumlah:60, status:'Belum' },
+      { no:'BIL-2026-0811', anak:'Nur Suraya',    bulan:'Ogos 2026',      jumlah:60, status:'Sudah' },
+      { no:'BIL-2026-0712', anak:'Ahmad Umair', bulan:'Julai 2026',     jumlah:60, status:'Sudah' },
+      { no:'BIL-2026-0711', anak:'Nur Suraya',    bulan:'Julai 2026',     jumlah:60, status:'Sudah' },
+      { no:'BIL-2026-0612', anak:'Ahmad Umair', bulan:'Jun 2026',       jumlah:60, status:'Sudah' }
     ];
     const col = n => /zafran/i.test(n) ? 'pp-c1' : 'pp-c2';
     $('billBody').innerHTML = bills.map(b => `<tr>
         <td class="num">${b.no}</td>
-        <td><div class="cell-user"><div class="avatar ${col(b.anak)}" style="color:#fff">${PK.ini(b.anak)}</div><div><div class="nm">${b.anak}</div><div class="ml">PASTI AL-TA'LIM</div></div></div></td>
+        <td><div class="cell-user"><div class="avatar ${col(b.anak)}" style="color:#fff">${PK.ini(b.anak)}</div><div><div class="nm">${b.anak}</div><div class="ml">PASTI AR-RAIHAN</div></div></div></td>
         <td>${b.bulan}</td>
         <td>Bulanan</td>
         <td class="right num">${b.jumlah.toFixed(2)}</td>
@@ -125,8 +125,8 @@
     // auto-debit toggle (per-browser preference)
     const sw = $('autoSw'); try { sw.checked = localStorage.getItem('pt-autodebit') === '1'; } catch(e){}
     const autoTx = () => { $('autoTx').innerHTML = sw.checked
-      ? '<b style="color:var(--brand-d);font-size:12.5px">Aktif</b> — yuran RM 120 ditolak automatik setiap 5 haribulan melalui BayarCash ke akaun PASTI Al-Ta\'lim (M-ALTALIM-0417).'
-      : 'Yuran ditolak secara automatik setiap 5 haribulan melalui BayarCash terus ke akaun PASTI Al-Ta\'lim (M-ALTALIM-0417). Boleh dibatalkan bila-bila masa.'; };
+      ? '<b style="color:var(--brand-d);font-size:12.5px">Aktif</b> — yuran RM 120 ditolak automatik setiap 5 haribulan melalui BayarCash ke akaun PASTI Ar-Raihan (M-ARRAIHAN-0417).'
+      : 'Yuran ditolak secara automatik setiap 5 haribulan melalui BayarCash terus ke akaun PASTI Ar-Raihan (M-ARRAIHAN-0417). Boleh dibatalkan bila-bila masa.'; };
     autoTx();
     sw.addEventListener('change', () => { try { localStorage.setItem('pt-autodebit', sw.checked ? '1' : '0'); } catch(e){} autoTx();
       PT.toast(sw.checked ? 'Auto-debit diaktifkan — bermula 5 Oktober 2026' : 'Auto-debit dibatalkan', sw.checked ? 'green' : 'red'); });

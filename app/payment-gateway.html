@@ -6,7 +6,7 @@
 <title>Payment Gateway — BayarCash · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=5">
+<link rel="stylesheet" href="../assets/css/app.css?v=6">
 <style>
   .src-opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
   .src-opt{display:flex;gap:12px;align-items:flex-start;border:1.5px solid var(--line);border-radius:13px;padding:14px 15px;cursor:pointer;background:#fff;transition:border-color .15s,background .15s}
@@ -51,15 +51,15 @@
     <div data-tiers="cawangan">
       <div class="card">
         <div class="card-head">
-          <div><h3>Akaun BayarCash Cawangan</h3><span class="sub">PASTI Al-Ta'lim · N44 Kota Lama · P025 Kubang Kerian</span></div>
+          <div><h3>Akaun BayarCash Cawangan</h3><span class="sub">PASTI Ar-Raihan · N09 Kota Lama · P021 Kota Bharu</span></div>
           <span class="badge b-green no-dot">Aktif</span>
         </div>
         <div class="card-body">
           <div class="form-grid">
-            <div class="field"><span class="label">Merchant ID</span><input class="input" type="text" value="M-ALTALIM-0417" readonly></div>
+            <div class="field"><span class="label">Merchant ID</span><input class="input" type="text" value="M-ARRAIHAN-0417" readonly></div>
             <div class="field"><span class="label">Portal Key</span><input class="input" type="text" value="pk_live_••••••••a417" readonly></div>
             <div class="field"><span class="label">API Secret Key</span><input class="input" type="password" value="sk_live_altalim0417"></div>
-            <div class="field"><span class="label">Nama Akaun Bank</span><input class="input" type="text" value="PASTI AL-TA'LIM KUBANG KERIAN" readonly></div>
+            <div class="field"><span class="label">Nama Akaun Bank</span><input class="input" type="text" value="PASTI AR-RAIHAN KOTA BHARU" readonly></div>
             <div class="field"><span class="label">Mode</span><select class="select"><option>Sandbox</option><option selected>Live</option></select></div>
           </div>
           <div class="divider"></div>
@@ -78,11 +78,11 @@
         <div class="card-body">
           <div class="src-opts" id="srcOpts">
             <label class="src-opt on"><input type="radio" name="src" value="Akaun Cawangan" checked>
-              <div><b>Akaun Cawangan sendiri</b><span><code>M-ALTALIM-0417</code> · Aktif</span><span>Bayaran masuk terus ke akaun PASTI.</span></div></label>
-            <label class="src-opt"><input type="radio" name="src" value="Akaun DUN N44">
-              <div><b>Guna akaun DUN</b><span><code>M-DUN-N44-0112</code> · DUN N44 Kota Lama</span><span>DUN salurkan kutipan kepada PASTI.</span></div></label>
-            <label class="src-opt"><input type="radio" name="src" value="Akaun Kawasan P025">
-              <div><b>Guna akaun Kawasan</b><span><code>M-KWS-P025-0031</code> · P025 Kubang Kerian</span><span>Kawasan salurkan kutipan kepada PASTI.</span></div></label>
+              <div><b>Akaun Cawangan sendiri</b><span><code>M-ARRAIHAN-0417</code> · Aktif</span><span>Bayaran masuk terus ke akaun PASTI.</span></div></label>
+            <label class="src-opt"><input type="radio" name="src" value="Akaun DUN N09">
+              <div><b>Guna akaun DUN</b><span><code>M-DUN-N09-0112</code> · DUN N09 Kota Lama</span><span>DUN salurkan kutipan kepada PASTI.</span></div></label>
+            <label class="src-opt"><input type="radio" name="src" value="Akaun Kawasan P021">
+              <div><b>Guna akaun Kawasan</b><span><code>M-KWS-P021-0031</code> · P021 Kota Bharu</span><span>Kawasan salurkan kutipan kepada PASTI.</span></div></label>
           </div>
           <div class="muted mt" style="font-size:12.5px">Perubahan berkuat kuasa untuk bil baharu. Bil yang telah dijana kekal pada akaun asal.</div>
         </div>
@@ -93,12 +93,12 @@
     <div data-tiers="dun">
       <div class="card">
         <div class="card-head">
-          <div><h3>Akaun BayarCash DUN</h3><span class="sub">N44 Kota Lama · akaun sandaran untuk PASTI tanpa akaun sendiri</span></div>
+          <div><h3>Akaun BayarCash DUN</h3><span class="sub">N09 Kota Lama · akaun sandaran untuk PASTI tanpa akaun sendiri</span></div>
           <span class="badge b-green no-dot">Aktif</span>
         </div>
         <div class="card-body">
           <div class="form-grid">
-            <div class="field"><span class="label">Merchant ID</span><input class="input" type="text" value="M-DUN-N44-0112" readonly></div>
+            <div class="field"><span class="label">Merchant ID</span><input class="input" type="text" value="M-DUN-N09-0112" readonly></div>
             <div class="field"><span class="label">Portal Key</span><input class="input" type="text" value="pk_live_••••••••n044" readonly></div>
             <div class="field"><span class="label">API Secret Key</span><input class="input" type="password" value="sk_live_dunn44"></div>
             <div class="field"><span class="label">Nama Akaun Bank</span><input class="input" type="text" value="PASTI DUN KOTA LAMA" readonly></div>
@@ -117,15 +117,15 @@
     <div data-tiers="kawasan">
       <div class="card">
         <div class="card-head">
-          <div><h3>Akaun BayarCash Kawasan</h3><span class="sub">P025 Kubang Kerian · akaun sandaran untuk PASTI tanpa akaun sendiri</span></div>
+          <div><h3>Akaun BayarCash Kawasan</h3><span class="sub">P021 Kota Bharu · akaun sandaran untuk PASTI tanpa akaun sendiri</span></div>
           <span class="badge b-green no-dot">Aktif</span>
         </div>
         <div class="card-body">
           <div class="form-grid">
-            <div class="field"><span class="label">Merchant ID</span><input class="input" type="text" value="M-KWS-P025-0031" readonly></div>
+            <div class="field"><span class="label">Merchant ID</span><input class="input" type="text" value="M-KWS-P021-0031" readonly></div>
             <div class="field"><span class="label">Portal Key</span><input class="input" type="text" value="pk_live_••••••••p025" readonly></div>
             <div class="field"><span class="label">API Secret Key</span><input class="input" type="password" value="sk_live_kwsp025"></div>
-            <div class="field"><span class="label">Nama Akaun Bank</span><input class="input" type="text" value="PASTI KAWASAN KUBANG KERIAN" readonly></div>
+            <div class="field"><span class="label">Nama Akaun Bank</span><input class="input" type="text" value="PASTI KAWASAN KOTA BHARU" readonly></div>
             <div class="field"><span class="label">Mode</span><select class="select"><option>Sandbox</option><option selected>Live</option></select></div>
           </div>
           <div class="divider"></div>
@@ -169,11 +169,11 @@
           <table class="pt">
             <thead><tr><th>Peringkat</th><th>Nama</th><th>Akaun BayarCash</th><th>Status</th><th>Cawangan Menggunakan</th><th>Tindakan</th></tr></thead>
             <tbody>
-              <tr><td>Kawasan</td><td>P025 Kubang Kerian</td><td>M-KWS-P025-0031</td><td><span class="badge b-green">Aktif</span></td><td>2 cawangan</td>
+              <tr><td>Kawasan</td><td>P021 Kota Bharu</td><td>M-KWS-P021-0031</td><td><span class="badge b-green">Aktif</span></td><td>2 cawangan</td>
                 <td><button class="btn btn-soft btn-sm" data-toast="Membuka tetapan akaun BayarCash Kawasan…">Set Akaun</button></td></tr>
-              <tr><td>DUN</td><td>N44 Kota Lama</td><td>M-DUN-N44-0112</td><td><span class="badge b-green">Aktif</span></td><td>4 cawangan</td>
+              <tr><td>DUN</td><td>N09 Kota Lama</td><td>M-DUN-N09-0112</td><td><span class="badge b-green">Aktif</span></td><td>4 cawangan</td>
                 <td><button class="btn btn-soft btn-sm" data-toast="Membuka tetapan akaun BayarCash DUN…">Set Akaun</button></td></tr>
-              <tr><td>DUN</td><td>N45 Bunut Payong</td><td>—</td><td><span class="badge b-slate">Tiada</span></td><td>0 cawangan</td>
+              <tr><td>DUN</td><td>N10 Bunut Payong</td><td>—</td><td><span class="badge b-slate">Tiada</span></td><td>0 cawangan</td>
                 <td><button class="btn btn-ghost btn-sm" data-toast="Menghantar permohonan akaun BayarCash DUN…">Mohon</button></td></tr>
             </tbody>
           </table>
@@ -191,24 +191,24 @@
           <table class="pt">
             <thead><tr><th>Cawangan</th><th>DUN</th><th>Akaun Sendiri</th><th>Status</th><th>Akaun Kutipan Digunakan</th><th>Tindakan</th></tr></thead>
             <tbody>
-              <tr><td>PASTI AL-TA'LIM</td><td>N44</td><td>M-ALTALIM-0417</td><td><span class="badge b-green">Aktif</span></td>
+              <tr><td>PASTI AR-RAIHAN</td><td>N09</td><td>M-ARRAIHAN-0417</td><td><span class="badge b-green">Aktif</span></td>
                 <td><span class="badge b-green no-dot">Cawangan</span></td><td><button class="btn btn-soft btn-sm" data-toast="Membuka butiran akaun…">Lihat</button></td></tr>
-              <tr><td>PASTI AS-SALAMAH</td><td>N44</td><td>M-SALAMAH-0418</td><td><span class="badge b-green">Aktif</span></td>
+              <tr><td>PASTI AL-QAYYUM</td><td>N09</td><td>M-ALQAYYUM-0418</td><td><span class="badge b-green">Aktif</span></td>
                 <td><span class="badge b-green no-dot">Cawangan</span></td><td><button class="btn btn-soft btn-sm" data-toast="Membuka butiran akaun…">Lihat</button></td></tr>
-              <tr><td>PASTI NURUL HIDAYAH</td><td>N44</td><td>M-HIDAYAH-0421</td><td><span class="badge b-green">Aktif</span></td>
+              <tr><td>PASTI AL-IKHLAS</td><td>N09</td><td>M-ALIKHLAS-0421</td><td><span class="badge b-green">Aktif</span></td>
                 <td><span class="badge b-green no-dot">Cawangan</span></td><td><button class="btn btn-soft btn-sm" data-toast="Membuka butiran akaun…">Lihat</button></td></tr>
-              <tr><td>PASTI NURUL IMAN</td><td>N44</td><td>—</td><td><span class="badge b-slate">Tiada</span></td>
-                <td><span class="badge b-blue no-dot">DUN · M-DUN-N44-0112</span></td><td><button class="btn btn-ghost btn-sm" data-toast="Peringatan dihantar kepada cawangan untuk memohon akaun BayarCash">Ingatkan</button></td></tr>
-              <tr><td>PASTI NADWAH HASSANAH</td><td>N44</td><td>—</td><td><span class="badge b-slate">Tiada</span></td>
-                <td><span class="badge b-blue no-dot">DUN · M-DUN-N44-0112</span></td><td><button class="btn btn-ghost btn-sm" data-toast="Peringatan dihantar kepada cawangan untuk memohon akaun BayarCash">Ingatkan</button></td></tr>
-              <tr><td>PASTI NURUL INSANIAH</td><td>N44</td><td>M-INSANIAH-0424</td><td><span class="badge b-amber">Menunggu</span></td>
-                <td><span class="badge b-blue no-dot">DUN · M-DUN-N44-0112</span></td><td><button class="btn btn-soft btn-sm" data-toast="Status permohonan: menunggu pengesahan BayarCash">Semak</button></td></tr>
-              <tr><td>PASTI BADROTIM</td><td>N44</td><td>—</td><td><span class="badge b-slate">Tiada</span></td>
-                <td><span class="badge b-blue no-dot">DUN · M-DUN-N44-0112</span></td><td><button class="btn btn-ghost btn-sm" data-toast="Peringatan dihantar kepada cawangan untuk memohon akaun BayarCash">Ingatkan</button></td></tr>
-              <tr><td>PASTI AN NUR PARIT 13</td><td>N44</td><td>—</td><td><span class="badge b-slate">Tiada</span></td>
-                <td><span class="badge b-violet no-dot">Kawasan · M-KWS-P025-0031</span></td><td><button class="btn btn-ghost btn-sm" data-toast="Peringatan dihantar kepada cawangan untuk memohon akaun BayarCash">Ingatkan</button></td></tr>
-              <tr><td>PASTI ITQAN</td><td>N45</td><td>M-ITQAN-0419</td><td><span class="badge b-amber">Menunggu</span></td>
-                <td><span class="badge b-violet no-dot">Kawasan · M-KWS-P025-0031</span></td><td><button class="btn btn-soft btn-sm" data-toast="Status permohonan: menunggu pengesahan BayarCash">Semak</button></td></tr>
+              <tr><td>PASTI BAITUL ILMI</td><td>N09</td><td>—</td><td><span class="badge b-slate">Tiada</span></td>
+                <td><span class="badge b-blue no-dot">DUN · M-DUN-N09-0112</span></td><td><button class="btn btn-ghost btn-sm" data-toast="Peringatan dihantar kepada cawangan untuk memohon akaun BayarCash">Ingatkan</button></td></tr>
+              <tr><td>PASTI AZ-ZAHRA</td><td>N09</td><td>—</td><td><span class="badge b-slate">Tiada</span></td>
+                <td><span class="badge b-blue no-dot">DUN · M-DUN-N09-0112</span></td><td><button class="btn btn-ghost btn-sm" data-toast="Peringatan dihantar kepada cawangan untuk memohon akaun BayarCash">Ingatkan</button></td></tr>
+              <tr><td>PASTI AL-HUDA</td><td>N09</td><td>M-ALHUDA-0424</td><td><span class="badge b-amber">Menunggu</span></td>
+                <td><span class="badge b-blue no-dot">DUN · M-DUN-N09-0112</span></td><td><button class="btn btn-soft btn-sm" data-toast="Status permohonan: menunggu pengesahan BayarCash">Semak</button></td></tr>
+              <tr><td>PASTI AL-MIZAN</td><td>N09</td><td>—</td><td><span class="badge b-slate">Tiada</span></td>
+                <td><span class="badge b-blue no-dot">DUN · M-DUN-N09-0112</span></td><td><button class="btn btn-ghost btn-sm" data-toast="Peringatan dihantar kepada cawangan untuk memohon akaun BayarCash">Ingatkan</button></td></tr>
+              <tr><td>PASTI AN-NAJAH</td><td>N09</td><td>—</td><td><span class="badge b-slate">Tiada</span></td>
+                <td><span class="badge b-violet no-dot">Kawasan · M-KWS-P021-0031</span></td><td><button class="btn btn-ghost btn-sm" data-toast="Peringatan dihantar kepada cawangan untuk memohon akaun BayarCash">Ingatkan</button></td></tr>
+              <tr><td>PASTI AL-MUNAWWARAH</td><td>N10</td><td>M-AL-MUNAWWARAH-0419</td><td><span class="badge b-amber">Menunggu</span></td>
+                <td><span class="badge b-violet no-dot">Kawasan · M-KWS-P021-0031</span></td><td><button class="btn btn-soft btn-sm" data-toast="Status permohonan: menunggu pengesahan BayarCash">Semak</button></td></tr>
             </tbody>
           </table>
         </div>
@@ -225,12 +225,12 @@
               <th>Ref BayarCash</th><th>Tarikh</th><th>Pembayar</th><th>PASTI</th><th>Tujuan</th><th>Akaun Penerima</th><th class="right">Jumlah (RM)</th><th>Kaedah</th><th>Status</th>
             </tr></thead>
             <tbody>
-              <tr><td>BC-2026-0104377</td><td>22/09/2026</td><td>Puan Rahimah Bt Sallehuddin</td><td>AL-TA'LIM</td><td>Yuran</td><td>M-ALTALIM-0417</td><td class="right num">60.00</td><td>FPX</td><td><span class="badge b-green">Berjaya</span></td></tr>
-              <tr><td>BC-2026-0104364</td><td>22/09/2026</td><td>Encik Shukri B Talib</td><td>NURUL IMAN</td><td>Yuran</td><td>M-DUN-N44-0112</td><td class="right num">150.00</td><td>Kad</td><td><span class="badge b-red">Gagal</span></td></tr>
-              <tr><td>BC-2026-0104352</td><td>22/09/2026</td><td>Puan Wardina Bt Jamal</td><td>AS-SALAMAH</td><td>Derma</td><td>M-SALAMAH-0418</td><td class="right num">120.00</td><td>DuitNow QR</td><td><span class="badge b-green">Berjaya</span></td></tr>
-              <tr><td>BC-2026-0104347</td><td>22/09/2026</td><td>Encik Azhar B Latif</td><td>ITQAN</td><td>Caruman</td><td>M-KWS-P025-0031</td><td class="right num">100.00</td><td>FPX</td><td><span class="badge b-amber">Menunggu</span></td></tr>
-              <tr><td>BC-2026-0104339</td><td>22/09/2026</td><td>Puan Suhaila Bt Karim</td><td>AL-TA'LIM</td><td>Yuran</td><td>M-ALTALIM-0417</td><td class="right num">70.00</td><td>Kad</td><td><span class="badge b-green">Berjaya</span></td></tr>
-              <tr><td>BC-2026-0104326</td><td>22/09/2026</td><td>Encik Hisham B Mokhtar</td><td>AN NUR PARIT 13</td><td>Derma</td><td>M-KWS-P025-0031</td><td class="right num">80.00</td><td>DuitNow QR</td><td><span class="badge b-green">Berjaya</span></td></tr>
+              <tr><td>BC-2026-0104377</td><td>22/09/2026</td><td>Puan Hasmah Bt Asri</td><td>AR-RAIHAN</td><td>Yuran</td><td>M-ARRAIHAN-0417</td><td class="right num">60.00</td><td>FPX</td><td><span class="badge b-green">Berjaya</span></td></tr>
+              <tr><td>BC-2026-0104364</td><td>22/09/2026</td><td>Encik Umair B Amani</td><td>BAITUL ILMI</td><td>Yuran</td><td>M-DUN-N09-0112</td><td class="right num">150.00</td><td>Kad</td><td><span class="badge b-red">Gagal</span></td></tr>
+              <tr><td>BC-2026-0104352</td><td>22/09/2026</td><td>Puan Noraida Bt Munzir</td><td>AL-QAYYUM</td><td>Derma</td><td>M-ALQAYYUM-0418</td><td class="right num">120.00</td><td>DuitNow QR</td><td><span class="badge b-green">Berjaya</span></td></tr>
+              <tr><td>BC-2026-0104347</td><td>22/09/2026</td><td>Encik Hamdi B Rasydan</td><td>AL-MUNAWWARAH</td><td>Caruman</td><td>M-KWS-P021-0031</td><td class="right num">100.00</td><td>FPX</td><td><span class="badge b-amber">Menunggu</span></td></tr>
+              <tr><td>BC-2026-0104339</td><td>22/09/2026</td><td>Puan Batrisyia Bt Harith</td><td>AR-RAIHAN</td><td>Yuran</td><td>M-ARRAIHAN-0417</td><td class="right num">70.00</td><td>Kad</td><td><span class="badge b-green">Berjaya</span></td></tr>
+              <tr><td>BC-2026-0104326</td><td>22/09/2026</td><td>Encik Taqiuddin B Mokhtar</td><td>AN-NAJAH</td><td>Derma</td><td>M-KWS-P021-0031</td><td class="right num">80.00</td><td>DuitNow QR</td><td><span class="badge b-green">Berjaya</span></td></tr>
             </tbody>
           </table>
         </div>
@@ -240,7 +240,7 @@
   </main>
 </div>
 
-<script src="../assets/js/app.js?v=5"></script>
+<script src="../assets/js/app.js?v=6"></script>
 <script>
 // Cawangan: choose which BayarCash account collects its payments
 document.addEventListener('DOMContentLoaded', () => {

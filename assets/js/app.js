@@ -5,6 +5,14 @@
    app.js injects the green header + icon rail and wires all interactions.
    ========================================================================== */
 (function () {
+  // Data version: when it changes, every ePASTI key kept in this browser (DB, saved tables, SPPM,
+  // kehadiran, sign-in) is cleared so old sample data can never come back from cache.
+  const DATA_VER = '2026-09-28-demo-kelantan';
+  try { if (localStorage.getItem('pt-data-ver') !== DATA_VER) {
+    Object.keys(localStorage).filter(k => /^pt[-:]|^pt_/.test(k)).forEach(k => localStorage.removeItem(k));
+    Object.keys(sessionStorage).filter(k => /^pt[-:]/.test(k)).forEach(k => sessionStorage.removeItem(k));
+    localStorage.setItem('pt-data-ver', DATA_VER);
+  } } catch(e){}
   const I = {
     home:'M3 11l9-8 9 8M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10',
     users:'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75',
@@ -111,7 +119,7 @@
     { key:'pemakluman', label:'Makluman',    icon:'nBell',  href:'pemakluman.html' },
     { key:'profil',     label:'Profil',      icon:'nUserCircle',  href:'profil.html' },
   ];
-  const PARENT_USER = { name:'PUAN NURUL AINA BINTI HALIM', role:'Ibu Bapa / Penjaga' };
+  const PARENT_USER = { name:'PUAN-NAJAHUL NABIHAH BINTI HAFIZUDDIN', role:'Ibu Bapa / Penjaga' };
 
   // Teacher/guru portal (data-portal="guru")
   const GURU_MODULES = [
@@ -122,7 +130,7 @@
     { key:'takwim',    label:'Takwim & Program', icon:'nCalendar',  href:'takwim.html' },
     { key:'profil',    label:'Profil',           icon:'nUserCircle',  href:'profil.html' },
   ];
-  const GURU_USER = { name:'USTAZAH SITI KHADIJAH BINTI OMAR', role:"Guru PASTI · AL-TA'LIM" };
+  const GURU_USER = { name:'USTAZAH SITI IFFAH BINTI RIZQI', role:"Guru PASTI · AR-RAIHAN" };
 
   // Portal registry — non-admin portals (own rail, no tier/scope).
   const PORTALS = {
@@ -130,65 +138,72 @@
     guru:   { tabs:['dashboard','clock','murid','markah'], modules: GURU_MODULES,   user: GURU_USER,   sys:'Portal Guru PASTI',      sub:'Portal Guru' },
   };
 
-  const USER = { name:'MUHAMAD KHAIRI BIN AZMAN', role:'PENTADBIR P.25 KUBANG KERIAN' };
+  const USER = { name:'MUHAMAD RAZLAN BIN KAMIL', role:'PENTADBIR P.25 KOTA BHARU' };
 
   // ===========================================================================
   //  Mock database (per browser) — shared by every page so a record created on
   //  one page shows up on the next: PASTI applications, student applications,
   //  user accounts. Seeded once; "?reset=1" on any page restores the seed.
   // ===========================================================================
-  const DBKEY = 'pt-db-v1';
+  const DBKEY = 'pt-db-v2';
   const HIER = { pusat:'negeri', negeri:'kawasan', kawasan:'dun', dun:'cawangan', cawangan:'guru' };   // who each tier creates
   const ROLE_LABEL = { pusat:'Pentadbir Pusat', negeri:'Pentadbir Negeri', kawasan:'Pentadbir Kawasan', dun:'Pentadbir DUN', cawangan:'Pentadbir Cawangan', guru:'Guru PASTI', pembantu:'Pembantu Guru', ibubapa:'Ibu Bapa / Penjaga' };
   function seedDB(){
     const P = (no,t,nama,alamat,tel,kaw,dun,status,extra) => Object.assign({ no, tarikh:t, nama, alamat, tel, negeri:'KELANTAN', kawasan:kaw, dun, status, sejarah:[] }, extra||{});
-    const KK = 'P025 KUBANG KERIAN';
+    const KK = 'P021 KOTA BHARU';
     const pasti = [
-      P('B/440/2021','12/01/2021',"PASTI AL-TA'LIM",'No 3, Jalan Masjid, Kubang Kerian','03-3226 2075',KK,'N44 KOTA LAMA','Lulus',{kod:'B020108',guru:9,murid:54,daftar:'BUKA'}),
-      P('B/441/2021','14/01/2021','PASTI AN NUR PARIT 13','Parit 6, Kubang Kerian','03-3226 5518',KK,'N44 KOTA LAMA','Lulus',{kod:'B020109',guru:13,murid:78,daftar:'BUKA'}),
-      P('B/442/2021','20/01/2021','PASTI AS-SALAMAH','Lot 224, Kota Lama, Kubang Kerian','03-3227 8830',KK,'N44 KOTA LAMA','Lulus',{kod:'B020110',guru:7,murid:41,daftar:'BUKA'}),
-      P('B/443/2021','02/02/2021','PASTI ITQAN','No 8, Taman Bunut Payong Jaya','03-3243 5512',KK,'N45 BUNUT PAYONG','Lulus',{kod:'B020111',guru:8,murid:49,daftar:'BUKA'}),
-      P('B/444/2021','09/02/2021','PASTI NADWAH HASSANAH','Kg Sungai Nipah, Kubang Kerian','03-3243 1096',KK,'N44 KOTA LAMA','Lulus',{kod:'B020112',guru:10,murid:62,daftar:'BUKA'}),
-      P('B/445/2021','15/02/2021','PASTI NURUL HIDAYAH','Jalan Bunut Payong Baru','03-3243 7160',KK,'N44 KOTA LAMA','Lulus',{kod:'B020113',guru:6,murid:38,daftar:'TUTUP'}),
-      P('B/446/2021','01/03/2021','PASTI NURUL IMAN','No 12, Jalan Besar, Kubang Kerian','03-3226 4471',KK,'N44 KOTA LAMA','Lulus',{kod:'B020114',guru:11,murid:67,daftar:'BUKA'}),
-      P('B/447/2021','08/03/2021','PASTI NURUL INSANIAH','Parit 9, Kubang Kerian','03-3226 3384',KK,'N44 KOTA LAMA','Lulus',{kod:'B020115',guru:8,murid:44,daftar:'BUKA'}),
-      P('B/448/2021','15/03/2021','PASTI BADROTIM','Kg Kubang Kerian Darat','03-3226 9027',KK,'N44 KOTA LAMA','Lulus',{kod:'B020116',guru:9,murid:51,daftar:'BUKA'}),
+      P('D/140/2021','12/01/2021',"PASTI AR-RAIHAN",'No 3, Jalan Masjid, Kota Bharu','09-1450 0734',KK,'N09 KOTA LAMA','Lulus',{kod:'D030108',guru:9,murid:54,daftar:'BUKA'}),
+      P('D/141/2021','14/01/2021','PASTI AN-NAJAH','Lorong Kurnia, Kota Bharu','09-3130 9765',KK,'N09 KOTA LAMA','Lulus',{kod:'D030109',guru:13,murid:78,daftar:'BUKA'}),
+      P('D/142/2021','20/01/2021','PASTI AL-QAYYUM','Lot 224, Kota Lama, Kota Bharu','09-3140 1571',KK,'N09 KOTA LAMA','Lulus',{kod:'D030110',guru:7,murid:41,daftar:'BUKA'}),
+      P('D/143/2021','02/02/2021','PASTI AL-MUNAWWARAH','No 8, Taman Bunut Payong Indah','09-2352 3542',KK,'N10 BUNUT PAYONG','Lulus',{kod:'D030111',guru:8,murid:49,daftar:'BUKA'}),
+      P('D/144/2021','09/02/2021','PASTI AZ-ZAHRA','Kg Kubang Pasu, Kota Bharu','09-3153 2187',KK,'N09 KOTA LAMA','Lulus',{kod:'D030112',guru:10,murid:62,daftar:'BUKA'}),
+      P('D/145/2021','15/02/2021','PASTI AL-IKHLAS','Jalan Bunut Payong Baru','09-3410 6010',KK,'N09 KOTA LAMA','Lulus',{kod:'D030113',guru:6,murid:38,daftar:'TUTUP'}),
+      P('D/146/2021','01/03/2021','PASTI BAITUL ILMI','No 12, Jalan Besar, Kota Bharu','09-2904 3422',KK,'N09 KOTA LAMA','Lulus',{kod:'D030114',guru:11,murid:67,daftar:'BUKA'}),
+      P('D/147/2021','08/03/2021','PASTI AL-HUDA','Lorong Hidayah, Kota Bharu','09-7014 7455',KK,'N09 KOTA LAMA','Lulus',{kod:'D030115',guru:8,murid:44,daftar:'BUKA'}),
+      P('D/148/2021','15/03/2021','PASTI AL-MIZAN','Kg Kota Bharu Darat','09-1413 5212',KK,'N09 KOTA LAMA','Lulus',{kod:'D030116',guru:9,murid:51,daftar:'BUKA'}),
+      // other Kelantan kawasan (P025 Bachok)
+      P('D/131/2020','06/07/2020','PASTI AN-NUR HASANAH','Kg Tawang, Bachok','09-778 2140','P025 BACHOK','N20 TAWANG','Lulus',{kod:'D030101',guru:7,murid:42,daftar:'BUKA'}),
+      P('D/132/2020','14/07/2020','PASTI DARUL NAIM','Jalan Pantai Irama, Bachok','09-778 5516','P025 BACHOK','N21 PANTAI IRAMA','Lulus',{kod:'D030102',guru:6,murid:35,daftar:'BUKA'}),
+      // a few other states (light seed)
+      Object.assign(P('C/210/2022','10/03/2022','PASTI BUKIT BESAR','Jalan Sultan Omar, Kuala Terengganu','09-622 4410','P036 KUALA TERENGGANU','N15 BANDAR','Lulus',{kod:'T040201',guru:8,murid:46,daftar:'BUKA'}),{negeri:'TERENGGANU'}),
+      Object.assign(P('C/211/2022','22/03/2022','PASTI SERI LADANG','Kg Ladang, Kuala Terengganu','09-622 7781','P036 KUALA TERENGGANU','N16 LADANG','Lulus',{kod:'T040202',guru:6,murid:33,daftar:'BUKA'}),{negeri:'TERENGGANU'}),
+      Object.assign(P('K/305/2023','05/05/2023','PASTI DERGA JAYA','Taman Derga Jaya, Alor Setar','04-731 2250','P009 ALOR SETAR','N13 DERGA','Lulus',{kod:'K020301',guru:5,murid:28,daftar:'TUTUP'}),{negeri:'KEDAH'}),
       // applications in progress
-      P('B/452/2026','16/09/2026','PASTI AL-HIKMAH','Lot 51, Kg Pulau Belanga, Kubang Kerian','09-765 2231',KK,'N44 KOTA LAMA','Disokong Kawasan',{sejarah:[{by:'Pentadbir DUN',act:'Daftar',at:'16/09/2026'},{by:'Pentadbir Kawasan',act:'Sokong',at:'22/09/2026'}]}),
-      P('B/453/2026','20/09/2026','PASTI DARUL FALAH','No 7, Jalan Bayam, Kubang Kerian','09-765 8804',KK,'N44 KOTA LAMA','Baharu',{sejarah:[{by:'Pentadbir DUN',act:'Daftar',at:'20/09/2026'}]}),
-      P('B/454/2026','24/09/2026','PASTI NUR IHSAN','Kg Bunut Payong Dalam','09-743 1180',KK,'N45 BUNUT PAYONG','Baharu',{sejarah:[{by:'Pentadbir DUN',act:'Daftar',at:'24/09/2026'}]}),
-      P('B/449/2026','02/09/2026','PASTI RAUDHAH','Kg Kota, Kubang Kerian','09-765 3345',KK,'N44 KOTA LAMA','Ditolak',{sebab:'Premis belum mendapat kelulusan PBT.',sejarah:[{by:'Pentadbir DUN',act:'Daftar',at:'02/09/2026'},{by:'Pentadbir Kawasan',act:'Sokong',at:'03/09/2026'},{by:'Pentadbir Negeri',act:'Tolak',at:'06/09/2026'}]}),
+      P('D/152/2026','16/09/2026','PASTI AL-QALAM','Lot 51, Kg Pulau Melaka, Kota Bharu','09-198 1834',KK,'N09 KOTA LAMA','Disokong Kawasan',{sejarah:[{by:'Pentadbir DUN',act:'Daftar',at:'16/09/2026'},{by:'Pentadbir Kawasan',act:'Sokong',at:'22/09/2026'}]}),
+      P('D/153/2026','20/09/2026','PASTI AR-WAFA','No 7, Jalan Bayam, Kota Bharu','09-007 4440',KK,'N09 KOTA LAMA','Baharu',{sejarah:[{by:'Pentadbir DUN',act:'Daftar',at:'20/09/2026'}]}),
+      P('D/154/2026','24/09/2026','PASTI AS-SAKINAH','Kg Bunut Payong Dalam','09-300 0352',KK,'N10 BUNUT PAYONG','Baharu',{sejarah:[{by:'Pentadbir DUN',act:'Daftar',at:'24/09/2026'}]}),
+      P('D/149/2026','02/09/2026','PASTI AL-BAYAN','Kg Kota, Kota Bharu','09-141 0250',KK,'N09 KOTA LAMA','Ditolak',{sebab:'Premis belum mendapat kelulusan PBT.',sejarah:[{by:'Pentadbir DUN',act:'Daftar',at:'02/09/2026'},{by:'Pentadbir Kawasan',act:'Sokong',at:'03/09/2026'},{by:'Pentadbir Negeri',act:'Tolak',at:'06/09/2026'}]}),
     ];
-    const PIDX = ["PASTI AL-TA'LIM","PASTI AL-TA'LIM","PASTI AS-SALAMAH","PASTI AL-TA'LIM","PASTI ITQAN","PASTI NURUL IMAN","PASTI AL-TA'LIM","PASTI NADWAH HASSANAH"];
+    const PIDX = ["PASTI AR-RAIHAN","PASTI AR-RAIHAN","PASTI AL-QAYYUM","PASTI AR-RAIHAN","PASTI AL-MUNAWWARAH","PASTI BAITUL ILMI","PASTI AR-RAIHAN","PASTI AZ-ZAHRA"];
     const M = (r,st,i,extra) => Object.assign({ tarikh:r[0], ref:r[1], nama:r[2], mykid:r[3], umur:r[4], bapa:r[5], kpBapa:r[6], telBapa:r[7], tarikhDaftar:r[8], status:st, pasti:PIDX[i%PIDX.length], kelas:'Tahun '+(10-+r[4]) }, extra||{});
     const murid = [
-      ...[['20/09/2026','B124781','DANIA HUMAIRA BINTI TAJUDDIN','210817100455','5','TAJUDDIN BIN MAHMUD','840203105671','013-7729143','—'],
-      ['19/09/2026','B124780','MUHAMMAD RAFIQ HAIKAL BIN SAIFUL','200629100812','6','SAIFUL BIN MANSOR','821014105398','019-2287604','—'],
-      ['18/09/2026','B124779','BALQIS NASUHA BINTI HAFIZ','211105100237','4','HAFIZ BIN RAMBLI','850926085462','012-8890271','—'],
-      ['17/09/2026','B124778','AMMAR ZIKRULLAH BIN NASIR','200418100109','6','NASIR BIN LATIFF','830705106184','017-6640932','—'],
-      ['16/09/2026','B124777','KHADIJAH SAFIYYAH BINTI IZWAN','210312100788','5','IZWAN BIN SAPAWI','860128105023','011-27650418','—'],
-      ['15/09/2026','B124776','MUHAMMAD UWAIS BIN FADZLI','201002100546','6','FADZLI BIN JOHARI','800917105712','013-3390875','—']].map((r,i)=>M(r,'Baharu',i,{emel:r[5].split(' ')[0].toLowerCase()+'@gmail.com'})),
-      ...[['10/09/2026','B124770','SOFEA NADHIRAH BINTI GHAZALI','200811100164','6','GHAZALI BIN SUKOR','810319105628','013-6690214','12/09/2026'],
-      ['09/09/2026','B124769','MUHAMMAD ZHAFRAN BIN NORDIN','201118100927','6','NORDIN BIN JAAFAR','831207105241','019-8871053','11/09/2026'],
-      ['08/09/2026','B124768','MAISARAH QALESYA BINTI ZAKARIA','210206100348','5','ZAKARIA BIN HAMDAN','840716086172','012-3341097','10/09/2026'],
-      ['07/09/2026','B124767','MUHAMMAD DANIYAL BIN SHAFIE','200924100416','6','SHAFIE BIN OSMAN','801003105841','017-2298640','09/09/2026']].map((r,i)=>M(r,'Diterima',i+1)),
-      ...[['02/09/2026','B124760','MUHAMMAD IZZAT BIN SUFIAN','210903100418','5','SUFIAN BIN DERAMAN','850812105349','013-2287640','—'],
-      ['01/09/2026','B124759','NADHRA IRDINA BINTI ZULHILMI','211008100263','4','ZULHILMI BIN GHANI','870627106628','017-6690321','—']].map((r,i)=>M(r,'Ditolak',i,{sebab:'Kuota kelas telah penuh.'})),
+      ...[['20/09/2026','B124781','ROZITA ASMA BINTI IZZUDDIN','210817032711','5','IZZUDDIN BIN LUTFI','840203035402','013-7012324','—'],
+      ['19/09/2026','B124780','MUHAMMAD ZAKWAN IQMAL BIN RAFIE','200629031454','6','RAFIE BIN MUSTAQIM','821014031401','019-6770250','—'],
+      ['18/09/2026','B124779','RAIHANA FAUZIAH BINTI WAFIY','211105035584','4','WAFIY BIN AFIQ','850926030942','012-5740515','—'],
+      ['17/09/2026','B124778','ZAIM TAQIUDDIN BIN MARWAN','200418037706','6','MARWAN BIN MAZLAN','830705035231','017-5922027','—'],
+      ['16/09/2026','B124777','IFFAH MAWADDAH BINTI HUZAIFAH','210312033105','5','HUZAIFAH BIN RASYDAN','860128034046','011-71636246','—'],
+      ['15/09/2026','B124776','MUHAMMAD OMAR BIN MUAZ','201002038396','6','MUAZ BIN IKHWAN','800917037010','013-7420130','—']].map((r,i)=>M(r,'Baharu',i,{emel:r[5].split(' ')[0].toLowerCase()+'@gmail.com'})),
+      ...[['10/09/2026','B124770','SURAYA ROSMANIZA BINTI UMAIR','200811032159','6','UMAIR BIN FIRDAUS','810319033033','013-1525455','12/09/2026'],
+      ['09/09/2026','B124769','MUHAMMAD GHAZI BIN NUAIM','201118034346','6','NUAIM BIN ZIKRI','831207031303','019-4215743','11/09/2026'],
+      ['08/09/2026','B124768','ZAHRA QISTINA BINTI ASRI','210206035117','5','ASRI BIN YAZID','840716032115','012-0412598','10/09/2026'],
+      ['07/09/2026','B124767','MUHAMMAD ANAS BIN FADHIL','200924034237','6','FADHIL BIN WAJDI','801003037283','017-1096460','09/09/2026']].map((r,i)=>M(r,'Diterima',i+1)),
+      ...[['02/09/2026','B124760','MUHAMMAD AMSYAR BIN KHALISH','210903032801','5','KHALISH BIN JAMIL','850812035520','013-1101154','—'],
+      ['01/09/2026','B124759','KHALISAH SYAKIRAH BINTI MUSTAQIM','211008034955','4','MUSTAQIM BIN SAIFULLAH','870627034933','017-5435253','—']].map((r,i)=>M(r,'Ditolak',i,{sebab:'Kuota kelas telah penuh.'})),
     ];
     const U = (nama,emel,peranan,skop,oleh,tarikh) => ({ nama, emel, peranan, skop, oleh, tarikh, status:'Aktif' });
     const users = [
-      U("Dato' Hj Ahmad Zaki",'pusat@pasti.org','pusat','Jabatan PASTI Malaysia','Sistem','01/01/2025'),
-      U('Ustaz Faizal Rahman','negeri@pasti.org','negeri','KELANTAN','Pentadbir Pusat','05/01/2025'),
-      U('Ustaz Harun Salleh','terengganu@pasti.org','negeri','TERENGGANU','Pentadbir Pusat','05/01/2025'),
-      U('Muhamad Khairi bin Azman','kawasan@pasti.org','kawasan','P025 KUBANG KERIAN','Pentadbir Negeri','10/01/2025'),
-      U('Ustaz Zulkifli Omar','bachok@pasti.org','kawasan','P026 BACHOK','Pentadbir Negeri','10/01/2025'),
-      U('Ustaz Ismail Kassim','dun@pasti.org','dun','N44 KOTA LAMA','Pentadbir Kawasan','14/01/2025'),
-      U('Ustaz Rosli Deraman','n45@pasti.org','dun','N45 BUNUT PAYONG','Pentadbir Kawasan','14/01/2025'),
-      U('Ustazah Mariam Hassan','cawangan@pasti.org','cawangan',"PASTI AL-TA'LIM",'Pentadbir DUN','20/01/2025'),
-      U('Ustaz Hakim Yusof','salamah@pasti.org','cawangan','PASTI AS-SALAMAH','Pentadbir DUN','20/01/2025'),
-      U('Ustazah Siti Khadijah binti Omar','guru@pasti.org','guru',"PASTI AL-TA'LIM",'Pentadbir Cawangan','02/01/2026'),
-      U('Ustazah Siti Aminah Yusof','aminah@pasti.org','guru',"PASTI AL-TA'LIM",'Pentadbir Cawangan','02/01/2026'),
-      U('Puan Nurul Aina binti Halim','ibubapa@pasti.org','ibubapa',"PASTI AL-TA'LIM",'Automatik (murid diterima)','05/01/2026'),
+      U("Dato' Hj Kamaruddin Yaakub",'pusat@pasti.org','pusat','Jabatan PASTI Malaysia','Sistem','01/01/2025'),
+      U('Ustaz Asri Zamri','negeri@pasti.org','negeri','KELANTAN','Pentadbir Pusat','05/01/2025'),
+      U('Ustaz Rafie Sufyan','terengganu@pasti.org','negeri','TERENGGANU','Pentadbir Pusat','05/01/2025'),
+      U('Muhamad Razlan bin Kamil','kawasan@pasti.org','kawasan','P021 KOTA BHARU','Pentadbir Negeri','10/01/2025'),
+      U('Ustaz Aizat Rizqi','bachok@pasti.org','kawasan','P025 BACHOK','Pentadbir Negeri','10/01/2025'),
+      U('Ustaz Darwisy Yusri','dun@pasti.org','dun','N09 KOTA LAMA','Pentadbir Kawasan','14/01/2025'),
+      U('Ustaz Fauzi Jamil','n10@pasti.org','dun','N10 BUNUT PAYONG','Pentadbir Kawasan','14/01/2025'),
+      U('Ustazah Husna Mardhiah','cawangan@pasti.org','cawangan',"PASTI AR-RAIHAN",'Pentadbir DUN','20/01/2025'),
+      U('Ustaz Fahmi Taqiuddin','qayyum@pasti.org','cawangan','PASTI AL-QAYYUM','Pentadbir DUN','20/01/2025'),
+      U('Ustazah Siti Iffah binti Rizqi','guru@pasti.org','guru',"PASTI AR-RAIHAN",'Pentadbir Cawangan','02/01/2026'),
+      U('Ustazah Siti Nabila Taqiuddin','nabila@pasti.org','guru',"PASTI AR-RAIHAN",'Pentadbir Cawangan','02/01/2026'),
+      U('Puan Nurul Nabihah binti Hafizuddin','ibubapa@pasti.org','ibubapa',"PASTI AR-RAIHAN",'Automatik (murid diterima)','05/01/2026'),
     ];
     return { pasti, murid, users };
   }
@@ -205,8 +220,8 @@
     add(col, obj){ (this.data[col] = this.data[col] || []).unshift(obj); this.save(); return obj; },
     find(col, fn){ return this.all(col).find(fn); },
     user(){ let e = null; try { e = localStorage.getItem('pt-user'); } catch(x){} return e ? this.find('users', u => u.emel.toLowerCase() === e.toLowerCase()) : null; },
-    nextNo(){ const n = Math.max(...this.all('pasti').map(p => +String(p.no).split('/')[1] || 0)) + 1; return 'B/' + n + '/2026'; },
-    nextKod(){ const n = Math.max(...this.all('pasti').filter(p => p.kod).map(p => +p.kod.slice(1))) + 1; return 'B' + String(n).padStart(6,'0'); },
+    nextNo(){ const n = Math.max(...this.all('pasti').filter(p => /^D\//.test(p.no)).map(p => +String(p.no).split('/')[1] || 0)) + 1; return 'D/' + n + '/2026'; },
+    nextKod(){ const n = Math.max(...this.all('pasti').filter(p => p.kod && p.kod[0] === 'D').map(p => +p.kod.slice(1))) + 1; return 'D' + String(n).padStart(6,'0'); },
     nextRef(){ const n = Math.max(...this.all('murid').map(m => +m.ref.slice(1))) + 1; return 'B' + n; },
     HIER, ROLE_LABEL,
   };
@@ -215,24 +230,24 @@
   // Same login can view every tier (Cawangan → DUN → Kawasan → Negeri → Pusat).
   // Each tier has a different role → sees only the modules/pages it may use.
   const TIERS = {
-    pusat: { label:'Pentadbir Pusat (HQ)', scope:'Semua Negeri PASTI', name:"DATO' HJ AHMAD ZAKI",
+    pusat: { label:'Pentadbir Pusat (HQ)', scope:'Semua Negeri PASTI', name:"DATO' HJ KAMARUDDIN YAAKUB",
       allow:['dashboard','caruman','laporan-papan-pemuka','laporan-guru','laporan-murid','laporan-warga','calendar','notifikasi','log-akses','kempen','tetapan'] },
-    negeri: { label:'Pentadbir Negeri', scope:'KELANTAN', name:'USTAZ FAIZAL RAHMAN',
+    negeri: { label:'Pentadbir Negeri', scope:'KELANTAN', name:'USTAZ ASRI ZAMRI',
       allow:['dashboard','warga-jawatankuasa','pasti-pengurusan','caruman','payment-gateway','laporan-papan-pemuka','laporan-guru','laporan-murid','laporan-warga','calendar','notifikasi','log-akses','kempen','tetapan'] },
-    kawasan: { label:'Pentadbir Kawasan', scope:'P025 Kubang Kerian', name:'MUHAMAD KHAIRI BIN AZMAN',
+    kawasan: { label:'Pentadbir Kawasan', scope:'P021 Kota Bharu', name:'MUHAMAD RAZLAN BIN KAMIL',
       allow:['dashboard','warga-jawatankuasa','warga-petugas','warga-guru','pasti-pengurusan','murid-permohonan','murid-senarai','murid-sijil','ibubapa-senarai','permarkahan','caruman','yuran','payment-gateway','kehadiran','calendar','notifikasi','log-akses','kempen','derma','laporan-papan-pemuka','laporan-guru','laporan-murid','tetapan'] },
-    dun: { label:'Pentadbir DUN', scope:'N44 Kota Lama', name:'USTAZ ISMAIL KASSIM', pasti:["AL-TA'LIM","AS-SALAMAH","NURUL IMAN","NURUL HIDAYAH","NADWAH HASSANAH","AN NUR PARIT 13","NURUL INSANIAH","PASTI BADROTIM"],
+    dun: { label:'Pentadbir DUN', scope:'N09 Kota Lama', name:'USTAZ DARWISY YUSRI', pasti:["AR-RAIHAN","AL-QAYYUM","BAITUL ILMI","AL-IKHLAS","AZ-ZAHRA","AN-NAJAH","AL-HUDA","PASTI AL-MIZAN"],
       allow:['dashboard','warga-petugas','warga-guru','pasti-pengurusan','pasti-daftar-baharu','murid-permohonan','murid-senarai','ibubapa-senarai','permarkahan','caruman','yuran','payment-gateway','kehadiran','calendar','notifikasi','log-akses','tetapan','derma','laporan-papan-pemuka','laporan-murid'] },
-    cawangan: { label:'Pentadbir Cawangan', scope:"PASTI Al-Ta'lim", name:'USTAZAH MARIAM HASSAN', pasti:["AL-TA'LIM"],
+    cawangan: { label:'Pentadbir Cawangan', scope:"PASTI Ar-Raihan", name:'USTAZAH HUSNA MARDHIAH', pasti:["AR-RAIHAN"],
       allow:['dashboard','warga-guru','murid-permohonan','murid-senarai','murid-sijil','ibubapa-senarai','permarkahan','caruman','yuran','payment-gateway','kehadiran','calendar','notifikasi','log-akses','tetapan','kempen','derma'] },
   };
   // Role/tier is decided by the login email (index.html); NOT switchable inside the app.
   const getTier = () => localStorage.getItem('pt-tier') || 'kawasan';
 
   // Data scoping — a tier sees only rows for the PASTI at/under its level.
-  // (Dataset is all within P025 Kubang Kerian, so Kawasan/Negeri/Pusat see all;
+  // (Dataset is all within P021 Kota Bharu, so Kawasan/Negeri/Pusat see all;
   //  Cawangan sees its own PASTI, DUN sees the PASTI in its DUN.)
-  const ALL_PASTI = ["AL-TA'LIM","AS-SALAMAH","ITQAN","NURUL IMAN","NURUL HIDAYAH","NADWAH HASSANAH","AN NUR PARIT 13","NURUL INSANIAH","PASTI BADROTIM"];
+  const ALL_PASTI = ["AR-RAIHAN","AL-QAYYUM","AL-MUNAWWARAH","BAITUL ILMI","AL-IKHLAS","AZ-ZAHRA","AN-NAJAH","AL-HUDA","PASTI AL-MIZAN"];
   // Locality filters — a tier can't filter above its own level.
   // Levels are locked from the top: Negeri locks Negeri, Kawasan locks Negeri+Kawasan, …,
   // Cawangan locks all four (it only ever sees its own PASTI).
@@ -296,10 +311,10 @@
   // Notifications & reminders (per portal) — shown in the topbar bell.
   function notifsFor(portal){
     if(portal==='parent') return [
-      { c:'#d93025', t:'Peringatan Yuran', s:'Yuran Ogos 2026 (Ahmad Zafran) belum dijelaskan — RM 60.', time:'2 jam lalu', pay:true },
+      { c:'#d93025', t:'Peringatan Yuran', s:'Yuran Ogos 2026 (Ahmad Umair) belum dijelaskan — RM 60.', time:'2 jam lalu', pay:true },
       { c:'#f9ab00', t:'Peringatan Yuran', s:'Yuran September akan tamat tempoh 30 Sep 2026.', time:'Semalam', pay:true },
-      { c:'#1a73e8', t:'Makluman Sekolah', s:"Mesyuarat Agung PASTI Al-Ta'lim — 5 Okt 2026.", time:'2 hari lalu' },
-      { c:'#2fa308', t:'Prestasi Anak (SPPM)', s:'Guru telah menghantar penilaian Penggal 1 Ahmad Zafran.', time:'3 hari lalu', go:'prestasi.html' },
+      { c:'#1a73e8', t:'Makluman Sekolah', s:"Mesyuarat Agung PASTI Ar-Raihan — 5 Okt 2026.", time:'2 hari lalu' },
+      { c:'#2fa308', t:'Prestasi Anak (SPPM)', s:'Guru telah menghantar penilaian Penggal 1 Ahmad Umair.', time:'3 hari lalu', go:'prestasi.html' },
     ];
     if(portal==='guru') return [
       { c:'#f9ab00', t:'Peringatan Tugasan', s:'Serahan markah penggal sebelum 30 Sep 2026.', time:'1 jam lalu' },

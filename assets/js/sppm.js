@@ -62,21 +62,21 @@
   const tahapMinda = s => s == null || s === '' ? null : +s >= 80 ? 'Sangat Cemerlang' : +s >= 40 ? 'Cemerlang' : 'Berpotensi Cemerlang';
 
   // ---- store (per browser) --------------------------------------------------
-  const KEY = 'pt-sppm-v1';
+  const KEY = 'pt-sppm-v2';
   const load = () => { try { return JSON.parse(localStorage.getItem(KEY)) || null; } catch(e) { return null; } };
   const save = d => { try { localStorage.setItem(KEY, JSON.stringify(d)); } catch(e) {} };
   const blank = umur => ({ umur, p:{ 1:{}, 2:{} }, minda:{ 1:null, 2:null }, aktiviti:[], aulad:{ tema:'', tajuk:'', items:{}, skor:'' }, ulasan:{ 1:'', 2:'' }, sent:{ 1:false, 2:false }, sentAt:{} });
 
-  // demo: Ahmad Zafran (5 tahun) — Penggal 1 already sent to the parent; a few classmates in progress
+  // demo: Ahmad Umair (5 tahun) — Penggal 1 already sent to the parent; a few classmates in progress
   function seed(){
     const d = {};
     const z = blank(5), tpl = build(5), rate = (k, i) => ['SM','M','SM','M','SM','AM','M'][(k.length + i) % 7];
     tpl.forEach(e => (e.sections||[]).forEach(s => s.items.forEach((x,i) => { if (x.p !== 2) z.p[1][x.k] = rate(x.k, i); })));
-    z.minda[1] = 82; z.ulasan[1] = 'Ahmad Zafran seorang murid yang rajin dan mudah mengikut arahan. Bacaan Al-Quran semakin lancar; teruskan hafalan surah di rumah bersama ibu bapa.';
-    z.aktiviti = [{ nama:'Pertandingan Hafazan Surah Lazim', anjuran:'PASTI Kawasan Kubang Kerian', peringkat:'Kawasan', catatan:'Johan kategori 5 tahun' },{ nama:'Hari Sukan PASTI', anjuran:"PASTI AL-TA'LIM", peringkat:'Cawangan', catatan:'Penyertaan' }];
+    z.minda[1] = 82; z.ulasan[1] = 'Ahmad Umair seorang murid yang rajin dan mudah mengikut arahan. Bacaan Al-Quran semakin lancar; teruskan hafalan surah di rumah bersama ibu bapa.';
+    z.aktiviti = [{ nama:'Pertandingan Hafazan Surah Lazim', anjuran:'PASTI Kawasan Kota Bharu', peringkat:'Kawasan', catatan:'Johan kategori 5 tahun' },{ nama:'Hari Sukan PASTI', anjuran:"PASTI AR-RAIHAN", peringkat:'Cawangan', catatan:'Penyertaan' }];
     z.aulad = { tema:'Alam Sekitar Ciptaan Allah', tajuk:'Taman Mini Kelasku', items:{ 'Bekerjasama':'SM','Mematuhi arahan':'M','Kesungguhan':'SM','Berkebolehan':'M','Penglibatan Murid':'SM' }, skor:'SM' };
     z.sent[1] = true; z.sentAt[1] = '20/06/2026';
-    d['210512100713'] = z;
+    d['210512035411'] = z;
     return d;
   }
   let DATA = load(); if (!DATA || /[?&]reset=1/.test(location.search)) { DATA = seed(); save(DATA); }

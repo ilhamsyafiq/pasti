@@ -6,7 +6,7 @@
 <title>Senarai Guru · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=5">
+<link rel="stylesheet" href="../assets/css/app.css?v=6">
 </head>
 <body>
 <div class="pt-app" data-module="warga" data-page="warga-guru" data-title="Senarai Guru" data-subtitle="Guru & pembantu guru PASTI">
@@ -16,7 +16,7 @@
       <div>
         <div class="crumb">ePASTI <span>›</span> Warga PASTI <span>›</span> Senarai Guru</div>
         <h1>Senarai Guru PASTI</h1>
-        <div class="lead">Guru dan pembantu guru berdaftar bagi Kawasan Kubang Kerian</div>
+        <div class="lead">Guru dan pembantu guru berdaftar bagi Kawasan Kota Bharu</div>
       </div>
     </div>
 
@@ -80,26 +80,26 @@
   </main>
 </div>
 
-<script src="../assets/js/app.js?v=5"></script>
+<script src="../assets/js/app.js?v=6"></script>
 <script>
   // [MyKad, Nama, Jantina, Kaum, Telefon, PASTI, Status]
   const guru = [
-    ['860714106823','SALWA BINTI ABDUL RAHIM','Perempuan','Melayu','013-7742180','AL-TA\'LIM','Aktif'],
-    ['830229105417','ZARINA BINTI MOHD YUSOFF','Perempuan','Melayu','013-3358091','AS-SALAMAH','Aktif'],
-    ['910506108236','HANISAH BINTI ROSMAN','Perempuan','Melayu','012-6690472','ITQAN','Aktif'],
-    ['880821106519','NURFARHANA BINTI SAIDIN','Perempuan','Melayu','013-8817265','NURUL IMAN','Aktif'],
-    ['930312104728','AZLINDA BINTI ZAKARIA','Perempuan','Melayu','019-5523140','NURUL HIDAYAH','Aktif'],
-    ['840610108334','RUHAYA BINTI KASSIM','Perempuan','Melayu','013-6647029','AL-TA\'LIM','Tidak Aktif'],
-    ['891127106822','MASLINDA BINTI ARSHAD','Perempuan','Melayu','017-3098514','AS-SALAMAH','Aktif'],
-    ['920904104613','FARAHANA BINTI IDRIS','Perempuan','Melayu','013-7724863','ITQAN','Aktif'],
-    ['870418108927','JULIANA BINTI SAMSUDIN','Perempuan','Melayu','012-2245097','NURUL IMAN','Aktif'],
-    ['940207104518','SITI NADIAH BINTI HAMDAN','Perempuan','Melayu','013-6689230','NURUL HIDAYAH','Tidak Aktif'],
+    ['860714036015','RABIATUL BINTI ABDUL KAMARUL','Perempuan','Melayu','013-0000732','AR-RAIHAN','Aktif'],
+    ['830229038051','SOLEHAH BINTI MOHD MARWAN','Perempuan','Melayu','013-5252068','AL-QAYYUM','Aktif'],
+    ['910506034521','NORAIDA BINTI AIZAT','Perempuan','Melayu','012-1210856','AL-MUNAWWARAH','Aktif'],
+    ['880821031082','ILYANA BINTI SYAZWAN','Perempuan','Melayu','013-7828523','BAITUL ILMI','Aktif'],
+    ['930312032558','FATIHAH BINTI ASRI','Perempuan','Melayu','019-1901049','AL-IKHLAS','Aktif'],
+    ['840610031662','RUFAIDAH BINTI YUSRI','Perempuan','Melayu','013-9580241','AR-RAIHAN','Tidak Aktif'],
+    ['891127034425','HASLINDA BINTI WAZIR','Perempuan','Melayu','017-1523011','AL-QAYYUM','Aktif'],
+    ['920904038549','JANNAH BINTI SAFWAN','Perempuan','Melayu','013-5106120','AL-MUNAWWARAH','Aktif'],
+    ['870418033905','HAFIZAH BINTI EZANI','Perempuan','Melayu','012-2365628','BAITUL ILMI','Aktif'],
+    ['940207034305','SITI UMAIRAH BINTI YAZID','Perempuan','Melayu','013-0345390','AL-IKHLAS','Tidak Aktif'],
   ];
   const pembantu = [
-    ['960925104736','ATIKAH BINTI MOHD FAUZI','Perempuan','Melayu','013-4478812','AL-TA\'LIM','Aktif'],
-    ['970513106029','DZULHUSNA BINTI RASHDAN','Perempuan','Melayu','018-8813974','ITQAN','Aktif'],
-    ['950830108214','NAJWA BINTI HALIM','Perempuan','Melayu','013-2216480','AS-SALAMAH','Aktif'],
-    ['980119104563','LIYANA BINTI SUKRI','Perempuan','Melayu','011-16690325','NURUL IMAN','Tidak Aktif'],
+    ['960925034947','MAZURA BINTI MOHD ISKANDAR','Perempuan','Melayu','013-0345257','AR-RAIHAN','Aktif'],
+    ['970513034291','FATHIYAH BINTI ASRI','Perempuan','Melayu','018-1372375','AL-MUNAWWARAH','Aktif'],
+    ['950830038343','NAJIHAH BINTI HAFIZUDDIN','Perempuan','Melayu','013-9505201','AL-QAYYUM','Aktif'],
+    ['980119033823','YASMIN BINTI WAFIY','Perempuan','Melayu','011-87355571','BAITUL ILMI','Tidak Aktif'],
   ];
   function initials(n){ const p=n.split(' '); return (p[0][0]+(p[1]?p[1][0]:'')).toUpperCase(); }
   function badge(s){ return s==='Aktif' ? '<span class="badge b-green">Aktif</span>' : '<span class="badge b-slate">Tidak Aktif</span>'; }

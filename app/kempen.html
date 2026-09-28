@@ -6,7 +6,7 @@
 <title>Kempen PASTI · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=5">
+<link rel="stylesheet" href="../assets/css/app.css?v=6">
 </head>
 <body>
 <div class="pt-app" data-module="kempen" data-page="kempen" data-title="Kempen PASTI" data-subtitle="Kempen kutipan mengikut PASTI / lokaliti">
@@ -39,21 +39,21 @@
           </select>
           <select class="select">
             <option>Semua Kawasan</option>
-            <option>P025 KUBANG KERIAN</option>
-            <option>P026 BACHOK</option>
+            <option>P021 KOTA BHARU</option>
+            <option>P025 BACHOK</option>
           </select>
           <select class="select">
             <option>Semua DUN</option>
-            <option>N44 KOTA LAMA</option>
-            <option>N45 BUNUT PAYONG</option>
+            <option>N09 KOTA LAMA</option>
+            <option>N10 BUNUT PAYONG</option>
           </select>
           <select class="select">
             <option>Semua PASTI</option>
-            <option>AL-TA'LIM</option>
-            <option>AS-SALAMAH</option>
-            <option>ITQAN</option>
-            <option>NURUL IMAN</option>
-            <option>NURUL HIDAYAH</option>
+            <option>AR-RAIHAN</option>
+            <option>AL-QAYYUM</option>
+            <option>AL-MUNAWWARAH</option>
+            <option>BAITUL ILMI</option>
+            <option>AL-IKHLAS</option>
           </select>
         </div>
         <div class="toolbar">
@@ -84,14 +84,14 @@
         <div class="field full"><span class="label">Nama Kempen <span class="req">*</span></span><input class="input" placeholder="Cth: Tabung Naik Taraf PASTI"></div>
         <div class="field"><span class="label">Untuk (PASTI/Lokaliti) <span class="req">*</span></span>
           <select class="select">
-            <option>Semua PASTI Kawasan Kubang Kerian</option>
-            <option>PASTI AL-TA'LIM</option>
-            <option>PASTI AS-SALAMAH</option>
-            <option>PASTI ITQAN</option>
-            <option>PASTI NURUL IMAN</option>
-            <option>PASTI NURUL HIDAYAH</option>
-            <option>DUN N44 KOTA LAMA</option>
-            <option>DUN N45 BUNUT PAYONG</option>
+            <option>Semua PASTI Kawasan Kota Bharu</option>
+            <option>PASTI AR-RAIHAN</option>
+            <option>PASTI AL-QAYYUM</option>
+            <option>PASTI AL-MUNAWWARAH</option>
+            <option>PASTI BAITUL ILMI</option>
+            <option>PASTI AL-IKHLAS</option>
+            <option>DUN N09 KOTA LAMA</option>
+            <option>DUN N10 BUNUT PAYONG</option>
           </select>
         </div>
         <div class="field"><span class="label">Sasaran (RM) <span class="req">*</span></span><input class="input" type="text" placeholder="0.00"></div>
@@ -104,16 +104,16 @@
   </div>
 </div>
 
-<script src="../assets/js/app.js?v=5"></script>
+<script src="../assets/js/app.js?v=6"></script>
 <script>
 (function(){
   var kempen = [
-    {nama:'Tabung Naik Taraf PASTI AL-TA\'LIM',        lokaliti:"PASTI AL-TA'LIM · P025 Kubang Kerian",   terkumpul:38500,  sasaran:60000,  status:'Aktif', b:'b-green'},
-    {nama:'Bantuan Yuran Anak Yatim N44 Kota Lama', lokaliti:'DUN N44 Kota Lama',              terkumpul:22400,  sasaran:35000,  status:'Aktif', b:'b-green'},
-    {nama:'Wakaf Buku PASTI ITQAN',                   lokaliti:'PASTI ITQAN · P025 Kubang Kerian',        terkumpul:9800,   sasaran:15000,  status:'Aktif', b:'b-green'},
-    {nama:'Tabung Ihsan Ramadan Kawasan Kubang Kerian',  lokaliti:'P025 Kubang Kerian',                    terkumpul:54200,  sasaran:80000,  status:'Aktif', b:'b-green'},
-    {nama:'Tabung Kelengkapan PASTI NURUL IMAN',      lokaliti:'PASTI NURUL IMAN · N45 Bunut Payong',       terkumpul:16000,  sasaran:20000,  status:'Aktif', b:'b-green'},
-    {nama:'Bantuan Banjir PASTI NURUL HIDAYAH',       lokaliti:'PASTI NURUL HIDAYAH · N45 Bunut Payong',    terkumpul:28000,  sasaran:28000,  status:'Tamat', b:'b-slate'}
+    {nama:'Tabung Naik Taraf PASTI AR-RAIHAN',        lokaliti:"PASTI AR-RAIHAN · P021 Kota Bharu",   terkumpul:38500,  sasaran:60000,  status:'Aktif', b:'b-green'},
+    {nama:'Bantuan Yuran Anak Yatim N09 Kota Lama', lokaliti:'DUN N09 Kota Lama',              terkumpul:22400,  sasaran:35000,  status:'Aktif', b:'b-green'},
+    {nama:'Wakaf Buku PASTI AL-MUNAWWARAH',                   lokaliti:'PASTI AL-MUNAWWARAH · P021 Kota Bharu',        terkumpul:9800,   sasaran:15000,  status:'Aktif', b:'b-green'},
+    {nama:'Tabung Ihsan Ramadan Kawasan Kota Bharu',  lokaliti:'P021 Kota Bharu',                    terkumpul:54200,  sasaran:80000,  status:'Aktif', b:'b-green'},
+    {nama:'Tabung Kelengkapan PASTI BAITUL ILMI',      lokaliti:'PASTI BAITUL ILMI · N10 Bunut Payong',       terkumpul:16000,  sasaran:20000,  status:'Aktif', b:'b-green'},
+    {nama:'Bantuan Banjir PASTI AL-IKHLAS',       lokaliti:'PASTI AL-IKHLAS · N10 Bunut Payong',    terkumpul:28000,  sasaran:28000,  status:'Tamat', b:'b-slate'}
   ];
   function rm(n){ return 'RM ' + n.toLocaleString('en-MY'); }
   try { JSON.parse(localStorage.getItem('pt-kempen')||'[]').forEach(function(k){ kempen.unshift(k); }); } catch(e){}
@@ -140,7 +140,7 @@
   document.getElementById('kpSave').onclick=()=>{
     const nm=F('nama'), sa=F('sasaran'); [nm,sa].forEach(i=>i&&i.classList.toggle('pt-err',!i.value.trim()));
     if(!nm.value.trim()||!sa||!+String(sa.value).replace(/[^\d.]/g,'')){ PT.toast('Isi nama kempen dan sasaran (RM)','red'); return; }
-    const u=F('untuk'), k={ nama:nm.value.trim(), lokaliti: u ? u.value : 'P025 Kubang Kerian', terkumpul:0, sasaran:+String(sa.value).replace(/[^\d.]/g,''), status:'Aktif', b:'b-green' };
+    const u=F('untuk'), k={ nama:nm.value.trim(), lokaliti: u ? u.value : 'P021 Kota Bharu', terkumpul:0, sasaran:+String(sa.value).replace(/[^\d.]/g,''), status:'Aktif', b:'b-green' };
     let all=[]; try{ all=JSON.parse(localStorage.getItem('pt-kempen')||'[]'); }catch(e){} all.unshift(k); try{ localStorage.setItem('pt-kempen', JSON.stringify(all)); }catch(e){}
     try{ sessionStorage.setItem('pt-flash','Kempen "'+k.nama+'" dicipta dan boleh menerima derma'); }catch(e){} location.reload();
   };
