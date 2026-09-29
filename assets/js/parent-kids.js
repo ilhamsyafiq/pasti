@@ -13,17 +13,41 @@
       ref:'PST-2024-0188', daftar:'05 Januari 2024', status:'Diterima', hadir:98, tertunggak:0, bil:0, prestasi:'Belum' },
   ];
 
+  // Parent yuran bill table as saved by the engine after a payment ('pt-tbl:parent/yuran.html:0' = tbody innerHTML).
+  // Returns [{ no, anak, bulan, jumlah, belum }] or null when the table was never saved on this device.
+  function bills(){
+    let html = null; try { html = localStorage.getItem('pt-tbl:parent/yuran.html:0'); } catch(e){}
+    if (html == null) return null;
+    const t = document.createElement('table'); t.innerHTML = '<tbody>' + html + '</tbody>';
+    return [...t.tBodies[0].rows].map(r => { const c = r.children, b = r.querySelector('.badge'), nm = c[1] && (c[1].querySelector('.nm') || c[1]);
+      return { no: c[0] ? c[0].textContent.trim() : '', anak: nm ? nm.textContent.trim() : '', bulan: c[2] ? c[2].textContent.trim() : '',
+        jumlah: c[4] ? (+String(c[4].textContent).replace(/[^\d.]/g, '') || 0) : 0, belum: !!b && /\bbelum\b/i.test(b.textContent) }; });
+  }
+  const same = (a, b) => { a = String(a).toLowerCase().trim(); b = String(b).toLowerCase().trim(); return !!a && !!b && (a === b || a.startsWith(b) || b.startsWith(a)); };
+  // Apply the saved bill state to each child's tertunggak / bil (kids with no rows keep their sample values).
+  function applyBills(kids){
+    const B = bills(); if (!B) return kids;
+    kids.forEach(k => { const mine = B.filter(b => same(b.anak, k.pendek) || same(b.anak, k.nama)); if (!mine.length) return;
+      const open = mine.filter(b => b.belum); k.tertunggak = open.reduce((a, b) => a + b.jumlah, 0); k.bil = open.length; });
+    return kids;
+  }
+  // Is the bill of `anak` for a month (e.g. 'Ogos 2026') still unpaid? null = unknown (never saved) → use sample value.
+  function billOpen(anak, bulan){ const B = bills(); if (!B) return null;
+    const r = B.find(b => same(b.anak, anak) && b.bulan.toLowerCase().startsWith(String(bulan).toLowerCase())); return r ? r.belum : null; }
+
   function load(){
     const me = window.DB && DB.user();
     const demo = !me || me.peranan !== 'ibubapa' || me.emel === 'ibubapa@pasti.org';
-    if (demo) return { me: me || { nama:'Puan Nurul Nabihah binti Hafizuddin', emel:'ibubapa@pasti.org' }, demo:true, kids: SAMPLE };
+    if (demo) return { me: me || { nama:'Puan Nurul Nabihah binti Hafizuddin', emel:'ibubapa@pasti.org' }, demo:true, kids: applyBills(SAMPLE.map(k => Object.assign({}, k))) };
+    // statuses kept: Baharu, Dijadual Penilaian (MBK — appointment shown on the card), Diterima; the parent sees their own child's MBK details
     const kids = DB.all('murid').filter(m => (m.emel||'').toLowerCase() === me.emel.toLowerCase() && m.status !== 'Ditolak').map(m => {
       const ok = m.status === 'Diterima';
       return { nama:m.nama, pendek:m.nama.split(' ').filter(w => !/^(bin|binti)$/i.test(w)).slice(0,2).join(' ').replace(/\b\w+/g, w => w[0] + w.slice(1).toLowerCase()),
         mykid:m.mykid, pasti:m.pasti, kelas:m.kelas, guru:'—', ref:m.ref, daftar:m.tarikhDaftar || m.tarikh || '—', status:m.status,
-        hadir:null, tertunggak: ok ? 60 : 0, bil: ok ? 1 : 0, prestasi:'Belum' };
+        hadir:null, tertunggak: ok ? 60 : 0, bil: ok ? 1 : 0, prestasi:'Belum',
+        mbk: m.mbk ? Object.assign({}, m.mbk) : null, penilaian: (m.mbk && m.mbk.penilaian) || null };
     });
-    return { me, demo:false, kids };
+    return { me, demo:false, kids: applyBills(kids) };
   }
 
   const I = {
@@ -45,5 +69,5 @@
   const salam = () => { const h = new Date().getHours(); return h < 12 ? 'Selamat pagi' : h < 15 ? 'Selamat tengah hari' : h < 19 ? 'Selamat petang' : 'Selamat malam'; };
   const title = n => String(n).toLowerCase().replace(/\b\w/g, c => c.toUpperCase()).replace(/\bBinti\b/g,'binti').replace(/\bBin\b/g,'bin');
 
-  window.PK = { load, esc, ini, COLORS, I, hari, salam, title };
+  window.PK = { load, bills, billOpen, esc, ini, COLORS, I, hari, salam, title };
 })();

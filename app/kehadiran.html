@@ -6,7 +6,20 @@
 <title>Kehadiran — Check-in / Check-out · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=8">
+<link rel="stylesheet" href="../assets/css/app.css?v=10">
+<style>
+  .kg-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .kg-times{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px}
+  .kg-times div{background:#f6f8f5;border:1px solid var(--line2);border-radius:12px;padding:10px 13px}
+  .kg-times span{display:block;font-size:12px;color:var(--muted);font-weight:600}
+  .kg-times b{display:block;font-size:20px;color:var(--ink);font-variant-numeric:tabular-nums}
+  .kg-times small{display:block;font-size:11.5px;font-weight:600}
+  .kg-sum{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+  .kg-sum div{border-radius:12px;padding:10px 13px;border:1px solid var(--line2);text-align:center}
+  .kg-sum b{display:block;font-size:22px;font-variant-numeric:tabular-nums}
+  .kg-sum span{font-size:12px;font-weight:600;color:var(--muted)}
+  .kg-sum .h b{color:var(--good)}.kg-sum .l b{color:var(--accent-d)}.kg-sum .t b{color:var(--bad)}
+</style>
 </head>
 <body>
 <div class="pt-app" data-module="operasi" data-page="kehadiran" data-title="Kehadiran — Check-in / Check-out" data-subtitle="Rekod kehadiran murid, guru & petugas">
@@ -28,40 +41,43 @@
       <div class="stat"><div class="top"><span class="label">Peratus Kehadiran</span><div class="ic t">%</div></div><div class="value">92%</div><div class="trend up">▲ Purata hari ini</div></div>
     </div>
 
-    <!-- toolbar: locality filter + tarikh + search -->
-    <div class="toolbar mt-lg">
-      <div class="filter-bar">
-        <select class="select">
-          <option>Semua Negeri</option>
-          <option>KELANTAN</option>
-        </select>
-        <select class="select">
-          <option>Semua Kawasan</option>
-          <option>P021 KOTA BHARU</option>
-          <option>P025 BACHOK</option>
-        </select>
-        <select class="select">
-          <option>Semua DUN</option>
-          <option>N09 KOTA LAMA</option>
-          <option>N10 BUNUT PAYONG</option>
-        </select>
-        <select class="select">
-          <option>Semua PASTI</option>
-          <option>AR-RAIHAN</option>
-          <option>AL-QAYYUM</option>
-          <option>AL-MUNAWWARAH</option>
-          <option>BAITUL ILMI</option>
-          <option>AL-IKHLAS</option>
-        </select>
+    <!-- Kehadiran dari Portal Guru (clock-in guru & kehadiran murid yang direkod guru) -->
+    <div class="card mt-lg" id="kgCard" hidden>
+      <div class="card-head">
+        <div><h3>Kehadiran Guru (Portal Guru)</h3><span class="sub">Direkod sendiri oleh guru melalui Portal Guru · <span id="kgDate">hari ini</span></span></div>
+        <span class="badge b-slate" id="kgBadge">Belum Clock In</span>
       </div>
+      <div class="card-body">
+        <div class="grid g-2">
+          <div>
+            <div class="kg-row">
+              <div class="cell-user"><div class="avatar" id="kgAv">SI</div><div><div class="nm" id="kgName">Ustazah Siti Iffah binti Rizqi</div><div class="ml" id="kgPasti">Guru PASTI · PASTI AR-RAIHAN</div></div></div>
+            </div>
+            <div class="kg-times">
+              <div><span>Clock In</span><b id="kgIn">--:--</b><small id="kgInS" class="muted">Belum direkod</small></div>
+              <div><span>Clock Out</span><b id="kgOut">--:--</b><small id="kgOutS" class="muted">Belum direkod</small></div>
+            </div>
+          </div>
+          <div>
+            <div class="kg-row">
+              <div><b style="font-size:13.5px;color:var(--ink)">Kehadiran Murid Hari Ini</b><div class="muted" style="font-size:12px" id="kgKelas">Kelas Tahun 5 — Al-Farabi</div></div>
+              <span class="badge b-amber" id="kgSaved">Belum direkod</span>
+            </div>
+            <div class="kg-sum">
+              <div class="h"><b id="kgH">—</b><span>Hadir</span></div>
+              <div class="l"><b id="kgL">—</b><span>Lewat</span></div>
+              <div class="t"><b id="kgT">—</b><span>Tidak Hadir</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- tarikh (not a text filter) -->
+    <div class="toolbar mt-lg">
       <div class="input-group">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-        <input type="text" value="24/09/2026" aria-label="Tarikh">
-      </div>
-      <div class="spacer"></div>
-      <div class="input-group">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z"/><path d="M21 21l-4.3-4.3"/></svg>
-        <input type="text" placeholder="Cari nama…">
+        <input type="date" id="kTarikh" data-nofilter aria-label="Tarikh">
       </div>
     </div>
 
@@ -76,6 +92,19 @@
       <div class="card">
         <div class="card-head"><div><h3>Kehadiran Murid</h3><span class="sub">Rekod check-in / check-out murid</span></div></div>
         <div class="card-body">
+          <div class="toolbar">
+            <div class="filter-bar">
+              <select class="select"><option>Semua Negeri</option><option>KELANTAN</option></select>
+              <select class="select"><option>Semua Kawasan</option><option>P021 KOTA BHARU</option><option>P025 BACHOK</option></select>
+              <select class="select"><option>Semua DUN</option><option>N09 KOTA LAMA</option><option>N10 BUNUT PAYONG</option></select>
+              <select class="select"><option>Semua PASTI</option><option>AR-RAIHAN</option><option>AL-QAYYUM</option><option>AL-MUNAWWARAH</option><option>BAITUL ILMI</option><option>AL-IKHLAS</option></select>
+            </div>
+            <div class="spacer"></div>
+            <div class="input-group">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z"/><path d="M21 21l-4.3-4.3"/></svg>
+              <input type="text" placeholder="Cari nama murid…">
+            </div>
+          </div>
           <div class="table-wrap">
             <table class="pt">
               <thead><tr>
@@ -93,6 +122,19 @@
       <div class="card">
         <div class="card-head"><div><h3>Kehadiran Guru &amp; Petugas</h3><span class="sub">Rekod check-in / check-out guru &amp; petugas</span></div></div>
         <div class="card-body">
+          <div class="toolbar">
+            <div class="filter-bar">
+              <select class="select"><option>Semua Negeri</option><option>KELANTAN</option></select>
+              <select class="select"><option>Semua Kawasan</option><option>P021 KOTA BHARU</option><option>P025 BACHOK</option></select>
+              <select class="select"><option>Semua DUN</option><option>N09 KOTA LAMA</option><option>N10 BUNUT PAYONG</option></select>
+              <select class="select"><option>Semua PASTI</option><option>AR-RAIHAN</option><option>AL-QAYYUM</option><option>AL-MUNAWWARAH</option><option>BAITUL ILMI</option><option>AL-IKHLAS</option></select>
+            </div>
+            <div class="spacer"></div>
+            <div class="input-group">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z"/><path d="M21 21l-4.3-4.3"/></svg>
+              <input type="text" placeholder="Cari nama guru / petugas…">
+            </div>
+          </div>
           <div class="table-wrap">
             <table class="pt">
               <thead><tr>
@@ -108,54 +150,113 @@
   </main>
 </div>
 
-<script src="../assets/js/app.js?v=8"></script>
+<script src="../assets/js/app.js?v=10"></script>
+<script src="../assets/js/guru-kelas.js?v=2"></script>
 <script>
 (function(){
   var badge = {Hadir:'b-green', Lewat:'b-amber', 'Tidak Hadir':'b-red'};
   function initials(n){ return n.replace(/^(Ustaz(?:ah)?|Cikgu)\s+/i,'').split(' ').slice(0,2).map(function(w){return w[0];}).join('').toUpperCase(); }
-  function actions(){
-    return '<div class="flex gap">'+
-      '<button class="btn btn-soft btn-sm" data-toast="Waktu masuk direkod">Check-in</button>'+
-      '<button class="btn btn-ghost btn-sm" data-toast="Waktu keluar direkod">Check-out</button>'+
-      '</div>';
+  // DUN · Kawasan of a PASTI (from the DB) so the locality filters have something to match
+  function where(p){
+    var rec = window.DB && DB.find ? DB.find('pasti', function(x){ return String(x.nama).toUpperCase() === p.toUpperCase(); }) : null;
+    return rec ? '<div class="muted" style="font-size:11.5px">' + rec.dun + ' · ' + rec.kawasan + '</div>' : '';
   }
-  function rows(data, unitLabel){
+  function rows(data){
     return data.map(function(r,i){
       var b = badge[r.status] || 'b-slate';
       return '<tr>'+
         '<td>'+(i+1)+'</td>'+
         '<td><div class="cell-user"><div class="avatar">'+initials(r.nm)+'</div><div><div class="nm">'+r.nm+'</div><div class="ml">'+r.ml+'</div></div></div></td>'+
-        '<td>'+r.pasti+'</td>'+
+        '<td>'+r.pasti+where(r.pasti)+'</td>'+
         '<td>'+r.unit+'</td>'+
         '<td>'+r.masuk+'</td>'+
         '<td>'+r.keluar+'</td>'+
         '<td><span class="badge '+b+'">'+r.status+'</span></td>'+
-        '<td>'+actions()+'</td>'+
+        '<td></td>'+
       '</tr>';
     }).join('');
   }
 
   var murid = [
-    {nm:'Ahmad Umair Bin Adib', ml:'MyKid 220314-03-8318', pasti:"AR-RAIHAN", unit:'Kelas Iqra 5A', masuk:'07:52', keluar:'12:30', status:'Hadir'},
-    {nm:'Nur Solehah Binti Zulfaqar', ml:'MyKid 210628-03-2657', pasti:'AL-QAYYUM', unit:'Kelas Iqra 4B', masuk:'07:58', keluar:'12:30', status:'Hadir'},
-    {nm:'Muhammad Iqmal Bin Nasrul', ml:'MyKid 220102-03-1505', pasti:'AL-MUNAWWARAH', unit:'Kelas Iqra 5B', masuk:'08:21', keluar:'12:30', status:'Lewat'},
-    {nm:'Siti Iffah Binti Asyraf', ml:'MyKid 210915-03-0395', pasti:'BAITUL ILMI', unit:'Kelas Iqra 6A', masuk:'07:49', keluar:'12:30', status:'Hadir'},
-    {nm:'Radhi Fahmi Bin Amsyar', ml:'MyKid 220421-03-2103', pasti:'AL-IKHLAS', unit:'Kelas Iqra 3A', masuk:'—', keluar:'—', status:'Tidak Hadir'},
-    {nm:'Afiqah Suraya Binti Aqil', ml:'MyKid 211130-03-5029', pasti:"AR-RAIHAN", unit:'Kelas Iqra 4A', masuk:'07:55', keluar:'12:30', status:'Hadir'},
-    {nm:'Amani Izzuddin Bin Aizat', ml:'MyKid 220208-03-0091', pasti:'AL-QAYYUM', unit:'Kelas Iqra 5A', masuk:'08:17', keluar:'12:30', status:'Lewat'},
-    {nm:'Nur Raihana Binti Hanif', ml:'MyKid 210719-03-1445', pasti:'AL-MUNAWWARAH', unit:'Kelas Iqra 6B', masuk:'07:51', keluar:'12:30', status:'Hadir'}
+    {nm:'Ahmad Umair Bin Adib', ml:'MyKid 220314-03-8318', pasti:'PASTI AR-RAIHAN', unit:'Kelas Iqra 5A', masuk:'07:52', keluar:'12:30', status:'Hadir'},
+    {nm:'Nur Solehah Binti Zulfaqar', ml:'MyKid 210628-03-2657', pasti:'PASTI AL-QAYYUM', unit:'Kelas Iqra 4B', masuk:'07:58', keluar:'12:30', status:'Hadir'},
+    {nm:'Muhammad Iqmal Bin Nasrul', ml:'MyKid 220102-03-1505', pasti:'PASTI AL-MUNAWWARAH', unit:'Kelas Iqra 5B', masuk:'08:21', keluar:'12:30', status:'Lewat'},
+    {nm:'Siti Iffah Binti Asyraf', ml:'MyKid 210915-03-0395', pasti:'PASTI BAITUL ILMI', unit:'Kelas Iqra 6A', masuk:'07:49', keluar:'12:30', status:'Hadir'},
+    {nm:'Radhi Fahmi Bin Amsyar', ml:'MyKid 220421-03-2103', pasti:'PASTI AL-IKHLAS', unit:'Kelas Iqra 3A', masuk:'—', keluar:'—', status:'Tidak Hadir'},
+    {nm:'Afiqah Suraya Binti Aqil', ml:'MyKid 211130-03-5029', pasti:'PASTI AR-RAIHAN', unit:'Kelas Iqra 4A', masuk:'07:55', keluar:'12:30', status:'Hadir'},
+    {nm:'Amani Izzuddin Bin Aizat', ml:'MyKid 220208-03-0091', pasti:'PASTI AL-QAYYUM', unit:'Kelas Iqra 5A', masuk:'08:17', keluar:'12:30', status:'Lewat'},
+    {nm:'Nur Raihana Binti Hanif', ml:'MyKid 210719-03-1445', pasti:'PASTI AL-MUNAWWARAH', unit:'Kelas Iqra 6B', masuk:'07:51', keluar:'12:30', status:'Hadir'}
   ];
   var guru = [
-    {nm:'Ustazah Norazlina Saidatul', ml:'012-7512852', pasti:"AR-RAIHAN", unit:'Guru Besar', masuk:'07:30', keluar:'13:00', status:'Hadir'},
-    {nm:'Ustaz Qayyum Kamarul', ml:'013-6366557', pasti:'AL-QAYYUM', unit:'Guru Iqra', masuk:'07:41', keluar:'13:00', status:'Hadir'},
-    {nm:'Ustazah Mardhiah Zawani', ml:'019-1026434', pasti:'AL-MUNAWWARAH', unit:'Guru Iqra', masuk:'08:19', keluar:'13:00', status:'Lewat'},
-    {nm:'Ustaz Mukhriz Adib', ml:'011-42556403', pasti:'BAITUL ILMI', unit:'Guru Iqra', masuk:'07:38', keluar:'13:00', status:'Hadir'},
-    {nm:'Cikgu Hisyam Zikri', ml:'017-7363602', pasti:'AL-IKHLAS', unit:'Petugas Pentadbiran', masuk:'—', keluar:'—', status:'Tidak Hadir'},
-    {nm:'Cikgu Yazid Nuaim', ml:'014-8122554', pasti:'AL-IKHLAS', unit:'Petugas Keselamatan', masuk:'07:22', keluar:'13:00', status:'Hadir'}
+    {nm:'Ustazah Norazlina Saidatul', ml:'012-7512852', pasti:'PASTI AR-RAIHAN', unit:'Guru Besar', masuk:'07:30', keluar:'13:00', status:'Hadir'},
+    {nm:'Ustaz Qayyum Kamarul', ml:'013-6366557', pasti:'PASTI AL-QAYYUM', unit:'Guru Iqra', masuk:'07:41', keluar:'13:00', status:'Hadir'},
+    {nm:'Ustazah Mardhiah Zawani', ml:'019-1026434', pasti:'PASTI AL-MUNAWWARAH', unit:'Guru Iqra', masuk:'08:19', keluar:'13:00', status:'Lewat'},
+    {nm:'Ustaz Mukhriz Adib', ml:'011-42556403', pasti:'PASTI BAITUL ILMI', unit:'Guru Iqra', masuk:'07:38', keluar:'13:00', status:'Hadir'},
+    {nm:'Cikgu Hisyam Zikri', ml:'017-7363602', pasti:'PASTI AL-IKHLAS', unit:'Petugas Pentadbiran', masuk:'—', keluar:'—', status:'Tidak Hadir'},
+    {nm:'Cikgu Yazid Nuaim', ml:'014-8122554', pasti:'PASTI AL-IKHLAS', unit:'Petugas Keselamatan', masuk:'07:22', keluar:'13:00', status:'Hadir'}
   ];
 
   document.getElementById('muridRows').innerHTML = rows(murid);
   document.getElementById('guruRows').innerHTML = rows(guru);
+
+  var pad = function(n){ return String(n).padStart(2,'0'); };
+  var dkey = function(d){ return d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate()); };   // same key as guru/clock.html & guru/murid.html
+  var hm = function(t){ var d = new Date(t); return pad(d.getHours()) + ':' + pad(d.getMinutes()); };
+  var mins = function(t){ var d = new Date(t); return d.getHours()*60 + d.getMinutes(); };
+  var load = function(k){ try { var v = JSON.parse(localStorage.getItem(k) || 'null'); return v && typeof v === 'object' ? v : {}; } catch(e){ return {}; } };
+
+  // Portal Guru card: today's clock-in/out of the demo teacher + today's pupil attendance saved by her.
+  function drawGuru(){
+    var card = document.getElementById('kgCard'); if (!card) return;
+    var K = window.KELAS || {}, pasti = 'PASTI AR-RAIHAN';
+    if (window.PT && PT.inScope && !PT.inScope(pasti)) { card.hidden = true; return; }
+    card.hidden = false;
+    var u = window.DB && DB.find ? DB.find('users', function(x){ return x.emel === 'guru@pasti.org'; }) : null;
+    var nama = u ? u.nama : 'Ustazah Siti Iffah binti Rizqi';
+    document.getElementById('kgName').textContent = nama;
+    document.getElementById('kgAv').textContent = initials(nama);
+    document.getElementById('kgPasti').textContent = 'Guru PASTI · ' + pasti;
+    var now = new Date(), key = dkey(now);
+    document.getElementById('kgDate').textContent = pad(now.getDate()) + '/' + pad(now.getMonth()+1) + '/' + now.getFullYear();
+
+    var c = load('pt-clock-guru')[key] || {}, LATE = 8*60, END = 13*60;
+    var b = document.getElementById('kgBadge');
+    if (!c.in) { b.className = 'badge b-amber'; b.textContent = 'Belum Clock In'; }
+    else if (!c.out) { b.className = 'badge ' + (mins(c.in) > LATE ? 'b-amber' : 'b-green'); b.textContent = mins(c.in) > LATE ? 'Lewat · Sedang Bertugas' : 'Sedang Bertugas'; }
+    else { b.className = 'badge b-slate'; b.textContent = 'Selesai'; }
+    document.getElementById('kgIn').textContent = c.in ? hm(c.in) : '--:--';
+    var inS = document.getElementById('kgInS');
+    inS.textContent = c.in ? (mins(c.in) > LATE ? 'Lewat ' + (mins(c.in) - LATE) + ' minit' : 'Menepati masa') : 'Belum direkod';
+    inS.style.color = c.in ? (mins(c.in) > LATE ? 'var(--accent-d)' : 'var(--brand-d)') : '';
+    document.getElementById('kgOut').textContent = c.out ? hm(c.out) : '--:--';
+    var outS = document.getElementById('kgOutS');
+    outS.textContent = c.out ? (mins(c.out) < END ? 'Awal ' + (END - mins(c.out)) + ' minit' : 'Tamat syif') : 'Belum direkod';
+    outS.style.color = c.out ? (mins(c.out) < END ? 'var(--accent-d)' : 'var(--brand-d)') : '';
+
+    if (K.nama) document.getElementById('kgKelas').textContent = 'Kelas ' + K.nama + (K.murid ? ' · ' + K.murid.length + ' murid' : '');
+    var r = load('pt-kehadiran')[key], rs = r && Array.isArray(r.rows) ? r.rows : null;
+    var n = function(s){ return rs ? rs.filter(function(x){ return x && x.s === s; }).length : '—'; };
+    document.getElementById('kgH').textContent = n('H');
+    document.getElementById('kgL').textContent = n('L');
+    document.getElementById('kgT').textContent = n('T');
+    var sv = document.getElementById('kgSaved');
+    sv.className = 'badge ' + (rs && r.saved ? 'b-green' : 'b-amber');
+    sv.textContent = !rs ? 'Belum direkod' : r.saved ? 'Sudah disimpan guru' : 'Draf (belum disimpan)';
+  }
+
+  // After the engine (restore → scope): Check-in / Check-out only for Cawangan; other tiers view.
+  document.addEventListener('DOMContentLoaded', function(){ setTimeout(function(){
+    var tier = (window.PT && PT.tier) || 'kawasan';
+    var ACT = '<div class="flex gap"><button class="btn btn-soft btn-sm">Check-in</button><button class="btn btn-ghost btn-sm">Check-out</button></div>';
+    document.querySelectorAll('#muridRows tr, #guruRows tr').forEach(function(tr){
+      var td = tr.lastElementChild; if (!td) return;
+      td.innerHTML = tier === 'cawangan' ? ACT : '<span class="muted">—</span>';
+    });
+    var dt = document.getElementById('kTarikh'), d = new Date();
+    if (dt && !dt.value) dt.value = dkey(d);
+    drawGuru();
+  }, 0); });
+  window.addEventListener('storage', function(e){ if (!e.key || e.key === 'pt-clock-guru' || e.key === 'pt-kehadiran') drawGuru(); });
 })();
 </script>
 </body>

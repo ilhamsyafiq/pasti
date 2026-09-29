@@ -6,7 +6,7 @@
 <title>Petugas PASTI · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=8">
+<link rel="stylesheet" href="../assets/css/app.css?v=10">
 </head>
 <body>
 <div class="pt-app" data-module="warga" data-page="warga-petugas" data-title="Petugas PASTI" data-subtitle="Petugas kawasan & cawangan">
@@ -30,6 +30,7 @@
       <div class="card">
         <div class="card-body">
           <div class="toolbar">
+            <span class="muted" data-count>Jumlah Bilangan = 6</span>
             <select class="select"><option>Status</option><option>Aktif</option><option>Tidak Aktif</option></select>
             <select class="select"><option>Bidang Tugas</option><option>Pentadbiran</option><option>Kewangan</option><option>Kebajikan</option><option>Dakwah</option><option>Teknikal / IT</option></select>
             <div class="input-group"><input type="text" placeholder="Cari nama atau No KP…"></div>
@@ -51,6 +52,7 @@
       <div class="card">
         <div class="card-body">
           <div class="toolbar">
+            <span class="muted" data-count>Jumlah Bilangan = 6</span>
             <select class="select"><option>Status</option><option>Aktif</option><option>Tidak Aktif</option></select>
             <select class="select"><option>Bidang Tugas</option><option>Pentadbiran</option><option>Kewangan</option><option>Kebajikan</option><option>Dakwah</option><option>Teknikal / IT</option></select>
             <div class="input-group"><input type="text" placeholder="Cari nama atau No KP…"></div>
@@ -82,7 +84,7 @@
           <select class="select"><option>Pentadbiran</option><option>Kewangan</option><option>Kebajikan</option><option>Dakwah</option><option>Teknikal / IT</option></select>
         </div>
         <div class="field"><span class="label">Cawangan</span>
-          <select class="select"><option>AR-RAIHAN</option><option>AL-QAYYUM</option><option>AL-MUNAWWARAH</option><option>BAITUL ILMI</option><option>AL-IKHLAS</option></select>
+          <select class="select" id="petugasPasti"><option>PASTI AR-RAIHAN</option><option>PASTI AL-QAYYUM</option><option>PASTI AL-MUNAWWARAH</option><option>PASTI BAITUL ILMI</option><option>PASTI AL-IKHLAS</option></select>
         </div>
         <div class="field"><span class="label">Telefon</span><input class="input" placeholder="013-xxxxxxx"></div>
         <div class="field"><span class="label">Status</span>
@@ -94,7 +96,7 @@
   </div>
 </div>
 
-<script src="../assets/js/app.js?v=8"></script>
+<script src="../assets/js/app.js?v=10"></script>
 <script>
   const kawasan = [
     ['USTAZ ZAKWAN ZULFAQAR BIN SYAZWAN','800718033097','Pentadbiran','AR-RAIHAN','Aktif'],
@@ -118,16 +120,29 @@
     document.getElementById(id).innerHTML = rows.map((r,i)=>`
       <tr>
         <td class="num">${i+1}</td>
-        <td><div class="cell-user"><span class="avatar">${initials(r[0])}</span><div><div class="nm">${r[0]}</div><div class="ml">${r[3]}</div></div></div></td>
+        <td><div class="cell-user"><span class="avatar">${initials(r[0])}</span><div><div class="nm">${r[0]}</div><div class="ml">PASTI ${r[3]}</div></div></div></td>
         <td class="num">${r[1]}</td>
         <td>${r[2]}</td>
-        <td>${r[3]}</td>
+        <td>PASTI ${r[3]}</td>
         <td>${badge(r[4])}</td>
         <td class="right"><button class="btn btn-soft btn-sm">Edit</button></td>
       </tr>`).join('');
   }
   render('petugasKawasanRows', kawasan);
   render('petugasCawanganRows', cawangan);
+
+  // After the engine has scoped the rows: counts show what this user can see; PASTI choices in the form follow the scope.
+  document.addEventListener('DOMContentLoaded', () => setTimeout(() => {
+    const count = () => document.querySelectorAll('[data-panel]').forEach(p => {
+      const el = p.querySelector('[data-count]'), tb = p.querySelector('table.pt'); if (!el || !tb) return;
+      el.textContent = 'Jumlah Bilangan = ' + [...tb.tBodies[0].rows].filter(r => r.style.display !== 'none').length;
+    });
+    count();
+    ['input','change'].forEach(ev => document.addEventListener(ev, () => setTimeout(count, 0)));
+    document.querySelectorAll('table.pt tbody').forEach(tb => new MutationObserver(() => setTimeout(count, 0)).observe(tb, { childList:true }));
+    const sel = document.getElementById('petugasPasti'), mine = (window.DB && DB.pastiInScope) ? DB.pastiInScope() : null;
+    if (sel && mine && mine.length) sel.innerHTML = mine.map(p => `<option>${String(p.nama).replace(/[<>&"]/g,'')}</option>`).join('');
+  }, 0));
 </script>
 </body>
 </html>

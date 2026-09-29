@@ -6,7 +6,7 @@
 <title>Tetapan · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=8">
+<link rel="stylesheet" href="../assets/css/app.css?v=10">
 </head>
 <body>
 <div class="pt-app" data-module="tetapan" data-page="tetapan" data-title="Tetapan" data-subtitle="Profil & pentadbir">
@@ -153,69 +153,43 @@
   .chainx .a{color:var(--faint);font-weight:700}
 </style>
 
-<script src="../assets/js/app.js?v=8"></script>
+<script src="../assets/js/app.js?v=10"></script>
 <script>
 (function(){
   const tier = PT.tier, DB = window.DB, RL = DB.ROLE_LABEL;
-  const ME = DB.user();                                   // the signed-in account decides its own scope
-  const MY = (ME && ME.peranan === tier) ? ME.skop : { pusat:'JABATAN PASTI MALAYSIA', negeri:'KELANTAN', kawasan:'P021 KOTA BHARU', dun:'N09 KOTA LAMA', cawangan:"PASTI AR-RAIHAN" }[tier];
+  const ME = (PT.user !== undefined ? PT.user : DB.user());      // the signed-in account decides its own scope
+  const MY = (PT.scope && PT.scope.skop) || (ME && ME.skop) || '';
   const $ = id => document.getElementById(id);
   const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
-  // ---- hierarchy: every tier can create every account BELOW it (not only the next one)
+  // ---- hierarchy: every tier creates the admin accounts BELOW it; Guru & Pembantu Guru are created ONLY by Cawangan
   const LEVELS = ['pusat','negeri','kawasan','dun','cawangan','guru'];        // guru = guru & pembantu guru
   const lv = r => r === 'pembantu' || r === 'ibubapa' ? 5 : LEVELS.indexOf(r);
   const myLv = lv(tier);
-  const CREATABLE = LEVELS.slice(myLv + 1);                                  // e.g. pusat → negeri, kawasan, dun, cawangan, guru
+  const CREATABLE = LEVELS.slice(myLv + 1).filter(k => k !== 'guru' || tier === 'cawangan');   // pusat → negeri…cawangan; cawangan → guru
+  const CAN_AS = tier === 'pusat';                                          // "Log masuk sebagai" — Pusat only
 
-  // ---- geography (mockup): negeri → kawasan → dun. PASTI rows carry their own negeri/kawasan/dun.
-  const NEGERI = ['JOHOR','KEDAH','KELANTAN','MELAKA','NEGERI SEMBILAN','PAHANG','PERAK','PERLIS','PULAU PINANG','SABAH','SARAWAK','SELANGOR','TERENGGANU','WP KUALA LUMPUR & PUTRAJAYA'];
-  // Kelantan: 14 Parlimen / 45 DUN. Other states: a few sample kawasan only.
-  const GEO = {
-    KELANTAN: {
-      'P019 TUMPAT':['N01 PENGKALAN KUBOR','N02 KELABORAN','N03 PASIR PEKAN','N04 WAKAF BHARU'],
-      'P020 PENGKALAN CHEPA':['N05 KIJANG','N06 CHEMPAKA','N07 PANCHOR'],
-      'P021 KOTA BHARU':['N08 TANJONG MAS','N09 KOTA LAMA','N10 BUNUT PAYONG'],
-      'P022 PASIR MAS':['N11 TENDONG','N12 PENGKALAN PASIR','N13 MERANTI'],
-      'P023 RANTAU PANJANG':['N14 CHETOK','N15 GUAL PERIOK','N16 APAM PUTRA'],
-      'P024 KUBANG KERIAN':['N17 SALOR','N18 PASIR TUMBOH','N19 DEMIT'],
-      'P025 BACHOK':['N20 TAWANG','N21 PANTAI IRAMA','N22 JELAWAT'],
-      'P026 KETEREH':['N23 MELOR','N24 KADOK','N25 KOK LANAS'],
-      'P027 TANAH MERAH':['N26 BUKIT PANAU','N27 GUAL IPOH','N28 KEMAHANG'],
-      'P028 PASIR PUTEH':['N29 SELISING','N30 LIMBONGAN','N31 SEMERAK','N32 GAAL'],
-      'P029 MACHANG':['N33 PULAI CHONDONG','N34 TEMANGAN','N35 KEMUNING'],
-      'P030 JELI':['N36 BUKIT BUNGA','N37 AIR LANAS','N38 KUALA BALAH'],
-      'P031 KUALA KRAI':['N39 MENGKEBANG','N40 GUCHIL','N41 MANEK URAI','N42 DABONG'],
-      'P032 GUA MUSANG':['N43 NENGGIRI','N44 PALOH','N45 GALAS'],
-    },
-    TERENGGANU: { 'P036 KUALA TERENGGANU':['N15 BANDAR','N16 LADANG'], 'P038 HULU TERENGGANU':['N19 TELEMONG','N20 MANIR'] },
-    KEDAH: { 'P009 ALOR SETAR':['N13 DERGA','N14 BAKAR BATA'] },
-  };
+  // ---- geography & account chain come from the engine:
+  //      DB.GEO (negeri → kawasan → dun), DB.NEGERI, DB.chainOf(user) → { negeri, kawasan, dun, pasti }
+  const GEO = DB.GEO || {}, NEGERI = DB.NEGERI || Object.keys(GEO);
   const kawOf = n => Object.keys(GEO[n] || {});
   const dunOf = (n, k) => (GEO[n] && GEO[n][k]) || [];
-  const findKaw = k => { for (const n in GEO) if (GEO[n][k]) return n; return null; };
-  const findDun = d => { for (const n in GEO) for (const k in GEO[n]) if (GEO[n][k].includes(d)) return { negeri:n, kawasan:k }; return null; };
   const pastiOf = d => DB.all('pasti').filter(p => p.status === 'Lulus' && p.kod && p.dun === d).map(p => p.nama);
-
-  // where an account sits: { negeri, kawasan, dun, pasti }
-  function chainOf(u){
-    const c = { negeri:u.negeri || null, kawasan:u.kawasan || null, dun:u.dun || null, pasti:null };
-    if (u.peranan === 'negeri') c.negeri = u.skop;
-    if (u.peranan === 'kawasan') { c.kawasan = u.skop; c.negeri = c.negeri || findKaw(u.skop); }
-    if (u.peranan === 'dun') { c.dun = u.skop; const f = findDun(u.skop); if (f) { c.kawasan = c.kawasan || f.kawasan; c.negeri = c.negeri || f.negeri; } }
-    if (lv(u.peranan) >= 4) { c.pasti = u.skop; const p = DB.find('pasti', x => x.nama === u.skop); if (p) { c.dun = p.dun; c.kawasan = p.kawasan; c.negeri = p.negeri; } }
-    return c;
-  }
+  const chainOf = u => DB.chainOf(u);
   const KEY = { negeri:'negeri', kawasan:'kawasan', dun:'dun', cawangan:'pasti' };
-  const inScope = u => lv(u.peranan) > myLv && (tier === 'pusat' || chainOf(u)[KEY[tier]] === MY);
-  const myChain = chainOf({ peranan:tier, skop:MY });                        // fixed parts of the location picker
+  const same = (a, b) => String(a || '').toUpperCase() === String(b || '').toUpperCase();
+  const isMe = u => !!ME && u.emel.toLowerCase() === ME.emel.toLowerCase();
+  const inScope = u => lv(u.peranan) > myLv && !isMe(u) && (tier === 'pusat' || same(chainOf(u)[KEY[tier]], MY));
+  const myChain = ME ? chainOf(ME) : chainOf({ peranan:tier, skop:MY });     // fixed parts of the location picker
 
   // ---- who-creates-who strip + rule
-  $('uChain').innerHTML = LEVELS.map((k,i) => `${i?'<span class="a">→</span>':''}<span class="c ${k===tier?'me':i>myLv?'kid':''}">${k==='guru'?'Guru & Pembantu':RL[k].replace('Pentadbir ','')}${k===tier?' (anda)':''}</span>`).join('')
+  const lvlName = k => k === 'guru' ? 'Guru & Pembantu Guru' : RL[k].replace('Pentadbir ','');
+  $('uChain').innerHTML = LEVELS.map((k,i) => `${i?'<span class="a">→</span>':''}<span class="c ${k===tier?'me':CREATABLE.includes(k)?'kid':''}">${k==='guru'?'Guru & Pembantu (oleh Cawangan)':RL[k].replace('Pentadbir ','')}${k===tier?' (anda)':''}</span>`).join('')
     + '<span class="a">→</span><span class="c">Ibu Bapa (automatik bila murid diterima)</span>';
-  $('uRule').innerHTML = CREATABLE.length
-    ? `Sebagai <b>${RL[tier]}</b>, anda boleh cipta <b>semua akaun di bawah anda</b> — ${CREATABLE.map(k => k === 'guru' ? 'Guru & Pembantu Guru' : RL[k].replace('Pentadbir ','')).join(', ')} — dalam skop <b>${esc(MY)}</b>.`
-    : 'Peringkat anda tidak mencipta akaun lain.';
+  $('uRule').innerHTML = (CREATABLE.length
+    ? `Sebagai <b>${RL[tier]}</b>, anda boleh cipta akaun ${CREATABLE.map(lvlName).join(', ')} dalam skop <b>${esc(MY)}</b>.`
+    : 'Peringkat anda tidak mencipta akaun lain.')
+    + (tier === 'cawangan' ? '' : ' Akaun <b>Guru &amp; Pembantu Guru</b> hanya dicipta oleh Pentadbir Cawangan.');
   $('uNew').textContent = '+ Cipta Akaun';
   $('uNew').style.display = CREATABLE.length ? '' : 'none';
 
@@ -241,10 +215,11 @@
       <td class="num">${i+1}</td><td><b style="color:var(--ink)">${esc(u.nama)}</b></td><td class="num">${esc(u.emel)}</td><td>${roleBadge(u.peranan)}</td>
       <td>${where(u)}</td><td>${esc(u.oleh)}</td><td class="num">${u.tarikh}</td>
       <td><span class="badge ${u.status==='Aktif'?'b-green':'b-red'}">${u.status}</span></td>
-      <td class="flex gap wrap" data-own>${u.peranan === 'ibubapa' ? '<span class="muted" style="font-size:12px">Dicipta automatik</span>' :
+      <td class="flex gap wrap" data-own><button class="btn btn-soft btn-sm" data-u="${esc(u.emel)}" data-do="edit">Edit</button>${u.peranan === 'ibubapa' ? '<span class="muted" style="font-size:12px;align-self:center">Dicipta automatik</span>' :
         `<button class="btn btn-soft btn-sm" data-u="${esc(u.emel)}" data-do="toggle">${u.status==='Aktif'?'Nyahaktif':'Aktifkan'}</button>
          <button class="btn btn-ghost btn-sm" data-u="${esc(u.emel)}" data-do="reset">Set Semula Kata Laluan</button>
-         <button class="btn btn-ghost btn-sm" data-u="${esc(u.emel)}" data-do="as">Log masuk sebagai</button>`}</td></tr>`).join('')
+         ${CAN_AS ? `<button class="btn btn-ghost btn-sm" data-u="${esc(u.emel)}" data-do="as">Log masuk sebagai</button>` : ''}
+         ${isMe(u) ? '' : `<button class="btn btn-red btn-sm" data-u="${esc(u.emel)}" data-do="del">Padam</button>`}`}</td></tr>`).join('')
       || `<tr><td colspan="9" class="empty">Tiada akaun dalam skop anda.</td></tr>`;
   }
 
@@ -316,10 +291,29 @@
     $('uModalB').innerHTML = `<div class="notice"><div class="tx"><b>${esc(nama)} — ${RL[c.role]}</b><span>Skop: ${where(u)}</span></div></div>
       <div class="kv mt" style="grid-template-columns:150px 1fr"><dt>ID log masuk</dt><dd>${esc(emel)}</dd><dt>Kata laluan sementara</dt><dd>${pw}</dd><dt>Log masuk di</dt><dd>Halaman log masuk ePASTI</dd></div>
       <div class="muted mt" style="font-size:12.5px">Butiran ini juga dihantar ke emel pengguna. Rekod penciptaan dicatat dalam Log Akses.</div>`;
-    $('uModalF').innerHTML = `<button class="btn btn-ghost" data-close>Tutup</button><button class="btn btn-primary" data-u="${esc(emel)}" data-do="as">Log masuk sebagai akaun ini</button>`;
+    $('uModalF').innerHTML = '<button class="btn btn-ghost" data-close>Tutup</button>' + (CAN_AS ? `<button class="btn btn-primary" data-u="${esc(emel)}" data-do="as">Log masuk sebagai akaun ini</button>` : '');
     draw(); PT.toast('Akaun ' + RL[c.role] + ' dicipta');
   }
+  // Edit (nama, telefon) & Padam — reuse the account modal
+  function openEdit(u){
+    $('uModalT').textContent = 'Edit Akaun';
+    $('uModalB').innerHTML = `<div class="form-grid">
+      <div class="field full"><span class="label">Nama Penuh <span class="req">*</span></span><input class="input" id="eNama" value="${esc(u.nama)}"></div>
+      <div class="field"><span class="label">No. Telefon</span><input class="input" id="eTel" value="${esc(u.tel || '')}" placeholder="01x-xxxxxxx"></div>
+      <div class="field"><span class="label">Emel (ID log masuk)</span><input class="input" value="${esc(u.emel)}" readonly></div>
+      <div class="field full"><span class="hint">${RL[u.peranan]} · ${where(u)}</span></div>
+    </div>`;
+    $('uModalF').innerHTML = `<button class="btn btn-ghost" data-close>Batal</button><button class="btn btn-primary" data-u="${esc(u.emel)}" data-do="save">Simpan</button>`;
+    $('uModal').classList.add('open');
+  }
+  function openDel(u){
+    $('uModalT').textContent = 'Padam akaun?';
+    $('uModalB').innerHTML = `<p>Akaun <b>${esc(u.nama)}</b> (${esc(u.emel)}) — ${RL[u.peranan]} akan dipadam dan tidak lagi boleh log masuk.</p>`;
+    $('uModalF').innerHTML = `<button class="btn btn-ghost" data-close>Batal</button><button class="btn btn-red" data-u="${esc(u.emel)}" data-do="del-ok">Padam</button>`;
+    $('uModal').classList.add('open');
+  }
   function loginAs(emel){
+    if (!CAN_AS) return;
     const u = DB.find('users', x => x.emel === emel); if (!u) return;
     localStorage.setItem('pt-user', u.emel);
     if (u.peranan === 'guru' || u.peranan === 'pembantu') { location.href = '../guru/dashboard.html'; return; }
@@ -339,6 +333,12 @@
     if (act === 'toggle') { u.status = u.status === 'Aktif' ? 'Tidak Aktif' : 'Aktif'; DB.save(); draw(); PT.toast('Akaun ' + u.nama + ' kini ' + u.status, u.status === 'Aktif' ? 'green' : 'red'); }
     if (act === 'reset') PT.toast('Kata laluan sementara baharu dihantar ke ' + u.emel);
     if (act === 'as') loginAs(emel);
+    if (act === 'edit') openEdit(u);
+    if (act === 'save') { const n = $('eNama').value.trim(); $('eNama').classList.toggle('pt-err', !n); if (!n) { PT.toast('Isi nama penuh', 'red'); return; }
+      u.nama = n; u.tel = $('eTel').value.trim(); DB.save(); $('uModal').classList.remove('open'); draw(); PT.toast('Akaun ' + u.nama + ' dikemas kini'); }
+    const canDel = u.peranan !== 'ibubapa' && !isMe(u);
+    if (act === 'del' && canDel) openDel(u);
+    if (act === 'del-ok' && canDel) { const i = DB.all('users').indexOf(u); if (i >= 0) DB.data.users.splice(i, 1); DB.save(); $('uModal').classList.remove('open'); draw(); PT.toast('Akaun ' + u.nama + ' dipadam', 'red'); }
   });
   draw();
 

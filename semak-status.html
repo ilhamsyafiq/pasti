@@ -6,7 +6,7 @@
 <title>Semak Status Permohonan · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/app.css?v=8">
+<link rel="stylesheet" href="assets/css/app.css?v=10">
 </head>
 <body>
 
@@ -94,26 +94,44 @@
   </div>
 </div>
 
-<script src="assets/js/app.js?v=8"></script>
+<script src="assets/js/app.js?v=10"></script>
 <script>
 // Looks the application up in the shared DB by MyKid + No. Rujukan.
 (function(){
   const [kid, refIn] = document.querySelectorAll('.card-body .form-grid input');
   const q = new URLSearchParams(location.search); if (q.get('ref')) { refIn.value = q.get('ref'); kid.value = q.get('mykid') || ''; }
   const digits = s => String(s).replace(/\D/g,'');
+  const esc = v => String(v == null ? '' : v).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  // MyKid match ignores dashes/spaces; passport numbers (letters) compare as-is, case-insensitive
+  const sameKid = (a, b) => /[a-z]/i.test(a) || /[a-z]/i.test(b) ? String(a).replace(/[\s-]/g,'').toUpperCase() === String(b).replace(/[\s-]/g,'').toUpperCase() : digits(a) === digits(b) && digits(a) !== '';
   const body = document.querySelector('#hasilModal .m-body');
   document.getElementById('semakBtn').addEventListener('click', () => {
     let bad = 0; [kid, refIn].forEach(i => { i.classList.toggle('pt-err', !i.value.trim()); if (!i.value.trim()) bad++; });
     if (bad) { PT.toast('Isi No. MyKid dan No. Rujukan', 'red'); return; }
-    const m = DB.find('murid', x => x.ref.toUpperCase() === refIn.value.trim().toUpperCase() && digits(x.mykid) === digits(kid.value));
+    const m = DB.find('murid', x => String(x.ref).toUpperCase() === refIn.value.trim().toUpperCase() && sameKid(x.mykid, kid.value));
     if (!m) { body.innerHTML = '<div class="notice amber"><div class="tx"><b>Permohonan tidak ditemui</b><span>Semak semula No. MyKid dan No. Rujukan. No. rujukan dihantar melalui SMS / e-mel selepas pendaftaran.</span></div></div>'; }
     else {
-      const st = { Baharu:['DALAM SEMAKAN','b-blue'], Diterima:['DITERIMA','b-green'], Ditolak:['DITOLAK','b-red'] }[m.status];
-      const acc = m.status === 'Diterima' && DB.find('users', u => u.peranan === 'ibubapa' && u.emel === m.emel);
-      const next = m.status === 'Baharu' ? 'Permohonan sedang disemak oleh pentadbir ' + m.pasti + '. Sila semak semula dalam beberapa hari.'
-        : m.status === 'Ditolak' ? 'Permohonan tidak berjaya' + (m.sebab ? ': ' + m.sebab : '.') + ' Anda boleh memohon semula pada sesi akan datang.'
-        : 'Tahniah! Sila bawa anak anda pada <strong>Hari Orientasi</strong> beserta dokumen asal (MyKid, kad pengenalan penjaga).' + (acc ? '<br><br><b>Akaun Portal Ibu Bapa telah dicipta.</b> Log masuk dengan emel <b>' + acc.emel + '</b> untuk melihat anak, yuran dan makluman.' : '');
-      body.innerHTML = '<dl class="kv"><dt>Nama Anak</dt><dd>' + m.nama + '</dd><dt>No. Rujukan</dt><dd>' + m.ref + '</dd><dt>PASTI</dt><dd>' + m.pasti + '</dd><dt>Kelas Dipohon</dt><dd>' + m.kelas + '</dd><dt>Tarikh Mohon</dt><dd>' + m.tarikh + '</dd><dt>Status</dt><dd><span class="badge ' + st[1] + '">' + st[0] + '</span></dd></dl>'
+      // The applicant (MyKid + No. Rujukan) may see their own MBK details and the assessment appointment.
+      const st = { Baharu:['DALAM SEMAKAN','b-blue'], 'Dijadual Penilaian':['DIJADUAL PENILAIAN','b-amber'], Diterima:['DITERIMA','b-green'], Ditolak:['DITOLAK','b-red'] }[m.status] || [String(m.status).toUpperCase(), 'b-slate'];
+      const acc = m.status === 'Diterima' && DB.find('users', u => u.peranan === 'ibubapa' && String(u.emel).toLowerCase() === String(m.emel).toLowerCase());
+      const mb = m.mbk || null, pn = mb && mb.penilaian;
+      const next = m.status === 'Baharu' ? (mb ? 'Permohonan murid berkeperluan khas (MBK) anda sedang disemak oleh pentadbir ' + esc(m.pasti) + '. Pihak PASTI akan menghubungi anda untuk menjadualkan <strong>sesi penilaian</strong>. Sila semak semula dalam beberapa hari.'
+          : 'Permohonan sedang disemak oleh pentadbir ' + esc(m.pasti) + '. Sila semak semula dalam beberapa hari.')
+        : m.status === 'Dijadual Penilaian' ? 'Sila hadir ke sesi penilaian bersama anak anda pada tarikh dan masa di atas. Bawa bersama:<ul style="margin:6px 0 0 18px;padding:0">'
+          + '<li>MyKid anak &amp; kad pengenalan ibu bapa / penjaga</li><li>Laporan doktor / pakar asal' + (mb.noKadOKU ? ' dan Kad OKU JKM' : '') + '</li><li>Alat bantu / ubat yang digunakan anak (jika ada)</li></ul>'
+          + '<div style="margin-top:6px">Keputusan permohonan akan dimaklumkan selepas penilaian. Jika tidak dapat hadir, sila hubungi ' + esc(m.pasti) + ' untuk menukar tarikh.</div>'
+        : m.status === 'Ditolak' ? 'Permohonan tidak berjaya' + (m.sebab ? ': ' + esc(m.sebab) : '.') + ' Anda boleh memohon semula pada sesi akan datang.'
+        : 'Tahniah! Sila bawa anak anda pada <strong>Hari Orientasi</strong> beserta dokumen asal (MyKid, kad pengenalan penjaga).'
+          + (mb ? '<br><br><b>Keperluan khas anak anda telah dimaklumkan kepada guru kelas</b> supaya sokongan yang sesuai' + ((mb.keperluan || []).length ? ' (' + esc(mb.keperluan.join(', ')) + ')' : '') + ' dapat disediakan dari hari pertama.' : '')
+          + (acc ? '<br><br><b>Akaun Portal Ibu Bapa telah dicipta.</b> Log masuk dengan emel <b>' + esc(acc.emel) + '</b> untuk melihat anak, yuran dan makluman.' : '');
+      const appt = m.status === 'Dijadual Penilaian' && pn ? '<div class="notice mt-lg"><div class="tx"><b>Temujanji Sesi Penilaian</b><dl class="kv" style="margin-top:8px">'
+          + '<dt>Tarikh</dt><dd><strong>' + esc(pn.tarikh || '—') + '</strong></dd><dt>Masa</dt><dd><strong>' + esc(pn.masa || '—') + '</strong></dd><dt>Tempat</dt><dd>' + esc(pn.tempat || m.pasti) + '</dd>'
+          + (pn.catatan ? '<dt>Catatan</dt><dd>' + esc(pn.catatan) + '</dd>' : '') + '</dl></div></div>' : '';
+      body.innerHTML = '<dl class="kv"><dt>Nama Anak</dt><dd>' + esc(m.nama) + '</dd><dt>No. Rujukan</dt><dd>' + esc(m.ref) + '</dd><dt>PASTI</dt><dd>' + esc(m.pasti) + '</dd><dt>Kelas Dipohon</dt><dd>' + esc(m.kelas) + '</dd><dt>Tarikh Mohon</dt><dd>' + esc(m.tarikh) + '</dd>'
+        + (m.tarikhLahir ? '<dt>Tarikh Lahir</dt><dd>' + esc(m.tarikhLahir) + '</dd>' : '') + (m.jantina ? '<dt>Jantina</dt><dd>' + esc(m.jantina) + '</dd>' : '')
+        + (mb ? '<dt>Keperluan Khas</dt><dd>' + esc((mb.kategori || '') + (mb.sub ? ' — ' + mb.sub : '') + (mb.tahap ? ' · Tahap ' + mb.tahap : '')) + '</dd>' : '')
+        + '<dt>Status</dt><dd><span class="badge ' + st[1] + '">' + st[0] + '</span></dd></dl>'
+        + appt
         + '<div class="notice ' + (m.status === 'Diterima' ? '' : 'amber') + ' mt-lg"><div class="tx"><b>Tindakan Seterusnya</b><span>' + next + '</span></div></div>'
         + (acc ? '<div class="mt"><a class="btn btn-primary" href="index.html">Log Masuk Portal Ibu Bapa</a></div>' : '');
     }

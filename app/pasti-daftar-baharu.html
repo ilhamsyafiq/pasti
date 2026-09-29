@@ -6,7 +6,7 @@
 <title>Daftar PASTI Baharu · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=8">
+<link rel="stylesheet" href="../assets/css/app.css?v=10">
 </head>
 <body>
 <div class="pt-app" data-module="pengurusan" data-page="pasti-daftar-baharu" data-title="Daftar PASTI Baharu" data-subtitle="Borang penubuhan PASTI cawangan baharu">
@@ -38,13 +38,11 @@
             <div class="field"><span class="label">Poskod</span><input class="input" placeholder="15200"></div>
             <div class="field"><span class="label">No Telefon <span class="req">*</span></span><input class="input" placeholder="09-5985 4012"></div>
             <div class="field"><span class="label">Email</span><input class="input" type="email" placeholder="pasti@contoh.my"></div>
-            <div class="field"><span class="label">Negeri</span><input class="input" type="text" value="KELANTAN" readonly></div>
-            <div class="field"><span class="label">Parlimen</span><input class="input" type="text" value="P021 KOTA BHARU" readonly></div>
+            <div class="field"><span class="label">Negeri</span><input class="input" type="text" id="pdNeg" value="" readonly></div>
+            <div class="field"><span class="label">Parlimen</span><input class="input" type="text" id="pdKaw" value="" readonly></div>
             <div class="field"><span class="label">DUN <span class="req">*</span></span>
-              <select class="select">
+              <select class="select" id="pdDun">
                 <option value="">- Pilih DUN -</option>
-                <option>N09 KOTA LAMA</option>
-                <option>N10 BUNUT PAYONG</option>
               </select>
             </div>
             <div class="field"><span class="label">Cawangan <span class="req">*</span></span><input class="input" placeholder="Cth: Kota Bharu"></div>
@@ -185,17 +183,25 @@
   </main>
 </div>
 
-<script src="../assets/js/app.js?v=8"></script>
+<script src="../assets/js/app.js?v=10"></script>
 <script>
 // DUN submits a new PASTI → it enters Pengurusan PASTI as 'Baharu' for Kawasan to review, then Negeri approves.
+// Negeri / Parlimen / DUN come from the signed-in user's chain (DB.chainOf + DB.GEO).
 // A DUN can only register inside its own DUN, so the DUN field is fixed to it.
-(function(){
-  const me = DB.user(); if (PT.tier !== 'dun' || !me) return;
-  const f = [...document.querySelectorAll('[data-step-panel="1"] .field')].find(x => /^DUN/.test(x.querySelector('.label').textContent.trim()));
-  const sel = f && f.querySelector('select'); if (!sel) return;
-  if (![...sel.options].some(o => o.value === me.skop || o.text === me.skop)) sel.add(new Option(me.skop, me.skop));
-  sel.value = me.skop; sel.disabled = true; sel.title = 'Ditetapkan kepada DUN anda';
-  document.querySelector('.page-head .lead').textContent = 'Daftar PASTI baharu di bawah ' + me.skop + ' · permohonan disemak oleh Kawasan, kemudian diluluskan oleh Negeri';
+const PD = (function(){
+  const me = (window.PT && PT.user !== undefined) ? PT.user : DB.user();
+  const c = (me && DB.chainOf) ? DB.chainOf(me) : { negeri:me && me.negeri, kawasan:me && me.kawasan, dun:me && me.peranan === 'dun' ? me.skop : null };
+  const GEO = DB.GEO || {};
+  const duns = c.dun ? [c.dun] : ((GEO[c.negeri] || {})[c.kawasan] || []);
+  document.getElementById('pdNeg').value = c.negeri || '';
+  document.getElementById('pdKaw').value = c.kawasan || '';
+  const sel = document.getElementById('pdDun');
+  duns.forEach(d => sel.add(new Option(d, d)));
+  if (PT.tier === 'dun' && c.dun) {
+    sel.value = c.dun; sel.disabled = true; sel.title = 'Ditetapkan kepada DUN anda';
+    document.querySelector('.page-head .lead').textContent = 'Daftar PASTI baharu di bawah ' + c.dun + ' · permohonan disemak oleh Kawasan, kemudian diluluskan oleh Negeri';
+  }
+  return c;
 })();
 document.getElementById('pdSend').addEventListener('click', () => {
   const val = lbl => { const f = [...document.querySelectorAll('[data-step-panel="1"] .field')].find(x => x.querySelector('.label') && x.querySelector('.label').textContent.replace('*','').trim().toLowerCase().startsWith(lbl)); const i = f && f.querySelector('input, select, textarea'); return i ? { i, v: i.value.trim() } : { v:'' }; };
@@ -207,7 +213,7 @@ document.getElementById('pdSend').addEventListener('click', () => {
   const d = new Date(), tg = String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + d.getFullYear();
   const nama = need[0].v.toUpperCase().startsWith('PASTI') ? need[0].v.toUpperCase() : 'PASTI ' + need[0].v.toUpperCase();
   const no = DB.nextNo();
-  DB.add('pasti', { no, tarikh: tg, nama, alamat: need[1].v, tel: need[2].v, negeri:'KELANTAN', kawasan:'P021 KOTA BHARU', dun: need[3].v.toUpperCase(), status:'Baharu', sejarah:[{ by: PT.tier === 'dun' ? 'Pentadbir DUN' : 'Pentadbir Kawasan', act:'Daftar', at: tg }] });
+  DB.add('pasti', { no, tarikh: tg, nama, alamat: need[1].v, tel: need[2].v, negeri: PD.negeri || '', kawasan: PD.kawasan || '', dun: need[3].v.toUpperCase(), status:'Baharu', sejarah:[{ by: PT.tier === 'dun' ? 'Pentadbir DUN' : 'Pentadbir Kawasan', act:'Daftar', at: tg }] });
   try { sessionStorage.setItem('pt-flash', 'Permohonan ' + nama + ' (' + no + ') dihantar kepada Kawasan untuk semakan'); } catch(e){}
   location.href = 'pasti-pengurusan.html';
 });

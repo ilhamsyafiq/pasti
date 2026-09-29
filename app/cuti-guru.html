@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cuti Guru · ePASTI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/app.css?v=10">
+</head>
+<body>
+<div class="pt-app" data-module="operasi" data-page="cuti-guru" data-title="Cuti Guru" data-subtitle="Permohonan cuti guru &amp; pembantu guru">
+  <main class="pt-main">
+
+    <div class="page-head">
+      <div>
+        <div class="crumb">ePASTI <span>›</span> Operasi <span>›</span> Cuti Guru</div>
+        <h1>Cuti Guru</h1>
+        <div class="lead">Permohonan cuti guru &amp; pembantu guru — <span id="ctScope">skop anda</span></div>
+      </div>
+      <div class="flex gap wrap aic">
+        <button class="btn btn-soft">Muat Turun Excel</button>
+        <button class="btn btn-ghost" data-action="print">Cetak</button>
+      </div>
+    </div>
+
+    <div class="notice mb" id="ctNote">
+      <div class="tx"><b>Paparan sahaja</b><span>Permohonan cuti diluluskan atau ditolak oleh Pentadbir Cawangan PASTI berkenaan. Kawasan &amp; DUN boleh memantau status permohonan dalam skop masing-masing.</span></div>
+    </div>
+
+    <!-- stat strip -->
+    <div class="grid g-4">
+      <div class="stat"><div class="top"><span class="label">Menunggu Keputusan</span><div class="ic a">!</div></div><div class="value" id="sMenunggu">0</div><div class="trend flat">Perlu tindakan Cawangan</div></div>
+      <div class="stat"><div class="top"><span class="label">Diluluskan</span><div class="ic g">✓</div></div><div class="value" id="sLulus">0</div><div class="trend up" id="sHari">0 hari cuti</div></div>
+      <div class="stat"><div class="top"><span class="label">Ditolak</span><div class="ic r">✕</div></div><div class="value" id="sTolak">0</div><div class="trend flat">Dengan sebab penolakan</div></div>
+      <div class="stat"><div class="top"><span class="label">Jumlah Permohonan</span><div class="ic t">Σ</div></div><div class="value" id="sJumlah">0</div><div class="trend flat">Dalam skop anda</div></div>
+    </div>
+
+    <!-- tabs -->
+    <div class="tabs mt-lg">
+      <a href="#" class="active" data-tab="Menunggu">Menunggu <span class="muted" id="tMenunggu"></span></a>
+      <a href="#" data-tab="Diluluskan">Diluluskan <span class="muted" id="tDiluluskan"></span></a>
+      <a href="#" data-tab="Ditolak">Ditolak <span class="muted" id="tDitolak"></span></a>
+    </div>
+
+    <div data-panel="Menunggu">
+      <div class="card">
+        <div class="card-head"><div><h3>Menunggu Keputusan</h3><span class="sub">Permohonan cuti yang belum diputuskan</span></div></div>
+        <div class="table-wrap" data-own><table class="pt" data-nosave id="ctMenunggu"></table></div>
+      </div>
+    </div>
+    <div data-panel="Diluluskan" style="display:none">
+      <div class="card">
+        <div class="card-head"><div><h3>Diluluskan</h3><span class="sub">Cuti yang telah diluluskan</span></div></div>
+        <div class="table-wrap" data-own><table class="pt" data-nosave id="ctDiluluskan"></table></div>
+      </div>
+    </div>
+    <div data-panel="Ditolak" style="display:none">
+      <div class="card">
+        <div class="card-head"><div><h3>Ditolak</h3><span class="sub">Permohonan yang ditolak beserta sebab</span></div></div>
+        <div class="table-wrap" data-own><table class="pt" data-nosave id="ctDitolak"></table></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Tolak modal -->
+<div class="modal-overlay" id="ctTolakModal">
+  <div class="modal" style="max-width:480px">
+    <div class="m-head"><h3>Tolak Permohonan Cuti</h3><button class="btn btn-ghost btn-sm" data-close>✕</button></div>
+    <div class="m-body" data-own>
+      <p class="muted" id="ctTolakWho" style="margin:0 0 12px;font-size:13px"></p>
+      <div class="field"><span class="label">Sebab penolakan <span class="req">*</span></span><textarea class="input" rows="3" id="ctReason" placeholder="Nyatakan sebab — akan dimaklumkan kepada guru"></textarea></div>
+    </div>
+    <div class="m-foot"><button class="btn btn-ghost" data-close>Batal</button><button class="btn btn-red" id="ctTolakOk" data-own>Sahkan Tolak</button></div>
+  </div>
+</div>
+
+<script src="../assets/js/app.js?v=10"></script>
+<script>
+(function(){
+  // Leave requests (pt-cuti, newest first) — written by guru/takwim.html "Mohon Cuti".
+  // Cawangan decides requests of its own PASTI; Kawasan / DUN view the requests in their scope.
+  const KEY = 'pt-cuti';
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const nP = s => String(s || '').toUpperCase().replace(/^PASTI\s+/, '').replace(/[^A-Z0-9]/g, '');
+  const today = () => { const d = new Date(); return String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + d.getFullYear(); };
+  const dmy = s => { const m = String(s || '').match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/); return m ? m[3].padStart(2,'0') + '/' + m[2].padStart(2,'0') + '/' + m[1] : (s || '—'); };
+
+  // demo seed — only when the key has never been written
+  try { if (localStorage.getItem(KEY) === null) localStorage.setItem(KEY, JSON.stringify([
+    { id:'CT-2026-0003', nama:'Ustazah Siti Nabila Taqiuddin', emel:'nabila@pasti.org', pasti:'PASTI AR-RAIHAN', jenis:'Cuti Rehat', hari:2, mula:'05/10/2026', tamat:'06/10/2026', sebab:'Urusan keluarga di Pasir Mas.', status:'Menunggu', tarikh:'27/09/2026' },
+    { id:'CT-2026-0002', nama:'Ustazah Siti Iffah binti Rizqi', emel:'guru@pasti.org', pasti:'PASTI AR-RAIHAN', jenis:'Cuti Sakit', hari:1, mula:'15/09/2026', tamat:'15/09/2026', sebab:'Demam — sijil cuti sakit klinik dilampirkan.', status:'Diluluskan', tarikh:'15/09/2026', oleh:'Ustazah Husna Mardhiah', catatan:'Semoga cepat sembuh.' },
+    { id:'CT-2026-0001', nama:'Ustazah Siti Nabila Taqiuddin', emel:'nabila@pasti.org', pasti:'PASTI AR-RAIHAN', jenis:'Cuti Kecemasan', hari:1, mula:'29/09/2026', tamat:'29/09/2026', sebab:'Kenduri keluarga.', status:'Ditolak', tarikh:'20/09/2026', oleh:'Ustazah Husna Mardhiah', catatan:'Bertembung dengan Ujian Bulanan — sila mohon tarikh lain.' }
+  ])); } catch(e){}
+  const load = () => { try { const a = JSON.parse(localStorage.getItem(KEY) || '[]'); return Array.isArray(a) ? a : []; } catch(e){ return []; } };
+  const save = a => { try { localStorage.setItem(KEY, JSON.stringify(a)); } catch(e){} };
+
+  const P = window.PT || {}, S = P.scope || null, tier = (S && S.tier) || P.tier || '';
+  const me = P.user || (window.DB && DB.user && DB.user()) || null;
+  const canDecide = tier === 'cawangan';
+  const inScope = r => P.inScope ? P.inScope(r.pasti) : true;
+  const mine = r => canDecide && (!S || !S.pasti || nP(S.pasti) === nP(r.pasti));
+
+  if (S && S.label) document.getElementById('ctScope').textContent = S.label;
+  const note = document.getElementById('ctNote');
+  if (canDecide) note.innerHTML = '<div class="tx"><b>Keputusan oleh Pentadbir Cawangan</b><span>Luluskan atau tolak permohonan cuti guru PASTI anda. Sebab penolakan wajib diisi dan akan dimaklumkan kepada guru.</span></div>';
+
+  const BADGE = { Menunggu:'b-amber', Diluluskan:'b-green', Ditolak:'b-red' };
+  function table(st, rows){
+    const act = st === 'Menunggu' && canDecide;
+    const head = '<thead><tr><th>Tarikh Mohon</th><th>Nama Guru</th><th>PASTI</th><th>Jenis Cuti</th><th>Tempoh</th><th class="right">Hari</th><th>Sebab</th><th>Status</th>' +
+      (st === 'Menunggu' ? (act ? '<th>Tindakan</th>' : '') : '<th>Keputusan</th>') + '</tr></thead>';
+    const cols = st === 'Menunggu' && !act ? 8 : 9;
+    const body = rows.length ? rows.map(r => '<tr data-id="' + esc(r.id) + '">' +
+      '<td>' + esc(r.tarikh || '—') + '</td><td class="strong">' + esc(r.nama) + '</td><td>' + esc(r.pasti) + '</td><td>' + esc(r.jenis) + '</td>' +
+      '<td>' + esc(dmy(r.mula)) + (r.tamat && r.tamat !== r.mula ? ' – ' + esc(dmy(r.tamat)) : '') + '</td><td class="right num">' + esc(r.hari || 1) + '</td>' +
+      '<td style="max-width:240px">' + esc(r.sebab || '—') + '</td><td><span class="badge ' + (BADGE[r.status] || 'b-slate') + '">' + esc(r.status) + '</span></td>' +
+      (st === 'Menunggu'
+        ? (act ? '<td>' + (mine(r) ? '<div class="flex gap"><button class="btn btn-primary btn-sm" data-own data-ct="lulus">Lulus</button><button class="btn btn-red btn-sm" data-own data-ct="tolak">Tolak</button></div>' : '<span class="muted" style="font-size:12px">PASTI lain</span>') + '</td>' : '')
+        : '<td style="font-size:12.5px"><div class="strong">' + esc(r.oleh || '—') + '</div>' + (r.catatan ? '<div class="muted">' + esc(r.catatan) + '</div>' : '') + '</td>') +
+      '</tr>').join('')
+      : '<tr><td colspan="' + cols + '" class="muted" style="text-align:center;padding:22px">Tiada permohonan ' + st.toLowerCase() + '.</td></tr>';
+    return head + '<tbody>' + body + '</tbody>';
+  }
+  function render(){
+    const all = load().filter(inScope), by = st => all.filter(r => r.status === st);
+    ['Menunggu','Diluluskan','Ditolak'].forEach(st => {
+      document.getElementById('ct' + st).innerHTML = table(st, by(st));
+      document.getElementById('t' + st).textContent = '(' + by(st).length + ')';
+    });
+    document.getElementById('sMenunggu').textContent = by('Menunggu').length;
+    document.getElementById('sLulus').textContent = by('Diluluskan').length;
+    document.getElementById('sTolak').textContent = by('Ditolak').length;
+    document.getElementById('sJumlah').textContent = all.length;
+    document.getElementById('sHari').textContent = by('Diluluskan').reduce((a,r) => a + (+r.hari || 1), 0) + ' hari cuti';
+  }
+  function decide(id, status, catatan){
+    const all = load(), r = all.find(x => x.id === id); if (!r || !mine(r)) { PT.toast('Anda tidak boleh memutuskan permohonan ini', 'red'); return; }
+    r.status = status; r.oleh = (me && me.nama) || 'Pentadbir Cawangan'; r.catatan = catatan || ''; r.tarikhKeputusan = today();
+    save(all); render();
+    PT.toast(status === 'Diluluskan' ? 'Cuti ' + r.nama + ' diluluskan' : 'Permohonan cuti ' + r.nama + ' ditolak', status === 'Diluluskan' ? 'green' : 'red');
+  }
+
+  let pending = null;
+  const md = document.getElementById('ctTolakModal'), reason = document.getElementById('ctReason');
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-ct]'); if (!b) return;
+    const tr = b.closest('tr[data-id]'); if (!tr) return;
+    if (b.dataset.ct === 'lulus') decide(tr.dataset.id, 'Diluluskan', '');
+    if (b.dataset.ct === 'tolak') { pending = tr.dataset.id; const r = load().find(x => x.id === pending);
+      document.getElementById('ctTolakWho').textContent = r ? r.nama + ' · ' + r.jenis + ' · ' + dmy(r.mula) + (r.tamat && r.tamat !== r.mula ? ' – ' + dmy(r.tamat) : '') : '';
+      reason.value = ''; reason.classList.remove('pt-err'); md.classList.add('open'); setTimeout(() => reason.focus(), 50); }
+  });
+  document.getElementById('ctTolakOk').addEventListener('click', () => {
+    if (!reason.value.trim()) { reason.classList.add('pt-err'); PT.toast('Sila nyatakan sebab penolakan', 'red'); return; }
+    md.classList.remove('open'); if (pending) decide(pending, 'Ditolak', reason.value.trim()); pending = null;
+  });
+  render();
+})();
+</script>
+</body>
+</html>

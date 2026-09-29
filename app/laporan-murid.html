@@ -6,7 +6,7 @@
 <title>Laporan Murid PASTI · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=8">
+<link rel="stylesheet" href="../assets/css/app.css?v=10">
 </head>
 <body>
 <div class="pt-app" data-module="pelaporan" data-page="laporan-murid" data-title="Laporan Murid PASTI" data-subtitle="Statistik murid mengikut kategori">
@@ -16,7 +16,7 @@
       <div>
         <div class="crumb">ePASTI <span>›</span> Pelaporan <span>›</span> Laporan Murid</div>
         <h1>Laporan Murid PASTI</h1>
-        <div class="lead">Kawasan Kota Bharu · Kelantan · Sesi 2026</div>
+        <div class="lead"><span data-scope-label>Kawasan Kota Bharu · Kelantan</span> · Sesi 2026</div>
       </div>
       <div class="flex gap wrap aic">
         <button class="btn btn-soft" data-action="export" data-toast="Menyediakan Excel…">Muat Turun Excel</button>
@@ -27,14 +27,16 @@
     <div class="card">
       <div class="card-body">
         <div class="tabs">
-          <a href="#" class="active" data-tab="yatim">Status Yatim</a>
+          <a href="#" class="active" data-tab="tahun">Tahun &amp; Jantina</a>
+          <a href="#" data-tab="yatim">Status Yatim</a>
           <a href="#" data-tab="jantina">Jantina</a>
           <a href="#" data-tab="bangsa">Bangsa</a>
           <a href="#" data-tab="online">Permohonan Online</a>
+          <a href="#" data-tab="mbk">Keperluan Khas</a>
         </div>
 
-        <!-- ===== Status Yatim ===== -->
-        <div data-panel="yatim">
+        <!-- ===== Tahun & Jantina ===== -->
+        <div data-panel="tahun">
           <div class="chart-t">Bilangan Murid mengikut Tahun &amp; Jantina</div><div class="chart-box" id="cTahun" style="height:250px;position:relative"></div>
           <div class="table-wrap">
             <table class="pt">
@@ -72,6 +74,51 @@
                   <td class="right num">34</td><td class="right num">30</td>
                   <td class="right num">32</td><td class="right num">28</td>
                   <td class="right num">29</td><td class="right num">28</td>
+                  <td class="right num">181</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ===== Status Yatim ===== -->
+        <div data-panel="yatim" style="display:none">
+          <div class="chart-t">Murid Yatim, Piatu &amp; Yatim Piatu mengikut DUN</div><div class="chart-box" id="cYatim" style="height:190px;position:relative"></div>
+          <div class="table-wrap">
+            <table class="pt">
+              <thead>
+                <tr>
+                  <th>DUN</th>
+                  <th class="right">Yatim</th>
+                  <th class="right">Piatu</th>
+                  <th class="right">Yatim Piatu</th>
+                  <th class="right">Bukan Yatim</th>
+                  <th class="right">Bilangan Murid</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>N09 Kota Lama</td>
+                  <td class="right num">6</td>
+                  <td class="right num">3</td>
+                  <td class="right num">1</td>
+                  <td class="right num">137</td>
+                  <td class="right num strong">147</td>
+                </tr>
+                <tr>
+                  <td>N10 Bunut Payong</td>
+                  <td class="right num">2</td>
+                  <td class="right num">1</td>
+                  <td class="right num">0</td>
+                  <td class="right num">31</td>
+                  <td class="right num strong">34</td>
+                </tr>
+                <tr class="strong">
+                  <td>JUMLAH</td>
+                  <td class="right num">8</td>
+                  <td class="right num">4</td>
+                  <td class="right num">1</td>
+                  <td class="right num">168</td>
                   <td class="right num">181</td>
                 </tr>
               </tbody>
@@ -209,29 +256,136 @@
           </div>
         </div>
 
+        <!-- ===== Keperluan Khas (MBK) — counts only, filled from DB.mbkStats ===== -->
+        <div data-panel="mbk" style="display:none">
+          <div class="notice mb"><div class="tx"><b>Murid Berkeperluan Khas (MBK) — bilangan sahaja</b><span>Maklumat individu MBK hanya boleh dilihat oleh Pentadbir Cawangan &amp; guru kelas.</span></div></div>
+          <div class="grid g-4 mb" id="mbkStats"></div>
+          <div class="chart-t" id="mbkChartT">Murid MBK mengikut Kategori</div><div class="chart-box" id="cMbk" style="height:230px;position:relative"></div>
+          <div class="table-wrap">
+            <table class="pt" id="mbkTbl" data-nosave data-noscope><thead></thead><tbody></tbody></table>
+          </div>
+          <div class="chart-t mt-lg">Status Kemasukan MBK &amp; Kuota mengikut PASTI</div>
+          <div class="table-wrap">
+            <table class="pt" id="mbkKuota" data-nosave data-noscope>
+              <thead><tr><th>PASTI</th><th>DUN</th><th>Status MBK</th><th class="right">Kuota</th><th class="right">Diisi</th><th class="right">Baki</th><th class="right">Dalam Semakan</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
       </div>
     </div>
 
   </main>
 </div>
 
-<script src="../assets/js/app.js?v=8"></script>
+<script src="../assets/js/app.js?v=10"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="../assets/js/charts.js?v=2"></script>
 <script>
+// Report scope: lead text follows the signed-in scope; DUN / Cawangan only see rows of their own DUN (or PASTI),
+// with JUMLAH recomputed from the rows that remain.
+window.LAP = (function(){
+  const P = window.PT || {}, S = P.scope || null, tier = (S && S.tier) || P.tier || '';
+  const low = tier === 'dun' || tier === 'cawangan';
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const code = s => { const m = String(s || '').toUpperCase().trim().match(/^([NP]\d+)/); return m ? m[1] : ''; };
+  const labelCell = tr => [...tr.cells].find(c => !/^\s*\d*\s*$/.test(c.textContent));
+  const isTotal = tr => /^\s*jumlah\s*$/i.test((labelCell(tr) || {}).textContent || '');
+  function lead(){ if (S && S.label) document.querySelectorAll('[data-scope-label]').forEach(el => { el.textContent = S.label; }); }
+  function note(){
+    if (!low || !S || document.getElementById('lapNote')) return;
+    const ph = document.querySelector('.pt-main .page-head'); if (!ph) return;
+    ph.insertAdjacentHTML('afterend', '<div class="notice mb" id="lapNote"><div class="tx"><b>Skop paparan: ' + esc(S.label || '') + '</b><span>Angka yang dipaparkan adalah bagi skop anda sahaja' +
+      (S.dun ? ' (DUN ' + esc(S.dun) + ')' : '') + ' — baris DUN / PASTI lain tidak dipaparkan dan jumlah dikira semula.</span></div></div>');
+  }
+  // drop out-of-scope rows (DUN rows named "N09 …"; PASTI rows via PT.inScope), then recompute JUMLAH
+  function scope(root){
+    if (!low || !S) return;
+    const dc = code(S.dun);
+    (root || document).querySelectorAll('table.pt').forEach(tb => {
+      const body = tb.tBodies[0]; if (!body) return; let cut = false;
+      [...body.rows].forEach(tr => { if (isTotal(tr)) return; const c = labelCell(tr); if (!c) return; const t = c.textContent.trim();
+        const out = /^N\d+/i.test(t) ? (dc && code(t) !== dc) : (P.inScope ? !P.inScope(t) : false);
+        if (out) { tr.remove(); cut = true; } });
+      if (cut) totals(tb);
+    });
+  }
+  function totals(tb){
+    const rows = [...tb.tBodies[0].rows], J = rows.find(isTotal); if (!J) return;
+    const data = rows.filter(r => r !== J);
+    [...J.cells].forEach((c, i) => { if (!/^\s*[\d,.]+\s*$/.test(c.textContent)) return;
+      c.textContent = data.reduce((a, r) => { const v = r.cells[i] ? r.cells[i].textContent.replace(/,/g, '').trim() : ''; return a + (/^\d+(\.\d+)?$/.test(v) ? +v : 0); }, 0); });
+    let n = 0; data.forEach(r => { const c = r.cells[0]; if (c && /^\d+$/.test(c.textContent.trim())) c.textContent = ++n; });
+  }
+  lead(); note();
+  return { scope, totals, low, S };
+})();
+</script>
+<script>
 (function(){
+  LAP.scope();
   const panel = k => document.querySelector('[data-panel="' + k + '"] table.pt');
   // Tahun 4/5/6 × L/P — header row 2 holds L,P pairs; sum across DUN
-  const ty = [...panel('yatim').tBodies[0].rows].filter(r => !/jumlah/i.test(r.textContent)).map(r => [...r.cells].slice(1, 7).map(c => +c.textContent.trim() || 0));
+  const ty = [...panel('tahun').tBodies[0].rows].filter(r => !/jumlah/i.test(r.textContent)).map(r => [...r.cells].slice(1, 7).map(c => +c.textContent.trim() || 0));
   const sum = i => ty.reduce((a,r) => a + r[i], 0);
   PTChart.bar(document.getElementById('cTahun'), { labels:['Tahun 4','Tahun 5','Tahun 6'],
     series:[{ name:'Lelaki', data:[sum(0), sum(2), sum(4)] }, { name:'Perempuan', data:[sum(1), sum(3), sum(5)] }] });
+  const Y = PTChart.readTable(panel('yatim')), cats = Y.heads.slice(1, 4);   // Yatim, Piatu, Yatim Piatu (Bukan Yatim left out of the chart)
+  PTChart.bar(document.getElementById('cYatim'), { labels:Y.labels, horizontal:true, stacked:true,
+    series:cats.map((c,i) => ({ name:c, data:Y.rows.map(r => r[i]) })) });
   const J = PTChart.readTable(panel('jantina'));
   PTChart.bar(document.getElementById('cJantina'), { labels:J.labels, horizontal:true, stacked:true,
     series:[{ name:'Lelaki', data:J.rows.map(r => r[0]) }, { name:'Perempuan', data:J.rows.map(r => r[1]) }] });
   const B = PTChart.readTable(panel('bangsa')), names = B.heads.slice(1, -1);
   PTChart.bar(document.getElementById('cBangsa'), { labels:names, horizontal:true,
     series:[{ name:'Murid', data:names.map((_,i) => B.rows.reduce((a,r) => a + r[i], 0)) }] });
+})();
+</script>
+<script>
+// Keperluan Khas tab — counts only (DB.mbkStats over the PASTI in this account's scope); never names or rows of pupils.
+(function(){
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const $ = id => document.getElementById(id), panel = document.querySelector('[data-panel="mbk"]');
+  if (!panel) return;
+  if (!(window.DB && DB.mbkStats && DB.pastiInScope)) { $('mbkStats').innerHTML = '<div class="muted">Data MBK belum tersedia.</div>'; return; }
+  const tier = (window.PT && PT.tier) || '', byPasti = tier === 'dun' || tier === 'cawangan';
+  const list = DB.pastiInScope(), st = DB.mbkStats(list) || {}, BP = st.byPasti || {};
+  const KAT = DB.MBK_KATEGORI || Object.keys(st.byKategori || {});
+  const short = n => String(n || '').replace(/^PASTI\s+/i, '');
+  const title = s => String(s || '').toLowerCase().replace(/\b\w/g, c => c.toUpperCase()).replace(/^([np])(\d)/i, (a, b, c) => b.toUpperCase() + c);
+  const stat = (l, v, t, c, i) => '<div class="stat"><div class="top"><span class="label">' + l + '</span><div class="ic ' + c + '">' + i + '</div></div><div class="value">' + v + '</div><div class="trend flat">' + t + '</div></div>';
+  const kuota = +st.kuota || 0, diisi = +st.diisi || 0;
+  $('mbkStats').innerHTML = stat('Murid MBK Diterima', +st.total || 0, 'Sesi 2026', 'v', 'M')
+    + stat('PASTI BUKA MBK', +st.pastiBuka || 0, (+st.pastiMenunggu || 0) + ' menunggu pengesahan Kawasan', 'g', 'B')
+    + stat('Kuota MBK', kuota, 'Diisi ' + diisi + ' · baki ' + Math.max(0, kuota - diisi), 't', 'K')
+    + stat('Permohonan Dalam Semakan', (+st.baharu || 0) + (+st.penilaian || 0), (+st.penilaian || 0) + ' dijadual penilaian', 'a', 'S');
+
+  // rows: DUN (pusat / negeri / kawasan) or PASTI (dun / cawangan) × kategori
+  const groups = {}, order = [];
+  list.forEach(p => { const b = BP[p.nama]; if (!b) return; const key = byPasti ? p.nama : (p.dun || '—');
+    if (!groups[key]) { groups[key] = { label: byPasti ? short(p.nama) : title(p.dun), k: {}, n: 0 }; order.push(key); }
+    const g = groups[key]; KAT.forEach(k => { const v = +((b.byKategori || {})[k]) || 0; g.k[k] = (g.k[k] || 0) + v; g.n += v; }); });
+  const rows = order.map(k => groups[k]).filter(g => g.n || byPasti).sort((a, b) => a.label.localeCompare(b.label));
+  const tb = $('mbkTbl'), num = v => '<td class="right num">' + v + '</td>';
+  tb.tHead.innerHTML = '<tr><th>' + (byPasti ? 'PASTI' : 'DUN') + '</th>' + KAT.map(k => '<th class="right">' + esc(k) + '</th>').join('') + '<th class="right">Jumlah MBK</th></tr>';
+  const tot = {}; let all = 0;
+  tb.tBodies[0].innerHTML = (rows.length ? rows.map(g => { all += g.n; return '<tr><td>' + esc(g.label) + '</td>' + KAT.map(k => { tot[k] = (tot[k] || 0) + (g.k[k] || 0); return num(g.k[k] || 0); }).join('') + '<td class="right num strong">' + g.n + '</td></tr>'; }).join('')
+      : '<tr><td colspan="' + (KAT.length + 2) + '" class="muted">Tiada murid MBK dalam skop ini.</td></tr>')
+    + '<tr class="strong"><td>JUMLAH</td>' + KAT.map(k => num(tot[k] || 0)).join('') + '<td class="right num">' + all + '</td></tr>';
+
+  // chart: one bar per kategori (single series), counts over the whole scope
+  $('mbkChartT').textContent = 'Murid MBK mengikut Kategori · ' + ((window.PT && PT.scope && PT.scope.label) || 'Skop anda');
+  if (window.PTChart) PTChart.bar($('cMbk'), { labels: KAT, horizontal: true, series: [{ name: 'Murid MBK', data: KAT.map(k => +((st.byKategori || {})[k]) || 0) }] });
+
+  // quota / status per PASTI (PASTI that declared or opened MBK)
+  const SB = { BUKA: 'b-green', MENUNGGU: 'b-amber', TUTUP: 'b-red' };
+  const q = list.map(p => ({ p, b: BP[p.nama] || {} })).filter(x => x.b.status && (x.b.status !== 'TUTUP' || x.b.kuota || x.b.diisi))
+    .sort((a, b) => ({ BUKA: 0, MENUNGGU: 1 }[a.b.status] ?? 2) - ({ BUKA: 0, MENUNGGU: 1 }[b.b.status] ?? 2) || a.p.nama.localeCompare(b.p.nama));
+  $('mbkKuota').tBodies[0].innerHTML = q.length ? q.map(({ p, b }) => { const k = +b.kuota || 0, d = +b.diisi || 0;
+      return '<tr><td>' + esc(p.nama) + '</td><td>' + esc(title(p.dun)) + '</td><td><span class="badge ' + (SB[b.status] || 'b-slate') + '">' + esc(b.status) + '</span></td>'
+        + num(k) + num(d) + num(b.status === 'BUKA' ? Math.max(0, k - d) : '—') + num((+b.baharu || 0) + (+b.penilaian || 0)) + '</tr>'; }).join('')
+    : '<tr><td colspan="7" class="muted">Tiada PASTI dalam skop ini yang membuka kemasukan MBK.</td></tr>';
 })();
 </script>
 <script>/* laporan-murid: interactions handled by app.js (tabs, filter, print, export toast) */</script>

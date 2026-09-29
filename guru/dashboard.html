@@ -6,7 +6,7 @@
 <title>Utama · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=8">
+<link rel="stylesheet" href="../assets/css/app.css?v=10">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#2fa308">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -20,8 +20,8 @@
     <div class="page-head">
       <div>
         <div class="crumb">Portal Guru <span>›</span> Utama</div>
-        <h1>Selamat Datang, Ustazah Siti Iffah</h1>
-        <div class="lead">Guru PASTI AR-RAIHAN · Kota Bharu, Kelantan · Dikemas kini sebentar tadi</div>
+        <h1 id="gdHello">Selamat Datang, Ustazah Siti Iffah</h1>
+        <div class="lead" id="gdLead">Guru PASTI AR-RAIHAN · Kota Bharu, Kelantan · Dikemas kini sebentar tadi</div>
       </div>
     </div>
 
@@ -66,9 +66,9 @@
       <div class="card">
         <div class="card-head"><h3>Makluman</h3></div>
         <div class="card-body">
-          <div class="news-item"><b>» Mesyuarat guru PASTI AR-RAIHAN</b><div class="dt">Isnin, 28 September 2026 · 2:30 petang</div></div>
+          <div class="news-item"><b>» Mesyuarat guru <span data-gd-pasti>PASTI AR-RAIHAN</span></b><div class="dt">Isnin, 28 September 2026 · 2:30 petang</div></div>
           <div class="news-item"><b>» Sila lengkapkan permarkahan penilaian pertengahan tahun</b><div class="dt">22 September 2026 · Hantar sebelum 30 September</div></div>
-          <div class="news-item"><b>» Program Hari Keluarga PASTI AR-RAIHAN</b><div class="dt">18 September 2026 · Sabtu, 4 Oktober 2026</div></div>
+          <div class="news-item"><b>» Program Hari Keluarga <span data-gd-pasti>PASTI AR-RAIHAN</span></b><div class="dt">18 September 2026 · Sabtu, 4 Oktober 2026</div></div>
         </div>
       </div>
     </div>
@@ -87,7 +87,7 @@
   </main>
 </div>
 
-<script src="../assets/js/app.js?v=8"></script>
+<script src="../assets/js/app.js?v=10"></script>
 <script>
   (function(){
     var bulan=['Januari','Februari','Mac','April','Mei','Jun','Julai','Ogos','September','Oktober','November','Disember'];
@@ -102,22 +102,49 @@
     }
     tick(); setInterval(tick,1000);
 
+    // Signed-in teacher (DB user): greeting + PASTI
+    var u=(window.PT&&PT.user)||(window.DB&&DB.user&&DB.user());
+    if(u&&/guru|pembantu/.test(u.peranan)){
+      var pendek=String(u.nama).split(/\s+(?:bin|binti|bt|bn)\s+/i)[0];
+      document.getElementById('gdHello').textContent='Selamat Datang, '+pendek;
+      var pasti=u.skop||'PASTI AR-RAIHAN', rec=window.DB&&DB.find&&DB.find('pasti',function(p){return String(p.nama).toUpperCase()===String(pasti).toUpperCase();});
+      var tc=function(x){return String(x||'').toLowerCase().replace(/\b\w/g,function(c){return c.toUpperCase();});};
+      var loc=rec?tc(String(rec.kawasan||'').replace(/^P\d+\s*/,''))+', '+tc(rec.negeri):'Kota Bharu, Kelantan';
+      document.getElementById('gdLead').textContent=(u.peranan==='pembantu'?'Pembantu Guru ':'Guru ')+pasti+' · '+loc+' · Dikemas kini sebentar tadi';
+      document.querySelectorAll('[data-gd-pasti]').forEach(function(el){el.textContent=pasti;});
+    }
+
+    // Clock In/Out — same store as clock.html: pt-clock-guru = { "YYYY-MM-DD": { in: ms, out: ms } }
+    var KEY='pt-clock-guru';
     var status=document.getElementById('dashStatus');
     var btnIn=document.getElementById('btnIn');
     var btnOut=document.getElementById('btnOut');
-    function timeNow(){var d=new Date();return pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds());}
+    function dkey(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
+    function hm(t){var d=new Date(t);return pad(d.getHours())+':'+pad(d.getMinutes());}
+    function load(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{};}catch(e){return {};}}
+    function save(st){try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}}
+    function render(){
+      var t=load()[dkey(new Date())]||{};
+      if(!t.in){ status.textContent='Belum Clock In'; status.className='badge b-amber'; btnIn.disabled=false; btnOut.disabled=true; }
+      else if(!t.out){ status.textContent='Sedang Bertugas sejak '+hm(t.in); status.className='badge b-green'; btnIn.disabled=true; btnOut.disabled=false; }
+      else { status.textContent='Selesai Bertugas · '+hm(t.in)+' – '+hm(t.out); status.className='badge b-slate'; btnIn.disabled=true; btnOut.disabled=true; }
+    }
     btnIn.addEventListener('click',function(){
-      var t=timeNow();
-      status.textContent='Sedang Bertugas'; status.className='badge b-green';
-      btnIn.disabled=true; btnOut.disabled=false;
-      if(window.PT&&PT.toast) PT.toast('Clock in direkod pada '+t,'green');
+      var st=load(), k=dkey(new Date()), t=st[k]||(st[k]={});
+      if(t.in){ render(); return; }
+      t.in=Date.now(); save(st); render();
+      if(window.PT&&PT.toast) PT.toast('Clock in direkod pada '+hm(t.in),'green');
     });
     btnOut.addEventListener('click',function(){
-      var t=timeNow();
-      status.textContent='Selesai Bertugas'; status.className='badge b-slate';
-      btnOut.disabled=true;
-      if(window.PT&&PT.toast) PT.toast('Clock out direkod pada '+t,'green');
+      var st=load(), k=dkey(new Date()), t=st[k];
+      if(!t||!t.in||t.out){ render(); return; }
+      if(!confirm('Clock out sekarang?')) return;
+      t.out=Date.now(); save(st); render();
+      if(window.PT&&PT.toast) PT.toast('Clock out direkod pada '+hm(t.out),'green');
     });
+    render();
+    window.addEventListener('storage',function(e){ if(e.key===KEY) render(); });
+    document.addEventListener('visibilitychange',function(){ if(!document.hidden) render(); });
   })();
 </script>
 </body>

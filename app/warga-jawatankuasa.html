@@ -6,7 +6,7 @@
 <title>Ahli Jawatankuasa · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=8">
+<link rel="stylesheet" href="../assets/css/app.css?v=10">
 </head>
 <body>
 <div class="pt-app" data-module="warga" data-page="warga-jawatankuasa" data-title="Ahli Jawatankuasa" data-subtitle="AJK Kawasan & Jemaah Pengurus Cawangan">
@@ -21,16 +21,16 @@
     </div>
 
     <div class="tabs">
-      <a href="#" class="active" data-tab="ajk">AJK PASTI Kawasan</a>
+      <a href="#" class="active" data-tab="ajk" data-tiers="negeri kawasan">AJK PASTI Kawasan</a>
       <a href="#" data-tab="jemaah">Jemaah Pengurus Cawangan</a>
     </div>
 
-    <!-- Panel: AJK Kawasan -->
-    <div data-panel="ajk">
+    <!-- Panel: AJK Kawasan (Negeri & Kawasan only) -->
+    <div data-panel="ajk" data-tiers="negeri kawasan">
       <div class="card">
         <div class="card-body">
           <div class="toolbar">
-            <select class="select">
+            <select class="select" data-penggal>
               <option>Penggal 2025-2027</option>
               <option>Penggal 2023-2025</option>
               <option>Penggal 2027-2029</option>
@@ -42,7 +42,7 @@
           </div>
           <div class="table-wrap">
             <table class="pt">
-              <thead><tr><th>Bil</th><th>Nama</th><th>No KP/Passport</th><th>Jawatan</th><th>Cawangan</th><th>Status</th><th class="right">Tindakan</th></tr></thead>
+              <thead><tr><th>Bil</th><th>Nama</th><th>No KP/Passport</th><th>Jawatan</th><th>Cawangan</th><th>Penggal</th><th>Status</th><th class="right">Tindakan</th></tr></thead>
               <tbody id="ajkRows"></tbody>
             </table>
           </div>
@@ -50,24 +50,24 @@
       </div>
     </div>
 
-    <!-- Panel: Jemaah Pengurus Cawangan -->
+    <!-- Panel: Jemaah Pengurus Cawangan (Cawangan manages its own; Negeri / Kawasan view) -->
     <div data-panel="jemaah" style="display:none">
       <div class="card">
         <div class="card-body">
           <div class="toolbar">
-            <select class="select">
+            <select class="select" data-penggal>
               <option>Penggal 2025-2027</option>
               <option>Penggal 2023-2025</option>
               <option>Penggal 2027-2029</option>
             </select>
             <div class="input-group"><input type="text" placeholder="Cari nama atau No KP…"></div>
             <div class="spacer"></div>
-            <button class="btn btn-soft" data-action="print">Cetak Surat Pelantikan (Pukal)</button>
-            <button class="btn btn-primary" data-modal="addAjkModal">+ Tambah Ahli</button>
+            <button class="btn btn-soft" data-action="print" data-tiers="cawangan">Cetak Surat Pelantikan (Pukal)</button>
+            <button class="btn btn-primary" data-modal="addAjkModal" data-tiers="cawangan">+ Tambah Ahli</button>
           </div>
           <div class="table-wrap">
             <table class="pt">
-              <thead><tr><th>Bil</th><th>Nama</th><th>No KP/Passport</th><th>Jawatan</th><th>Cawangan</th><th>Status</th><th class="right">Tindakan</th></tr></thead>
+              <thead><tr><th>Bil</th><th>Nama</th><th>No KP/Passport</th><th>Jawatan</th><th>Cawangan</th><th>Penggal</th><th>Status</th><th class="right">Tindakan</th></tr></thead>
               <tbody id="jemaahRows"></tbody>
             </table>
           </div>
@@ -87,10 +87,10 @@
         <div class="field full"><span class="label">Nama Penuh <span class="req">*</span></span><input class="input" placeholder="Nama seperti dalam MyKad"></div>
         <div class="field"><span class="label">No KP <span class="req">*</span></span><input class="input" placeholder="Cth: 800512031473"></div>
         <div class="field"><span class="label">Jawatan</span>
-          <select class="select"><option>Pengerusi</option><option>Naib Pengerusi</option><option>Setiausaha</option><option>Bendahari</option><option>AJK</option></select>
+          <select class="select"><option>Pengerusi</option><option>Naib Pengerusi</option><option>Pengurus</option><option>Penolong Pengurus</option><option>Setiausaha</option><option>Bendahari</option><option>AJK</option></select>
         </div>
         <div class="field"><span class="label">Cawangan</span>
-          <select class="select"><option>AR-RAIHAN</option><option>AL-QAYYUM</option><option>AL-MUNAWWARAH</option><option>BAITUL ILMI</option><option>AL-IKHLAS</option></select>
+          <select class="select" id="ajkPasti"><option>PASTI AR-RAIHAN</option><option>PASTI AL-QAYYUM</option><option>PASTI AL-MUNAWWARAH</option><option>PASTI BAITUL ILMI</option><option>PASTI AL-IKHLAS</option></select>
         </div>
         <div class="field"><span class="label">Telefon</span><input class="input" placeholder="013-xxxxxxx"></div>
         <div class="field"><span class="label">Penggal</span>
@@ -105,42 +105,96 @@
   </div>
 </div>
 
-<script src="../assets/js/app.js?v=8"></script>
+<script src="../assets/js/app.js?v=10"></script>
 <script>
+  // [Nama, No KP, Jawatan, PASTI, Status, Penggal]
   const ajk = [
-    ['USTAZ AQIL BIN MAT SUFYAN','810204032342','Pengerusi','AR-RAIHAN','Aktif'],
-    ['USTAZ FARIS AZLAN BIN RASYDAN','830617033051','Naib Pengerusi','AL-QAYYUM','Aktif'],
-    ['JUNAIDAH BINTI AZRI','870913030654','Setiausaha','AL-MUNAWWARAH','Aktif'],
-    ['WAN FARZANA BINTI KAMIL','860428032472','Bendahari','BAITUL ILMI','Aktif'],
-    ['USTAZ BUKHARI IZHAR BIN IKHWAN','800311030972','AJK','AL-IKHLAS','Aktif'],
-    ['JUWAIRIYAH BINTI UMAIR','910726035115','AJK','AR-RAIHAN','Tidak Aktif'],
-    ['FARIS ILYAS BIN AMANI','890502033827','AJK','AL-QAYYUM','Aktif'],
+    ['USTAZ AQIL BIN MAT SUFYAN','810204032342','Pengerusi','PASTI AR-RAIHAN','Aktif','2025-2027'],
+    ['USTAZ FARIS AZLAN BIN RASYDAN','830617033051','Naib Pengerusi','PASTI AL-QAYYUM','Aktif','2025-2027'],
+    ['JUNAIDAH BINTI AZRI','870913030654','Setiausaha','PASTI AL-MUNAWWARAH','Aktif','2025-2027'],
+    ['WAN FARZANA BINTI KAMIL','860428032472','Bendahari','PASTI BAITUL ILMI','Aktif','2025-2027'],
+    ['USTAZ BUKHARI IZHAR BIN IKHWAN','800311030972','AJK','PASTI AL-IKHLAS','Aktif','2025-2027'],
+    ['FARIS ILYAS BIN AMANI','890502033827','AJK','PASTI AL-QAYYUM','Aktif','2025-2027'],
+    ['JUWAIRIYAH BINTI UMAIR','910726035115','AJK','PASTI AR-RAIHAN','Tidak Aktif','2023-2025'],
+    ['USTAZ HARITH BIN ZULKIFLI','790815031187','Pengerusi','PASTI AL-HUDA','Tidak Aktif','2023-2025'],
   ];
   const jemaah = [
-    ['USTAZ MUSTAQIM BIN ARIF','820825031125','Pengurus','AL-MUNAWWARAH','Aktif'],
-    ['SITI WAFA BINTI EZANI','880114036408','Penolong Pengurus','BAITUL ILMI','Aktif'],
-    ['KHAIRUNNISA BINTI JOHAN','840719031033','Setiausaha','AR-RAIHAN','Aktif'],
-    ['USTAZ JAZLI BIN ABD FAUZI','810306033230','Bendahari','AL-QAYYUM','Aktif'],
-    ['RAIHANA BINTI SHAMIL','930221036894','AJK','AL-IKHLAS','Aktif'],
-    ['ADIB MUKHRIZ BIN NUAIM','900610035842','AJK','AL-MUNAWWARAH','Tidak Aktif'],
+    ['KHAIRUNNISA BINTI JOHAN','840719031033','Pengurus','PASTI AR-RAIHAN','Aktif','2025-2027'],
+    ['USTAZ NAQIUDDIN BIN HAFIZ','850302034417','Penolong Pengurus','PASTI AR-RAIHAN','Aktif','2025-2027'],
+    ['NUR ATHIRAH BINTI ZAMRI','900511036620','Setiausaha','PASTI AR-RAIHAN','Aktif','2025-2027'],
+    ['WAN SALIHIN BIN MAT DAUD','830928035241','Bendahari','PASTI AR-RAIHAN','Aktif','2025-2027'],
+    ['ROSNAH BINTI ISMAIL','760404035508','AJK','PASTI AR-RAIHAN','Tidak Aktif','2023-2025'],
+    ['USTAZ MUSTAQIM BIN ARIF','820825031125','Pengurus','PASTI AL-MUNAWWARAH','Aktif','2025-2027'],
+    ['SITI WAFA BINTI EZANI','880114036408','Penolong Pengurus','PASTI BAITUL ILMI','Aktif','2025-2027'],
+    ['USTAZ JAZLI BIN ABD FAUZI','810306033230','Bendahari','PASTI AL-QAYYUM','Aktif','2025-2027'],
+    ['RAIHANA BINTI SHAMIL','930221036894','AJK','PASTI AL-IKHLAS','Aktif','2025-2027'],
+    ['ADIB MUKHRIZ BIN NUAIM','900610035842','AJK','PASTI AL-MUNAWWARAH','Tidak Aktif','2023-2025'],
   ];
   function initials(n){ const p=n.replace(/^(USTAZ|USTAZAH)\s+/,'').split(' '); return (p[0][0]+(p[1]?p[1][0]:'')).toUpperCase(); }
   function badge(s){ return s==='Aktif' ? '<span class="badge b-green">Aktif</span>' : '<span class="badge b-slate">Tidak Aktif</span>'; }
-  function actions(){ return '<button class="btn btn-soft btn-sm">Edit</button> <button class="btn btn-ghost btn-sm" data-action="print">Surat Pelantikan</button>'; }
   function render(id, rows){
-    document.getElementById(id).innerHTML = rows.map((r,i)=>`
+    const tb = document.getElementById(id); if (!tb) return;
+    tb.innerHTML = rows.map((r,i)=>`
       <tr>
         <td class="num">${i+1}</td>
         <td><div class="cell-user"><span class="avatar">${initials(r[0])}</span><div><div class="nm">${r[0]}</div><div class="ml">${r[3]}</div></div></div></td>
         <td class="num">${r[1]}</td>
         <td>${r[2]}</td>
         <td>${r[3]}</td>
+        <td>${r[5]}</td>
         <td>${badge(r[4])}</td>
-        <td class="right">${actions()}</td>
+        <td class="right"></td>
       </tr>`).join('');
   }
   render('ajkRows', ajk);
   render('jemaahRows', jemaah);
+
+  // Runs after the engine (restore → shell → scope). Row buttons are drawn per tier on every load,
+  // so a table saved by one tier never carries (or loses) another tier's buttons.
+  document.addEventListener('DOMContentLoaded', () => setTimeout(() => {
+    const tier = (window.PT && PT.tier) || 'kawasan';
+    const MANAGE = '<button class="btn btn-soft btn-sm">Edit</button> <button class="btn btn-ghost btn-sm" data-action="print">Surat Pelantikan</button>';
+    const VIEW = '<button class="btn btn-soft btn-sm">Lihat</button>';
+    const fillActs = () => {
+      document.querySelectorAll('#ajkRows tr').forEach(tr => { const td = tr.lastElementChild; if (td && td.innerHTML !== MANAGE) td.innerHTML = MANAGE; });
+      const J = tier === 'cawangan' ? MANAGE : VIEW;
+      document.querySelectorAll('#jemaahRows tr').forEach(tr => { const td = tr.lastElementChild; if (td && td.innerHTML !== J) td.innerHTML = J; });
+    };
+    fillActs();
+
+    // Cawangan cannot see the AJK tab → Jemaah Pengurus Cawangan is the default tab
+    const jTab = document.querySelector('.tabs [data-tab="jemaah"]');
+    if (!document.querySelector('.tabs [data-tab="ajk"]') && jTab) {
+      jTab.classList.add('active');
+      document.querySelectorAll('[data-panel]').forEach(p => p.style.display = p.dataset.panel === 'jemaah' ? '' : 'none');
+    }
+
+    // PASTI choices in the add form: only the PASTI inside the user's scope
+    const sel = document.getElementById('ajkPasti');
+    const mine = (window.DB && DB.pastiInScope) ? DB.pastiInScope() : null;
+    if (sel && mine && mine.length) sel.innerHTML = mine.map(p => `<option>${String(p.nama).replace(/[<>&"]/g,'')}</option>`).join('');
+
+    // Penggal + search filter. The engine ignores "Penggal …" values, so the page runs the whole filter
+    // (after the engine's own pass) and keeps out-of-scope rows hidden.
+    function filter(panel){
+      const tb = panel.querySelector('table.pt'), ps = panel.querySelector('select[data-penggal]'), q = panel.querySelector('.toolbar input');
+      if (!tb || !ps) return;
+      const iP = [...tb.tHead.rows[0].cells].findIndex(th => /penggal/i.test(th.textContent));
+      const want = ps.value.replace(/^Penggal\s*/i,'').trim(), term = (q && q.value || '').trim().toLowerCase();
+      [...tb.tBodies[0].rows].forEach(r => {
+        const ok = r.dataset.scopeHidden !== '1' && (!term || r.textContent.toLowerCase().includes(term))
+          && (iP < 0 || !r.children[iP] || r.children[iP].textContent.trim() === want);
+        r.style.display = ok ? '' : 'none';
+      });
+    }
+    document.querySelectorAll('[data-panel]').forEach(filter);
+    ['change','input'].forEach(ev => document.addEventListener(ev, e => {
+      const panel = e.target.closest && e.target.closest('[data-panel]');
+      if (panel && e.target.closest('.toolbar')) setTimeout(() => filter(panel), 0);
+    }));
+    // new / edited rows keep the right buttons for this tier
+    document.querySelectorAll('#ajkRows, #jemaahRows').forEach(tb => new MutationObserver(fillActs).observe(tb, { childList:true }));
+  }, 0));
 </script>
 </body>
 </html>

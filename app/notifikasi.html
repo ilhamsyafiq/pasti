@@ -6,7 +6,7 @@
 <title>Notifikasi & Notis · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=8">
+<link rel="stylesheet" href="../assets/css/app.css?v=10">
 </head>
 <body>
 <div class="pt-app" data-module="operasi" data-page="notifikasi" data-title="Notifikasi & Notis" data-subtitle="Notis & peringatan pembayaran">
@@ -74,15 +74,16 @@
         <div class="field full"><span class="label">Tajuk <span class="req">*</span></span><input class="input" placeholder="Tajuk notis"></div>
         <div class="field full"><span class="label">Kandungan <span class="req">*</span></span><textarea class="input" rows="4" placeholder="Kandungan notis"></textarea></div>
         <div class="field"><span class="label">Sasaran Peringkat <span class="req">*</span></span>
-          <select class="select">
+          <select class="select" data-levels>
             <option>Malaysia</option>
             <option>Negeri</option>
             <option>Kawasan</option>
+            <option>DUN</option>
             <option>Cawangan</option>
           </select>
         </div>
         <div class="field"><span class="label">PASTI</span>
-          <select class="select">
+          <select class="select" id="ntPasti">
             <option>Semua PASTI</option>
             <option>AR-RAIHAN</option>
             <option>AL-QAYYUM</option>
@@ -113,66 +114,64 @@
         <div class="tx"><b>Yuran belum dijelaskan</b><span>Yuran bulan Ogos 2026 bagi Ahmad Umair belum dijelaskan (RM 60).</span></div>
       </div>
     </div>
-    <div class="m-foot"><button class="btn btn-ghost" data-close>Tutup</button><button class="btn btn-primary" data-toast="Menghala ke pintu bayaran…">Bayar Sekarang</button></div>
+    <div class="m-foot"><button class="btn btn-ghost" data-close>Tutup</button><button class="btn btn-primary" data-amount="60">Bayar Sekarang</button></div>
   </div>
 </div>
 
-<script src="../assets/js/app.js?v=8"></script>
+<script src="../assets/js/app.js?v=10"></script>
 <script>
 (function(){
-  var badge = {Notis:'b-blue', 'Peringatan Bayaran':'b-amber', Sistem:'b-slate'};
-  var dot   = {Notis:'var(--info)', 'Peringatan Bayaran':'var(--accent)', Sistem:'var(--muted)'};
-
-  var items = [
-    {t:'Cuti Perayaan Maulidur Rasul', meta:'23/09/2026 · Semua Ibu Bapa (Kelantan)', jenis:'Notis'},
-    {t:'Peringatan Yuran Ogos 2026', meta:'22/09/2026 · Ibu Bapa Tertunggak (P021 Kota Bharu)', jenis:'Peringatan Bayaran'},
-    {t:'Naik Taraf Sistem 25 Sept', meta:'21/09/2026 · Semua Pengguna (Malaysia)', jenis:'Sistem'},
-    {t:'Mesyuarat Guru Bulanan', meta:'20/09/2026 · Guru & Petugas (N09 Kota Lama)', jenis:'Notis'},
-    {t:'Peringatan Yuran Julai 2026', meta:'18/09/2026 · Ibu Bapa Tertunggak (AL-QAYYUM)', jenis:'Peringatan Bayaran'},
-    {t:'Program Khatam Al-Quran', meta:'16/09/2026 · Semua Ibu Bapa (P094 Kuala Kelantan)', jenis:'Notis'},
-    {t:'Peringatan Caruman SKSPS', meta:'15/09/2026 · Guru & Petugas (Kelantan)', jenis:'Peringatan Bayaran'}
+  // Built-in notices + notices sent from this browser (pt-notis). A sent notice shows in "Semua" AND in its own tab.
+  var BADGE = {Notis:'b-blue', 'Peringatan Bayaran':'b-amber', Sistem:'b-slate'};
+  var DOT   = {Notis:'var(--info)', 'Peringatan Bayaran':'var(--accent)', Sistem:'var(--muted)'};
+  var TAB   = {Notis:'notis', Sistem:'notis', 'Peringatan Bayaran':'bayaran'};
+  var KEY = 'pt-notis';
+  var esc = function(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); };
+  var BUILTIN = [
+    {t:'Cuti Perayaan Maulidur Rasul', meta:'23/09/2026 · Semua Ibu Bapa (Kelantan)', j:'Notis'},
+    {t:'Peringatan Yuran Ogos 2026', meta:'22/09/2026 · Ibu Bapa Tertunggak (P021 Kota Bharu)', j:'Peringatan Bayaran'},
+    {t:'Naik Taraf Sistem 25 Sept', meta:'21/09/2026 · Semua Pengguna (Malaysia)', j:'Sistem'},
+    {t:'Mesyuarat Guru Bulanan', meta:'20/09/2026 · Guru & Petugas (N09 Kota Lama)', j:'Notis'},
+    {t:'Peringatan Yuran Julai 2026', meta:'18/09/2026 · Ibu Bapa Tertunggak (AL-QAYYUM)', j:'Peringatan Bayaran'},
+    {t:'Program Khatam Al-Quran', meta:'16/09/2026 · Semua Ibu Bapa (P094 Kuala Kelantan)', j:'Notis'},
+    {t:'Peringatan Caruman SKSPS', meta:'15/09/2026 · Guru & Petugas (Kelantan)', j:'Peringatan Bayaran'}
   ];
-
+  var load = function(){ try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch(e){ return []; } };
   function rowHtml(it){
-    var b = badge[it.jenis] || 'b-slate';
-    var send = it.jenis === 'Peringatan Bayaran'
-      ? '<button class="btn btn-soft btn-sm" data-toast="Peringatan bayaran dihantar">Hantar Peringatan</button>'
-      : '';
-    return '<div class="list-row">'+
-      '<span class="tag-dot" style="background:'+dot[it.jenis]+'"></span>'+
-      '<div style="flex:1">'+
-        '<div class="strong">'+it.t+'</div>'+
-        '<div class="muted" style="font-size:12px;margin-top:2px">'+it.meta+'</div>'+
-      '</div>'+
-      '<span class="badge '+b+'">'+it.jenis+'</span>'+
-      send+
-    '</div>';
+    var send = it.j === 'Peringatan Bayaran' ? '<button class="btn btn-soft btn-sm" data-toast="Peringatan bayaran dihantar">Hantar Peringatan</button>' : '';
+    return '<div class="list-row"' + (it.mine ? ' data-mine' : '') + '>' +
+      '<span class="tag-dot" style="background:' + (DOT[it.j] || 'var(--muted)') + '"></span>' +
+      '<div style="flex:1"><div class="strong">' + esc(it.t) + '</div>' +
+      '<div class="muted" style="font-size:12px;margin-top:2px">' + esc(it.meta) + '</div></div>' +
+      '<span class="badge ' + (BADGE[it.j] || 'b-slate') + '">' + esc(it.j) + '</span>' + send + '</div>';
   }
-  function render(el, list){
-    el.innerHTML = list.map(rowHtml).join('');
+  function paint(){
+    var all = load().map(function(n){ return Object.assign({ mine:true }, n); }).concat(BUILTIN);
+    var put = function(id, list){ var el = document.getElementById(id); if (el) el.innerHTML = list.length ? list.map(rowHtml).join('') : '<div class="muted" style="padding:14px 0">Tiada rekod.</div>'; };
+    put('listSemua', all);
+    put('listNotis', all.filter(function(i){ return TAB[i.j] === 'notis'; }));
+    put('listBayaran', all.filter(function(i){ return TAB[i.j] === 'bayaran'; }));
   }
 
-  render(document.getElementById('listSemua'), items);
-  render(document.getElementById('listNotis'), items.filter(function(i){ return i.jenis === 'Notis' || i.jenis === 'Sistem'; }));
-  render(document.getElementById('listBayaran'), items.filter(function(i){ return i.jenis === 'Peringatan Bayaran'; }));
-})();
-</script>
-<script>
-(function(){
-  const md=document.getElementById('notisModal'), F=l=>{ const f=[...md.querySelectorAll('.field')].find(x=>x.querySelector('.label')&&x.querySelector('.label').textContent.toLowerCase().includes(l)); return f&&f.querySelector('input,select,textarea'); };
-  const KEY='pt-notis', load=()=>{ try{ return JSON.parse(localStorage.getItem(KEY)||'[]'); }catch(e){ return []; } };
-  const box=()=>document.querySelector('.list-row') && document.querySelector('.list-row').parentElement;
-  const DOT={'Notis':'#1a73e8','Peringatan Bayaran':'#f9ab00','Sistem':'#8430ce'}, BAD={'Notis':'b-blue','Peringatan Bayaran':'b-amber','Sistem':'b-violet'};
-  const row=n=>'<div class="list-row" data-mine><span class="tag-dot" style="background:'+(DOT[n.j]||'#2fa308')+'"></span><div style="flex:1"><div class="strong">'+n.t.replace(/</g,'&lt;')+'</div><div class="muted" style="font-size:12px;margin-top:2px">'+n.meta+'</div></div><span class="badge '+(BAD[n.j]||'b-slate')+'">'+n.j+'</span></div>';
-  function paint(){ const b=box(); if(!b) return; b.querySelectorAll('[data-mine]').forEach(x=>x.remove()); load().forEach(n=>b.insertAdjacentHTML('afterbegin',row(n))); }
-  document.getElementById('ntSend').onclick=()=>{
-    const tj=F('tajuk'), kd=F('kandungan'); [tj,kd].forEach(i=>i.classList.toggle('pt-err',!i.value.trim()));
-    if(!tj.value.trim()||!kd.value.trim()){ PT.toast('Isi tajuk dan kandungan notis','red'); return; }
-    const jn=F('jenis'), sp=F('sasaran'), ps=F('pasti'), d=new Date();
-    const n={ t:tj.value.trim(), j: jn ? jn.value : 'Notis', meta: String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear()+' · '+(sp?sp.value:'')+(ps&&ps.value&&!/semua/i.test(ps.value)?' ('+ps.value+')':'') };
-    const all=load(); all.unshift(n); try{ localStorage.setItem(KEY, JSON.stringify(all)); }catch(e){}
-    paint(); md.classList.remove('open'); tj.value=''; kd.value='';
-    PT.toast('Notis "'+n.t+'" dihantar kepada '+(sp?sp.value:'penerima'));
+  // PASTI target list — only PASTI inside the signed-in admin's scope ("Semua PASTI" = all of them)
+  var ps = document.getElementById('ntPasti');
+  if (ps && window.DB && DB.pastiInScope) {
+    try { var list = DB.pastiInScope().map(function(p){ return String(p.nama).replace(/^PASTI\s+/i, ''); });
+      if (list.length) ps.innerHTML = '<option>Semua PASTI</option>' + list.map(function(n){ return '<option>' + esc(n) + '</option>'; }).join(''); } catch(e){}
+  }
+
+  var md = document.getElementById('notisModal');
+  var F = function(l){ var f = [].slice.call(md.querySelectorAll('.field')).find(function(x){ return x.querySelector('.label') && x.querySelector('.label').textContent.toLowerCase().indexOf(l) >= 0; }); return f && f.querySelector('input,select,textarea'); };
+  document.getElementById('ntSend').onclick = function(){
+    var tj = F('tajuk'), kd = F('kandungan');
+    [tj, kd].forEach(function(i){ i.classList.toggle('pt-err', !i.value.trim()); });
+    if (!tj.value.trim() || !kd.value.trim()) { PT.toast('Isi tajuk dan kandungan notis', 'red'); return; }
+    var jn = F('jenis'), sp = F('sasaran'), d = new Date();
+    var n = { t: tj.value.trim(), k: kd.value.trim(), j: jn ? jn.value : 'Notis',
+      meta: String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + d.getFullYear() + ' · Peringkat ' + (sp ? sp.value : '') + (ps && ps.value && !/semua/i.test(ps.value) ? ' (' + ps.value + ')' : '') };
+    var all = load(); all.unshift(n); try { localStorage.setItem(KEY, JSON.stringify(all)); } catch(e){}
+    paint(); md.classList.remove('open'); tj.value = ''; kd.value = '';
+    PT.toast('Notis "' + n.t + '" dihantar kepada peringkat ' + (sp ? sp.value : 'penerima'));
   };
   paint();
 })();

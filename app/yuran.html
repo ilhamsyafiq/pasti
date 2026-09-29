@@ -6,7 +6,7 @@
 <title>Pengurusan Yuran &amp; Pembayaran · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=8">
+<link rel="stylesheet" href="../assets/css/app.css?v=10">
 </head>
 <body>
 <div class="pt-app" data-module="caruman" data-page="yuran" data-title="Pengurusan Yuran &amp; Pembayaran" data-subtitle="Bil yuran, struktur & transaksi pembayaran">
@@ -19,8 +19,8 @@
         <div class="lead">Jana bil yuran murid, urus struktur yuran &amp; jejak transaksi pembayaran</div>
       </div>
       <div class="flex gap wrap">
-        <button class="btn btn-primary" data-toast="Menjana bil yuran pukal…">Jana Bil (Pukal)</button>
-        <button class="btn btn-soft" data-modal="feeModal">Tambah Struktur Yuran</button>
+        <button class="btn btn-primary" data-tiers="cawangan">Jana Bil (Pukal)</button>
+        <button class="btn btn-soft" data-modal="feeModal" data-table="#strukturTable" data-tiers="cawangan">Tambah Struktur Yuran</button>
       </div>
     </div>
 
@@ -65,7 +65,7 @@
             </select>
           </div>
           <div class="table-wrap">
-            <table class="pt">
+            <table class="pt" id="bilTable">
               <thead><tr>
                 <th>No Bil</th><th>Nama Murid</th><th>PASTI</th><th>Bulan/Tempoh</th><th>Jenis</th><th class="right">Jumlah (RM)</th><th>Status</th><th>Tindakan</th>
               </tr></thead>
@@ -75,56 +75,56 @@
                   <td><div class="cell-user"><div class="avatar">AS</div><div><div class="nm">Aleeya Sofia</div><div class="ml">4 tahun</div></div></div></td>
                   <td>PASTI Ar-Raihan</td><td>Ogos 2026</td><td>Bulanan</td>
                   <td class="right num">60.00</td><td><span class="badge b-amber">Belum</span></td>
-                  <td><button class="btn btn-primary btn-sm" data-toast="Membuka pintu bayaran…">Bayar</button></td>
+                  <td></td>
                 </tr>
                 <tr>
                   <td>BIL-2026-0802</td>
                   <td><div class="cell-user"><div class="avatar">WR</div><div><div class="nm">Wafiy Radhi</div><div class="ml">5 tahun</div></div></div></td>
                   <td>PASTI Ar-Raihan</td><td>Ogos 2026</td><td>Bulanan</td>
                   <td class="right num">60.00</td><td><span class="badge b-green">Sudah Bayar</span></td>
-                  <td><button class="btn btn-soft btn-sm" data-action="print">Resit</button></td>
+                  <td></td>
                 </tr>
                 <tr>
                   <td>BIL-2026-0803</td>
                   <td><div class="cell-user"><div class="avatar">E</div><div><div class="nm">Nur Eliya</div><div class="ml">6 tahun</div></div></div></td>
                   <td>PASTI Al-Qayyum</td><td>Ogos 2026</td><td>Bulanan</td>
                   <td class="right num">65.00</td><td><span class="badge b-green">Sudah Bayar</span></td>
-                  <td><button class="btn btn-soft btn-sm" data-action="print">Resit</button></td>
+                  <td></td>
                 </tr>
                 <tr>
                   <td>BIL-2026-0804</td>
                   <td><div class="cell-user"><div class="avatar">ZS</div><div><div class="nm">Zulqarnain Syahmi</div><div class="ml">4 tahun</div></div></div></td>
                   <td>PASTI Al-Munawwarah</td><td>Pendaftaran 2026</td><td>Sedebuk</td>
                   <td class="right num">150.00</td><td><span class="badge b-amber">Belum</span></td>
-                  <td><button class="btn btn-primary btn-sm" data-toast="Membuka pintu bayaran…">Bayar</button></td>
+                  <td></td>
                 </tr>
                 <tr>
                   <td>BIL-2026-0805</td>
                   <td><div class="cell-user"><div class="avatar">RA</div><div><div class="nm">Raihana Asma</div><div class="ml">5 tahun</div></div></div></td>
                   <td>PASTI Al-Munawwarah</td><td>Ogos 2026</td><td>Bulanan</td>
                   <td class="right num">70.00</td><td><span class="badge b-green">Sudah Bayar</span></td>
-                  <td><button class="btn btn-soft btn-sm" data-action="print">Resit</button></td>
+                  <td></td>
                 </tr>
                 <tr>
                   <td>BIL-2026-0806</td>
                   <td><div class="cell-user"><div class="avatar">LH</div><div><div class="nm">Luqman Hariz</div><div class="ml">6 tahun</div></div></div></td>
                   <td>PASTI Baitul Ilmi</td><td>Ogos 2026</td><td>Bulanan</td>
                   <td class="right num">55.00</td><td><span class="badge b-amber">Belum</span></td>
-                  <td><button class="btn btn-primary btn-sm" data-toast="Membuka pintu bayaran…">Bayar</button></td>
+                  <td></td>
                 </tr>
                 <tr>
                   <td>BIL-2026-0807</td>
                   <td><div class="cell-user"><div class="avatar">ZA</div><div><div class="nm">Zawani Aleesya</div><div class="ml">4 tahun</div></div></div></td>
                   <td>PASTI Al-Ikhlas</td><td>Ogos 2026</td><td>Bulanan</td>
                   <td class="right num">60.00</td><td><span class="badge b-green">Sudah Bayar</span></td>
-                  <td><button class="btn btn-soft btn-sm" data-action="print">Resit</button></td>
+                  <td></td>
                 </tr>
                 <tr>
                   <td>BIL-2026-0808</td>
                   <td><div class="cell-user"><div class="avatar">RI</div><div><div class="nm">Rayyan Iman</div><div class="ml">5 tahun</div></div></div></td>
                   <td>PASTI Al-Ikhlas</td><td>Pendaftaran 2026</td><td>Sedebuk</td>
                   <td class="right num">150.00</td><td><span class="badge b-amber">Belum</span></td>
-                  <td><button class="btn btn-primary btn-sm" data-toast="Membuka pintu bayaran…">Bayar</button></td>
+                  <td></td>
                 </tr>
               </tbody>
             </table>
@@ -145,7 +145,7 @@
         <div class="card-head"><h3>Struktur Yuran mengikut PASTI</h3><span class="sub">Kadar yuran pendaftaran &amp; bulanan</span></div>
         <div class="card-body">
           <div class="table-wrap">
-            <table class="pt">
+            <table class="pt" id="strukturTable">
               <thead><tr>
                 <th>PASTI</th><th class="right">Yuran Pendaftaran (RM)</th><th class="right">Yuran Bulanan (RM)</th><th>Kaedah</th><th>Status</th><th>Tindakan</th>
               </tr></thead>
@@ -153,27 +153,27 @@
                 <tr>
                   <td>PASTI Ar-Raihan</td><td class="right num">150.00</td><td class="right num">60.00</td>
                   <td>Bulanan berulang</td><td><span class="badge b-green">Aktif</span></td>
-                  <td><button class="btn btn-soft btn-sm" data-modal="feeModal">Edit</button></td>
+                  <td></td>
                 </tr>
                 <tr>
                   <td>PASTI Al-Qayyum</td><td class="right num">150.00</td><td class="right num">65.00</td>
                   <td>Bulanan berulang</td><td><span class="badge b-green">Aktif</span></td>
-                  <td><button class="btn btn-soft btn-sm" data-modal="feeModal">Edit</button></td>
+                  <td></td>
                 </tr>
                 <tr>
                   <td>PASTI Al-Munawwarah</td><td class="right num">150.00</td><td class="right num">70.00</td>
                   <td>Bulanan berulang</td><td><span class="badge b-green">Aktif</span></td>
-                  <td><button class="btn btn-soft btn-sm" data-modal="feeModal">Edit</button></td>
+                  <td></td>
                 </tr>
                 <tr>
                   <td>PASTI Baitul Ilmi</td><td class="right num">120.00</td><td class="right num">55.00</td>
                   <td>Sedebuk</td><td><span class="badge b-amber">Draf</span></td>
-                  <td><button class="btn btn-soft btn-sm" data-modal="feeModal">Edit</button></td>
+                  <td></td>
                 </tr>
                 <tr>
                   <td>PASTI Al-Ikhlas</td><td class="right num">150.00</td><td class="right num">60.00</td>
                   <td>Bulanan berulang</td><td><span class="badge b-green">Aktif</span></td>
-                  <td><button class="btn btn-soft btn-sm" data-modal="feeModal">Edit</button></td>
+                  <td></td>
                 </tr>
               </tbody>
             </table>
@@ -188,18 +188,18 @@
         <div class="card-head"><h3>Transaksi Pembayaran</h3><span class="sub">Rekod pembayaran yuran melalui pintu bayaran</span></div>
         <div class="card-body">
           <div class="table-wrap">
-            <table class="pt">
+            <table class="pt" id="trxTable">
               <thead><tr>
-                <th>No. Rujukan</th><th>Tarikh &amp; Masa</th><th>Pembayar</th><th>Nama Murid</th><th class="right">Jumlah (RM)</th><th>Kaedah</th><th>Status</th>
+                <th>No. Rujukan</th><th>Tarikh &amp; Masa</th><th>Pembayar</th><th>Nama Murid</th><th>PASTI</th><th class="right">Jumlah (RM)</th><th>Kaedah</th><th>Status</th>
               </tr></thead>
               <tbody>
-                <tr><td>BC-2026-0104318</td><td>22/09/2026 09:14</td><td>Puan Nurin Bt Ikhwan</td><td>Wafiy Radhi</td><td class="right num">60.00</td><td>FPX</td><td><span class="badge b-green">Berjaya</span></td></tr>
-                <tr><td>BC-2026-0104326</td><td>22/09/2026 10:02</td><td>Encik Taqiuddin B Mokhtar</td><td>Nur Eliya</td><td class="right num">65.00</td><td>DuitNow QR</td><td><span class="badge b-green">Berjaya</span></td></tr>
-                <tr><td>BC-2026-0104339</td><td>22/09/2026 11:37</td><td>Puan Batrisyia Bt Harith</td><td>Raihana Asma</td><td class="right num">70.00</td><td>Kad</td><td><span class="badge b-green">Berjaya</span></td></tr>
-                <tr><td>BC-2026-0104347</td><td>22/09/2026 13:20</td><td>Encik Hamdi B Rasydan</td><td>Luqman Hariz</td><td class="right num">55.00</td><td>FPX</td><td><span class="badge b-amber">Menunggu</span></td></tr>
-                <tr><td>BC-2026-0104352</td><td>22/09/2026 14:05</td><td>Puan Noraida Bt Munzir</td><td>Zawani Aleesya</td><td class="right num">60.00</td><td>DuitNow QR</td><td><span class="badge b-green">Berjaya</span></td></tr>
-                <tr><td>BC-2026-0104364</td><td>22/09/2026 15:48</td><td>Encik Umair B Amani</td><td>Zulqarnain Syahmi</td><td class="right num">150.00</td><td>Kad</td><td><span class="badge b-red">Gagal</span></td></tr>
-                <tr><td>BC-2026-0104377</td><td>22/09/2026 16:31</td><td>Puan Hasmah Bt Asri</td><td>Aleeya Sofia</td><td class="right num">60.00</td><td>FPX</td><td><span class="badge b-amber">Menunggu</span></td></tr>
+                <tr><td>BC-2026-0104318</td><td>22/09/2026 09:14</td><td>Puan Nurin Bt Ikhwan</td><td>Wafiy Radhi</td><td>PASTI Ar-Raihan</td><td class="right num">60.00</td><td>FPX</td><td><span class="badge b-green">Berjaya</span></td></tr>
+                <tr><td>BC-2026-0104326</td><td>22/09/2026 10:02</td><td>Encik Taqiuddin B Mokhtar</td><td>Nur Eliya</td><td>PASTI Al-Qayyum</td><td class="right num">65.00</td><td>DuitNow QR</td><td><span class="badge b-green">Berjaya</span></td></tr>
+                <tr><td>BC-2026-0104339</td><td>22/09/2026 11:37</td><td>Puan Batrisyia Bt Harith</td><td>Raihana Asma</td><td>PASTI Al-Munawwarah</td><td class="right num">70.00</td><td>Kad</td><td><span class="badge b-green">Berjaya</span></td></tr>
+                <tr><td>BC-2026-0104347</td><td>22/09/2026 13:20</td><td>Encik Hamdi B Rasydan</td><td>Luqman Hariz</td><td>PASTI Baitul Ilmi</td><td class="right num">55.00</td><td>FPX</td><td><span class="badge b-amber">Menunggu</span></td></tr>
+                <tr><td>BC-2026-0104352</td><td>22/09/2026 14:05</td><td>Puan Noraida Bt Munzir</td><td>Zawani Aleesya</td><td>PASTI Al-Ikhlas</td><td class="right num">60.00</td><td>DuitNow QR</td><td><span class="badge b-green">Berjaya</span></td></tr>
+                <tr><td>BC-2026-0104364</td><td>22/09/2026 15:48</td><td>Encik Umair B Amani</td><td>Zulqarnain Syahmi</td><td>PASTI Al-Munawwarah</td><td class="right num">150.00</td><td>Kad</td><td><span class="badge b-red">Gagal</span></td></tr>
+                <tr><td>BC-2026-0104377</td><td>22/09/2026 16:31</td><td>Puan Hasmah Bt Asri</td><td>Aleeya Sofia</td><td>PASTI Ar-Raihan</td><td class="right num">60.00</td><td>FPX</td><td><span class="badge b-amber">Menunggu</span></td></tr>
               </tbody>
             </table>
           </div>
@@ -217,7 +217,7 @@
     <div class="m-body">
       <div class="form-grid">
         <div class="field full"><span class="label">PASTI <span class="req">*</span></span>
-          <select class="select">
+          <select class="select" id="feePasti">
             <option>PASTI Ar-Raihan</option>
             <option>PASTI Al-Qayyum</option>
             <option>PASTI Al-Munawwarah</option>
@@ -240,6 +240,117 @@
   </div>
 </div>
 
-<script src="../assets/js/app.js?v=8"></script>
+<!-- Rekod Bayaran (Cawangan): manual cash / transfer / cheque payment received at the PASTI -->
+<div class="modal-overlay" id="rekodModal" data-own>
+  <div class="modal">
+    <div class="m-head"><h3>Rekod Bayaran</h3><button class="btn btn-ghost btn-sm" data-close>✕</button></div>
+    <div class="m-body">
+      <div class="form-grid">
+        <div class="field full"><span class="label">Murid</span><input class="input" id="rbMurid" readonly></div>
+        <div class="field"><span class="label">No Bil</span><input class="input" id="rbBil" readonly></div>
+        <div class="field"><span class="label">Jumlah (RM)</span><input class="input" id="rbJumlah" readonly></div>
+        <div class="field"><span class="label">Kaedah Bayaran <span class="req">*</span></span>
+          <select class="select" id="rbKaedah"><option>Tunai</option><option>Pindahan Bank</option><option>Cek</option></select>
+        </div>
+        <div class="field"><span class="label">No. Rujukan</span><input class="input" id="rbRef" placeholder="No. resit / transaksi / cek (pilihan)"></div>
+        <div class="field full"><span class="label">Diterima Daripada</span><input class="input" id="rbPembayar" placeholder="Nama ibu bapa / penjaga (pilihan)"></div>
+      </div>
+      <div class="muted mt" style="font-size:12.5px">Bil akan ditanda <b>Sudah Bayar</b> dan direkod dalam Transaksi Pembayaran.</div>
+    </div>
+    <div class="m-foot"><button class="btn btn-ghost" data-close>Batal</button><button class="btn btn-primary" id="rbOk">Sahkan Rekod Bayaran</button></div>
+  </div>
+</div>
+
+<script src="../assets/js/app.js?v=10"></script>
+<script>
+(function(){
+  const OV = 'pt-yuran-rekod';          // { noBil: { kaedah, ref, tarikh, masa, pembayar } } — manual payments recorded by Cawangan
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const load = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k) || 'null'); return v == null ? d : v; } catch(e){ return d; } };
+  const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} };
+  const pad = n => String(n).padStart(2,'0');
+  const now = () => { const d = new Date(); return { tarikh: pad(d.getDate()) + '/' + pad(d.getMonth()+1) + '/' + d.getFullYear(), masa: pad(d.getHours()) + ':' + pad(d.getMinutes()) }; };
+  const toast = (m, t) => { if (window.PT && PT.toast) PT.toast(m, t); };
+  const inScope = n => !(window.PT && PT.inScope) || PT.inScope(n);
+  const PAID = /sudah|berjaya|dijelaskan/i;
+
+  document.addEventListener('DOMContentLoaded', () => setTimeout(() => {
+    const tier = (window.PT && PT.tier) || 'kawasan', caw = tier === 'cawangan';
+    const bil = document.getElementById('bilTable'), str = document.getElementById('strukturTable'), trx = document.getElementById('trxTable');
+    if (!bil || !str || !trx) return;
+    const col = (tb, re) => [...tb.tHead.rows[0].cells].findIndex(th => re.test(th.textContent));
+    const txt = td => td ? (td.querySelector('.nm') || td).textContent.replace(/\s+/g,' ').trim() : '';
+
+    // ---- Bil Yuran: action per status & tier (Cawangan records manual payments; Kawasan / DUN view only)
+    const iNo = col(bil, /no\.? ?bil/i), iNama = col(bil, /nama/i), iPasti = col(bil, /^pasti/i), iBln = col(bil, /bulan|tempoh/i), iAmt = col(bil, /jumlah/i);
+    const RESIT = '<button class="btn btn-soft btn-sm" data-action="print">Resit</button>';
+    const REKOD = '<button class="btn btn-primary btn-sm" data-own data-rekod>Rekod Bayaran</button>';
+    const WAIT = '<span class="muted" style="font-size:12px">Menunggu bayaran</span>';
+    function drawBil(){
+      const rec = load(OV, {});
+      [...bil.tBodies[0].rows].forEach(tr => {
+        if (tr.dataset.scopeHidden === '1' || !inScope(txt(tr.children[iPasti]))) { tr.style.display = 'none'; tr.dataset.scopeHidden = '1'; }   // e.g. bills Jana Bil cloned for other PASTI
+        const b = tr.querySelector('.badge'), no = txt(tr.children[iNo]);
+        if (b && rec[no] && !PAID.test(b.textContent)) { b.className = 'badge b-green'; b.textContent = 'Sudah Bayar'; }
+        const want = b && PAID.test(b.textContent) ? RESIT : caw ? REKOD : WAIT, td = tr.lastElementChild;
+        if (td && td.innerHTML !== want) td.innerHTML = want;
+      });
+    }
+    drawBil();
+    new MutationObserver(drawBil).observe(bil.tBodies[0], { childList:true });
+
+    // ---- Struktur Yuran: Edit only for Cawangan (it sees only its own PASTI row)
+    const EDIT = '<button class="btn btn-soft btn-sm" data-modal="feeModal">Edit</button>', NONE = '<span class="muted">—</span>';
+    const drawStr = () => [...str.tBodies[0].rows].forEach(tr => { const td = tr.lastElementChild, want = caw ? EDIT : NONE; if (td && td.innerHTML !== want) td.innerHTML = want; });
+    drawStr();
+    new MutationObserver(drawStr).observe(str.tBodies[0], { childList:true });
+    const fp = document.getElementById('feePasti');
+    if (fp) { [...fp.options].forEach(o => { if (!inScope(o.text)) o.remove(); });
+      if (!fp.options.length && window.DB && DB.pastiInScope) fp.innerHTML = DB.pastiInScope().map(p => `<option>${esc(p.nama)}</option>`).join(''); }
+
+    // ---- Transaksi Pembayaran: logged payments (BayarCash & Rekod Bayaran), newest first, above the sample rows
+    const payments = () => { if (window.PT && PT.payments) { try { return PT.payments() || []; } catch(e){} } const a = load('pt-payments', []); return Array.isArray(a) ? a : []; };
+    function drawTrx(){
+      trx.querySelectorAll('tbody tr[data-pay]').forEach(r => r.remove());
+      const have = new Set([...trx.tBodies[0].rows].map(r => txt(r.children[0])));
+      const list = payments().filter(p => p && p.ref && !have.has(p.ref) && (!p.pasti || inScope(p.pasti)) && (p.portal === 'parent' || /yuran|bil/i.test(p.untuk || '')));
+      trx.tBodies[0].insertAdjacentHTML('afterbegin', list.map(p => `<tr data-pay="1"><td>${esc(p.ref)}</td><td>${esc(p.tarikh)} ${esc(p.masa || '')}</td>
+        <td>${esc(p.pembayar || '—')}${p.rekodOleh ? `<div class="muted" style="font-size:11.5px">Direkod: ${esc(p.rekodOleh)}</div>` : ''}</td>
+        <td>${esc(p.murid || '—')}</td><td>${esc(p.pasti || '—')}</td><td class="right num">${(+p.jumlah || 0).toFixed(2)}</td><td>${esc(p.kaedah || '—')}</td><td><span class="badge b-green">Berjaya</span></td></tr>`).join(''));
+    }
+    drawTrx();
+    window.addEventListener('storage', e => { if (e.key === 'pt-payments') drawTrx(); });
+
+    // ---- Rekod Bayaran modal (Cawangan)
+    const M = document.getElementById('rekodModal'), $ = id => document.getElementById(id);
+    let ROW = null;
+    bil.addEventListener('click', e => {
+      const b = e.target.closest('[data-rekod]'); if (!b || !caw) return;
+      ROW = b.closest('tr');
+      $('rbMurid').value = txt(ROW.children[iNama]) + ' · ' + txt(ROW.children[iPasti]);
+      $('rbBil').value = txt(ROW.children[iNo]);
+      $('rbJumlah').value = txt(ROW.children[iAmt]);
+      $('rbKaedah').selectedIndex = 0; $('rbRef').value = ''; $('rbPembayar').value = '';
+      M.classList.add('open');
+    });
+    M.addEventListener('click', e => {
+      if (e.target === M) { M.classList.remove('open'); return; }
+      if (!e.target.closest('#rbOk') || !ROW) return;
+      const t = now(), no = txt(ROW.children[iNo]), kaedah = $('rbKaedah').value, amt = +txt(ROW.children[iAmt]).replace(/[^\d.]/g,'') || 0;
+      const ref = $('rbRef').value.trim() || ('RKD-' + new Date().getFullYear() + '-' + String(Date.now()).slice(-6));
+      const pembayar = $('rbPembayar').value.trim() || 'Ibu bapa / penjaga';
+      const rec = load(OV, {}); rec[no] = { kaedah, ref, tarikh: t.tarikh, masa: t.masa, pembayar }; save(OV, rec);
+      const pay = { ref, tarikh: t.tarikh, masa: t.masa, jumlah: amt, kaedah, untuk: 'Yuran ' + txt(ROW.children[iBln]) + ' · ' + no, pembayar,
+        murid: txt(ROW.children[iNama]), pasti: txt(ROW.children[iPasti]).toUpperCase(), portal: 'admin', rekodOleh: (window.PT && PT.user && PT.user.nama) || 'Pentadbir Cawangan' };
+      if (window.PT && PT.logPayment) PT.logPayment(pay);
+      else { let a = load('pt-payments', []); if (!Array.isArray(a)) a = []; a.unshift(pay); save('pt-payments', a); }
+      M.classList.remove('open'); drawBil(); drawTrx();
+      const r = ROW; r.style.transition = 'background .6s'; r.style.background = 'var(--brand-l)'; setTimeout(() => r.style.background = '', 900);
+      toast('Bayaran RM ' + amt.toFixed(2) + ' (' + kaedah + ') direkod · bil ' + no + ' ditanda Sudah Bayar');
+      ROW = null;
+    });
+  }, 0));
+})();
+</script>
 </body>
 </html>

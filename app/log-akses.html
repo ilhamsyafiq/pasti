@@ -6,7 +6,7 @@
 <title>Log Akses (Audit) · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=8">
+<link rel="stylesheet" href="../assets/css/app.css?v=10">
 </head>
 <body>
 <div class="pt-app" data-module="operasi" data-page="log-akses" data-title="Log Akses (Audit)" data-subtitle="Semua tindakan pengguna direkod">
@@ -46,11 +46,12 @@
             <select class="select" id="fDate"><option>Semua Tarikh</option></select>
           </div>
           <div class="spacer"></div>
-          <button class="btn btn-soft" data-action="print">Eksport</button>
+          <button class="btn btn-soft">Eksport</button>
+          <button class="btn btn-ghost" data-action="print">Cetak</button>
         </div>
 
         <div class="table-wrap">
-          <table class="pt">
+          <table class="pt" data-nosave>
             <thead><tr>
               <th>Tarikh &amp; Masa</th><th>Pengguna</th><th>Peranan</th><th>Lokasi</th><th>Tindakan</th><th>Modul</th><th>Alamat IP</th><th>Status</th>
             </tr></thead>
@@ -63,7 +64,7 @@
   </main>
 </div>
 
-<script src="../assets/js/app.js?v=8"></script>
+<script src="../assets/js/app.js?v=10"></script>
 <script>
 (function(){
   // Each entry records WHERE it happened, so every tier sees only its own area:
@@ -113,17 +114,61 @@
     cawangan: { see: function(l){ return l.p === "PASTI AR-RAIHAN"; },   txt:"PASTI Ar-Raihan (pentadbir, guru & ibu bapa)", mult: 1 },
   }[tier] || { see: function(){ return true; }, txt:'', mult: 1 };
 
-  var rows = R.filter(function(r){ return SCOPE.see(L[r[7]]); });
+  var esc = function(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); };
+  var title = function(s){ return String(s || '').toLowerCase().replace(/\b\w/g, function(c){ return c.toUpperCase(); }); };
+  var rows = R.filter(function(r){ return SCOPE.see(L[r[7]]); }).map(function(r){ return r.concat([L[r[7]].lbl, '']); });
+
+  // Live entries written by PT.logAccess (localStorage 'pt-log', newest first) — prepended, scoped by the PASTI / lokasi they carry.
+  var ROLE_SHORT = { pusat:'Pusat', negeri:'Negeri', kawasan:'Kawasan', dun:'DUN', cawangan:'Cawangan', guru:'Guru', pembantu:'Pembantu', ibubapa:'Ibu Bapa' };
+  var roleShort = function(p){ var s = String(p || ''), k = s.toLowerCase(); if (ROLE_SHORT[k]) return ROLE_SHORT[k];
+    if (/ibu bapa|penjaga/i.test(s)) return 'Ibu Bapa'; if (/pembantu/i.test(s)) return 'Pembantu'; if (/guru/i.test(s)) return 'Guru';
+    var m = /(pusat|negeri|kawasan|dun|cawangan)/i.exec(s); return m ? ROLE_SHORT[m[1].toLowerCase()] : (s || '—'); };
+  tierCls.Pembantu = 'b-green';
+  var S = (window.PT && PT.scope) || {}, G = (window.DB && DB.GEO) || {}, NEG = (window.DB && DB.NEGERI) || [];
+  var U = function(s){ return String(s || '').toUpperCase().trim(); };
+  function locOf(lok){ // where a lokasi string sits → { lvl, n, k, d } (null = not a locality)
+    var x = U(lok); if (!x) return null;
+    if (NEG.indexOf(x) >= 0) return { lvl:'negeri', n:x };
+    for (var n in G) for (var k in G[n]) { if (k === x) return { lvl:'kawasan', n:n, k:k }; if (G[n][k].indexOf(x) >= 0) return { lvl:'dun', n:n, k:k, d:x }; }
+    return null;
+  }
+  function seeLive(e){
+    if (tier === 'pusat') return true;
+    var pasti = e.pasti || (/^PASTI\s/i.test(e.lokasi || '') ? e.lokasi : '');
+    if (pasti) return !!(window.PT && PT.inScope && PT.inScope(pasti));
+    var l = locOf(e.lokasi); if (!l) return false;
+    if (tier === 'negeri')  return l.n === U(S.negeri);
+    if (tier === 'kawasan') return !!l.k && l.k === U(S.kawasan);
+    if (tier === 'dun')     return !!l.d && l.d === U(S.dun);
+    return false;
+  }
+  var live = []; try { live = JSON.parse(localStorage.getItem('pt-log') || '[]'); } catch(e){}
+  if (!Array.isArray(live)) live = [];
+  // privacy: which pupil an MBK record belongs to is shown only to the PASTI's own Cawangan admin
+  var mbkLog = function(e){ return /mbk|keperluan khas/i.test((e.tindakan || '') + ' ' + (e.modul || '')); };
+  var liveRows = live.filter(function(e){ return e && typeof e === 'object' && seeLive(e); }).map(function(e){
+    var detail = e.detail ? (mbkLog(e) && tier !== 'cawangan' ? 'Butiran murid dilindungi' : e.detail) : '';
+    return [(e.tarikh || '') + ' ' + String(e.masa || '').slice(0, 5), e.pengguna || '—', roleShort(e.peranan), e.tindakan || '—', e.modul || '—', e.ip || '—',
+      e.status === 'Gagal' ? 'Gagal' : 'Berjaya', null, e.pasti ? title(e.pasti).replace(/^Pasti /, 'PASTI ') : (e.lokasi || '—'), detail];
+  });
+  rows = liveRows.concat(rows);
   document.getElementById('logScope').innerHTML = 'Skop log anda: <b>' + SCOPE.txt + '</b>. Akses pentadbir tamat (di-flush) secara automatik selepas 2 tahun dan perlu diperbaharui.';
 
   // stats (today's volume scales with the size of the scope)
   var fail = rows.filter(function(r){ return r[6] === 'Gagal'; }).length;
   var users = {}; rows.forEach(function(r){ users[r[1]] = 1; });
-  var today = rows.filter(function(r){ return r[0].indexOf('27/09/2026') === 0; }).length;
+  // sample rows scale with the size of the scope; live pt-log rows count one each
+  var sFail = 0, lFail = 0, sUsers = {}, lUsers = {};
+  rows.forEach(function(r){ var isLive = r[7] === null; if (r[6] === 'Gagal') { if (isLive) lFail++; else sFail++; } (isLive ? lUsers : sUsers)[r[1]] = 1; });
+  fail = sFail + lFail;
+  var d0 = new Date(), todayStr = ('0' + d0.getDate()).slice(-2) + '/' + ('0' + (d0.getMonth() + 1)).slice(-2) + '/' + d0.getFullYear();
+  var today = rows.filter(function(r){ return r[7] !== null && r[0].indexOf('27/09/2026') === 0; }).length;
+  var liveToday = liveRows.filter(function(r){ return r[0].indexOf(todayStr) === 0; }).length;
+  var newUsers = Object.keys(lUsers).filter(function(u){ return !sUsers[u]; }).length;
   var st = [
-    ['Log Hari Ini', (today * SCOPE.mult * 21).toLocaleString('en-MY'), '▲ 6% dari semalam', 'up', 'g', 'L'],
-    ['Log Gagal/Ditolak', String(fail * SCOPE.mult), fail ? '▼ Perlu semakan' : 'Tiada isu', fail ? 'down' : 'flat', 'r', '!'],
-    ['Pengguna Aktif', String(Object.keys(users).length * SCOPE.mult * 3), 'Dalam 24 jam', 'flat', 't', 'P'],
+    ['Log Hari Ini', (today * SCOPE.mult * 21 + liveToday).toLocaleString('en-MY'), '▲ 6% dari semalam', 'up', 'g', 'L'],
+    ['Log Gagal/Ditolak', String(sFail * SCOPE.mult + lFail), fail ? '▼ Perlu semakan' : 'Tiada isu', fail ? 'down' : 'flat', 'r', '!'],
+    ['Pengguna Aktif', String(Object.keys(sUsers).length * SCOPE.mult * 3 + newUsers), 'Dalam 24 jam', 'flat', 't', 'P'],
     ['Akses Akan Tamat 30 hari', String(Math.max(1, Math.round(SCOPE.mult / 4))), 'Perlu perbaharui', 'flat', 'a', 'T'],
   ];
   document.getElementById('logStats').innerHTML = st.map(function(s){
@@ -136,15 +181,14 @@
   fill('fUser', 1); fill('fModul', 4); fill('fAct', 3); fill('fDate', 0);
 
   document.getElementById('logBody').innerHTML = rows.map(function(r){
-    var l = L[r[7]];
     return '<tr>'
-      + '<td class="num">'+r[0]+'</td>'
-      + '<td><div class="cell-user"><div class="avatar">'+r[1].replace(/^(Dato' Hj|Ustazah|Ustaz|Puan|Encik)\s+/,'').split(' ').slice(0,2).map(function(w){return w[0];}).join('').toUpperCase()+'</div><div><div class="nm">'+r[1]+'</div><div class="ml">'+r[2]+'</div></div></div></td>'
-      + '<td><span class="badge '+(tierCls[r[2]]||'b-slate')+'">'+r[2]+'</span></td>'
-      + '<td>'+l.lbl+'</td>'
-      + '<td>'+r[3]+'</td>'
-      + '<td>'+r[4]+'</td>'
-      + '<td class="num">'+r[5]+'</td>'
+      + '<td class="num">'+esc(r[0])+'</td>'
+      + '<td><div class="cell-user"><div class="avatar">'+esc(String(r[1]).replace(/^(Dato' Hj|Ustazah|Ustaz|Puan|Encik)\s+/i,'').split(' ').slice(0,2).map(function(w){return w[0] || '';}).join('').toUpperCase())+'</div><div><div class="nm">'+esc(r[1])+'</div><div class="ml">'+esc(r[2])+'</div></div></div></td>'
+      + '<td><span class="badge '+(tierCls[r[2]]||'b-slate')+'">'+esc(r[2])+'</span></td>'
+      + '<td>'+esc(r[8])+'</td>'
+      + '<td>'+esc(r[3])+(r[9] ? '<div class="muted" style="font-size:11.5px">'+esc(r[9])+'</div>' : '')+'</td>'
+      + '<td>'+esc(r[4])+'</td>'
+      + '<td class="num">'+esc(r[5])+'</td>'
       + '<td>'+(r[6] === 'Berjaya' ? '<span class="badge b-green">Berjaya</span>' : '<span class="badge b-red">Gagal</span>')+'</td>'
       + '</tr>';
   }).join('');

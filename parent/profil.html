@@ -6,7 +6,7 @@
 <title>Profil Saya · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=8">
+<link rel="stylesheet" href="../assets/css/app.css?v=10">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#2fa308">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -20,7 +20,7 @@
     <section class="pp-hero">
       <div class="row">
         <div class="pp-prof">
-          <div class="av">NA</div>
+          <div class="av">NN</div>
           <div>
             <div class="crumbs">Portal Ibu Bapa › Profil Saya</div>
             <h1>Puan Nurul Nabihah binti Hafizuddin</h1>
@@ -44,7 +44,7 @@
         <div data-panel="profil">
           <form>
             <div class="form-grid">
-              <div class="field full"><span class="label">Nama Penuh <span class="req">*</span></span><input class="input" value="PUAN-NAJAHUL NABIHAH BINTI HAFIZUDDIN"></div>
+              <div class="field full"><span class="label">Nama Penuh <span class="req">*</span></span><input class="input" value="PUAN NURUL NABIHAH BINTI HAFIZUDDIN"></div>
               <div class="field"><span class="label">No. Kad Pengenalan <span class="req">*</span></span><input class="input" value="850312-03-1714"></div>
               <div class="field"><span class="label">No. Telefon <span class="req">*</span></span><input class="input" value="013-1006 352"></div>
               <div class="field"><span class="label">Emel</span><input class="input" type="email" value="ibubapa@pasti.org"></div>
@@ -95,19 +95,20 @@
   </main>
 </div>
 
-<script src="../assets/js/app.js?v=8"></script>
-<script src="../assets/js/parent-kids.js?v=3"></script>
+<script src="../assets/js/app.js?v=10"></script>
+<script src="../assets/js/parent-kids.js?v=5"></script>
 <script>
 (function(){
-  const { me, kids, demo } = PK.load(); if (demo) return;
-  const h = document.querySelector('.pp-hero');
-  h.querySelector('.av').textContent = PK.ini(me.nama);
+  const { me, kids, demo } = PK.load();
+  const h = document.querySelector('.pp-hero'), f = document.querySelector('[data-panel="profil"]');
+  const set = (i, v) => { const x = f.querySelectorAll('input')[i]; if (x) x.value = v; };
+  // hero and form always show the same name (the signed-in DB user)
+  h.querySelector('.av').textContent = PK.ini(String(me.nama).replace(/^(puan|encik|en\.?|tuan|cik|dr\.?|ustaz|ustazah)\s+/i, ''));
   h.querySelector('h1').textContent = PK.title(me.nama);
+  set(0, me.nama.toUpperCase()); set(3, me.emel);
+  if (demo) return;
   h.querySelector('.lead').textContent = me.emel;
   h.querySelector('.mini').innerHTML = '<div>Anak berdaftar<b>' + kids.length + '</b></div>' + (kids[0] ? '<div>PASTI<b>' + PK.esc(kids[0].pasti.replace(/^PASTI /,'')) + '</b></div>' : '');
-  const f = document.querySelector('[data-panel="profil"]');
-  const set = (i, v) => { const x = f.querySelectorAll('input')[i]; if (x) x.value = v; };
-  set(0, me.nama.toUpperCase()); set(3, me.emel);
 })();
 </script>
 </body>

@@ -6,7 +6,7 @@
 <title>Log Masuk · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/app.css?v=8">
+<link rel="stylesheet" href="assets/css/app.css?v=10">
 </head>
 <body>
 <div class="auth-wrap">
@@ -29,7 +29,7 @@
         <div class="muted" style="font-size:11.5px;margin-top:10px;line-height:1.7">
           <b>Emel menentukan peranan:</b><br>
           Pentadbir: pusat@ · negeri@ · kawasan@ · dun@ · cawangan@ pasti.org<br>
-          Ibu bapa: <b>ibubapa@pasti.org</b> · Guru: <b>guru@pasti.org</b><br>Akaun baharu yang dicipta dalam <b>Tetapan → Pengguna</b> juga boleh log masuk di sini. <a href="index.html?reset=1" style="color:var(--brand-d);font-weight:600" >Set semula data demo</a>
+          Ibu bapa: <b>ibubapa@pasti.org</b> · Guru: <b>guru@pasti.org</b> · Pembantu: <b>pembantu@pasti.org</b><br>Akaun baharu yang dicipta dalam <b>Tetapan → Pengguna</b> juga boleh log masuk di sini. <a href="index.html?reset=1" style="color:var(--brand-d);font-weight:600" >Set semula data demo</a>
         </div>
       </form>
 
@@ -56,6 +56,7 @@
     if (!u) { PT.toast('Emel ini tidak berdaftar. Akaun dicipta oleh pentadbir peringkat atas anda.', 'red'); return false; }
     if (u.status !== 'Aktif') { PT.toast('Akaun ini telah dinyahaktifkan. Hubungi pentadbir anda.', 'red'); return false; }
     localStorage.setItem('pt-user', u.emel);
+    localStorage.removeItem('pt-tier');                  // the app shell always takes the tier from the account's role
     if (u.peranan === 'ibubapa') { location.href='parent/dashboard.html'; return false; }
     if (u.peranan === 'guru' || u.peranan === 'pembantu') { location.href='guru/dashboard.html'; return false; }
     localStorage.setItem('pt-tier', u.peranan);
@@ -63,6 +64,20 @@
     return false;
   }
 </script>
-<script src="assets/js/app.js?v=8"></script>
+<script src="assets/js/app.js?v=10"></script>
+<script>
+  // "?logout=1" (Log Keluar in every portal) ends the session; a guarded page may leave a message.
+  (function(){
+    let msg = null;
+    if (/[?&]logout=1/.test(location.search)) {
+      try { localStorage.removeItem('pt-user'); localStorage.removeItem('pt-tier'); sessionStorage.removeItem('pt-login-msg'); } catch(e){}
+      msg = ['Anda telah log keluar', 'green'];
+      try { history.replaceState(null, '', location.pathname); } catch(e){}
+    } else {
+      try { const m = sessionStorage.getItem('pt-login-msg'); if (m) { sessionStorage.removeItem('pt-login-msg'); msg = [m, 'red']; } } catch(e){}
+    }
+    if (msg) setTimeout(() => window.PT && PT.toast(msg[0], msg[1]), 300);
+  })();
+</script>
 </body>
 </html>

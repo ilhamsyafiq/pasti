@@ -6,7 +6,7 @@
 <title>Kempen PASTI · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=8">
+<link rel="stylesheet" href="../assets/css/app.css?v=10">
 </head>
 <body>
 <div class="pt-app" data-module="kempen" data-page="kempen" data-title="Kempen PASTI" data-subtitle="Kempen kutipan mengikut PASTI / lokaliti">
@@ -104,54 +104,153 @@
   </div>
 </div>
 
-<script src="../assets/js/app.js?v=8"></script>
+<script src="../assets/js/app.js?v=10"></script>
 <script>
 (function(){
-  var kempen = [
-    {nama:'Tabung Naik Taraf PASTI AR-RAIHAN',        lokaliti:"PASTI AR-RAIHAN · P021 Kota Bharu",   terkumpul:38500,  sasaran:60000,  status:'Aktif', b:'b-green'},
-    {nama:'Bantuan Yuran Anak Yatim N09 Kota Lama', lokaliti:'DUN N09 Kota Lama',              terkumpul:22400,  sasaran:35000,  status:'Aktif', b:'b-green'},
-    {nama:'Wakaf Buku PASTI AL-MUNAWWARAH',                   lokaliti:'PASTI AL-MUNAWWARAH · P021 Kota Bharu',        terkumpul:9800,   sasaran:15000,  status:'Aktif', b:'b-green'},
-    {nama:'Tabung Ihsan Ramadan Kawasan Kota Bharu',  lokaliti:'P021 Kota Bharu',                    terkumpul:54200,  sasaran:80000,  status:'Aktif', b:'b-green'},
-    {nama:'Tabung Kelengkapan PASTI BAITUL ILMI',      lokaliti:'PASTI BAITUL ILMI · N10 Bunut Payong',       terkumpul:16000,  sasaran:20000,  status:'Aktif', b:'b-green'},
-    {nama:'Bantuan Banjir PASTI AL-IKHLAS',       lokaliti:'PASTI AL-IKHLAS · N10 Bunut Payong',    terkumpul:28000,  sasaran:28000,  status:'Tamat', b:'b-slate'}
+  // ---- Kempen list: built-in demo campaigns + campaigns created in this browser (pt-kempen).
+  // Every campaign is tied to a PASTI / DUN / Kawasan / Negeri; a tier only sees campaigns inside its scope chain.
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const up = s => String(s || '').toUpperCase().trim();
+  const code = s => { const m = up(s).match(/^(?:DUN\s+)?([NP]\d+)/); return m ? m[1] : up(s); };   // "N09 KOTA LAMA" → "N09"
+  const nPasti = s => up(s).replace(/^PASTI\s+/, '').replace(/[^A-Z0-9]/g, '');
+  const PASTI = (window.DB && DB.all) ? DB.all('pasti').filter(p => p.kod || p.status === 'Lulus') : [];
+  const S = (window.PT && PT.scope) || null, TIER = (S && S.tier) || (window.PT && PT.tier) || 'kawasan';
+
+  // locality string → { negeri, kawasan, dun, pasti } using the PASTI database
+  function locOf(str){
+    const t = up(str);
+    const p = PASTI.find(x => t.includes(up(x.nama)) || nPasti(t.split('·')[0]) === nPasti(x.nama));
+    if (p) return { negeri:p.negeri, kawasan:p.kawasan, dun:p.dun, pasti:p.nama };
+    const n = t.match(/\bN\d{2,}\b/), k = t.match(/\bP\d{3}\b/);
+    if (n) { const q = PASTI.find(x => code(x.dun) === n[0]); return q ? { negeri:q.negeri, kawasan:q.kawasan, dun:q.dun } : { dun:n[0] }; }
+    if (k) { const q = PASTI.find(x => code(x.kawasan) === k[0]); return q ? { negeri:q.negeri, kawasan:q.kawasan } : { kawasan:k[0] }; }
+    const g = PASTI.find(x => t.includes(up(x.negeri)));
+    return g ? { negeri:g.negeri } : {};
+  }
+  // in the viewer's scope chain? (a PASTI campaign → PT.inScope; otherwise compare the levels both sides know)
+  function inScope(L){
+    if (!S || TIER === 'pusat') return true;
+    if (L.pasti && window.PT && PT.inScope) return PT.inScope(L.pasti);
+    const same = (a, b, f) => !a || !b || f(a) === f(b);
+    return same(L.negeri, S.negeri, up) && same(L.kawasan, S.kawasan, code) && same(L.dun, S.dun, code) && (!L.pasti || same(L.pasti, S.pasti, nPasti));
+  }
+
+  const BUILTIN = [
+    {nama:'Tabung Naik Taraf PASTI AR-RAIHAN',       lokaliti:'PASTI AR-RAIHAN · N09 Kota Lama',        terkumpul:38500, sasaran:60000, status:'Aktif', mula:'2026-07-01', tamat:'2026-12-31', ket:'Naik taraf bilik darjah & tandas murid.'},
+    {nama:'Bantuan Yuran Anak Yatim N09 Kota Lama',   lokaliti:'DUN N09 Kota Lama',                      terkumpul:22400, sasaran:35000, status:'Aktif', mula:'2026-06-01', tamat:'2026-11-30', ket:'Bantuan yuran bulanan murid yatim di DUN Kota Lama.'},
+    {nama:'Wakaf Buku PASTI AL-MUNAWWARAH',           lokaliti:'PASTI AL-MUNAWWARAH · N10 Bunut Payong', terkumpul:9800,  sasaran:15000, status:'Aktif', mula:'2026-08-01', tamat:'2026-10-31', ket:'Buku iqra\' & bahan bacaan kanak-kanak.'},
+    {nama:'Tabung Ihsan Ramadan Kawasan Kota Bharu',  lokaliti:'P021 Kota Bharu',                        terkumpul:54200, sasaran:80000, status:'Aktif', mula:'2026-02-01', tamat:'2026-12-31', ket:'Sumbangan ihsan untuk keluarga murid asnaf.'},
+    {nama:'Tabung Kelengkapan PASTI BAITUL ILMI',     lokaliti:'PASTI BAITUL ILMI · N09 Kota Lama',      terkumpul:16000, sasaran:20000, status:'Aktif', mula:'2026-05-01', tamat:'2026-10-31', ket:'Meja, kerusi & peralatan kelas.'},
+    {nama:'Bantuan Banjir PASTI AL-IKHLAS',           lokaliti:'PASTI AL-IKHLAS · N09 Kota Lama',        terkumpul:28000, sasaran:28000, status:'Tamat', mula:'2025-12-01', tamat:'2026-03-31', ket:'Pemulihan premis selepas banjir.'}
   ];
-  function rm(n){ return 'RM ' + n.toLocaleString('en-MY'); }
-  try { JSON.parse(localStorage.getItem('pt-kempen')||'[]').forEach(function(k){ kempen.unshift(k); }); } catch(e){}
+  let saved = []; try { saved = JSON.parse(localStorage.getItem('pt-kempen') || '[]'); } catch(e){}
+  const kempen = saved.concat(BUILTIN).map(k => Object.assign({}, k, { loc: (k.loc && typeof k.loc === 'object') ? k.loc : locOf(k.lokaliti) }))
+    .filter(k => inScope(k.loc));
   window.__KEMPEN = kempen;
-  var html = kempen.map(function(k){
-    var pct = Math.min(100, Math.round(k.terkumpul / k.sasaran * 100));
-    return '<div class="card" data-nama="'+k.nama.replace(/"/g,'&quot;')+'"><div class="card-body">'+
-      '<div class="flex between aic wrap gap mb"><span class="badge '+k.b+'">'+k.status+'</span><span class="muted num" style="font-size:12px">'+pct+'%</span></div>'+
-      '<h3 style="font-size:15px;line-height:1.35">'+k.nama+'</h3>'+
-      '<div class="muted" style="font-size:12px;margin-top:5px">'+k.lokaliti+'</div>'+
-      '<div class="mt">'+
-        '<div class="flex between aic" style="font-size:12.5px;margin-bottom:7px"><span class="strong num">'+rm(k.terkumpul)+'</span><span class="muted num">/ '+rm(k.sasaran)+'</span></div>'+
-        '<div style="width:100%;height:8px;border-radius:20px;background:#eef1ec;overflow:hidden"><div style="width:'+pct+'%;height:100%;background:var(--brand);border-radius:20px"></div></div>'+
-      '</div>'+
-      '<div class="flex gap mt" data-own><button class="btn btn-soft btn-sm" data-kp="lihat">Lihat</button><button class="btn btn-ghost btn-sm" data-kp="kongsi">Kongsi</button></div>'+
-    '</div></div>';
-  }).join('');
-  document.getElementById('kempenGrid').innerHTML = html;
-})();
-</script>
-<script>
-(function(){
-  const md=document.getElementById('kempenModal'), F=l=>{ const f=[...md.querySelectorAll('.field')].find(x=>x.querySelector('.label')&&x.querySelector('.label').textContent.toLowerCase().includes(l)); return f&&f.querySelector('input,select,textarea'); };
-  document.getElementById('kpSave').onclick=()=>{
-    const nm=F('nama'), sa=F('sasaran'); [nm,sa].forEach(i=>i&&i.classList.toggle('pt-err',!i.value.trim()));
-    if(!nm.value.trim()||!sa||!+String(sa.value).replace(/[^\d.]/g,'')){ PT.toast('Isi nama kempen dan sasaran (RM)','red'); return; }
-    const u=F('untuk'), k={ nama:nm.value.trim(), lokaliti: u ? u.value : 'P021 Kota Bharu', terkumpul:0, sasaran:+String(sa.value).replace(/[^\d.]/g,''), status:'Aktif', b:'b-green' };
-    let all=[]; try{ all=JSON.parse(localStorage.getItem('pt-kempen')||'[]'); }catch(e){} all.unshift(k); try{ localStorage.setItem('pt-kempen', JSON.stringify(all)); }catch(e){}
-    try{ sessionStorage.setItem('pt-flash','Kempen "'+k.nama+'" dicipta dan boleh menerima derma'); }catch(e){} location.reload();
+
+  const rm = n => 'RM ' + Number(n || 0).toLocaleString('en-MY');
+  const dmy = s => { const m = String(s || '').match(/^(\d{4})-(\d{2})-(\d{2})$/); return m ? m[3] + '/' + m[2] + '/' + m[1] : (s || '—'); };
+  const pctOf = k => k.sasaran ? Math.min(100, Math.round(k.terkumpul / k.sasaran * 100)) : 0;
+  const card = k => { const pct = pctOf(k), b = k.status === 'Tamat' ? 'b-slate' : 'b-green';
+    return '<div class="card" data-nama="' + esc(k.nama) + '"><div class="card-body">' +
+      '<div class="flex between aic wrap gap mb"><span class="badge ' + b + '">' + esc(k.status) + '</span><span class="muted num" style="font-size:12px">' + pct + '%</span></div>' +
+      '<h3 style="font-size:15px;line-height:1.35">' + esc(k.nama) + '</h3>' +
+      '<div class="muted" style="font-size:12px;margin-top:5px">' + esc(k.lokaliti) + '</div>' +
+      (k.mula || k.tamat ? '<div class="muted" style="font-size:11.5px;margin-top:3px">' + dmy(k.mula) + ' – ' + dmy(k.tamat) + '</div>' : '') +
+      '<div class="mt"><div class="flex between aic" style="font-size:12.5px;margin-bottom:7px"><span class="strong num">' + rm(k.terkumpul) + '</span><span class="muted num">/ ' + rm(k.sasaran) + '</span></div>' +
+      '<div style="width:100%;height:8px;border-radius:20px;background:#eef1ec;overflow:hidden"><div style="width:' + pct + '%;height:100%;background:var(--brand);border-radius:20px"></div></div></div>' +
+      '<div class="flex gap mt" data-own><button class="btn btn-soft btn-sm" data-kp="lihat">Lihat</button><a class="btn btn-ghost btn-sm" data-kp="kongsi" href="derma.html?kempen=' + encodeURIComponent(k.nama) + '">Kongsi</a></div>' +
+    '</div></div>'; };
+
+  // ---- stat tiles from the campaigns this tier can see
+  function stats(){
+    const v = [...document.querySelectorAll('.pt-main .grid.g-4 .stat .value')], act = kempen.filter(k => k.status !== 'Tamat');
+    const sas = kempen.reduce((a,k) => a + (+k.sasaran || 0), 0), tk = kempen.reduce((a,k) => a + (+k.terkumpul || 0), 0);
+    if (v.length < 4) return;
+    v[0].textContent = act.length; v[1].textContent = rm(sas); v[2].textContent = rm(tk); v[3].textContent = kempen.length - act.length;
+    const tr = v[2].parentElement.querySelector('.trend'); if (tr) tr.textContent = '▲ ' + (sas ? Math.round(tk / sas * 100) : 0) + '% tercapai';
+  }
+
+  // ---- filters (search + status + locality) on the card grid
+  const grid = document.getElementById('kempenGrid');
+  const fbar = document.querySelector('.card .filter-bar'), tbar = grid.closest('.card-body').querySelector('.toolbar');
+  const LEVELS = { negeri:[up,'negeri'], kawasan:[code,'kawasan'], dun:[code,'dun'], pasti:[nPasti,'pasti'] };
+  function levelOf(sel){ const m = /^Semua (Negeri|Kawasan|DUN|PASTI)$/i.exec((sel.options[0] || {}).text || ''); return m ? m[1].toLowerCase() : null; }
+  function render(){
+    const q = up(tbar.querySelector('input') ? tbar.querySelector('input').value : '');
+    const st = tbar.querySelector('select') ? tbar.querySelector('select').value : '';
+    const locs = [...fbar.querySelectorAll('select')].map(s => ({ lv: levelOf(s), v: s.value, first: s.selectedIndex === 0, hidden: s.style.display === 'none' || (s.closest('.field') && s.closest('.field').style.display === 'none') }))
+      .filter(x => x.lv && !x.first && !x.hidden);
+    const list = kempen.filter(k => {
+      if (q && !up(k.nama + ' ' + k.lokaliti).includes(q)) return false;
+      if (st && !/^semua/i.test(st) && k.status !== st) return false;
+      return locs.every(x => { const [f, key] = LEVELS[x.lv]; return k.loc[key] && f(k.loc[key]) === f(x.v); });
+    });
+    grid.innerHTML = list.length ? list.map(card).join('') : '<div class="muted" style="grid-column:1/-1;padding:24px;text-align:center">Tiada kempen sepadan dengan carian / tapisan.</div>';
+  }
+  [fbar, tbar].forEach(b => b && b.querySelectorAll('select, input').forEach(el => {
+    el.setAttribute('data-nofilter', '');
+    el.addEventListener(el.tagName === 'SELECT' ? 'change' : 'input', e => { e.stopPropagation(); render(); });
+  }));
+
+  // ---- "Untuk (PASTI/Lokaliti)" options limited to the creator's scope
+  const md = document.getElementById('kempenModal'), F = l => { const f = [...md.querySelectorAll('.field')].find(x => x.querySelector('.label') && x.querySelector('.label').textContent.toLowerCase().includes(l)); return f && f.querySelector('input,select,textarea'); };
+  (function untukOptions(){
+    const sel = F('untuk'); if (!sel || !(window.DB && DB.pastiInScope)) return;
+    let ps = []; try { ps = DB.pastiInScope() || []; } catch(e){}
+    const rank = { pusat:0, negeri:1, kawasan:2, dun:3, cawangan:4 }[TIER]; const r = rank == null ? 2 : rank;
+    const uniq = (arr) => [...new Set(arr.filter(Boolean))];
+    const opts = [];
+    if (r <= 1) uniq(S && S.negeri && r === 1 ? [S.negeri] : ps.map(p => p.negeri)).forEach(n => opts.push({ t:'Negeri ' + n, loc:{ negeri:n } }));
+    if (r <= 2) uniq(r === 2 && S && S.kawasan ? [S.kawasan] : ps.map(p => p.kawasan)).forEach(k => { const q = ps.find(p => p.kawasan === k) || {}; opts.push({ t:'Kawasan ' + k, loc:{ negeri:q.negeri || (S && S.negeri), kawasan:k } }); });
+    if (r <= 3) uniq(r === 3 && S && S.dun ? [S.dun] : ps.map(p => p.dun)).forEach(d => { const q = ps.find(p => p.dun === d) || {}; opts.push({ t:'DUN ' + d, loc:{ negeri:q.negeri || (S && S.negeri), kawasan:q.kawasan || (S && S.kawasan), dun:d } }); });
+    ps.forEach(p => opts.push({ t:p.nama, loc:{ negeri:p.negeri, kawasan:p.kawasan, dun:p.dun, pasti:p.nama } }));
+    if (!opts.length) return;
+    sel.innerHTML = opts.map((o,i) => '<option value="' + i + '">' + esc(o.t) + '</option>').join('');
+    sel.__opts = opts;
+  })();
+
+  document.getElementById('kpSave').onclick = () => {
+    const nm = F('nama'), sa = F('sasaran'), tm = F('tarikh mula'), tt = F('tarikh tamat'), kt = F('keterangan'), u = F('untuk');
+    const amt = +String(sa.value).replace(/[^\d.]/g, '');
+    nm.classList.toggle('pt-err', !nm.value.trim()); sa.classList.toggle('pt-err', !amt);
+    tm.classList.toggle('pt-err', !tm.value); tt.classList.toggle('pt-err', !tt.value);
+    if (!nm.value.trim() || !amt) { PT.toast('Isi nama kempen dan sasaran (RM)', 'red'); return; }
+    if (!tm.value || !tt.value) { PT.toast('Isi tarikh mula dan tarikh tamat kempen', 'red'); return; }
+    if (tt.value < tm.value) { tt.classList.add('pt-err'); PT.toast('Tarikh tamat mesti selepas tarikh mula', 'red'); return; }
+    const o = u && u.__opts ? u.__opts[+u.value] : null;
+    const lokaliti = o ? o.t : (u ? u.options[u.selectedIndex].text : 'P021 Kota Bharu');
+    const k = { nama:nm.value.trim(), lokaliti, loc: o ? o.loc : locOf(lokaliti), terkumpul:0, sasaran:amt, status:'Aktif', b:'b-green',
+      mula:tm.value, tamat:tt.value, ket:kt ? kt.value.trim() : '', oleh:(window.PT && PT.user && PT.user.nama) || '' };
+    let all = []; try { all = JSON.parse(localStorage.getItem('pt-kempen') || '[]'); } catch(e){}
+    all.unshift(k); try { localStorage.setItem('pt-kempen', JSON.stringify(all)); } catch(e){}
+    try { sessionStorage.setItem('pt-flash', 'Kempen "' + k.nama + '" dicipta dan boleh menerima derma'); } catch(e){}
+    location.reload();
   };
+
+  // ---- Lihat / Kongsi
+  const canTerima = !/^(pusat|negeri)$/.test(TIER);
   document.addEventListener('click', e => {
-    const b=e.target.closest('[data-kp]'); if(!b) return; const card=b.closest('.card'), k=(window.__KEMPEN||[]).find(x=>x.nama===card.dataset.nama); if(!k) return;
-    if(b.dataset.kp==='kongsi'){ const url=location.href.replace(/[^/]*$/,'')+'derma.html?kempen='+encodeURIComponent(k.nama); (navigator.clipboard?navigator.clipboard.writeText(url):Promise.reject()).then(()=>PT.toast('Pautan kempen disalin')).catch(()=>PT.toast('Pautan: '+url)); }
-    if(b.dataset.kp==='lihat'){ let ov=document.getElementById('kpDlg'); if(!ov){ ov=document.createElement('div'); ov.className='modal-overlay'; ov.id='kpDlg'; document.body.appendChild(ov); }
-      const pct=Math.min(100,Math.round(k.terkumpul/k.sasaran*100));
-      ov.innerHTML='<div class="modal"><div class="m-head"><h3>'+k.nama+'</h3><button class="btn btn-ghost btn-sm" data-close>✕</button></div><div class="m-body"><dl class="kv"><dt>Lokaliti</dt><dd>'+k.lokaliti+'</dd><dt>Terkumpul</dt><dd>RM '+k.terkumpul.toLocaleString('en-MY')+'</dd><dt>Sasaran</dt><dd>RM '+k.sasaran.toLocaleString('en-MY')+'</dd><dt>Pencapaian</dt><dd>'+pct+'%</dd><dt>Status</dt><dd><span class="badge '+k.b+'">'+k.status+'</span></dd></dl></div><div class="m-foot"><button class="btn btn-ghost" data-close>Tutup</button><a class="btn btn-primary" href="derma.html">Terima Derma</a></div></div>';
+    const b = e.target.closest('[data-kp]'); if (!b) return;
+    const cardEl = b.closest('.card'), k = kempen.find(x => x.nama === cardEl.dataset.nama); if (!k) return;
+    const url = location.href.replace(/[?#].*$/, '').replace(/[^/]*$/, '') + 'derma.html?kempen=' + encodeURIComponent(k.nama);
+    if (b.dataset.kp === 'kongsi') { e.preventDefault();
+      (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(() => PT.toast('Pautan kempen disalin: derma.html?kempen=…')).catch(() => PT.toast('Pautan: ' + url)); }
+    if (b.dataset.kp === 'lihat') {
+      let ov = document.getElementById('kpDlg'); if (!ov) { ov = document.createElement('div'); ov.className = 'modal-overlay'; ov.id = 'kpDlg'; document.body.appendChild(ov); }
+      ov.innerHTML = '<div class="modal"><div class="m-head"><h3>' + esc(k.nama) + '</h3><button class="btn btn-ghost btn-sm" data-close>✕</button></div><div class="m-body"><dl class="kv">' +
+        '<dt>Lokaliti</dt><dd>' + esc(k.lokaliti) + '</dd><dt>Tempoh</dt><dd>' + dmy(k.mula) + ' – ' + dmy(k.tamat) + '</dd>' +
+        '<dt>Terkumpul</dt><dd>' + rm(k.terkumpul) + '</dd><dt>Sasaran</dt><dd>' + rm(k.sasaran) + '</dd><dt>Pencapaian</dt><dd>' + pctOf(k) + '%</dd>' +
+        '<dt>Status</dt><dd><span class="badge ' + (k.status === 'Tamat' ? 'b-slate' : 'b-green') + '">' + esc(k.status) + '</span></dd>' +
+        (k.ket ? '<dt>Keterangan</dt><dd style="font-weight:500">' + esc(k.ket) + '</dd>' : '') +
+        '<dt>Pautan Derma</dt><dd style="font-weight:500;overflow-wrap:anywhere"><a href="' + esc(url) + '">' + esc(url) + '</a></dd></dl></div>' +
+        '<div class="m-foot"><button class="btn btn-ghost" data-close>Tutup</button>' + (canTerima && k.status !== 'Tamat' ? '<a class="btn btn-primary" href="derma.html?kempen=' + encodeURIComponent(k.nama) + '">Terima Derma</a>' : '') + '</div></div>';
       ov.classList.add('open'); }
   });
+
+  stats(); render();
+  // re-apply after the engine has trimmed the locality filters to this tier (DOMContentLoaded)
+  document.addEventListener('DOMContentLoaded', () => setTimeout(render, 0));
 })();
 </script>
 </body>

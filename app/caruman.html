@@ -6,7 +6,7 @@
 <title>Caruman Skim PASTI · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=8">
+<link rel="stylesheet" href="../assets/css/app.css?v=10">
 </head>
 <body>
 <div class="pt-app" data-module="caruman" data-page="caruman" data-title="Caruman Skim PASTI" data-subtitle="Caruman skim, tuntutan ahli & PERKESO SKSPS">
@@ -24,7 +24,7 @@
     <div class="grid g-4">
       <div class="stat"><div class="top"><span class="label">Jumlah Caruman 2026</span><div class="ic g">RM</div></div><div class="value">RM 48,600</div><div class="trend flat">Sasaran tahunan</div></div>
       <div class="stat"><div class="top"><span class="label">Sudah Bayar</span><div class="ic t">✓</div></div><div class="value">RM 42,300</div><div class="trend up">▲ 87% terkumpul</div></div>
-      <div class="stat"><div class="top"><span class="label">Tertunggak</span><div class="ic a">!</div></div><div class="value">RM 6,300</div><div class="trend down">▼ 3 inbois belum jelas</div></div>
+      <div class="stat"><div class="top"><span class="label">Tertunggak</span><div class="ic a">!</div></div><div class="value">RM 6,300</div><div class="trend down">▼ 2 inbois belum jelas</div></div>
       <div class="stat"><div class="top"><span class="label">Tuntutan Menunggu</span><div class="ic v">T</div></div><div class="value">3</div><div class="trend flat">Perlu semakan</div></div>
     </div>
 
@@ -54,13 +54,13 @@
             </select>
           </div>
           <div class="table-wrap">
-            <table class="pt">
+            <table class="pt" id="skimTable">
               <thead><tr>
                 <th>No</th><th>Negeri</th><th>Status</th><th>No &amp; Tarikh Inbois</th><th>No &amp; Tarikh Resit</th><th class="right">Jumlah (RM)</th><th>Tindakan</th>
               </tr></thead>
               <tbody>
                 <tr>
-                  <td>1</td><td>Kelantan</td><td><span class="badge b-green">Sudah Bayar</span></td>
+                  <td>1</td><td>Selangor</td><td><span class="badge b-green">Sudah Bayar</span></td>
                   <td>INV-SEL-2026-027<div class="muted">06/08/2026</div></td>
                   <td>RCP-SEL-2026-027<div class="muted">08/08/2026</div></td>
                   <td class="right num">7,950.00</td>
@@ -71,7 +71,7 @@
                   <td>INV-PRK-2026-019<div class="muted">06/08/2026</div></td>
                   <td>—</td>
                   <td class="right num">5,850.00</td>
-                  <td><button class="btn btn-primary btn-sm" data-toast="Membuka pintu bayaran…" data-tiers="negeri kawasan dun cawangan">Bayar</button><button class="btn btn-soft btn-sm" data-toast="Peringatan caruman dihantar kepada negeri" data-tiers="pusat">Hantar Peringatan</button></td>
+                  <td></td>
                 </tr>
                 <tr>
                   <td>3</td><td>Kedah</td><td><span class="badge b-green">Sudah Bayar</span></td>
@@ -101,6 +101,13 @@
                   <td class="right num">12,450.00</td>
                   <td><button class="btn btn-soft btn-sm" data-action="print">Resit</button></td>
                 </tr>
+                <tr>
+                  <td>7</td><td>Kelantan</td><td><span class="badge b-amber">Tertunggak</span></td>
+                  <td>INV-KEL-2026-041<div class="muted">06/09/2026</div></td>
+                  <td>—</td>
+                  <td class="right num">450.00</td>
+                  <td></td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -113,11 +120,11 @@
       <div class="card">
         <div class="card-head">
           <div><h3>Tuntutan Ahli</h3><span class="sub">Permohonan tuntutan skim PASTI</span></div>
-          <button class="btn btn-primary" data-modal="claimModal" data-tiers="kawasan dun cawangan">+ Tambah Tuntutan Ahli</button>
+          <button class="btn btn-primary" data-modal="claimModal" data-tiers="dun cawangan">+ Tambah Tuntutan Ahli</button>
         </div>
         <div class="card-body">
           <div class="table-wrap">
-            <table class="pt">
+            <table class="pt" id="tuntutanTable">
               <thead><tr>
                 <th>No</th><th>Nama Ahli</th><th>Jenis Tuntutan</th><th>Status Permohonan</th><th>Tarikh</th><th>Tindakan</th>
               </tr></thead>
@@ -128,11 +135,7 @@
                   <td>Tuntutan Perubatan</td>
                   <td><span class="badge b-blue">Baharu</span></td>
                   <td>19/09/2026</td>
-                  <td class="flex gap">
-                    <button class="btn btn-soft btn-sm">View</button>
-                    <button class="btn btn-primary btn-sm" data-action="approve" data-status="Diluluskan" data-tiers="negeri">Lulus</button>
-                    <button class="btn btn-ghost btn-sm" data-action="reject" data-tiers="negeri">Tolak</button>
-                  </td>
+                  <td class="flex gap"></td>
                 </tr>
                 <tr>
                   <td>2</td>
@@ -140,23 +143,15 @@
                   <td>Tuntutan Khairat Kematian</td>
                   <td><span class="badge b-green">Diluluskan</span></td>
                   <td>15/09/2026</td>
-                  <td class="flex gap">
-                    <button class="btn btn-soft btn-sm">View</button>
-                    <button class="btn btn-primary btn-sm" data-action="approve" data-status="Diluluskan" data-tiers="negeri">Lulus</button>
-                    <button class="btn btn-ghost btn-sm" data-action="reject" data-tiers="negeri">Tolak</button>
-                  </td>
+                  <td class="flex gap"></td>
                 </tr>
                 <tr>
                   <td>3</td>
                   <td><div class="cell-user"><div class="avatar">MZ</div><div><div class="nm">Ustazah Mardhiah Zawani</div><div class="ml">PASTI Al-Munawwarah</div></div></div></td>
                   <td>Tuntutan Bersalin</td>
-                  <td><span class="badge b-blue">Baharu</span></td>
+                  <td><span class="badge b-green">Disokong Kawasan</span></td>
                   <td>13/09/2026</td>
-                  <td class="flex gap">
-                    <button class="btn btn-soft btn-sm">View</button>
-                    <button class="btn btn-primary btn-sm" data-action="approve" data-status="Diluluskan" data-tiers="negeri">Lulus</button>
-                    <button class="btn btn-ghost btn-sm" data-action="reject" data-tiers="negeri">Tolak</button>
-                  </td>
+                  <td class="flex gap"></td>
                 </tr>
                 <tr>
                   <td>4</td>
@@ -164,11 +159,7 @@
                   <td>Tuntutan Perubatan</td>
                   <td><span class="badge b-red">Ditolak</span></td>
                   <td>09/09/2026</td>
-                  <td class="flex gap">
-                    <button class="btn btn-soft btn-sm">View</button>
-                    <button class="btn btn-primary btn-sm" data-action="approve" data-status="Diluluskan" data-tiers="negeri">Lulus</button>
-                    <button class="btn btn-ghost btn-sm" data-action="reject" data-tiers="negeri">Tolak</button>
-                  </td>
+                  <td class="flex gap"></td>
                 </tr>
                 <tr>
                   <td>5</td>
@@ -176,11 +167,7 @@
                   <td>Tuntutan Khairat Kematian</td>
                   <td><span class="badge b-blue">Baharu</span></td>
                   <td>07/09/2026</td>
-                  <td class="flex gap">
-                    <button class="btn btn-soft btn-sm">View</button>
-                    <button class="btn btn-primary btn-sm" data-action="approve" data-status="Diluluskan" data-tiers="negeri">Lulus</button>
-                    <button class="btn btn-ghost btn-sm" data-action="reject" data-tiers="negeri">Tolak</button>
-                  </td>
+                  <td class="flex gap"></td>
                 </tr>
               </tbody>
             </table>
@@ -195,7 +182,7 @@
         <div class="card-head"><h3>Caruman PERKESO SKSPS</h3><span class="sub">Skim Keselamatan Sosial Pekerjaan Sendiri</span></div>
         <div class="card-body">
           <div class="table-wrap">
-            <table class="pt">
+            <table class="pt" id="skspsTable">
               <thead><tr>
                 <th>No</th><th>Nama Ahli</th><th>Jantina</th><th>Status</th><th>No &amp; Tarikh Inbois</th><th class="right">Jumlah (RM)</th><th>Tindakan</th>
               </tr></thead>
@@ -214,7 +201,7 @@
                   <td>Lelaki</td><td><span class="badge b-amber">Tertunggak</span></td>
                   <td>SKSPS-2026-119<div class="muted">01/08/2026</div></td>
                   <td class="right num">100.00</td>
-                  <td><button class="btn btn-primary btn-sm" data-toast="Membuka pintu bayaran…" data-tiers="negeri kawasan dun cawangan">Bayar</button><button class="btn btn-soft btn-sm" data-toast="Peringatan caruman dihantar kepada negeri" data-tiers="pusat">Hantar Peringatan</button></td>
+                  <td></td>
                 </tr>
                 <tr>
                   <td>3</td>
@@ -238,7 +225,7 @@
                   <td>Perempuan</td><td><span class="badge b-amber">Tertunggak</span></td>
                   <td>SKSPS-2026-122<div class="muted">01/08/2026</div></td>
                   <td class="right num">75.80</td>
-                  <td><button class="btn btn-primary btn-sm" data-toast="Membuka pintu bayaran…" data-tiers="negeri kawasan dun cawangan">Bayar</button><button class="btn btn-soft btn-sm" data-toast="Peringatan caruman dihantar kepada negeri" data-tiers="pusat">Hantar Peringatan</button></td>
+                  <td></td>
                 </tr>
                 <tr>
                   <td>6</td>
@@ -296,6 +283,7 @@
     <div class="m-body">
       <div class="form-grid">
         <div class="field full"><span class="label">Nama Ahli <span class="req">*</span></span><input class="input" placeholder="Nama penuh ahli"></div>
+        <div class="field full"><span class="label">PASTI</span><select class="select" id="claimPasti"><option>PASTI AR-RAIHAN</option></select></div>
         <div class="field"><span class="label">Jenis Tuntutan <span class="req">*</span></span>
           <select class="select">
             <option>Tuntutan Perubatan</option>
@@ -313,6 +301,69 @@
   </div>
 </div>
 
-<script src="../assets/js/app.js?v=8"></script>
+<script src="../assets/js/app.js?v=10"></script>
+<script>
+// Action buttons are drawn per tier & status on every load (after the engine has restored and scoped the
+// tables), so a table saved by one tier never carries — or loses — another tier's buttons.
+(function(){
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const PAID = /sudah|berjaya|dijelaskan|dibayar/i;
+  const RESIT = '<button class="btn btn-soft btn-sm" data-action="print">Resit</button>';
+  const BAYAR = '<button class="btn btn-primary btn-sm">Bayar</button>';
+  const INGAT = '<button class="btn btn-soft btn-sm" data-toast="Peringatan caruman dihantar kepada negeri">Hantar Peringatan</button>';
+  const VIEWONLY = '<span class="muted" style="font-size:12px">Belum dijelaskan</span>';
+  const set = (td, html) => { if (td && td.innerHTML !== html) td.innerHTML = html; };
+
+  document.addEventListener('DOMContentLoaded', () => setTimeout(() => {
+    const tier = (window.PT && PT.tier) || 'kawasan';
+    let myNegeri = window.PT && PT.scope && PT.scope.negeri;
+    if (!myNegeri && window.DB && DB.chainOf && DB.user) { try { myNegeri = DB.chainOf(DB.user()).negeri; } catch(e){} }
+    myNegeri = String(myNegeri || '').toUpperCase();
+
+    // ---- Skim PASTI invoices (per state): only Negeri pays, and only its own state's invoice; Pusat reminds
+    const skim = document.getElementById('skimTable');
+    const drawSkim = () => [...skim.tBodies[0].rows].forEach(tr => {
+      const b = tr.querySelector('.badge'), neg = (tr.children[1] || {}).textContent.trim().toUpperCase(), td = tr.lastElementChild;
+      if (b && PAID.test(b.textContent)) return set(td, RESIT);
+      set(td, tier === 'pusat' ? INGAT : tier === 'negeri' && neg === myNegeri ? BAYAR : VIEWONLY);
+    });
+
+    // ---- PERKESO SKSPS: Negeri / Kawasan / DUN / Cawangan pay rows in their scope (the engine hides the rest); Pusat reminds
+    const sksps = document.getElementById('skspsTable');
+    const drawSksps = () => [...sksps.tBodies[0].rows].forEach(tr => {
+      const b = tr.querySelector('.badge'), td = tr.lastElementChild;
+      set(td, b && PAID.test(b.textContent) ? RESIT : tier === 'pusat' ? INGAT : BAYAR);
+    });
+
+    // ---- Tuntutan: Cawangan / DUN add → Kawasan Sokong / Tolak (Baharu) → Negeri Lulus / Tolak (Disokong Kawasan) → Pusat views
+    const tun = document.getElementById('tuntutanTable');
+    const drawTun = () => [...tun.tBodies[0].rows].forEach(tr => {
+      const b = tr.querySelector('.badge'), st = b ? b.textContent.trim() : '', td = tr.lastElementChild; if (!td) return;
+      const notes = [...td.querySelectorAll('span.muted')].map(x => x.outerHTML).join('');
+      let h = '<button class="btn btn-soft btn-sm">Lihat</button>';
+      if (tier === 'kawasan' && /^baharu$/i.test(st))
+        h += '<button class="btn btn-primary btn-sm" data-status="Disokong Kawasan">Sokong</button><button class="btn btn-ghost btn-sm">Tolak</button>';
+      if (tier === 'negeri' && /^disokong kawasan$/i.test(st))
+        h += '<button class="btn btn-primary btn-sm" data-status="Diluluskan">Lulus</button><button class="btn btn-ghost btn-sm">Tolak</button>';
+      set(td, h + notes);
+    });
+    if (skim) drawSkim();
+    if (sksps) drawSksps();
+    if (tun) {
+      drawTun();
+      // a claim added from the form: name its PASTI, then give it this tier's buttons
+      new MutationObserver(recs => {
+        const ps = document.getElementById('claimPasti');
+        recs.forEach(r => r.addedNodes.forEach(n => { if (n.nodeType === 1 && ps && ps.value) { const ml = n.querySelector('.ml'); if (ml) ml.textContent = ps.value; } }));
+        drawTun();
+      }).observe(tun.tBodies[0], { childList:true });
+    }
+
+    // PASTI choices for a new claim: the PASTI inside this user's scope
+    const ps = document.getElementById('claimPasti'), mine = (window.DB && DB.pastiInScope) ? DB.pastiInScope() : null;
+    if (ps && mine && mine.length) ps.innerHTML = mine.map(p => `<option>${esc(p.nama)}</option>`).join('');
+  }, 0));
+})();
+</script>
 </body>
 </html>

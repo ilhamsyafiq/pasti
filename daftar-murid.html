@@ -6,7 +6,7 @@
 <title>Pendaftaran Murid PASTI Baharu · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/app.css?v=8">
+<link rel="stylesheet" href="assets/css/app.css?v=10">
 </head>
 <body>
 
@@ -163,8 +163,56 @@
 
         <div class="divider"></div>
 
-        <!-- (4) Akuan & Persetujuan -->
-        <div class="fieldset-t">4 · Akuan &amp; Persetujuan Data</div>
+        <!-- (4) Keperluan Khas (MBK / OKU) -->
+        <div class="fieldset-t">4 · Keperluan Khas (MBK / OKU)</div>
+        <div class="field full">
+          <span class="label">Adakah anak anda murid berkeperluan khas (MBK / OKU)? <span class="req">*</span></span>
+          <div class="flex gap" style="gap:22px;margin-top:4px">
+            <label class="check"><input type="radio" name="mbkYa" value="Tidak" checked><span>Tidak</span></label>
+            <label class="check"><input type="radio" name="mbkYa" value="Ya"><span>Ya</span></label>
+          </div>
+          <span class="hint">Maklumat keperluan khas dan kesihatan hanya dilihat oleh Pentadbir Cawangan, guru kelas dan anda sendiri.</span>
+        </div>
+        <div id="mbkBox" style="display:none;margin-top:14px">
+          <div id="mbkNotice" style="margin-bottom:14px"></div>
+          <div class="form-grid">
+            <div class="field">
+              <label class="label" for="mbkKat">Kategori Keperluan Khas <span class="req">*</span></label>
+              <select class="select" id="mbkKat"><option value="">— Pilih —</option></select>
+            </div>
+            <div class="field" id="mbkSubF" style="display:none">
+              <label class="label" for="mbkSub">Sub-kategori</label>
+              <select class="select" id="mbkSub"><option value="">— Pilih —</option></select>
+            </div>
+            <div class="field">
+              <label class="label" for="mbkTahap">Tahap Sokongan <span class="req">*</span></label>
+              <select class="select" id="mbkTahap"><option value="">— Pilih —</option></select>
+              <span class="hint">Ringan: sedikit bantuan · Sederhana: bantuan kerap · Tinggi: bantuan sepanjang masa.</span>
+            </div>
+            <div class="field">
+              <label class="label" for="mbkOku">No. Kad OKU JKM</label>
+              <input class="input" id="mbkOku" type="text" placeholder="Jika ada (pilihan)">
+            </div>
+            <div class="field full">
+              <span class="label">Keperluan Sokongan</span>
+              <div id="mbkPerlu" class="flex gap" style="flex-wrap:wrap;gap:10px 22px;margin-top:4px"></div>
+            </div>
+            <div class="field full">
+              <label class="label" for="mbkCatatan">Catatan untuk Guru</label>
+              <textarea class="input" id="mbkCatatan" rows="3" placeholder="cth: cara berkomunikasi, perkara yang menenangkan anak, ubat, alahan"></textarea>
+            </div>
+            <div class="field full">
+              <label class="label" for="mbkDoc">Laporan Doktor / Pakar</label>
+              <input class="input" id="mbkDoc" type="file" accept=".pdf,.jpg,.jpeg,.png">
+              <span class="hint">PDF / JPG / PNG. Membantu PASTI menyediakan sokongan yang sesuai semasa sesi penilaian.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- (5) Akuan & Persetujuan -->
+        <div class="fieldset-t">5 · Akuan &amp; Persetujuan Data</div>
         <div class="field full" style="gap:12px">
           <label class="check">
             <input type="checkbox" required>
@@ -173,6 +221,10 @@
           <label class="check">
             <input type="checkbox" required>
             <span>Saya mengesahkan bahawa segala maklumat yang diberikan adalah benar dan tepat.</span>
+          </label>
+          <label class="check" id="mbkConsentL" style="display:none">
+            <input type="checkbox" id="mbkConsent">
+            <span>Saya bersetuju maklumat kesihatan dan keperluan khas anak saya (data peribadi sensitif) diproses oleh PASTI untuk tujuan penilaian dan sokongan pembelajaran sahaja, dan hanya dikongsi dengan Pentadbir Cawangan dan guru kelas (<strong>Akta Perlindungan Data Peribadi 2010</strong>). <span class="req">*</span></span>
           </label>
         </div>
 
@@ -215,7 +267,7 @@
   </div>
 </div>
 
-<script src="assets/js/app.js?v=8"></script>
+<script src="assets/js/app.js?v=10"></script>
 <script>
 // Public registration → creates an application in the shared DB (status Baharu) and gives the parent a No. Rujukan.
 (function(){
@@ -239,7 +291,56 @@
     info.innerHTML = '<div class="tx"><b>' + esc(r.p.nama) + '</b><span>' + esc(r.p.alamat) + '<br>' + esc(r.p.dun) + ' · ' + esc(r.p.tel)
       + (r.err ? '<br><strong style="color:#b0342a">Pendaftaran sedang ditutup</strong>' : '') + '</span></div>';
   }
-  kodIn.addEventListener('input', () => { kodIn.classList.remove('pt-err'); showInfo(); });
+  kodIn.addEventListener('input', () => { kodIn.classList.remove('pt-err'); showInfo(); mbkUpdate(); });
+
+  // ---- Keperluan Khas (MBK / OKU): only when the PASTI's MBK is BUKA, quota has room and the kategori is accepted
+  const $ = id => document.getElementById(id);
+  const HAS = !!(window.DB && DB.mbkOf && DB.MBK_KATEGORI);
+  const show = (el, on) => { if (el) el.style.display = on ? '' : 'none'; };
+  const opts = (sel, list) => { sel.innerHTML = '<option value="">— Pilih —</option>' + (list || []).map(x => '<option>' + esc(x) + '</option>').join(''); };
+  if (HAS) {
+    opts($('mbkKat'), DB.MBK_KATEGORI); opts($('mbkTahap'), DB.MBK_TAHAP);
+    $('mbkPerlu').innerHTML = DB.MBK_KEPERLUAN.map(k => '<label class="check"><input type="checkbox" value="' + esc(k) + '"><span>' + esc(k) + '</span></label>').join('');
+  }
+  const isMbk = () => HAS && (form.querySelector('input[name=mbkYa]:checked') || {}).value === 'Ya';
+  // → null when an MBK application is allowed at PASTI p for kategori kat, else the reason
+  function mbkBlock(p, kat){
+    if (!p || !HAS) return null;
+    const m = DB.mbkOf(p), q = DB.mbkQuota(p);
+    if (m.status === 'MENUNGGU') return p.nama + ' sedang menunggu pengesahan Kawasan untuk kemasukan murid berkeperluan khas (MBK).';
+    if (m.status !== 'BUKA') return p.nama + ' belum dibuka untuk kemasukan murid berkeperluan khas (MBK).';
+    if (q.baki <= 0) return 'Kuota MBK ' + p.nama + ' telah penuh (' + q.diisi + '/' + q.kuota + ').';
+    if (kat && (m.kategori || []).length && !m.kategori.includes(kat)) return p.nama + ' belum menerima kategori ' + kat + '.';
+    return null;
+  }
+  function mbkUpdate(){
+    const on = isMbk();
+    show($('mbkBox'), on); show($('mbkConsentL'), on);
+    ['mbkKat','mbkTahap','mbkConsent'].forEach(id => { $(id).required = on; if (!on) $(id).classList.remove('pt-err'); });
+    if (!on) return;
+    const kat = $('mbkKat').value, sub = HAS && DB.MBK_SUB[kat];
+    if (sub) { if ($('mbkSub').dataset.for !== kat) { opts($('mbkSub'), sub); $('mbkSub').dataset.for = kat; } } else { $('mbkSub').value = ''; $('mbkSub').dataset.for = ''; }
+    show($('mbkSubF'), !!sub);
+    const n = $('mbkNotice'), r = kodIn.value.trim() ? check(kodIn.value) : {}, p = r.p;
+    if (!p) { n.innerHTML = '<div class="notice amber"><div class="tx"><b>Masukkan Kod PASTI dahulu</b><span>Kemasukan MBK bergantung pada kesediaan PASTI yang dipilih (kemudahan, guru terlatih &amp; kuota).</span></div></div>'; return; }
+    const why = mbkBlock(p, kat);
+    if (!why) { const m = DB.mbkOf(p), q = DB.mbkQuota(p);
+      n.innerHTML = '<div class="notice"><div class="tx"><b>' + esc(p.nama) + ' menerima murid berkeperluan khas</b><span>Baki kuota MBK: <strong>' + q.baki + '</strong>'
+        + ((m.kategori || []).length ? ' · Kategori diterima: ' + esc(m.kategori.join(', ')) : '') + ((m.kemudahan || []).length ? '<br>Kemudahan: ' + esc(m.kemudahan.join(', ')) : '')
+        + '<br>Selepas permohonan dihantar, PASTI akan menjadualkan sesi penilaian bersama anda.</span></div></div>'; return; }
+    const alt = DB.mbkAlternatives(p, kat);
+    n.innerHTML = '<div class="notice amber"><div class="tx"><b>Permohonan MBK tidak dapat dihantar ke ' + esc(p.nama) + '</b><span>' + esc(why)
+      + (alt.length ? ' Berikut PASTI berhampiran yang menerima MBK dan masih ada kuota:' : ' Tiada PASTI berhampiran yang dibuka untuk MBK buat masa ini. Sila hubungi PASTI Kawasan anda.') + '</span>'
+      + (alt.length ? '<div style="display:grid;gap:8px;margin-top:10px">' + alt.map(a => '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#fff;border:1px solid var(--line,#e5e7eb);border-radius:10px;padding:9px 12px">'
+          + '<div style="flex:1;min-width:180px"><b style="font-size:13px">' + esc(a.nama) + '</b><span style="display:block;font-size:12px">' + esc(a.dun) + ' · Kod ' + esc(a.kod) + ' · Baki kuota ' + a.baki + (a.dekat === 'DUN' ? ' · DUN sama' : ' · Kawasan sama') + '</span></div>'
+          + '<button type="button" class="btn btn-soft btn-sm" data-mbk-kod="' + esc(a.kod) + '">Tukar ke kod ini</button></div>').join('') + '</div>' : '')
+      + '</div></div>';
+  }
+  form.querySelectorAll('input[name=mbkYa]').forEach(r => r.addEventListener('change', mbkUpdate));
+  $('mbkKat').addEventListener('change', () => { $('mbkKat').classList.remove('pt-err'); mbkUpdate(); });
+  $('mbkNotice').addEventListener('click', e => { const b = e.target.closest('[data-mbk-kod]'); if (!b) return;
+    kodIn.value = b.dataset.mbkKod; kodIn.classList.remove('pt-err'); showInfo(); mbkUpdate();
+    const r = check(kodIn.value); PT.toast('Kod PASTI ditukar — ' + (r.p ? r.p.nama : kodIn.value)); kodIn.scrollIntoView({ block:'center' }); });
 
   // Kod PASTI gate (modal on load)
   document.getElementById('kodGo').addEventListener('click', () => {
@@ -253,26 +354,69 @@
   const qk = new URLSearchParams(location.search).get('kod');
   if (qk) { kodIn.value = qk.toUpperCase(); showInfo(); if (!check(qk).err) document.getElementById('kodModal').classList.remove('open'); }
 
-  form.addEventListener('reset', () => setTimeout(() => { form.querySelectorAll('.pt-err').forEach(x => x.classList.remove('pt-err')); showInfo(); }));
+  const digits = v => String(v == null ? '' : v).replace(/\D/g, '');
+  const dupBox = document.createElement('div'); dupBox.className = 'notice amber mt'; dupBox.style.display = 'none';
+  const kidIn = F('no. mykid'); kidIn.closest('.field').appendChild(dupBox);
+  // An application for this MyKid that is still open (Baharu) or already accepted blocks a new one.
+  const existing = v => { const d = digits(v); return d ? DB.all('murid').find(x => digits(x.mykid) === d && (x.status === 'Baharu' || x.status === 'Dijadual Penilaian' || x.status === 'Diterima')) : null; };
+  function showDup(m){
+    if (!m) { dupBox.style.display = 'none'; return; }
+    dupBox.style.display = '';
+    dupBox.innerHTML = '<div class="tx"><b>MyKid ini sudah mempunyai permohonan</b><span>No. Rujukan <strong>' + esc(m.ref) + '</strong> · ' + esc(m.pasti) + ' · '
+      + (m.status === 'Diterima' ? 'Diterima' : 'Dalam Semakan') + '. <a href="semak-status.html?ref=' + encodeURIComponent(m.ref) + '&mykid=' + encodeURIComponent(digits(m.mykid)) + '" style="color:var(--brand-d);font-weight:700">Semak Status</a></span></div>';
+  }
+  kidIn.addEventListener('input', () => { kidIn.classList.remove('pt-err'); const m = digits(kidIn.value).length === 12 ? existing(kidIn.value) : null; showDup(m); if (m) kidIn.classList.add('pt-err'); });
+  // Basic format checks → message or '' (MyKid / KP: 12 digits ignoring dashes; passport: letters + digits)
+  const FMT = [
+    [() => kidIn, v => /[a-z]/i.test(v) ? (/^[a-z0-9]{6,15}$/i.test(v.replace(/[\s-]/g, '')) ? '' : 'No. Pasport murid tidak sah') : (digits(v).length === 12 && /^[\d\s-]+$/.test(v) ? '' : 'No. MyKid mesti 12 digit (cth: 190312-03-5107)')],
+    [() => F('no. kad pengenalan bapa'), v => digits(v).length === 12 && /^[\d\s-]+$/.test(v) ? '' : 'No. KP bapa mesti 12 digit'],
+    [() => F('no. kad pengenalan ibu'), v => digits(v).length === 12 && /^[\d\s-]+$/.test(v) ? '' : 'No. KP ibu mesti 12 digit'],
+    [() => F('no. telefon bapa'), v => /^[\d\s+-]+$/.test(v) && digits(v).length >= 9 && digits(v).length <= 12 ? '' : 'No. telefon bapa tidak sah (nombor sahaja, cth: 012-2161111)'],
+    [() => F('no. telefon ibu'), v => !v || (/^[\d\s+-]+$/.test(v) && digits(v).length >= 9 && digits(v).length <= 12) ? '' : 'No. telefon ibu tidak sah (nombor sahaja)'],
+    [() => F('emel'), v => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v) ? '' : 'Format emel tidak sah'],
+    [() => F('pendapatan'), v => /^\d[\d,]*(\.\d{1,2})?$/.test(v.replace(/^RM\s*/i, '')) ? '' : 'Pendapatan isi rumah mesti nombor (cth: 4500)'],
+  ];
+
+  form.addEventListener('reset', () => setTimeout(() => { form.querySelectorAll('.pt-err').forEach(x => x.classList.remove('pt-err')); showDup(null); showInfo(); mbkUpdate(); }));
   form.addEventListener('submit', e => {
     e.preventDefault();
     let bad = 0; form.querySelectorAll('[required]').forEach(i => { const miss = i.type === 'checkbox' ? !i.checked : !String(i.value).trim(); i.classList.toggle('pt-err', miss); if (miss) bad++; });
     if (bad) { PT.toast(bad + ' ruangan wajib belum diisi', 'red'); form.querySelector('.pt-err').scrollIntoView({ block:'center' }); return; }
+    const errs = FMT.map(([el, fn]) => { const i = el(); if (!i) return ''; const msg = fn(String(i.value).trim()); i.classList.toggle('pt-err', !!msg); return msg ? [i, msg] : ''; }).filter(Boolean);
+    if (errs.length) { PT.toast(errs[0][1] + (errs.length > 1 ? ' (+' + (errs.length - 1) + ' lagi)' : ''), 'red'); errs[0][0].scrollIntoView({ block:'center' }); errs[0][0].focus(); return; }
+    const dup = existing(kidIn.value);
+    if (dup) { kidIn.classList.add('pt-err'); showDup(dup); kidIn.scrollIntoView({ block:'center' });
+      PT.toast('MyKid ini sudah ada permohonan ' + dup.ref + ' (' + (dup.status === 'Diterima' ? 'Diterima' : 'Dalam Semakan') + ') — sila Semak Status', 'red'); return; }
+    const lahirV = F('tarikh lahir').value; if (lahirV && new Date(lahirV) > new Date()) { F('tarikh lahir').classList.add('pt-err'); PT.toast('Tarikh lahir tidak sah', 'red'); return; }
     const r = check(kodIn.value);
     if (r.err) { kodIn.classList.add('pt-err'); PT.toast(r.err, 'red'); kodIn.scrollIntoView({ block:'center' }); return; }
     const p = r.p;
+    let mbk = null;
+    if (isMbk()) {
+      const why = mbkBlock(p, $('mbkKat').value);
+      if (why) { mbkUpdate(); PT.toast(why + ' Sila pilih PASTI lain yang dicadangkan.', 'red'); $('mbkNotice').scrollIntoView({ block:'center' }); return; }
+      const f = $('mbkDoc').files && $('mbkDoc').files[0];
+      mbk = { kategori: $('mbkKat').value, sub: DB.MBK_SUB[$('mbkKat').value] ? $('mbkSub').value : '', tahap: $('mbkTahap').value, noKadOKU: $('mbkOku').value.trim().toUpperCase(),
+        keperluan: [...$('mbkPerlu').querySelectorAll('input:checked')].map(i => i.value), catatan: $('mbkCatatan').value.trim(), dokumen: f ? f.name : '' };
+    }
     const d = new Date(), tg = String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + d.getFullYear();
     const lahir = F('tarikh lahir').value, umur = lahir ? Math.max(3, d.getFullYear() - new Date(lahir).getFullYear()) : 5;
-    const ref = DB.nextRef();
-    const m = { tarikh: tg, ref, nama: F('nama penuh murid').value.trim().toUpperCase(), mykid: F('no. mykid').value.trim(), umur: String(umur),
-      bapa: F('nama bapa').value.trim().toUpperCase(), kpBapa: F('no. kad pengenalan bapa').value.trim(), telBapa: F('no. telefon bapa').value.trim(),
-      emel: F('emel').value.trim().toLowerCase(), kelas: F('kelas dipohon').value, pasti: p.nama, tarikhDaftar:'—', status:'Baharu' };
+    const ref = DB.nextRef(), val = l => { const i = F(l); return i ? String(i.value).trim() : ''; };
+    const kid = val('no. mykid'), dmyOf = v => { const x = String(v).split('-'); return x.length === 3 ? x[2] + '/' + x[1] + '/' + x[0] : v; };
+    const m = { tarikh: tg, ref, nama: val('nama penuh murid').toUpperCase(), mykid: /[a-z]/i.test(kid) ? kid.replace(/[\s-]/g, '').toUpperCase() : digits(kid), umur: String(umur),
+      tarikhLahir: dmyOf(lahir), jantina: val('jantina'), bangsa: val('bangsa'), yatim: val('status yatim') || 'Bukan Yatim',
+      bapa: val('nama bapa').toUpperCase(), kpBapa: digits(val('no. kad pengenalan bapa')), telBapa: val('no. telefon bapa'), pekerjaanBapa: val('pekerjaan bapa'),
+      ibu: val('nama ibu').toUpperCase(), kpIbu: digits(val('no. kad pengenalan ibu')), telIbu: val('no. telefon ibu'),
+      emel: val('emel').toLowerCase(), pendapatan: +val('pendapatan').replace(/^RM\s*/i, '').replace(/,/g, '') || 0, alamat: val('alamat kediaman'),
+      kelas: val('kelas dipohon'), pasti: p.nama, kodPasti: p.kod, tarikhDaftar:'—', status:'Baharu' };
+    if (mbk) m.mbk = mbk;
     DB.add('murid', m);
     const ov = document.createElement('div'); ov.className = 'modal-overlay open';
     ov.innerHTML = '<div class="modal"><div class="m-head"><h3>Permohonan Berjaya Dihantar</h3></div><div class="m-body">'
-      + '<div class="notice"><div class="tx"><b>No. Rujukan anda: ' + ref + '</b><span>Simpan nombor ini. Salinan dihantar melalui SMS & e-mel ke ' + m.emel + '.</span></div></div>'
-      + '<dl class="kv mt"><dt>Nama Anak</dt><dd>' + m.nama + '</dd><dt>PASTI</dt><dd>' + p.nama + '</dd><dt>Kelas Dipohon</dt><dd>' + m.kelas + '</dd><dt>Status</dt><dd><span class="badge b-blue">Dalam Semakan</span></dd></dl>'
-      + '<div class="muted mt" style="font-size:12.5px">Pentadbir ' + p.nama + ' akan menyemak permohonan. Bila diterima, akaun Portal Ibu Bapa dicipta dengan emel anda.</div></div>'
+      + '<div class="notice"><div class="tx"><b>No. Rujukan anda: ' + ref + '</b><span>Simpan nombor ini. Salinan dihantar melalui SMS & e-mel ke ' + esc(m.emel) + '.</span></div></div>'
+      + '<dl class="kv mt"><dt>Nama Anak</dt><dd>' + esc(m.nama) + '</dd><dt>PASTI</dt><dd>' + esc(p.nama) + '</dd><dt>Kelas Dipohon</dt><dd>' + esc(m.kelas) + '</dd>' + (mbk ? '<dt>Keperluan Khas</dt><dd>' + esc(mbk.kategori + (mbk.sub ? ' — ' + mbk.sub : '') + ' · Tahap ' + mbk.tahap) + '</dd>' : '') + '<dt>Status</dt><dd><span class="badge b-blue">Dalam Semakan</span></dd></dl>'
+      + (mbk ? '<div class="notice amber mt"><div class="tx"><b>Permohonan Murid Berkeperluan Khas (MBK)</b><span>Pentadbir ' + esc(p.nama) + ' akan menghubungi anda untuk menjadualkan <strong>sesi penilaian</strong> (tarikh, masa &amp; tempat). Tarikh penilaian boleh disemak di halaman Semak Status. Maklumat keperluan khas anak anda hanya dilihat oleh Pentadbir Cawangan dan guru kelas.</span></div></div>' : '')
+      + '<div class="muted mt" style="font-size:12.5px">Pentadbir ' + esc(p.nama) + ' akan menyemak permohonan. Bila diterima, akaun Portal Ibu Bapa dicipta dengan emel anda.</div></div>'
       + '<div class="m-foot"><a class="btn btn-ghost" href="daftar-murid.html">Daftar anak lain</a><a class="btn btn-primary" href="semak-status.html?ref=' + ref + '&mykid=' + encodeURIComponent(m.mykid) + '">Semak Status</a></div></div>';
     document.body.appendChild(ov);
   });

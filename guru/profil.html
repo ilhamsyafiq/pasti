@@ -6,7 +6,7 @@
 <title>Profil Guru · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=8">
+<link rel="stylesheet" href="../assets/css/app.css?v=10">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#2fa308">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -37,15 +37,15 @@
         <div class="card-head"><div><h3>Maklumat Guru</h3><span class="sub">Kemas kini maklumat peribadi anda</span></div></div>
         <div class="card-body">
           <div class="form-grid">
-            <div class="field full"><span class="label">Nama Penuh <span class="req">*</span></span><input class="input" value="USTAZAH SITI IFFAH BINTI RIZQI"></div>
+            <div class="field full"><span class="label">Nama Penuh <span class="req">*</span></span><input class="input" id="pfNama" value="USTAZAH SITI IFFAH BINTI RIZQI"></div>
             <div class="field"><span class="label">No. Kad Pengenalan <span class="req">*</span></span><input class="input" value="850614-03-7402"></div>
             <div class="field"><span class="label">Jantina</span>
               <select class="select"><option>Perempuan</option><option>Lelaki</option></select>
             </div>
-            <div class="field"><span class="label">No. Telefon</span><input class="input" value="013-1957023"></div>
-            <div class="field"><span class="label">Emel</span><input class="input" type="email" value="guru@pasti.org"></div>
-            <div class="field"><span class="label">PASTI</span><input class="input" value="AR-RAIHAN" readonly></div>
-            <div class="field"><span class="label">Jawatan</span><input class="input" value="Guru" readonly></div>
+            <div class="field"><span class="label">No. Telefon</span><input class="input" id="pfTel" value="013-1957023"></div>
+            <div class="field"><span class="label">Emel</span><input class="input" id="pfEmel" type="email" value="guru@pasti.org"></div>
+            <div class="field"><span class="label">PASTI</span><input class="input" id="pfPasti" value="AR-RAIHAN" readonly></div>
+            <div class="field"><span class="label">Jawatan</span><input class="input" id="pfJawatan" value="Guru" readonly></div>
             <div class="field"><span class="label">Kelas</span><input class="input" value="Tahun 5 — Al-Farabi" readonly></div>
             <div class="field"><span class="label">Tarikh Lantikan</span><input class="input" value="02/01/2019" readonly></div>
             <div class="field full"><span class="label">Alamat</span><input class="input" value="Lot 214, Jalan Kota Bharu, 15200 Kota Bharu, Kelantan"></div>
@@ -103,6 +103,19 @@
   </main>
 </div>
 
-<script src="../assets/js/app.js?v=8"></script>
+<script src="../assets/js/app.js?v=10"></script>
+<script>
+  // Name / email / PASTI of the signed-in teacher (DB user)
+  (function(){
+    var u = (window.PT && PT.user) || (window.DB && DB.user && DB.user());
+    if (!u || !/guru|pembantu/.test(u.peranan)) return;
+    var set = function(id, v){ var el = document.getElementById(id); if (el && v) el.value = v; };
+    set('pfNama', String(u.nama).toUpperCase());
+    set('pfEmel', u.emel);
+    set('pfTel', u.tel);
+    set('pfPasti', String(u.skop || '').replace(/^PASTI\s+/i, ''));
+    set('pfJawatan', u.peranan === 'pembantu' ? 'Pembantu Guru' : 'Guru');
+  })();
+</script>
 </body>
 </html>

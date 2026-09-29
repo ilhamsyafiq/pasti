@@ -6,7 +6,7 @@
 <title>Derma / Donation · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=8">
+<link rel="stylesheet" href="../assets/css/app.css?v=10">
 </head>
 <body>
 <div class="pt-app" data-module="kempen" data-page="derma" data-title="Derma / Donation" data-subtitle="Sumbangan mengikut lokaliti &amp; kempen">
@@ -18,7 +18,7 @@
         <h1>Derma / Donation</h1>
         <div class="lead">Sumbangan mengikut lokaliti &amp; kempen</div>
       </div>
-      <button class="btn btn-primary" data-modal="dermaModal">+ Terima Derma</button>
+      <button class="btn btn-primary" id="dermaBtn" data-modal="dermaModal" data-tiers="kawasan dun cawangan">+ Terima Derma</button>
     </div>
 
     <!-- stat strip -->
@@ -132,7 +132,7 @@
   </div>
 </div>
 
-<script src="../assets/js/app.js?v=8"></script>
+<script src="../assets/js/app.js?v=10"></script>
 <script>
 (function(){
   var rows = [
@@ -159,6 +159,78 @@
     '</tr>';
   }).join('');
   document.getElementById('dermaBody').innerHTML = html;
+})();
+</script>
+<script>
+(function(){
+  // ---- scope helpers (same rules as Kempen): a locality string → { negeri, kawasan, dun, pasti }
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const up = s => String(s || '').toUpperCase().trim();
+  const code = s => { const m = up(s).match(/^(?:DUN\s+|KAWASAN\s+)?([NP]\d+)/); return m ? m[1] : up(s); };
+  const nPasti = s => up(s).replace(/^PASTI\s+/, '').replace(/[^A-Z0-9]/g, '');
+  const PASTI = (window.DB && DB.all) ? DB.all('pasti').filter(p => p.kod || p.status === 'Lulus') : [];
+  const S = (window.PT && PT.scope) || null, TIER = (S && S.tier) || (window.PT && PT.tier) || 'kawasan';
+  function locOf(str){
+    const t = up(str);
+    const p = PASTI.find(x => t.includes(up(x.nama)) || nPasti(t.split('·')[0]) === nPasti(x.nama));
+    if (p) return { negeri:p.negeri, kawasan:p.kawasan, dun:p.dun, pasti:p.nama };
+    const n = t.match(/\bN\d{2,}\b/), k = t.match(/\bP\d{3}\b/);
+    if (n) { const q = PASTI.find(x => code(x.dun) === n[0]); return q ? { negeri:q.negeri, kawasan:q.kawasan, dun:q.dun } : { dun:n[0] }; }
+    if (k) { const q = PASTI.find(x => code(x.kawasan) === k[0]); return q ? { negeri:q.negeri, kawasan:q.kawasan } : { kawasan:k[0] }; }
+    const g = PASTI.find(x => t.includes(up(x.negeri)));
+    return g ? { negeri:g.negeri } : {};
+  }
+  function inScope(L){
+    if (!S || TIER === 'pusat') return true;
+    if (L.pasti && window.PT && PT.inScope) return PT.inScope(L.pasti);
+    const same = (a, b, f) => !a || !b || f(a) === f(b);
+    return same(L.negeri, S.negeri, up) && same(L.kawasan, S.kawasan, code) && same(L.dun, S.dun, code) && (!L.pasti || same(L.pasti, S.pasti, nPasti));
+  }
+
+  const md = document.getElementById('dermaModal'), F = l => { const f = [...md.querySelectorAll('.field')].find(x => x.querySelector('.label') && x.querySelector('.label').textContent.toLowerCase().includes(l)); return f && f.querySelector('input,select,textarea'); };
+
+  // ---- "Untuk (PASTI/Lokaliti)" limited to the signed-in admin's scope
+  (function(){
+    const sel = F('untuk'); if (!sel || !(window.DB && DB.pastiInScope)) return;
+    let ps = []; try { ps = DB.pastiInScope() || []; } catch(e){}
+    const r = { pusat:0, negeri:1, kawasan:2, dun:3, cawangan:4 }[TIER]; const rank = r == null ? 2 : r;
+    const uniq = a => [...new Set(a.filter(Boolean))], opts = [];
+    if (rank <= 2) uniq(rank === 2 && S && S.kawasan ? [S.kawasan] : ps.map(p => p.kawasan)).forEach(k => opts.push('Kawasan ' + k));
+    if (rank <= 3) uniq(rank === 3 && S && S.dun ? [S.dun] : ps.map(p => p.dun)).forEach(d => opts.push('DUN ' + d));
+    ps.forEach(p => opts.push(p.nama));
+    if (opts.length) sel.innerHTML = opts.map(o => '<option>' + esc(o) + '</option>').join('');
+  })();
+
+  // ---- Kempen list: campaigns created on the Kempen page (in scope) are offered too
+  const kSel = F('kempen');
+  try { JSON.parse(localStorage.getItem('pt-kempen') || '[]').forEach(k => {
+    if (!k || !k.nama || k.status === 'Tamat' || [...kSel.options].some(o => o.text === k.nama)) return;
+    if (!inScope(k.loc && typeof k.loc === 'object' ? k.loc : locOf(k.lokaliti))) return;
+    kSel.insertAdjacentHTML('afterbegin', '<option>' + esc(k.nama) + '</option>'); }); } catch(e){}
+
+  // ---- ?kempen=<nama> (from the Kempen page "Kongsi" / "Terima Derma") → preselect it and open the form
+  const want = new URLSearchParams(location.search).get('kempen');
+  function pick(){
+    if (!want || !kSel) return;
+    let o = [...kSel.options].find(x => x.text.trim().toLowerCase() === want.trim().toLowerCase());
+    if (!o) { kSel.insertAdjacentHTML('afterbegin', '<option>' + esc(want) + '</option>'); o = kSel.options[0]; }
+    kSel.value = o.value || o.text;
+    // point "Untuk" at the campaign's locality when that option exists
+    const u = F('untuk'), L = locOf(want);
+    if (u && L.pasti) { const m = [...u.options].find(x => nPasti(x.text) === nPasti(L.pasti)); if (m) u.value = m.value || m.text; }
+    else if (u && L.dun) { const m = [...u.options].find(x => /^DUN /i.test(x.text) && code(x.text) === code(L.dun)); if (m) u.value = m.value || m.text; }
+  }
+
+  // ---- after the engine has restored/scoped the table: hide donations outside this tier's scope
+  document.addEventListener('DOMContentLoaded', () => {
+    const tb = document.getElementById('dermaBody');
+    if (tb && S && TIER !== 'pusat') [...tb.rows].forEach(tr => { const c = tr.cells[3]; if (!c) return;
+      if (!inScope(locOf(c.textContent))) { tr.style.display = 'none'; tr.dataset.scopeHidden = '1'; } });
+    if (!want) return;
+    const btn = document.getElementById('dermaBtn');
+    if (!btn) { setTimeout(() => PT.toast('Paparan sahaja — derma diterima oleh Kawasan / DUN / Cawangan'), 500); return; }
+    setTimeout(() => { btn.click(); pick(); }, 60);
+  });
 })();
 </script>
 </body>

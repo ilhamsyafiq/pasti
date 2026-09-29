@@ -6,7 +6,7 @@
 <title>Takwim & Program · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=8">
+<link rel="stylesheet" href="../assets/css/app.css?v=10">
 </head>
 <body>
 <div class="pt-app" data-module="operasi" data-page="calendar" data-title="Takwim & Program" data-subtitle="Disegerakkan dengan Google Calendar for Education">
@@ -16,7 +16,7 @@
       <div>
         <div class="crumb">ePASTI <span>›</span> Operasi <span>›</span> Takwim & Program</div>
         <h1>Takwim & Program</h1>
-        <div class="lead">Kalendar rasmi PASTI Kawasan Kota Bharu · disegerakkan dua-hala dengan Google Calendar</div>
+        <div class="lead">Kalendar rasmi PASTI <span id="calScope">Kawasan Kota Bharu</span> · disegerakkan dua-hala dengan Google Calendar</div>
       </div>
       <div class="flex gap wrap aic">
         <button class="btn btn-soft btn-sm" id="calPrev" data-own aria-label="Bulan sebelum">‹</button>
@@ -45,7 +45,7 @@
     <div style="display:grid;grid-template-columns:1fr 320px;gap:18px" class="cal-wrap">
       <!-- calendar -->
       <div class="card">
-        <div class="card-head"><h3>September 2026</h3><span class="sub">PASTI Kawasan Kota Bharu</span></div>
+        <div class="card-head"><h3 id="calHead">September 2026</h3><span class="sub" id="calSub">PASTI Kawasan Kota Bharu</span></div>
         <div class="card-body"><table class="cal" id="cal"></table></div>
       </div>
 
@@ -64,7 +64,7 @@
 
         <div class="card mt">
           <div class="card-head"><h3>Acara Akan Datang</h3></div>
-          <div class="card-body">
+          <div class="card-body" id="calList">
             <div class="gcal-ev"><span class="bar" style="background:#1a73e8"></span><div style="flex:1"><div class="nm">Bengkel e-PASTI Kawasan</div><div class="mt2">24 Sep 2026 · 9:00 pagi</div></div><button class="g-add" data-toast="Ditambah ke Google Calendar">+ Google</button></div>
             <div class="gcal-ev"><span class="bar" style="background:#f9ab00"></span><div style="flex:1"><div class="nm">Peperiksaan Akhir Tahun</div><div class="mt2">6–10 Okt 2026</div></div><button class="g-add" data-toast="Ditambah ke Google Calendar">+ Google</button></div>
             <div class="gcal-ev"><span class="bar" style="background:#8430ce"></span><div style="flex:1"><div class="nm">Mesyuarat Jemaah Pengurus</div><div class="mt2">17 Sep 2026 · 8:30 malam</div></div><button class="g-add" data-toast="Ditambah ke Google Calendar">+ Google</button></div>
@@ -86,9 +86,9 @@
       <div class="form-grid">
         <div class="field full"><span class="label">Tajuk Acara <span class="req">*</span></span><input class="input" placeholder="cth: Bengkel e-PASTI Kawasan"></div>
         <div class="field"><span class="label">Kalendar</span><select class="select"><option>Program PASTI</option><option>Cuti Umum &amp; Sekolah</option><option>Jadual Kelas</option><option>Peperiksaan</option><option>Mesyuarat</option></select></div>
-        <div class="field"><span class="label">Peringkat</span><select class="select"><option>Kawasan</option><option>Negeri</option><option>Malaysia</option><option>Cawangan</option></select></div>
-        <div class="field"><span class="label">Tarikh Mula</span><input class="input" type="text" value="24/09/2026"></div>
-        <div class="field"><span class="label">Tarikh Tamat</span><input class="input" type="text" value="24/09/2026"></div>
+        <div class="field"><span class="label">Peringkat</span><select class="select" data-levels><option>Malaysia</option><option>Negeri</option><option>Kawasan</option><option>DUN</option><option>Cawangan</option></select></div>
+        <div class="field"><span class="label">Tarikh Mula <span class="req">*</span></span><input class="input" type="text" value="24/09/2026" placeholder="hh/bb/tttt"></div>
+        <div class="field"><span class="label">Tarikh Tamat</span><input class="input" type="text" value="24/09/2026" placeholder="hh/bb/tttt (kosong = sehari)"></div>
         <div class="field full"><span class="label">Catatan</span><textarea class="input" rows="3" placeholder="Butiran acara"></textarea></div>
       </div>
     </div>
@@ -96,41 +96,95 @@
   </div>
 </div>
 
-<script src="../assets/js/app.js?v=8"></script>
+<!-- Day detail modal (all events of one day) -->
+<div class="modal-overlay" id="calDayModal">
+  <div class="modal" style="max-width:460px">
+    <div class="m-head"><h3 id="calDayTitle">Acara</h3><button class="btn btn-ghost btn-sm" data-close>✕</button></div>
+    <div class="m-body" id="calDayBody"></div>
+    <div class="m-foot"><button class="btn btn-ghost" data-close>Tutup</button></div>
+  </div>
+</div>
+
+<script src="../assets/js/app.js?v=10"></script>
 <script>
-  // Month calendar with the PASTI programmes; new programmes are saved (per browser) and appear on the grid & list.
+  // Month calendar with the PASTI programmes. New programmes are saved (per browser, pt-events) with their
+  // Kalendar (colour), start & end date (multi-day) and Catatan; several events may fall on the same day.
   (function(){
     const MON=['Januari','Februari','Mac','April','Mei','Jun','Julai','Ogos','September','Oktober','November','Disember'];
     const dow=['Ahad','Isnin','Sel','Rabu','Khamis','Jum','Sabtu'];
-    const BASE={'2026-9-5':['cuti','Cuti'],'2026-9-12':['cuti','Cuti'],'2026-9-17':['mesy','Mesyuarat JP'],'2026-9-24':['prog','Bengkel e-PASTI'],'2026-9-8':['kelas','Kelas Tahfiz'],'2026-9-29':['exam','Ujian Bulanan'],'2026-10-6':['exam','Peperiksaan Akhir']};
-    const load=()=>{ try{ return JSON.parse(localStorage.getItem('pt-events')||'[]'); }catch(e){ return []; } };
+    const CAL={'Program PASTI':'prog','Cuti Umum & Sekolah':'cuti','Jadual Kelas':'kelas','Peperiksaan':'exam','Mesyuarat':'mesy'};
+    const COL={prog:'#1a73e8',cuti:'#d93025',kelas:'#2fa308',exam:'#f9ab00',mesy:'#8430ce'};
+    const CALNAME=Object.fromEntries(Object.entries(CAL).map(([n,c])=>[c,n]));
+    const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+    const key=(y,m,d)=>y+'-'+m+'-'+d;                                   // m = 1..12 (same format as the old saved entries)
+    const toDate=k=>{ const [y,m,d]=String(k).split('-').map(Number); return new Date(y,m-1,d); };
+    const fmt=k=>{ const d=toDate(k); return d.getDate()+' '+MON[d.getMonth()].slice(0,3)+' '+d.getFullYear(); };
+    const BASE=[
+      {mula:'2026-9-5',t:'Cuti',cal:'cuti'},{mula:'2026-9-12',t:'Cuti',cal:'cuti'},
+      {mula:'2026-9-8',t:'Kelas Tahfiz',cal:'kelas'},{mula:'2026-9-17',t:'Mesyuarat JP',cal:'mesy'},
+      {mula:'2026-9-24',t:'Bengkel e-PASTI',cal:'prog'},{mula:'2026-9-29',t:'Ujian Bulanan',cal:'exam'},
+      {mula:'2026-10-6',tamat:'2026-10-10',t:'Peperiksaan Akhir',cal:'exam'}];
+    // old entries were { k, t, label } — treated as one-day "Program PASTI" events
+    const load=()=>{ let a=[]; try{ a=JSON.parse(localStorage.getItem('pt-events')||'[]'); }catch(e){} return Array.isArray(a)?a:[]; };
+    const normEv=e=>{ const mula=e.mula||e.k; return Object.assign({},e,{ mula, tamat:e.tamat||mula, cal:COL[e.cal]?e.cal:'prog' }); };
+    const all=()=>BASE.map(normEv).concat(load().filter(e=>e&&(e.mula||e.k)).map(e=>Object.assign(normEv(e),{mine:true})));
+    const onDay=(e,dt)=>dt>=toDate(e.mula) && dt<=toDate(e.tamat);
     let y=2026, m=8; const now=new Date();
+
+    // scope label (lead + card sub-heading)
+    const S=window.PT&&PT.scope; if(S&&S.label){ const L=String(S.label).replace(/^PASTI\s+/i,''); document.getElementById('calScope').textContent=L; document.getElementById('calSub').textContent='PASTI '+L; }
+
     function draw(){
       document.getElementById('calLbl').textContent=MON[m]+' '+y;
-      const ev=Object.assign({},BASE); load().forEach(e=>{ ev[e.k]=['prog',e.t]; });
+      document.getElementById('calHead').textContent=MON[m]+' '+y;
+      const evs=all();
       const first=new Date(y,m,1).getDay(), days=new Date(y,m+1,0).getDate();
       let h='<thead><tr>'+dow.map(d=>'<th>'+d+'</th>').join('')+'</tr></thead><tbody><tr>', col=first;
       for(let i=0;i<first;i++) h+='<td class="mut"></td>';
-      for(let d=1;d<=days;d++){ const e=ev[y+'-'+(m+1)+'-'+d], td=(y===now.getFullYear()&&m===now.getMonth()&&d===now.getDate());
-        h+='<td class="'+(td?'today':'')+'"><span class="d">'+d+'</span>'+(e?'<div class="ev '+e[0]+'">'+e[1]+'</div>':'')+'</td>'; col++; if(col===7&&d<days){ h+='</tr><tr>'; col=0; } }
+      for(let d=1;d<=days;d++){
+        const dt=new Date(y,m,d), list=evs.filter(e=>onDay(e,dt)), td=(y===now.getFullYear()&&m===now.getMonth()&&d===now.getDate());
+        const shown=list.slice(0,2).map(e=>'<div class="ev '+e.cal+'">'+esc(e.t)+'</div>').join('');
+        const more=list.length>2?'<div class="muted" style="font-size:10.5px;margin-top:2px;font-weight:600">+'+(list.length-2)+' lagi</div>':'';
+        h+='<td class="'+(td?'today':'')+'" data-day="'+key(y,m+1,d)+'"'+(list.length?' style="cursor:pointer" title="'+esc(list.map(e=>e.t).join(' · '))+'"':'')+'><span class="d">'+d+'</span>'+shown+more+'</td>';
+        col++; if(col===7&&d<days){ h+='</tr><tr>'; col=0; } }
       while(col<7&&col>0){ h+='<td class="mut"></td>'; col++; }
       document.getElementById('cal').innerHTML=h+'</tr></tbody>';
     }
+    const rangeLbl=e=>e.tamat&&e.tamat!==e.mula ? fmt(e.mula)+' – '+fmt(e.tamat) : fmt(e.mula);
+    const evHtml=(e,mine)=>'<div class="gcal-ev"'+(mine?' data-mine':'')+'><span class="bar" style="background:'+COL[e.cal]+'"></span><div style="flex:1"><div class="nm">'+esc(e.t)+'</div><div class="mt2">'+esc((mine?'':CALNAME[e.cal]+' · ')+rangeLbl(e)+(e.peringkat?' · '+e.peringkat:''))+'</div>'+(e.catatan?'<div class="mt2">'+esc(e.catatan)+'</div>':'')+'</div>'+(mine?'<button class="g-add">+ Google</button>':'')+'</div>';
     function list(){
-      const box=document.querySelector('.gcal-ev') && document.querySelector('.gcal-ev').parentElement; if(!box) return;
+      const box=document.getElementById('calList'); if(!box) return;
       box.querySelectorAll('.gcal-ev[data-mine]').forEach(x=>x.remove());
-      load().forEach(e=>box.insertAdjacentHTML('afterbegin','<div class="gcal-ev" data-mine><span class="bar" style="background:#2fa308"></span><div style="flex:1"><div class="nm">'+e.t.replace(/</g,'&lt;')+'</div><div class="mt2">'+e.label+'</div></div><button class="g-add">+ Google</button></div>'));
+      load().map(normEv).forEach(e=>box.insertAdjacentHTML('afterbegin',evHtml(e,true)));
     }
+    // click a day → list all of its events (Kalendar, dates, Catatan)
+    document.getElementById('cal').addEventListener('click',ev=>{
+      const td=ev.target.closest('td[data-day]'); if(!td) return;
+      const dt=toDate(td.dataset.day), items=all().filter(e=>onDay(e,dt)); if(!items.length) return;
+      document.getElementById('calDayTitle').textContent='Acara · '+fmt(td.dataset.day);
+      document.getElementById('calDayBody').innerHTML=items.map(e=>evHtml(e,false)).join('');
+      document.getElementById('calDayModal').classList.add('open');
+    });
     document.getElementById('calPrev').onclick=()=>{ if(--m<0){ m=11; y--; } draw(); };
     document.getElementById('calNext').onclick=()=>{ if(++m>11){ m=0; y++; } draw(); };
+    const parse=v=>{ v=String(v||'').trim(); let r=v.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/); if(r) return [+r[3],+r[2],+r[1]];
+      r=v.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/); if(r) return [+r[1],+r[2],+r[3]]; return null; };
+    const valid=p=>{ if(!p) return false; const d=new Date(p[0],p[1]-1,p[2]); return d.getFullYear()===p[0]&&d.getMonth()===p[1]-1&&d.getDate()===p[2]; };
     document.getElementById('evSave').onclick=()=>{
       const md=document.getElementById('addEventModal'); const F=l=>{ const f=[...md.querySelectorAll('.field')].find(x=>x.querySelector('.label')&&x.querySelector('.label').textContent.toLowerCase().includes(l)); return f&&f.querySelector('input,select,textarea'); };
-      const tj=F('tajuk'), tm=F('tarikh mula'); const dm=(tm.value||'').match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/) || (tm.value||'').match(/(\d{4})-(\d{1,2})-(\d{1,2})/);
-      [tj,tm].forEach(i=>i.classList.toggle('pt-err', !i.value.trim())); if(!tj.value.trim()||!dm){ PT.toast('Isi tajuk dan tarikh mula (hh/bb/tttt)','red'); if(!dm) tm.classList.add('pt-err'); return; }
-      const [dd,mm,yy]= dm[1].length===4 ? [+dm[3],+dm[2],+dm[1]] : [+dm[1],+dm[2],+dm[3]];
-      const ev=load(); ev.push({ k:yy+'-'+mm+'-'+dd, t:tj.value.trim(), label:dd+' '+MON[mm-1].slice(0,3)+' '+yy+' · '+(F('peringkat')?F('peringkat').value:'') });
-      try{ localStorage.setItem('pt-events', JSON.stringify(ev)); }catch(e){}
-      y=yy; m=mm-1; draw(); list(); md.classList.remove('open'); tj.value=''; tm.value='';
+      const tj=F('tajuk'), tm=F('tarikh mula'), tt=F('tarikh tamat'), kl=F('kalendar'), pk=F('peringkat'), ct=F('catatan');
+      const a=parse(tm.value), b=tt.value.trim()?parse(tt.value):a;
+      tj.classList.toggle('pt-err',!tj.value.trim()); tm.classList.toggle('pt-err',!valid(a)); tt.classList.toggle('pt-err',!valid(b));
+      if(!tj.value.trim()||!valid(a)){ PT.toast('Isi tajuk dan tarikh mula (hh/bb/tttt)','red'); return; }
+      if(!valid(b)){ PT.toast('Tarikh tamat tidak sah (hh/bb/tttt)','red'); return; }
+      const mula=key(a[0],a[1],a[2]), tamat=key(b[0],b[1],b[2]);
+      if(toDate(tamat)<toDate(mula)){ tt.classList.add('pt-err'); PT.toast('Tarikh tamat mesti sama atau selepas tarikh mula','red'); return; }
+      const cal=CAL[kl?kl.options[kl.selectedIndex].text:'']||'prog';
+      const e={ k:mula, mula, tamat, t:tj.value.trim(), cal, kalendar:CALNAME[cal], peringkat:pk?pk.value:'', catatan:ct?ct.value.trim():'' };
+      e.label=rangeLbl(e)+(e.peringkat?' · '+e.peringkat:'');
+      const ev=load(); ev.push(e);
+      try{ localStorage.setItem('pt-events', JSON.stringify(ev)); }catch(x){}
+      y=a[0]; m=a[1]-1; draw(); list(); md.classList.remove('open'); tj.value=''; if(ct) ct.value='';
       PT.toast('Program disimpan & disegerakkan ke Google Calendar');
     };
     draw(); list();

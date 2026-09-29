@@ -2,7 +2,9 @@
 window.KELAS = {
   nama: 'Tahun 5 — Al-Farabi',
   umur: 5,                                   // buku rekod SPPM 5 Tahun
-  pasti: "PASTI AR-RAIHAN",
+  // PASTI of the signed-in teacher (DB user skop); the 15-pupil roster below is the demo class.
+  pasti: (function(){ try { const u = (window.PT && PT.user) || (window.DB && DB.user && DB.user());
+    return (u && /guru|pembantu/.test(u.peranan) && u.skop) ? u.skop : 'PASTI AR-RAIHAN'; } catch(e){ return 'PASTI AR-RAIHAN'; } })(),
   murid: [
     { nama:'Ahmad Umair bin Mohd Safwan',         mykid:'210512035411' },
     { nama:'Nur Solehah Suraya binti Che Mat',      mykid:'150618038729' },
@@ -20,6 +22,9 @@ window.KELAS = {
     { nama:'Nur Lubna binti Mohd Zaki',          mykid:'150719034889' },
     { nama:'Muhammad Bukhari Farhan bin Hisyam',     mykid:'150430034512' },
   ],
+  // Fill any [data-kelas] / [data-kelas-pasti] placeholder with the class name / PASTI.
+  label(){ document.querySelectorAll('[data-kelas]').forEach(el => el.textContent = 'Kelas ' + this.nama);
+    document.querySelectorAll('[data-kelas-pasti]').forEach(el => el.textContent = this.pasti); },
   initials(nama){
     const p = nama.split(' ').filter(w => !/^(bin|binti)$/i.test(w));
     return (p[0][0] + (p[1] ? p[1][0] : '')).toUpperCase();

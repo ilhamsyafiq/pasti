@@ -6,7 +6,7 @@
 <title>Kehadiran Murid · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=8">
+<link rel="stylesheet" href="../assets/css/app.css?v=10">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#2fa308">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -24,6 +24,8 @@
   .att-extra{display:grid;gap:8px}
   .att-extra input{width:100%}
   .lockmsg{font-size:12.5px;color:var(--accent-d);background:var(--accent-l);border-radius:10px;padding:9px 12px;margin-bottom:10px}
+  .mbk-ic{font-family:inherit;font-size:10.5px;font-weight:800;letter-spacing:.03em;border:1px solid #d9d1f6;background:#efecfb;color:#5b45c4;border-radius:7px;padding:3px 7px;margin-left:6px;cursor:pointer;vertical-align:1px;min-height:24px}
+  .mbk-nm{font-weight:700;color:var(--ink);margin-bottom:10px}
 </style>
 </head>
 <body>
@@ -34,7 +36,7 @@
       <div>
         <div class="crumb">Portal Guru <span>›</span> Kehadiran Murid</div>
         <h1>Kehadiran Murid</h1>
-        <div class="lead">Kelas Tahun 5 — Al-Farabi · PASTI AR-RAIHAN · semua murid bermula sebagai <b>Hadir</b>, tanda yang lain sahaja</div>
+        <div class="lead"><span data-kelas>Kelas Tahun 5 — Al-Farabi</span> · <span data-kelas-pasti>PASTI AR-RAIHAN</span> · semua murid bermula sebagai <b>Hadir</b>, tanda yang lain sahaja</div>
       </div>
     </div>
 
@@ -56,13 +58,36 @@
   </main>
 </div>
 
-<script src="../assets/js/app.js?v=8"></script>
-<script src="../assets/js/guru-kelas.js"></script>
+<script src="../assets/js/app.js?v=10"></script>
+<script src="../assets/js/guru-kelas.js?v=2"></script>
 <script>
 (function(){
   const K = window.KELAS, M = K.murid;
+  K.label && K.label();
   const DOW = ['Ahd','Isn','Sel','Rab','Kha','Jum','Sab'];
   const BLN = ['Jan','Feb','Mac','Apr','Mei','Jun','Jul','Ogo','Sep','Okt','Nov','Dis'];
+  // MBK (Murid Berkeperluan Khas): a pupil whose MyKid matches a DB murid with `mbk` gets a small badge; tap → nota
+  // (kategori, keperluan, catatan). Only for guru / pembantu of that PASTI (PT.canSeeMbk). Works offline (DB is local).
+  const npasti = s => String(s || '').toUpperCase().replace(/^PASTI\s+/,'').replace(/[^A-Z0-9]/g,'');
+  const escM = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const mbkOf = mykid => { try {
+    const m = window.DB && DB.all ? DB.all('murid').find(x => x.mbk && String(x.mykid) === String(mykid)) : null; if (!m) return null;
+    if (window.PT && typeof PT.canSeeMbk === 'function') return PT.canSeeMbk(m) ? m : null;
+    const u = window.DB && DB.user && DB.user(); return u && /^(guru|pembantu)$/.test(u.peranan) && npasti(u.skop) === npasti(m.pasti) ? m : null;
+  } catch(e){ return null; } };
+  const mbkBtn = (m, i) => mbkOf(m.mykid) ? `<button type="button" class="mbk-ic" data-mbk="${i}" title="Nota Keperluan Khas" aria-label="Nota Keperluan Khas">MBK</button>` : '';
+  function mbkNote(i){
+    const k = M[i], m = k && mbkOf(k.mykid); if (!m) return; const x = m.mbk;
+    let ov = document.getElementById('mbkNote'); if (!ov) { ov = document.createElement('div'); ov.className = 'modal-overlay'; ov.id = 'mbkNote'; document.body.appendChild(ov); }
+    const row = (l, v) => v ? `<dt>${l}</dt><dd>${v}</dd>` : '';
+    ov.innerHTML = `<div class="modal"><div class="m-head"><h3>Nota Keperluan Khas</h3><button class="btn btn-ghost btn-sm" data-close>✕</button></div>
+      <div class="m-body"><div class="mbk-nm">${escM(k.nama)}</div><dl class="kv">${row('Kategori', escM(x.kategori || '—') + (x.sub ? ' · ' + escM(x.sub) : ''))}${row('Tahap', escM(x.tahap || ''))}
+        ${row('Keperluan', escM((x.keperluan || []).join(', ') || '—'))}${row('Catatan guru', escM(x.catatan || '—'))}</dl>
+        <div class="muted" style="font-size:12px;margin-top:12px">Sulit — untuk guru kelas sahaja. Jangan kongsi dengan pihak lain.</div></div>
+      <div class="m-foot"><button class="btn btn-ghost" data-close>Tutup</button></div></div>`;
+    ov.classList.add('open');
+    try { if (window.PT && PT.logAccess) PT.logAccess('Lihat nota MBK', 'Portal Guru', k.nama); } catch(e){}
+  }
   const REASONS = ['Sakit','Cuti keluarga','Kecemasan','Tiada maklum'];
   const pad = n => String(n).padStart(2,'0');
   const keyOf = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
@@ -92,7 +117,7 @@
         ? `<div class="att-extra"><div class="chips">${REASONS.map(t => `<button type="button" data-r="${i}" data-v="${t}" class="${x.r===t?'on':''}" ${lk?'disabled':''}>${t}</button>`).join('')}</div></div>`
         : x.s === 'L' ? `<div class="att-extra"><input class="input" data-c="${i}" placeholder="Masa tiba / catatan (pilihan)" value="${x.c||''}" ${lk?'disabled':''}></div>` : '';
       return `<div class="mrow ${x.s==='T'?'flag':''}">
-        <div class="who"><div class="avatar">${K.initials(m.nama)}</div><div><b>${m.nama}</b><span>MyKid ${m.mykid}</span></div></div>
+        <div class="who"><div class="avatar">${K.initials(m.nama)}</div><div><b>${m.nama}${mbkBtn(m,i)}</b><span>MyKid ${m.mykid}</span></div></div>
         <div class="pick" style="--n:3">
           <button type="button" class="h ${x.s==='H'?'on':''}" data-s="${i}" data-v="H" ${lk?'disabled':''}>Hadir</button>
           <button type="button" class="l ${x.s==='L'?'on':''}" data-s="${i}" data-v="L" ${lk?'disabled':''}>Lewat</button>
@@ -110,6 +135,7 @@
 
   document.querySelector('[data-own]').addEventListener('click', e => {
     const t = e.target.closest('button'); if (!t || t.disabled) return;
+    if (t.dataset.mbk != null) { mbkNote(+t.dataset.mbk); return; }
     const r = rec();
     if (t.dataset.day != null) { cur = +t.dataset.day; drawDays(); drawList(); return; }
     if (t.id === 'allHadir') { if (locked()) return; r.rows = M.map(() => ({s:'H'})); r.saved = false; drawList(); persist(); return; }

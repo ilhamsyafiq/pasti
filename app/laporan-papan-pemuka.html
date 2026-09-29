@@ -6,7 +6,7 @@
 <title>Papan Pemuka · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=8">
+<link rel="stylesheet" href="../assets/css/app.css?v=10">
 </head>
 <body>
 <div class="pt-app" data-module="pelaporan" data-page="laporan-papan-pemuka" data-title="Papan Pemuka" data-subtitle="Ringkasan statistik PASTI mengikut DUN">
@@ -16,10 +16,10 @@
       <div>
         <div class="crumb">ePASTI <span>›</span> Pelaporan <span>›</span> Papan Pemuka</div>
         <h1>Papan Pemuka</h1>
-        <div class="lead">Ringkasan bilangan PASTI, guru dan murid — Kawasan Kota Bharu</div>
+        <div class="lead">Ringkasan bilangan PASTI, guru dan murid — <span data-scope-label>Kawasan Kota Bharu</span></div>
       </div>
       <div class="toolbar" style="margin-bottom:0">
-        <select class="select" title="Tahun">
+        <select class="select" title="Tahun" id="ppTahun" data-nofilter>
           <option>2026</option>
           <option>2025</option>
         </select>
@@ -43,9 +43,9 @@
     </div>
 
     <div class="card mt-lg">
-      <div class="card-head"><h3>Statistik Mengikut DUN — Tahun 2026</h3></div>
+      <div class="card-head"><h3 id="ppHead">Statistik Mengikut DUN — Tahun 2026</h3></div>
       <div class="table-wrap">
-        <table class="pt">
+        <table class="pt" id="ppTable" data-nosave>
           <thead>
             <tr>
               <th>Bil</th>
@@ -68,14 +68,71 @@
   </main>
 </div>
 
-<script src="../assets/js/app.js?v=8"></script>
+<script src="../assets/js/app.js?v=10"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="../assets/js/charts.js?v=2"></script>
 <script>
+// Report scope: lead text follows the signed-in scope; DUN / Cawangan only see rows of their own DUN (or PASTI),
+// with JUMLAH recomputed from the rows that remain.
+window.LAP = (function(){
+  const P = window.PT || {}, S = P.scope || null, tier = (S && S.tier) || P.tier || '';
+  const low = tier === 'dun' || tier === 'cawangan';
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const code = s => { const m = String(s || '').toUpperCase().trim().match(/^([NP]\d+)/); return m ? m[1] : ''; };
+  const labelCell = tr => [...tr.cells].find(c => !/^\s*\d*\s*$/.test(c.textContent));
+  const isTotal = tr => /^\s*jumlah\s*$/i.test((labelCell(tr) || {}).textContent || '');
+  function lead(){ if (S && S.label) document.querySelectorAll('[data-scope-label]').forEach(el => { el.textContent = S.label; }); }
+  function note(){
+    if (!low || !S || document.getElementById('lapNote')) return;
+    const ph = document.querySelector('.pt-main .page-head'); if (!ph) return;
+    ph.insertAdjacentHTML('afterend', '<div class="notice mb" id="lapNote"><div class="tx"><b>Skop paparan: ' + esc(S.label || '') + '</b><span>Angka yang dipaparkan adalah bagi skop anda sahaja' +
+      (S.dun ? ' (DUN ' + esc(S.dun) + ')' : '') + ' — baris DUN / PASTI lain tidak dipaparkan dan jumlah dikira semula.</span></div></div>');
+  }
+  // drop out-of-scope rows (DUN rows named "N09 …"; PASTI rows via PT.inScope), then recompute JUMLAH
+  function scope(root){
+    if (!low || !S) return;
+    const dc = code(S.dun);
+    (root || document).querySelectorAll('table.pt').forEach(tb => {
+      const body = tb.tBodies[0]; if (!body) return; let cut = false;
+      [...body.rows].forEach(tr => { if (isTotal(tr)) return; const c = labelCell(tr); if (!c) return; const t = c.textContent.trim();
+        const out = /^N\d+/i.test(t) ? (dc && code(t) !== dc) : (P.inScope ? !P.inScope(t) : false);
+        if (out) { tr.remove(); cut = true; } });
+      if (cut) totals(tb);
+    });
+  }
+  function totals(tb){
+    const rows = [...tb.tBodies[0].rows], J = rows.find(isTotal); if (!J) return;
+    const data = rows.filter(r => r !== J);
+    [...J.cells].forEach((c, i) => { if (!/^\s*[\d,.]+\s*$/.test(c.textContent)) return;
+      c.textContent = data.reduce((a, r) => { const v = r.cells[i] ? r.cells[i].textContent.replace(/,/g, '').trim() : ''; return a + (/^\d+(\.\d+)?$/.test(v) ? +v : 0); }, 0); });
+    let n = 0; data.forEach(r => { const c = r.cells[0]; if (c && /^\d+$/.test(c.textContent.trim())) c.textContent = ++n; });
+  }
+  lead(); note();
+  return { scope, totals, low, S };
+})();
+</script>
+<script>
 (function(){
-  const T = PTChart.readTable(document.querySelector('table.pt'), { skipZeroRows:true, labelCol:1 });
-  [['cPasti',0,'PASTI'],['cGuru',1,'Guru'],['cMurid',2,'Murid']].forEach(([id,col,name]) =>
-    PTChart.bar(document.getElementById(id), { labels:T.labels, series:[{ name, data:T.rows.map(r => r[col]) }], horizontal:true }));
+  // Tahun select swaps the dataset (table + the three charts are redrawn from the table)
+  const DATA = {
+    '2026': [['N09 KOTA LAMA', 9, 18, 147], ['N10 BUNUT PAYONG', 1, 2, 34], ['TIADA MAKLUMAT', 0, 0, 0]],
+    '2025': [['N09 KOTA LAMA', 8, 16, 132], ['N10 BUNUT PAYONG', 1, 2, 29], ['TIADA MAKLUMAT', 0, 0, 0]],
+  };
+  const tb = document.getElementById('ppTable'), sel = document.getElementById('ppTahun'), head = document.getElementById('ppHead');
+  let charts = [];
+  function draw(yr){
+    const rows = DATA[yr] || DATA['2026'], sum = i => rows.reduce((a, r) => a + r[i], 0), n = v => '<td class="right num">' + v + '</td>';
+    tb.tBodies[0].innerHTML = rows.map((r, i) => '<tr><td>' + (i + 1) + '</td><td>' + r[0] + '</td>' + n(r[1]) + n(r[2]) + n(r[3]) + '</tr>').join('')
+      + '<tr class="strong"><td></td><td>JUMLAH</td>' + n(sum(1)) + n(sum(2)) + n(sum(3)) + '</tr>';
+    LAP.scope();
+    head.textContent = 'Statistik Mengikut DUN — Tahun ' + yr;
+    charts.forEach(c => { try { c && c.destroy(); } catch(e){} });
+    const T = PTChart.readTable(tb, { skipZeroRows:true, labelCol:1 });
+    charts = [['cPasti',0,'PASTI'],['cGuru',1,'Guru'],['cMurid',2,'Murid']].map(([id,col,name]) =>
+      PTChart.bar(document.getElementById(id), { labels:T.labels, series:[{ name, data:T.rows.map(r => r[col]) }], horizontal:true }));
+  }
+  sel.addEventListener('change', e => { e.stopPropagation(); draw(sel.value); PT.toast('Papan pemuka Tahun ' + sel.value); });
+  draw(sel.value);
 })();
 </script>
 </body>

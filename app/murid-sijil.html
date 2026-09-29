@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=8">
+<link rel="stylesheet" href="../assets/css/app.css?v=10">
 </head>
 <body>
 <div class="pt-app" data-module="pengurusan" data-page="murid-sijil" data-title="Cetak Sijil Tamat Sekolah Murid" data-subtitle="Sijil tamat sekolah murid tahun akhir">
@@ -17,7 +17,7 @@
       <div>
         <div class="crumb">ePASTI <span>›</span> Pengurusan PASTI &amp; Murid <span>›</span> Cetak Sijil Tamat Sekolah</div>
         <h1>Cetak Sijil Tamat Sekolah Murid</h1>
-        <div class="lead"><span class="muted">Jumlah Bilangan = 6</span> · Murid tahun akhir · PASTI Kawasan Kota Bharu</div>
+        <div class="lead"><span class="muted" data-count>Jumlah Bilangan = 6</span> · Murid tahun akhir · <span data-scope-label>PASTI Kawasan Kota Bharu</span></div>
       </div>
     </div>
 
@@ -55,7 +55,7 @@
   </main>
 </div>
 
-<script src="../assets/js/app.js?v=8"></script>
+<script src="../assets/js/app.js?v=10"></script>
 <script>
 (function(){
   const data = [
@@ -78,6 +78,20 @@
     <td><button class="btn btn-soft btn-sm" data-action="print" title="Cetak Sijil Jawi">Sijil Jawi</button></td>
     <td><button class="btn btn-soft btn-sm" data-action="print" title="Cetak Sijil Rumi">Sijil Rumi</button></td>
   </tr>`).join('');
+
+  // After the engine has scoped the rows. Bulk printing takes the ticked rows (or every visible row),
+  // so "Pilih semua" must never tick rows hidden by scope or by the search filter.
+  document.addEventListener('DOMContentLoaded', () => setTimeout(() => {
+    const tb = document.querySelector('table.pt'), el = document.querySelector('[data-count]'); if (!tb) return;
+    const hidden = r => r.style.display === 'none';
+    const count = () => { if (el) el.textContent = 'Jumlah Bilangan = ' + [...tb.tBodies[0].rows].filter(r => !hidden(r)).length; };
+    const untickHidden = () => [...tb.tBodies[0].rows].forEach(r => { if (hidden(r)) { const c = r.querySelector('input[type=checkbox]'); if (c) c.checked = false; } });
+    count();
+    document.addEventListener('change', e => { if (e.target.matches && e.target.matches('table.pt input[type=checkbox]')) setTimeout(untickHidden, 0); });
+    document.addEventListener('input', () => setTimeout(() => { untickHidden(); count(); }, 0));
+    // a bulk print right after ticking: make sure hidden rows are not part of it
+    document.addEventListener('click', e => { if (e.target.closest && e.target.closest('.btn')) untickHidden(); }, true);
+  }, 0));
 })();
 </script>
 </body>

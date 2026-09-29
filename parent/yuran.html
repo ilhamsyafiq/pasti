@@ -6,7 +6,7 @@
 <title>Yuran &amp; Pembayaran · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=8">
+<link rel="stylesheet" href="../assets/css/app.css?v=10">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#2fa308">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -38,7 +38,7 @@
     <div class="pp-tiles">
       <div class="pp-tile"><div class="ic pp-c3" id="icDue"></div><div><div class="l">Tertunggak</div><div class="v" id="tDue">RM 0</div><div class="s" id="tDueS">—</div></div></div>
       <div class="pp-tile"><div class="ic pp-c4" id="icBil"></div><div><div class="l">Bil Bulan Ini</div><div class="v">RM 120</div><div class="s">September 2026 · 2 anak</div></div></div>
-      <div class="pp-tile"><div class="ic pp-c1" id="icPaid"></div><div><div class="l">Dibayar Tahun Ini</div><div class="v">RM 1,140</div><div class="s">17 bil dijelaskan</div></div></div>
+      <div class="pp-tile"><div class="ic pp-c1" id="icPaid"></div><div><div class="l">Dibayar Tahun Ini</div><div class="v" id="tPaid">RM 1,140</div><div class="s" id="tPaidS">17 bil dijelaskan</div></div></div>
     </div>
 
     <!-- auto-debit -->
@@ -77,8 +77,8 @@
   </main>
 </div>
 
-<script src="../assets/js/app.js?v=8"></script>
-<script src="../assets/js/parent-kids.js?v=3"></script>
+<script src="../assets/js/app.js?v=10"></script>
+<script src="../assets/js/parent-kids.js?v=5"></script>
 <script>
   (function(){
     const $ = id => document.getElementById(id), I = PK.I;
@@ -114,6 +114,9 @@
       $('ppPayAll').style.display = open.length ? '' : 'none';
       $('bayarAll').style.display = open.length ? '' : 'none';
       $('tDue').textContent = 'RM ' + due; $('tDueS').textContent = open.length ? open.length + ' bil belum jelas' : 'Tiada tunggakan';
+      // paid this year = sample total (17 bills / RM 1,140 with the 5 paid rows shown) + bills paid since
+      const extra = rows.filter(r => /\bsudah\b/i.test((r.querySelector('.badge')||{}).textContent || '')).length - 5;
+      $('tPaid').textContent = 'RM ' + (1140 + extra * 60).toLocaleString('en-MY'); $('tPaidS').textContent = (17 + extra) + ' bil dijelaskan';
       const dueMonths = new Set(open.map(r => FULL.findIndex(m => r.children[2].textContent.startsWith(m))));
       const now = new Date().getMonth();
       $('ppMonths').innerHTML = MON.map((m,i) => '<div class="' + (dueMonths.has(i) ? 'd' : i <= now ? 'p' : '') + '"><i></i>' + m + '</div>').join('');

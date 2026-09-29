@@ -6,7 +6,7 @@
 <title>Makluman & Pemberitahuan · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=8">
+<link rel="stylesheet" href="../assets/css/app.css?v=10">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#2fa308">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -39,8 +39,8 @@
   </main>
 </div>
 
-<script src="../assets/js/app.js?v=8"></script>
-<script src="../assets/js/parent-kids.js?v=3"></script>
+<script src="../assets/js/app.js?v=10"></script>
+<script src="../assets/js/parent-kids.js?v=5"></script>
 <script>
   (function(){
     const I = PK.I, esc = PK.esc, $ = id => document.getElementById(id);
@@ -58,6 +58,9 @@
     let read = []; try { read = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch(e){}
     if (!read.length) read = ['y-jul','daftar','cuti'];   // older items already seen
     let cat = 'semua';
+    // Yuran Ogos: follow the parent bill table (engine-saved after a BayarCash payment)
+    if (PK.billOpen && PK.billOpen('Ahmad Umair', 'Ogos') === false) { const y = items.find(x => x.id === 'y-ogos');
+      Object.assign(y, { t:'Yuran Ogos 2026 telah dijelaskan — terima kasih', p:'Pembayaran yuran Ahmad Umair bagi bulan Ogos (RM 60) telah diterima. Resit boleh dimuat turun.', pay:0, go:'resit.html', done:true }); }
 
     function draw(){
       const unread = items.filter(x => !read.includes(x.id)).length;
@@ -70,7 +73,7 @@
         return '<div class="pp-fi' + (cat !== 'semua' && x.c !== cat ? ' hide' : '') + '" data-id="' + x.id + '">'
           + '<div class="ic ' + (x.done ? 'pp-c1' : C[1]) + '">' + (x.done ? I.ok : C[2]) + '</div>'
           + '<div class="tx"><b>' + esc(x.t) + '</b><p>' + esc(x.p) + '</p><div class="dt">' + x.dt + ' · ' + C[0] + '</div>'
-          + (x.pay ? '<button class="btn btn-primary btn-sm" data-amount="' + x.pay + '">Bayar</button>' : x.go ? '<a class="btn btn-soft btn-sm" href="' + x.go + '">Lihat</a>' : '')
+          + (x.pay ? '<a class="btn btn-primary btn-sm" href="yuran.html" data-own>Bayar</a>' : x.go ? '<a class="btn btn-soft btn-sm" href="' + x.go + '">Lihat</a>' : '')
           + '</div>' + (u ? '<span class="tag-dot"></span>' : '') + '</div>'; }).join('');
     }
     const save = () => { try { localStorage.setItem(KEY, JSON.stringify(read)); } catch(e){} };

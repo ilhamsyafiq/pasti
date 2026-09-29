@@ -6,7 +6,7 @@
 <title>Clock In / Clock Out · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=8">
+<link rel="stylesheet" href="../assets/css/app.css?v=10">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#2fa308">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -125,7 +125,7 @@
       <div>
         <div class="crumb">Portal Guru <span>›</span> Clock In / Clock Out</div>
         <h1>Clock In / Clock Out</h1>
-        <div class="lead">Rekod kehadiran bertugas anda · PASTI AR-RAIHAN</div>
+        <div class="lead">Rekod kehadiran bertugas anda · <span id="ckPasti">PASTI AR-RAIHAN</span></div>
       </div>
     </div>
 
@@ -135,9 +135,9 @@
       <div class="ck-top">
         <div>
           <div class="ck-greet" id="ckGreet">Selamat pagi,</div>
-          <div class="ck-name">Ustazah Siti Iffah</div>
+          <div class="ck-name" id="ckName">Ustazah Siti Iffah</div>
         </div>
-        <span class="ck-chip"><i></i>PASTI AR-RAIHAN · Kota Bharu</span>
+        <span class="ck-chip"><i></i><span id="ckChip">PASTI AR-RAIHAN · Kota Bharu</span></span>
       </div>
       <div class="ck-time" id="ckTime">--:--<small>--</small></div>
       <div class="ck-date" id="ckDate">—</div>
@@ -177,7 +177,7 @@
           <div class="bar"><div class="late" style="left:4.76%"></div><div class="fill" id="ckFill"></div></div>
           <div class="ticks"><span>07:45</span><span>09:30</span><span>11:15</span><span>13:00</span></div>
         </div>
-        <div style="font-size:13px;font-weight:700;color:var(--ink);margin-top:20px">Minggu Ini</div>
+        <div style="font-size:13px;font-weight:700;color:var(--ink);margin-top:20px">Minggu Ini <span style="font-weight:600;color:var(--muted);font-size:11.5px">· Ahad–Khamis (Jumaat &amp; Sabtu cuti)</span></div>
         <div class="ck-week" id="ckWeek"></div>
         <div class="ck-legend"><span><i style="background:var(--brand)"></i>Hadir</span><span><i style="background:var(--accent)"></i>Lewat</span><span><i style="background:#d93025"></i>Tidak hadir</span><span><i style="background:var(--line)"></i>Belum</span></div>
       </div>
@@ -217,12 +217,13 @@
   </div>
 </div>
 
-<script src="../assets/js/app.js?v=8"></script>
+<script src="../assets/js/app.js?v=10"></script>
 <script>
 (function(){
   const $ = id => document.getElementById(id);
   const BULAN = ['Januari','Februari','Mac','April','Mei','Jun','Julai','Ogos','September','Oktober','November','Disember'];
   const HARI = ['Ahad','Isnin','Selasa','Rabu','Khamis','Jumaat','Sabtu'];
+  const DOW = ['Ahd','Isn','Sel','Rab','Kha','Jum','Sab'];
   const pad = n => String(n).padStart(2,'0');
   const START = 7*60+45, LATE = 8*60, END = 13*60, TARGET = END - START;   // minutes
   const KEY = 'pt-clock-guru';
@@ -236,9 +237,9 @@
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch(e){} };
   const today = () => store[dkey(new Date())] || (store[dkey(new Date())] = {});
 
-  // Sample history (before today)
-  const SAMPLE = [['23/09/2026','07:48','13:05'],['22/09/2026','07:55','13:10'],['21/09/2026','07:46','13:02'],['19/09/2026','08:12','13:02'],['18/09/2026','07:50','13:00'],
-    ['17/09/2026','07:45','13:08'],['16/09/2026','07:58','13:04'],['15/09/2026','08:20','13:12'],['12/09/2026','07:49','13:00']];
+  // Sample history (school days only — Kelantan week is Ahad–Khamis)
+  const SAMPLE = [['28/09/2026','07:50','13:04'],['27/09/2026','07:47','13:01'],['24/09/2026','07:48','13:05'],['23/09/2026','07:55','13:10'],['22/09/2026','07:46','13:02'],
+    ['21/09/2026','08:12','13:02'],['20/09/2026','07:50','13:00'],['17/09/2026','07:45','13:08'],['16/09/2026','07:58','13:04'],['15/09/2026','08:20','13:12']];
 
   // ring
   const R = 106, C = 2*Math.PI*R, bar = $('ckBar');
@@ -294,7 +295,8 @@
   }
 
   function week(){
-    const now = new Date(), mon = new Date(now); mon.setDate(now.getDate() - ((now.getDay()+6)%7));
+    // Kelantan school week: Ahad (Sun) – Khamis (Thu); Jumaat & Sabtu are off (shows the week just ended on Fri/Sat)
+    const now = new Date(), mon = new Date(now); mon.setDate(now.getDate() - now.getDay());
     const sampleMap = {}; SAMPLE.forEach(r => sampleMap[r[0]] = r);
     let html = '';
     for (let i = 0; i < 5; i++) {
@@ -304,7 +306,7 @@
       if (rec && rec.in) c = mins(rec.in) > LATE ? 'l' : 'h';
       else if (s) { const [h,m] = s[1].split(':'); c = (+h*60 + +m) > LATE ? 'l' : 'h'; }
       else if (d < now && !isToday) c = 'a';
-      html += '<div class="ck-day ' + c + (isToday ? ' today' : '') + '"><div class="d">' + HARI[d.getDay()].slice(0,3) + '</div><div class="n">' + d.getDate() + '</div><div class="dot"></div></div>';
+      html += '<div class="ck-day ' + c + (isToday ? ' today' : '') + '"><div class="d">' + DOW[d.getDay()] + '</div><div class="n">' + d.getDate() + '</div><div class="dot"></div></div>';
     }
     $('ckWeek').innerHTML = html;
   }
@@ -342,7 +344,17 @@
     t.out = Date.now(); save(); render(); celebrate(true, t);
   });
 
+  // Signed-in teacher (DB user)
+  const U = (window.PT && PT.user) || (window.DB && DB.user && DB.user());
+  if (U && /guru|pembantu/.test(U.peranan)) {
+    const pasti = U.skop || 'PASTI AR-RAIHAN', rec = window.DB && DB.find && DB.find('pasti', p => String(p.nama).toUpperCase() === String(pasti).toUpperCase());
+    const kaw = rec ? String(rec.kawasan || '').replace(/^P\d+\s*/, '').toLowerCase().replace(/\b\w/g, c => c.toUpperCase()) : 'Kota Bharu';
+    $('ckName').textContent = String(U.nama).split(/\s+(?:bin|binti|bt|bn)\s+/i)[0];
+    $('ckPasti').textContent = pasti; $('ckChip').textContent = pasti + (kaw ? ' · ' + kaw : '');
+  }
+
   render(); setInterval(tick, 1000);
+  window.addEventListener('storage', e => { if (e.key === KEY) { try { store = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch(x){} render(); } });
 })();
 </script>
 </body>

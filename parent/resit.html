@@ -6,7 +6,7 @@
 <title>Resit & Sejarah Pembayaran · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=8">
+<link rel="stylesheet" href="../assets/css/app.css?v=10">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#2fa308">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -50,7 +50,7 @@
         </div>
 
         <div class="table-wrap">
-          <table class="pt">
+          <table class="pt" data-nosave>
             <thead>
               <tr>
                 <th>No. Rujukan</th>
@@ -72,8 +72,8 @@
   </main>
 </div>
 
-<script src="../assets/js/app.js?v=8"></script>
-<script src="../assets/js/parent-kids.js?v=3"></script>
+<script src="../assets/js/app.js?v=10"></script>
+<script src="../assets/js/parent-kids.js?v=5"></script>
 <script>
   (function(){
     const I = PK.I, $ = id => document.getElementById(id);
@@ -87,6 +87,18 @@
       { ref:'BC-2026-0100215', dt:'8 Jan 2026, 10:02 PG',   anak:'AHMAD UMAIR BIN MOHD SAFWAN', tujuan:'Yuran Pendaftaran',      jumlah:150, kaedah:'FPX' },
       { ref:'BC-2026-0100207', dt:'8 Jan 2026, 9:58 PG',    anak:'NUR SURAYA BINTI MOHD SAFWAN',  tujuan:'Yuran Pendaftaran',      jumlah:150, kaedah:'FPX' }
     ];
+    // Live BayarCash payments made in the parent portal (engine log 'pt-payments', newest first) above the sample rows
+    const ME = (window.PT && PT.user) || (window.DB && DB.user && DB.user()) || {}, KIDS = PK.load().kids;
+    const BLN = ['Jan','Feb','Mac','Apr','Mei','Jun','Julai','Ogos','Sep','Okt','Nov','Dis'];
+    const when = p => { const [d,m,y] = String(p.tarikh || '').split('/'); const [h,mi] = String(p.masa || '00:00').split(':'); if (!y) return p.tarikh || '—';
+      const H = +h, ap = H < 12 ? 'PG' : H < 19 ? 'PTG' : 'MLM'; return +d + ' ' + BLN[+m-1] + ' ' + y + ', ' + ((H % 12) || 12) + ':' + (mi || '00') + ' ' + ap; };
+    const mine = p => { const who = String(p.pembayar || '').toLowerCase(); return !who || !ME.nama || who === String(ME.nama).toLowerCase() || who === String(ME.emel || '').toLowerCase(); };
+    const live = ((window.PT && PT.payments && PT.payments()) || []).filter(p => p && p.portal === 'parent' && mine(p)).map(p => ({
+      ref:p.ref, dt:when(p), anak:String(p.murid || '—').toUpperCase(), tujuan:(p.untuk && String(p.untuk).toLowerCase() !== String(p.murid || '').toLowerCase()) ? p.untuk : 'Yuran Bulanan',
+      jumlah:+p.jumlah || 0, kaedah:String(p.kaedah || 'FPX').replace(/^BayarCash\s*·\s*/i, ''), pasti:p.pasti, live:true }));
+    rows.unshift(...live);
+    const kelasOf = r => { const k = KIDS.find(k => r.anak.includes(String(k.pendek).toUpperCase()) || r.anak === String(k.nama).toUpperCase());
+      return k ? k.kelas.split('·')[0].trim() + ' · ' + k.pasti : (r.pasti || (KIDS[0] && KIDS[0].pasti) || 'PASTI AR-RAIHAN'); };
     const total = rows.reduce((a,r) => a + r.jumlah, 0), kaedah = {};
     rows.forEach(r => kaedah[r.kaedah] = (kaedah[r.kaedah] || 0) + 1);
     const top = Object.keys(kaedah).sort((a,b) => kaedah[b] - kaedah[a])[0];
@@ -98,17 +110,17 @@
     const col = n => /zafran/i.test(n) ? 'pp-c1' : 'pp-c2';
     $('resitBody').innerHTML = rows.map(r => `
       <tr>
-        <td class="strong num">${r.ref}</td>
-        <td class="muted">${r.dt}</td>
+        <td class="strong num">${PK.esc(r.ref)}</td>
+        <td class="muted">${PK.esc(r.dt)}</td>
         <td>
           <div class="cell-user">
             <div class="avatar ${col(r.anak)}" style="color:#fff">${PK.ini(r.anak)}</div>
-            <div><div class="nm">${r.anak}</div><div class="ml">Tahun ${r.anak.includes('UMAIR')?'5':'4'} · PASTI AR-RAIHAN</div></div>
+            <div><div class="nm">${PK.esc(r.anak)}</div><div class="ml">${PK.esc(r.live ? kelasOf(r) : 'Tahun ' + (r.anak.includes('UMAIR')?'5':'4') + ' · PASTI AR-RAIHAN')}</div></div>
           </div>
         </td>
-        <td>${r.tujuan}</td>
+        <td>${PK.esc(r.tujuan)}</td>
         <td class="right num strong">${r.jumlah.toFixed(2)}</td>
-        <td>${r.kaedah}</td>
+        <td>${PK.esc(r.kaedah)}</td>
         <td><span class="badge b-green no-dot">Berjaya</span></td>
         <td class="right"><button class="btn btn-soft btn-sm" data-action="print">Resit</button></td>
       </tr>`).join('');

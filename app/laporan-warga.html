@@ -6,7 +6,7 @@
 <title>Laporan Warga PASTI · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=8">
+<link rel="stylesheet" href="../assets/css/app.css?v=10">
 </head>
 <body>
 <div class="pt-app" data-module="pelaporan" data-page="laporan-warga" data-title="Laporan Warga PASTI" data-subtitle="Statistik jawatankuasa, petugas & keahlian">
@@ -16,7 +16,7 @@
       <div>
         <div class="crumb">ePASTI <span>›</span> Pelaporan <span>›</span> Laporan Warga</div>
         <h1>Laporan Warga PASTI</h1>
-        <div class="lead">Kawasan Kota Bharu · Kelantan · Sesi 2026</div>
+        <div class="lead"><span data-scope-label>Kawasan Kota Bharu · Kelantan</span> · Sesi 2026</div>
       </div>
       <div class="flex gap wrap aic">
         <button class="btn btn-soft" data-action="export" data-toast="Menyediakan Excel…">Muat Turun Excel</button>
@@ -151,7 +151,47 @@
   </main>
 </div>
 
-<script src="../assets/js/app.js?v=8"></script>
-<script>/* laporan-warga: interactions handled by app.js (tabs, print, export toast) */</script>
+<script src="../assets/js/app.js?v=10"></script>
+<script>
+// Report scope: lead text follows the signed-in scope; DUN / Cawangan only see rows of their own DUN (or PASTI),
+// with JUMLAH recomputed from the rows that remain.
+window.LAP = (function(){
+  const P = window.PT || {}, S = P.scope || null, tier = (S && S.tier) || P.tier || '';
+  const low = tier === 'dun' || tier === 'cawangan';
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const code = s => { const m = String(s || '').toUpperCase().trim().match(/^([NP]\d+)/); return m ? m[1] : ''; };
+  const labelCell = tr => [...tr.cells].find(c => !/^\s*\d*\s*$/.test(c.textContent));
+  const isTotal = tr => /^\s*jumlah\s*$/i.test((labelCell(tr) || {}).textContent || '');
+  function lead(){ if (S && S.label) document.querySelectorAll('[data-scope-label]').forEach(el => { el.textContent = S.label; }); }
+  function note(){
+    if (!low || !S || document.getElementById('lapNote')) return;
+    const ph = document.querySelector('.pt-main .page-head'); if (!ph) return;
+    ph.insertAdjacentHTML('afterend', '<div class="notice mb" id="lapNote"><div class="tx"><b>Skop paparan: ' + esc(S.label || '') + '</b><span>Angka yang dipaparkan adalah bagi skop anda sahaja' +
+      (S.dun ? ' (DUN ' + esc(S.dun) + ')' : '') + ' — baris DUN / PASTI lain tidak dipaparkan dan jumlah dikira semula.</span></div></div>');
+  }
+  // drop out-of-scope rows (DUN rows named "N09 …"; PASTI rows via PT.inScope), then recompute JUMLAH
+  function scope(root){
+    if (!low || !S) return;
+    const dc = code(S.dun);
+    (root || document).querySelectorAll('table.pt').forEach(tb => {
+      const body = tb.tBodies[0]; if (!body) return; let cut = false;
+      [...body.rows].forEach(tr => { if (isTotal(tr)) return; const c = labelCell(tr); if (!c) return; const t = c.textContent.trim();
+        const out = /^N\d+/i.test(t) ? (dc && code(t) !== dc) : (P.inScope ? !P.inScope(t) : false);
+        if (out) { tr.remove(); cut = true; } });
+      if (cut) totals(tb);
+    });
+  }
+  function totals(tb){
+    const rows = [...tb.tBodies[0].rows], J = rows.find(isTotal); if (!J) return;
+    const data = rows.filter(r => r !== J);
+    [...J.cells].forEach((c, i) => { if (!/^\s*[\d,.]+\s*$/.test(c.textContent)) return;
+      c.textContent = data.reduce((a, r) => { const v = r.cells[i] ? r.cells[i].textContent.replace(/,/g, '').trim() : ''; return a + (/^\d+(\.\d+)?$/.test(v) ? +v : 0); }, 0); });
+    let n = 0; data.forEach(r => { const c = r.cells[0]; if (c && /^\d+$/.test(c.textContent.trim())) c.textContent = ++n; });
+  }
+  lead(); note();
+  return { scope, totals, low, S };
+})();
+</script>
+<script>/* laporan-warga: interactions handled by app.js (tabs, print, export); rows scoped by LAP */ LAP.scope();</script>
 </body>
 </html>

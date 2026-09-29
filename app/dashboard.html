@@ -6,13 +6,12 @@
 <title>Utama · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=8">
+<link rel="stylesheet" href="../assets/css/app.css?v=10">
 </head>
 <body>
 <div class="pt-app" data-module="dashboard" data-page="dashboard" data-title="Utama" data-subtitle="Papan utama ePASTI">
   <main class="pt-main">
     <!-- ================= PUSAT (HQ): master analytics dashboard ================= -->
-    <div data-tiers="pusat negeri" id="hq">
       <style>
         .hq-kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:14px}
         .hq-kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px 16px 14px;box-shadow:var(--shadow)}
@@ -71,6 +70,17 @@
         @media (max-width:1200px){.hq-row.r111{grid-template-columns:1fr 1fr}.flow-tiles{grid-template-columns:repeat(2,1fr)}}
         @media (max-width:900px){.hq-row.r21,.hq-row.r11,.hq-row.r111{grid-template-columns:1fr}.org{grid-template-columns:1fr 1fr}.hq-kpis{grid-template-columns:repeat(2,1fr)}}
       </style>
+      <style>
+        .hq-pipes{display:flex;align-items:stretch;gap:8px;flex-wrap:wrap}
+        .hq-pipe{flex:1;min-width:170px;display:flex;gap:12px;align-items:center;background:#f8faf7;border:1px solid var(--line2);border-radius:14px;padding:14px}
+        .hq-pipe .n{width:30px;height:30px;border-radius:50%;color:#fff;display:grid;place-items:center;font-weight:800;font-size:13px;flex:none}
+        .hq-pipe span{display:block;font-size:12px;color:var(--muted);font-weight:600}
+        .hq-pipe b{display:block;font-size:24px;color:var(--ink);line-height:1.2}
+        .hq-pipe small{font-size:11px;color:var(--faint)}
+        .hq-pipe-arrow{display:grid;place-items:center;color:var(--faint);font-size:22px}
+        @media(max-width:900px){.hq-pipe-arrow{display:none}}
+      </style>
+    <div data-tiers="pusat negeri" id="hq">
 
       <div class="page-head">
         <div>
@@ -110,7 +120,7 @@
       <!-- 4. Recent money movement + balances by level -->
       <div class="hq-row r21">
         <div class="card">
-          <div class="card-head"><div><h3>Transaksi Terkini</h3><span class="sub">Wang masuk &amp; keluar terbesar minggu ini</span></div><a class="btn btn-soft btn-sm" href="payment-gateway.html" data-tiers="negeri">Payment Gateway</a></div>
+          <div class="card-head"><div><h3>Transaksi Terkini</h3><span class="sub">Wang masuk &amp; keluar terbesar minggu ini</span></div><a class="btn btn-soft btn-sm" href="payment-gateway.html" data-tiers="pusat negeri">Payment Gateway</a></div>
           <div class="card-body" id="hqTx"></div>
         </div>
         <div class="card">
@@ -153,16 +163,21 @@
         <div class="card-head"><div><h3>Permohonan PASTI Baharu</h3><span class="sub" id="hqPipeSub">—</span></div><a class="btn btn-soft btn-sm" id="hqPipeBtn" href="pasti-pengurusan.html" style="display:none">Pengurusan PASTI</a></div>
         <div class="card-body"><div class="hq-pipes" id="hqPipe"></div></div>
       </div>
-      <style>
-        .hq-pipes{display:flex;align-items:stretch;gap:8px;flex-wrap:wrap}
-        .hq-pipe{flex:1;min-width:170px;display:flex;gap:12px;align-items:center;background:#f8faf7;border:1px solid var(--line2);border-radius:14px;padding:14px}
-        .hq-pipe .n{width:30px;height:30px;border-radius:50%;color:#fff;display:grid;place-items:center;font-weight:800;font-size:13px;flex:none}
-        .hq-pipe span{display:block;font-size:12px;color:var(--muted);font-weight:600}
-        .hq-pipe b{display:block;font-size:24px;color:var(--ink);line-height:1.2}
-        .hq-pipe small{font-size:11px;color:var(--faint)}
-        .hq-pipe-arrow{display:grid;place-items:center;color:var(--faint);font-size:22px}
-        @media(max-width:900px){.hq-pipe-arrow{display:none}}
-      </style>
+
+      <!-- Murid Berkeperluan Khas (counts only — no names / diagnosis at HQ) -->
+      <div class="card mt-lg" id="hqMbk">
+        <div class="card-head"><div><h3>Murid Berkeperluan Khas (MBK)</h3><span class="sub" id="hqMbkSub">Bilangan sahaja · mengikut kategori</span></div><a class="btn btn-soft btn-sm" id="hqMbkBtn" href="pasti-pengurusan.html?t=cawangan" style="display:none">Pengurusan PASTI</a></div>
+        <div class="card-body">
+          <div class="hq-row r21" style="margin-top:0">
+            <div>
+              <div class="flow-tiles" id="hqMbkTiles"></div>
+              <div class="brk mt" id="hqMbkBrk"></div>
+              <div class="muted mt" id="hqMbkNote" style="font-size:12px"></div>
+            </div>
+            <div><div class="hq-chart sm"><canvas id="hqMbkChart"></canvas></div><div class="hq-legend mt" id="hqMbkLegend" style="justify-content:center"></div></div>
+          </div>
+        </div>
+      </div>
 
       <!-- Alerts + applications + rankings -->
       <div class="hq-row r111">
@@ -189,17 +204,17 @@
     <div class="page-head">
       <div>
         <div class="crumb">ePASTI <span>›</span> Utama</div>
-        <h1>Selamat Datang, Ustaz Razlan</h1>
-        <div class="lead">Pentadbir Parlimen P.021 Kota Bharu · Kelantan · Dikemas kini sebentar tadi</div>
+        <h1 id="dwTitle">Selamat Datang</h1>
+        <div class="lead" id="dwLead">Dikemas kini sebentar tadi</div>
       </div>
     </div>
 
     <!-- role card + stats -->
     <div class="grid g-4">
-      <div class="stat"><div class="top"><span class="label">Bilangan PASTI</span><div class="ic g">P</div></div><div class="value">11</div><div class="trend up">▲ 1 permohonan baharu</div></div>
-      <div class="stat"><div class="top"><span class="label">Bilangan Guru</span><div class="ic v">G</div></div><div class="value">38</div><div class="trend up">▲ 23 aktif</div></div>
-      <div class="stat"><div class="top"><span class="label">Bilangan Murid</span><div class="ic t">M</div></div><div class="value">181</div><div class="trend up">▲ 45 permohonan online</div></div>
-      <div class="stat"><div class="top"><span class="label">Yuran Belum Jelas</span><div class="ic a">RM</div></div><div class="value">RM 6,300</div><div class="trend down">▼ 27 bil tertunggak</div></div>
+      <div class="stat"><div class="top"><span class="label">Bilangan PASTI</span><div class="ic g">P</div></div><div class="value" id="dsP">0</div><div class="trend up" id="dsPt">—</div></div>
+      <div class="stat"><div class="top"><span class="label">Bilangan Guru</span><div class="ic v">G</div></div><div class="value" id="dsG">0</div><div class="trend up" id="dsGt">—</div></div>
+      <div class="stat"><div class="top"><span class="label">Bilangan Murid</span><div class="ic t">M</div></div><div class="value" id="dsM">0</div><div class="trend up" id="dsMt">—</div></div>
+      <div class="stat"><div class="top"><span class="label" id="dsYl">Yuran Belum Jelas</span><div class="ic a">RM</div></div><div class="value">RM 6,300</div><div class="trend down" id="dsYt">▼ 27 bil tertunggak</div></div>
     </div>
 
     <!-- Kod PASTI (cawangan only) — the code parents need to register a child -->
@@ -231,6 +246,131 @@
       </div>
     </div>
 
+    <!-- Kemasukan MBK (cawangan only) — declare readiness; Pentadbir Kawasan verifies & opens -->
+    <style>
+      .mbk-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:22px}
+      .mbk-q{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+      .mbk-q>div{border:1px solid var(--line2);border-radius:12px;padding:10px 12px;background:#f8faf7}
+      .mbk-q .l{font-size:11.5px;font-weight:600;color:var(--muted)} .mbk-q .v{font-size:22px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
+      .mbk-kv{display:grid;grid-template-columns:130px minmax(0,1fr);gap:7px 12px;font-size:13px}
+      .mbk-kv dt{color:var(--muted);font-weight:600} .mbk-kv dd{margin:0;color:var(--ink)}
+      .mbk-tags{display:flex;flex-wrap:wrap;gap:6px} .mbk-tags .badge{font-weight:600}
+      .mbk-note{border-radius:12px;padding:10px 12px;font-size:12.5px;margin-top:12px}
+      .mbk-note.amber{background:#fdf5e7;border:1px solid #f2dcb3;color:#8a5a0b} .mbk-note.green{background:#f1f9ec;border:1px solid #cfe6c3;color:#1f5c0a} .mbk-note.red{background:#fdf1ef;border:1px solid #f3d3cd;color:#8f2a21}
+      .mbk-checks{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px 12px;border:1px solid var(--line);border-radius:10px}
+      .mbk-checks.pt-err{border-color:var(--bad)}
+      #monMbk>.card,#hqMbk .hq-row>div{min-width:0}
+      #monMbkTbl td.num,#monMbkTbl th.right{text-align:right}
+      @media(max-width:900px){.mbk-grid,.mbk-checks{grid-template-columns:1fr}}
+    </style>
+    <div data-tiers="cawangan" class="card mt-lg" id="mbkCard" data-own>
+      <div class="card-head">
+        <div><h3>Kemasukan Murid Berkeperluan Khas (MBK)</h3><span class="sub">Isytihar kesediaan PASTI anda — disahkan oleh Pentadbir Kawasan</span></div>
+        <span id="mbkStatus"></span>
+      </div>
+      <div class="card-body mbk-grid">
+        <div>
+          <div class="mbk-q" id="mbkQ"></div>
+          <div id="mbkMsg"></div>
+          <div class="flex gap wrap mt">
+            <button type="button" class="btn btn-primary btn-sm" id="mbkBtn">Isytihar Kesediaan</button>
+            <a class="btn btn-soft btn-sm" id="mbkApps" href="murid-permohonan.html?t=mbk">Permohonan Murid (Keperluan Khas)</a>
+          </div>
+        </div>
+        <dl class="mbk-kv" id="mbkKv" style="margin:0"></dl>
+      </div>
+    </div>
+
+    <!-- Monitoring (Kawasan / DUN / Cawangan) — everything under the signed-in scope; filled by the script below -->
+    <div id="mon" class="mt-lg">
+      <div class="card">
+        <div class="card-head">
+          <div><h3 id="monTitle">Pantauan</h3><span class="sub" id="monSub">Sesi 2026</span></div>
+          <div class="flex gap wrap">
+            <select class="select" id="monRange" data-own><option value="9">Jan–Sep 2026</option><option value="3">Suku 3 (Jul–Sep)</option></select>
+            <button class="btn btn-soft btn-sm" onclick="window.print()">Cetak</button>
+          </div>
+        </div>
+        <div class="card-body"><div class="hq-kpis" id="monKpis"></div></div>
+      </div>
+
+      <div class="hq-row r21">
+        <div class="card">
+          <div class="card-head"><div><h3>Kutipan Yuran Bulanan</h3><span class="sub" id="monFeeSub">Kutipan vs tertunggak · RM</span></div>
+            <div class="hq-legend"><span><i style="background:#2fa308"></i>Dikutip</span><span><i style="background:#e0912a"></i>Tertunggak</span><span><i style="background:#122019"></i>Kadar kutipan</span></div></div>
+          <div class="card-body"><div class="hq-chart"><canvas id="monFee"></canvas></div></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div><h3>Kehadiran Murid</h3><span class="sub" id="monAttSub">10 hari persekolahan terakhir</span></div></div>
+          <div class="card-body"><div class="hq-chart"><canvas id="monAtt"></canvas></div></div>
+        </div>
+      </div>
+
+      <div class="card mt-lg">
+        <div class="card-head"><div><h3 id="monTblT">Prestasi Mengikut Unit</h3><span class="sub" id="monTblS">Klik tajuk lajur untuk susun</span></div>
+          <div class="hq-legend" id="monTblLegend"></div></div>
+        <div class="card-body"><div class="table-wrap"><table class="pt" id="monTbl" data-nosave data-noscope><thead></thead><tbody></tbody><tfoot></tfoot></table></div></div>
+      </div>
+
+      <div class="hq-row r11">
+        <div class="card">
+          <div class="card-head"><div><h3 id="monC1T">Murid</h3><span class="sub" id="monC1S"></span></div></div>
+          <div class="card-body"><div class="hq-chart" id="monC1Box"><canvas id="monC1"></canvas></div></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div><h3 id="monC2T">Kehadiran</h3><span class="sub" id="monC2S"></span></div></div>
+          <div class="card-body"><div class="hq-chart" id="monC2Box"><canvas id="monC2"></canvas></div></div>
+        </div>
+      </div>
+
+      <div class="card mt-lg" id="monPipeCard">
+        <div class="card-head"><div><h3>Permohonan PASTI Baharu</h3><span class="sub" id="monPipeSub">DUN daftar → Kawasan sokong → Negeri lulus</span></div><a class="btn btn-soft btn-sm" href="pasti-pengurusan.html">Pengurusan PASTI</a></div>
+        <div class="card-body"><div class="hq-pipes" id="monPipe"></div></div>
+      </div>
+
+      <!-- Murid Berkeperluan Khas — counts only (no names) above Cawangan -->
+      <div class="hq-row r21" id="monMbk">
+        <div class="card">
+          <div class="card-head"><div><h3>Murid Berkeperluan Khas (MBK)</h3><span class="sub" id="monMbkSub">Bilangan sahaja</span></div><a class="btn btn-soft btn-sm" id="monMbkBtn" href="pasti-pengurusan.html?t=cawangan">Pengurusan PASTI</a></div>
+          <div class="card-body">
+            <div class="flow-tiles" id="monMbkTiles"></div>
+            <div class="table-wrap mt" id="monMbkTblWrap"><table class="pt" id="monMbkTbl" data-nosave data-noscope><thead></thead><tbody></tbody><tfoot></tfoot></table></div>
+            <div class="muted mt" id="monMbkNote" style="font-size:12px"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div><h3>MBK Mengikut Kategori</h3><span class="sub">Murid MBK diterima</span></div></div>
+          <div class="card-body"><div class="hq-chart sm"><canvas id="monMbkChart"></canvas></div><div class="hq-legend mt" id="monMbkLegend" style="justify-content:center"></div></div>
+        </div>
+      </div>
+
+      <div class="hq-row r111">
+        <div class="card">
+          <div class="card-head"><div><h3>Perlu Perhatian</h3><span class="sub" id="monAlertSub">Isu dalam skop anda</span></div></div>
+          <div class="card-body" id="monAlerts"></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div><h3>Permohonan Murid</h3><span class="sub">Pendaftaran online Sesi 2026</span></div><a class="btn btn-soft btn-sm" href="murid-permohonan.html">Buka</a></div>
+          <div class="card-body"><div class="hq-chart sm"><canvas id="monApps"></canvas></div><div class="hq-legend mt" id="monAppsLegend" style="justify-content:center"></div></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div><h3>Penilaian SPPM</h3><span class="sub">Penggal 1 · status penghantaran kepada ibu bapa</span></div><a class="btn btn-soft btn-sm" href="permarkahan.html">Buka</a></div>
+          <div class="card-body"><div class="hq-chart sm"><canvas id="monSppm"></canvas></div><div class="hq-legend mt" id="monSppmLegend" style="justify-content:center"></div></div>
+        </div>
+      </div>
+
+      <div class="hq-row r11">
+        <div class="card">
+          <div class="card-head"><div><h3>Transaksi Terkini</h3><span class="sub">Bayaran yuran &amp; derma melalui BayarCash / kaunter</span></div><a class="btn btn-soft btn-sm" href="yuran.html?t=transaksi">Semua</a></div>
+          <div class="card-body" id="monTx"></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div><h3 id="monRankT">Kedudukan Kutipan</h3><span class="sub" id="monRankS">Kadar kutipan yuran YTD</span></div></div>
+          <div class="card-body" id="monRank"></div>
+        </div>
+      </div>
+    </div>
+
     <!-- two column: news + calendar -->
     <div class="mt-lg" style="display:grid;grid-template-columns:1.3fr 1fr;gap:18px">
       <div class="card">
@@ -238,12 +378,12 @@
         <div class="card-body">
           <div class="fieldset-t">Jabatan PASTI Malaysia</div>
           <div class="news-item muted">Tiada pemakluman buat masa ini.</div>
-          <div class="fieldset-t mt">PASTI Negeri Kelantan</div>
+          <div class="fieldset-t mt" id="dwNeg">PASTI Negeri</div>
           <div class="news-item muted">Tiada pemakluman buat masa ini.</div>
-          <div class="fieldset-t mt">PASTI Kawasan Kota Bharu
+          <div class="fieldset-t mt"><span id="dwMine">PASTI Kawasan</span>
             <button class="btn btn-soft btn-sm" style="float:right;margin-top:-4px" data-modal="addNewsModal">+ Tambah</button>
           </div>
-          <div class="news-item"><b>» BENGKEL e-PASTI KAWASAN KOTA BHARU</b><div class="dt">20 September 2026</div></div>
+          <div class="news-item"><b id="dwNews">» BENGKEL e-PASTI KAWASAN</b><div class="dt">20 September 2026</div></div>
           <div class="right"><a class="muted" href="calendar.html" style="font-size:12.5px">Papar semua…</a></div>
         </div>
       </div>
@@ -279,20 +419,87 @@
 <!-- add news modal -->
 <div class="modal-overlay" id="addNewsModal">
   <div class="modal">
-    <div class="m-head"><h3>Tambah Makluman Kawasan</h3><button class="btn btn-ghost btn-sm" data-close>✕</button></div>
+    <div class="m-head"><h3>Tambah Makluman</h3><button class="btn btn-ghost btn-sm" data-close>✕</button></div>
     <div class="m-body">
       <div class="form-grid">
         <div class="field full"><span class="label">Tajuk <span class="req">*</span></span><input class="input" placeholder="Tajuk makluman"></div>
         <div class="field full"><span class="label">Kandungan</span><textarea class="input" rows="4" placeholder="Butiran makluman"></textarea></div>
         <div class="field"><span class="label">Tarikh</span><input class="input" type="text" value="24/09/2026"></div>
-        <div class="field"><span class="label">Peringkat</span><select class="select"><option>Kawasan</option><option>Negeri</option><option>Malaysia</option></select></div>
+        <div class="field"><span class="label">Peringkat</span><select class="select" data-levels><option>Malaysia</option><option>Negeri</option><option>Kawasan</option><option>DUN</option><option>Cawangan</option></select></div>
       </div>
     </div>
     <div class="m-foot"><button class="btn btn-ghost" data-close>Batal</button><button class="btn btn-primary">Simpan</button></div>
   </div>
 </div>
 
-<script src="../assets/js/app.js?v=8"></script>
+<!-- MBK readiness declaration (cawangan) — handled by its own script -->
+<div class="modal-overlay" id="mbkModal" data-own>
+  <div class="modal">
+    <div class="m-head"><h3>Isytihar Kesediaan Kemasukan MBK</h3><button type="button" class="btn btn-ghost btn-sm" data-close>✕</button></div>
+    <div class="m-body">
+      <div class="form-grid">
+        <div class="field full"><span class="label">Kemudahan tersedia <span class="req">*</span></span><div class="mbk-checks" id="mbkFKem"></div></div>
+        <div class="field"><span class="label">Bilangan guru terlatih (pendidikan khas) <span class="req">*</span></span><input class="input" type="number" min="1" step="1" id="mbkFGuru"></div>
+        <div class="field"><span class="label">Kuota murid MBK <span class="req">*</span></span><input class="input" type="number" min="1" step="1" id="mbkFKuota"><span class="hint" id="mbkFKuotaHint"></span></div>
+        <div class="field full"><span class="label">Kategori diterima <span class="req">*</span></span><div class="mbk-checks" id="mbkFKat"></div></div>
+        <div class="field full"><span class="label">Catatan</span><textarea class="input" rows="3" id="mbkFCat" placeholder="Cth: kelas di tingkat bawah, waktu terapi, sokongan komuniti"></textarea></div>
+      </div>
+      <div class="mbk-note amber">Pengisytiharan akan dihantar kepada Pentadbir Kawasan untuk pengesahan. Status kemasukan MBK menjadi <b>MENUNGGU</b> sehingga disahkan.</div>
+    </div>
+    <div class="m-foot"><button type="button" class="btn btn-ghost" data-close>Batal</button><button type="button" class="btn btn-primary" id="mbkSave">Hantar untuk Pengesahan</button></div>
+  </div>
+</div>
+
+<script src="../assets/js/app.js?v=10"></script>
+<script>
+  // MBK (Murid Berkeperluan Khas) helpers for this page — use the Engine API (DB.mbkOf / mbkQuota / mbkStats) when present,
+  // otherwise compute the same shapes from the DB. COUNTS ONLY leave this helper for non-cawangan tiers.
+  window.MBKX = (function(){
+    if (!window.DB) return null;
+    const norm = s => String(s || '').toUpperCase().replace(/^PASTI\s+/, '').replace(/[^A-Z0-9]/g, '');
+    const KAT = DB.MBK_KATEGORI || ['Pendengaran','Penglihatan','Pertuturan','Fizikal','Masalah Pembelajaran','Mental','Pelbagai'];
+    const KEM = DB.MBK_KEMUDAHAN || ['Ramp / laluan kerusi roda','Tandas OKU','Bilik sumber / sensori','Pembantu pengiring','Alat bantu dengar / visual'];
+    const COL = { 'Pendengaran':'#2563eb', 'Penglihatan':'#0f9d8a', 'Pertuturan':'#e0912a', 'Fizikal':'#6d5bd0', 'Masalah Pembelajaran':'#2fa308', 'Mental':'#c0392b', 'Pelbagai':'#8a6d3b' };
+    const findP = x => (x && typeof x === 'object') ? x : DB.find('pasti', p => norm(p.nama) === norm(x));
+    const of = x => { if (DB.mbkOf) { try { return DB.mbkOf(x) || { status:'TUTUP' }; } catch(e){} } const p = findP(x); return (p && p.mbk) || { status:'TUTUP' }; };
+    const muridOf = p => DB.all('murid').filter(m => m.mbk && p && norm(m.pasti) === norm(p.nama));
+    const quota = x => {
+      if (DB.mbkQuota) { try { const q = DB.mbkQuota(x); if (q) return q; } catch(e){} }
+      const p = findP(x), k = +of(p).kuota || 0, ms = muridOf(p), d = ms.filter(m => m.status === 'Diterima').length;
+      return { kuota:k, diisi:d, penilaian:ms.filter(m => m.status === 'Dijadual Penilaian').length, baki:k - d };
+    };
+    const stats = list => {
+      list = list || (DB.pastiInScope ? DB.pastiInScope() : []);
+      if (DB.mbkStats) { try { const s = DB.mbkStats(list); if (s) return s; } catch(e){} }
+      const S = { total:0, baharu:0, penilaian:0, byKategori:{}, pastiBuka:0, pastiMenunggu:0, kuota:0, diisi:0, byPasti:{} };
+      list.forEach(p => {
+        const mb = of(p), ms = muridOf(p), acc = ms.filter(m => m.status === 'Diterima'), bk = {};
+        acc.forEach(m => { const k = (m.mbk && m.mbk.kategori) || 'Pelbagai'; bk[k] = (bk[k] || 0) + 1; S.byKategori[k] = (S.byKategori[k] || 0) + 1; });
+        const r = { status:mb.status || 'TUTUP', kuota:+mb.kuota || 0, diisi:acc.length, baharu:ms.filter(m => m.status === 'Baharu').length, penilaian:ms.filter(m => m.status === 'Dijadual Penilaian').length, byKategori:bk };
+        S.byPasti[p.nama] = r; S.total += r.diisi; S.baharu += r.baharu; S.penilaian += r.penilaian;
+        if (r.status === 'BUKA') { S.pastiBuka++; S.kuota += r.kuota; S.diisi += r.diisi; }
+        if (r.status === 'MENUNGGU') S.pastiMenunggu++;
+      });
+      return S;
+    };
+    const badge = st => `<span class="badge ${st === 'BUKA' ? 'b-green' : st === 'MENUNGGU' ? 'b-amber' : 'b-red'}">${st === 'MENUNGGU' ? 'MENUNGGU' : st || 'TUTUP'}</span>`;
+    // doughnut parts by kategori (always in the fixed kategori order)
+    const parts = byK => KAT.map(k => [k, +(byK || {})[k] || 0, COL[k] || '#77857c']).concat(Object.keys(byK || {}).filter(k => !KAT.includes(k)).map(k => [k, +byK[k] || 0, '#77857c']));
+    const donut = (canvas, legendEl, P, t2) => {
+      if (!window.Chart || !canvas) return null;
+      const tot = P.reduce((a, x) => a + x[1], 0), fmt = n => Math.round(n).toLocaleString('en-MY'), shown = P.filter(x => x[1]);
+      const ch = new Chart(canvas, { type:'doughnut',
+        data:{ labels: tot ? shown.map(x => x[0]) : ['Tiada data'], datasets:[{ data: tot ? shown.map(x => x[1]) : [1], backgroundColor: tot ? shown.map(x => x[2]) : ['#e6ebe3'], borderWidth:0 }] },
+        options:{ responsive:true, maintainAspectRatio:false, cutout:'70%', plugins:{ legend:{ display:false }, tooltip:{ enabled: !!tot } } },
+        plugins:[{ id:'mbkc', afterDraw(c){ const { ctx, chartArea:{ left, right, top, bottom } } = c, x = (left + right) / 2, y = (top + bottom) / 2;
+          ctx.save(); ctx.textAlign = 'center'; ctx.fillStyle = '#122019'; ctx.font = '800 21px ' + Chart.defaults.font.family; ctx.fillText(fmt(tot), x, y + 2);
+          ctx.fillStyle = '#77857c'; ctx.font = '600 11px ' + Chart.defaults.font.family; ctx.fillText(t2 || 'murid MBK', x, y + 18); ctx.restore(); } }] });
+      if (legendEl) legendEl.innerHTML = shown.length ? shown.map(x => `<span><i style="background:${x[2]}"></i>${x[0]} · ${fmt(x[1])}${tot ? ' (' + Math.round(x[1] / tot * 100) + '%)' : ''}</span>`).join('') : '<span>Belum ada murid MBK diterima</span>';
+      return ch;
+    };
+    return { KAT, KEM, COL, norm, findP, of, quota, stats, badge, parts, donut };
+  })();
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
   // Pusat (HQ) master dashboard — national figures, all derived from the tables below so totals always agree.
@@ -318,13 +525,20 @@
       ['Sabah',26,740,64,88.3,96,21,[9,6,5,6],25,73],
       ['Sarawak',18,540,55,87.9,72,15,[6,4,3,5],31,82],
     ];
-    // Negeri view: Kelantan split into its 14 Kawasan (Kota Bharu matches the Kawasan dashboard: 11 PASTI, 181 murid)
+    // Negeri view: the signed-in state split into its Kawasan (Kelantan: Kota Bharu matches the Kawasan dashboard: 11 PASTI, 181 murid)
+    const KAW_NAMES = {
+      Kelantan:['Tumpat','Pengkalan Chepa','Kubang Kerian','Pasir Mas','Rantau Panjang','Kota Bharu','Bachok','Ketereh','Tanah Merah','Pasir Puteh','Machang','Jeli','Kuala Krai','Gua Musang'],
+      Terengganu:['Besut','Setiu','Kuala Nerus','Kuala Terengganu','Marang','Hulu Terengganu','Dungun','Kemaman'],
+      Kedah:['Langkawi','Jerlun','Kubang Pasu','Padang Terap','Pokok Sena','Alor Setar','Kuala Kedah','Pendang','Jerai','Sik','Merbok','Sungai Petani','Baling','Padang Serai','Kulim-Bandar Baharu'],
+    };
     function kawasanRows(k){
-      const NAMES = ['Tumpat','Pengkalan Chepa','Kota Bharu','Pasir Mas','Rantau Panjang','Kota Bharu','Bachok','Ketereh','Tanah Merah','Pasir Puteh','Machang','Jeli','Kuala Krai','Gua Musang'];
-      const KK = 5, fixed = { c:11, m:181, g:38, a:92.0, y:26.8, t:6.3, bc:[3,5,2,1], d:2 };
-      const W  = [1.28,1.07,1.41,1.22,0.93,0,1.02,1.15,0.97,0.88,1.04,0.62,0.83,0.71];
-      const TW = [1.1,1.3,1.2,1.5,1.0,0,0.8,1.2,1.4,0.9,1.3,0.7,1.1,0.9];   // tertunggak varies by kawasan
-      const AO = [.4,.2,.6,-.3,-.8,0,.5,.1,-.2,.3,.2,-1.1,-.6,-.9];
+      const KEL = k[0] === 'Kelantan';
+      const NAMES = KAW_NAMES[k[0]] || Array.from({ length: k[8] }, (_, i) => 'Kawasan ' + (i + 1));
+      const cyc = (a) => NAMES.map((_, i) => a[i % a.length]);
+      const KK = KEL ? 5 : -1, fixed = KEL ? { c:11, m:181, g:38, a:92.0, y:26.8, t:6.3, bc:[3,5,2,1], d:2 } : { c:0, m:0, g:0, a:0, y:0, t:0, bc:[0,0,0,0], d:0 };
+      const W  = KEL ? [1.28,1.07,1.41,1.22,0.93,0,1.02,1.15,0.97,0.88,1.04,0.62,0.83,0.71] : cyc([1.28,1.07,1.41,1.22,0.93,1.1,1.02,1.15,0.97,0.88,1.04,0.62,0.83,0.71]);
+      const TW = KEL ? [1.1,1.3,1.2,1.5,1.0,0,0.8,1.2,1.4,0.9,1.3,0.7,1.1,0.9] : cyc([1.1,1.3,1.2,1.5,1.0,1.2,0.8,1.2,1.4,0.9,1.3,0.7,1.1,0.9]);   // tertunggak varies by kawasan
+      const AO = cyc([.4,.2,.6,-.3,-.8,0,.5,.1,-.2,.3,.2,-1.1,-.6,-.9]);
       const split = (total, dec, WW) => { const W2 = WW || W, ws = W2.reduce((a,b)=>a+b,0), f = Math.pow(10, dec||0);
         const raw = W2.map(w => total*w/ws*f), out = raw.map(Math.floor); let left = Math.round(total*f) - out.reduce((a,b)=>a+b,0);
         raw.map((v,i)=>[v-out[i],i]).filter(x=>W2[x[1]]).sort((a,b)=>b[0]-a[0]).forEach(([,i]) => { if (left-- > 0) out[i]++; });
@@ -337,9 +551,16 @@
       rows.forEach(r => r[4] = +(r[4]+shift).toFixed(1));
       return rows;
     }
-    const STATES = NEG ? kawasanRows(NAT[0]) : NAT;
+    // the signed-in Negeri's own state (engine scope → user chain → skop); Pusat keeps the national view
+    const DU = window.PT && PT.user !== undefined ? PT.user : (window.DB ? DB.user() : null);
+    const myNeg = String((PT.scope && PT.scope.negeri) || (DU && window.DB && DB.chainOf && DB.chainOf(DU).negeri) || (DU && DU.skop) || 'KELANTAN').toUpperCase();
+    const ME_NAT = NAT.find(s => s[0].toUpperCase() === myNeg) || NAT[0];
+    const NEG_NAME = ME_NAT[0], KEL = NEG_NAME === 'Kelantan', R = ME_NAT[5] / NAT[0][5];   // size relative to the Kelantan sample figures
+    const STATES = NEG ? kawasanRows(ME_NAT) : NAT;
     const UNIT = NEG ? 'Kawasan' : 'Negeri';
-    const SCALE = NEG ? NAT[0][5]/NAT.reduce((a,s)=>a+s[5],0) : 1;          // Kelantan share of national money flow
+    const SCALE = NEG ? ME_NAT[5]/NAT.reduce((a,s)=>a+s[5],0) : 1;          // the state's share of national money flow
+    const nmK = i => STATES[Math.min(i, STATES.length - 1)][0];
+    const fmt0 = n => Math.round(n).toLocaleString('en-MY');
     const MONTHS = ['Jan','Feb','Mac','Apr','Mei','Jun','Jul','Ogo','Sep'];
     const W = [.098,.104,.109,.106,.113,.114,.118,.117,.121];             // yuran share per month
     const IN_OTHER = {                                                    // RM'000 per month
@@ -354,18 +575,19 @@
       'Kebajikan & tuntutan ahli':    [42,55,61,48,52,57,49,63,58],
     };
     if (NEG) [IN_OTHER, OUT].forEach(o => Object.keys(o).forEach(k => o[k] = o[k].map(v => Math.round(v*SCALE))));
-    const OPENING = NEG ? 1140 : 4850;                                                 // baki 1 Jan 2026 (RM'000)
-    const BAL_SHARE = NEG ? [['Cawangan (akaun BayarCash sendiri)',.62,'#2fa308'],['DUN',.10,'#2563eb'],['Kawasan',.16,'#6d5bd0'],['Negeri Kelantan',.12,'#e0912a']] : [['Cawangan (akaun BayarCash sendiri)',.56,'#2fa308'],['DUN',.09,'#2563eb'],['Kawasan',.15,'#6d5bd0'],['Negeri',.12,'#e0912a'],['Pusat',.08,'#122019']];
-    const APPS = NEG ? [['Diterima',2410,'#2fa308'],['Baharu',296,'#e0912a'],['Ditolak',71,'#c0392b']] : [['Diterima',9820,'#2fa308'],['Baharu',1245,'#e0912a'],['Ditolak',312,'#c0392b']];
+    const OPENING = NEG ? Math.round(1140*R) : 4850;                                   // baki 1 Jan 2026 (RM'000)
+    const BAL_SHARE = NEG ? [['Cawangan (akaun BayarCash sendiri)',.62,'#2fa308'],['DUN',.10,'#2563eb'],['Kawasan',.16,'#6d5bd0'],['Negeri ' + NEG_NAME,.12,'#e0912a']] : [['Cawangan (akaun BayarCash sendiri)',.56,'#2fa308'],['DUN',.09,'#2563eb'],['Kawasan',.15,'#6d5bd0'],['Negeri',.12,'#e0912a'],['Pusat',.08,'#122019']];
+    const APPS = NEG ? [['Diterima',Math.round(2410*R),'#2fa308'],['Baharu',Math.round(296*R),'#e0912a'],['Ditolak',Math.round(71*R),'#c0392b']] : [['Diterima',9820,'#2fa308'],['Baharu',1245,'#e0912a'],['Ditolak',312,'#c0392b']];
     const BC = [['Akaun sendiri','#2fa308'],['Guna DUN','#2563eb'],['Guna Kawasan','#6d5bd0'],['Tiada','#d9dfd6']];
+    const INV = KEL ? 'KTN' : NEG_NAME.replace(/[^A-Za-z]/g,'').slice(0,3).toUpperCase();
     const TX = NEG ? [
-      ['in','Kutipan yuran September — 14 kawasan','412 cawangan · BayarCash FPX/DuitNow',486200,'26 Sep'],
-      ['out','Saguhati guru September — Kelantan','1,016 guru · pindahan pukal',196300,'25 Sep'],
-      ['out','Caruman Skim PASTI kepada Pusat','Invois INV-2026-KTN-09',96400,'25 Sep'],
-      ['in','Caruman ahli daripada Kawasan','14 kawasan · bulan September',88200,'24 Sep'],
-      ['in','Kempen Tabung Banjir PASTI Al-Ikhlas','Derma awam · 1,204 penderma',38650,'23 Sep'],
-      ['out','Tuntutan khairat kematian ahli — Machang','Diluluskan Negeri',5000,'23 Sep'],
-      ['out','Bengkel e-PASTI Kawasan Kota Bharu','Program & latihan',4200,'20 Sep'],
+      ['in',`Kutipan yuran September — ${STATES.length} kawasan`,`${fmt0(ME_NAT[1])} cawangan · BayarCash FPX/DuitNow`,Math.round(486200*R),'26 Sep'],
+      ['out',`Saguhati guru September — ${NEG_NAME}`,`${fmt0(ME_NAT[3])} guru · pindahan pukal`,Math.round(196300*R),'25 Sep'],
+      ['out','Caruman Skim PASTI kepada Pusat',`Invois INV-2026-${INV}-09`,Math.round(96400*R),'25 Sep'],
+      ['in','Caruman ahli daripada Kawasan',`${STATES.length} kawasan · bulan September`,Math.round(88200*R),'24 Sep'],
+      ['in',KEL ? 'Kempen Tabung Banjir PASTI Al-Ikhlas' : `Kempen Tabung Banjir PASTI Negeri ${NEG_NAME}`,'Derma awam · 1,204 penderma',38650,'23 Sep'],
+      ['out',`Tuntutan khairat kematian ahli — ${KEL ? 'Machang' : nmK(4)}`,'Diluluskan Negeri',5000,'23 Sep'],
+      ['out',`Bengkel e-PASTI Kawasan ${KEL ? 'Kota Bharu' : nmK(0)}`,'Program & latihan',4200,'20 Sep'],
     ] : [
       ['in','Kutipan yuran September — Kelantan','412 cawangan · BayarCash FPX/DuitNow',486200,'26 Sep'],
       ['out','Saguhati guru September — semua negeri','4,318 guru · pindahan pukal',834000,'25 Sep'],
@@ -394,8 +616,8 @@
 
     if (NEG) {
       document.getElementById('hqCrumb').textContent = 'Papan Pemuka Negeri';
-      document.getElementById('hqTitle').textContent = 'Papan Pemuka Negeri — PASTI Negeri Kelantan';
-      document.getElementById('hqLead').textContent = 'Pantauan 14 kawasan, 45 DUN & 412 cawangan PASTI di Kelantan · Sesi 2026 · data sehingga 27 September 2026';
+      document.getElementById('hqTitle').textContent = 'Papan Pemuka Negeri — PASTI Negeri ' + NEG_NAME;
+      document.getElementById('hqLead').textContent = `Pantauan ${STATES.length} kawasan, ${ME_NAT[9] ? fmt0(ME_NAT[9]) + ' DUN & ' : ''}${fmt0(ME_NAT[1])} cawangan PASTI di ${NEG_NAME} · Sesi 2026 · data sehingga 27 September 2026`;
       document.getElementById('hqFlowSub').textContent = 'Gabungan akaun PASTI dalam negeri (Negeri, Kawasan, DUN & Cawangan) · Jan–Sep 2026';
       hq.querySelectorAll('h3').forEach(h => h.textContent = h.textContent.replace('Mengikut Negeri', 'Mengikut Kawasan'));
     }
@@ -413,11 +635,11 @@
     document.getElementById('hqBrk').innerHTML = `<h5>Sumber wang masuk</h5>${brkRows(IN, tIn, '#2fa308')}<h5 style="margin-top:10px">Perbelanjaan wang keluar</h5>${brkRows(OUT, tOut, '#e0685a')}`;
 
     // ---- 2. PASTI network
-    const natRank = [...NAT].sort((a,b)=>b[5]-a[5]).findIndex(s=>s===NAT[0]) + 1;
+    const natRank = [...NAT].sort((a,b)=>b[5]-a[5]).findIndex(s=>s===ME_NAT) + 1;
     document.getElementById('hqOrg').innerHTML = (NEG ? [
-      ['Negeri', 'Kelantan', `#${natRank} kutipan yuran nasional`],
+      ['Negeri', NEG_NAME, `#${natRank} kutipan yuran nasional`],
       ['Kawasan PASTI', STATES.length, 'ikut kawasan parlimen'],
-      ['DUN', STATES.reduce((a,s)=>a+s[8],0), 'di bawah 14 kawasan'],
+      ['DUN', STATES.reduce((a,s)=>a+s[8],0), `di bawah ${STATES.length} kawasan`],
       ['Cawangan PASTI', tP, '▲ 6 cawangan baharu 2026'],
     ] : [
       ['Negeri', STATES.length, 'semua negeri'],
@@ -461,7 +683,7 @@
         th.style.cursor='pointer'; th.textContent = th.textContent.replace(/ [▲▼]$/,'') + (+th.dataset.k===sortK ? (sortDir<0?' ▼':' ▲') : '');
       });
     }
-    document.querySelector('#hqStates tfoot').innerHTML = `<tr><td>${NEG ? 'Jumlah Negeri Kelantan' : 'Jumlah Nasional'}</td>${NEG ? '' : `<td class="num">${tKaw}</td>`}<td class="num">${NEG ? tKaw : tDun}</td><td class="num">${fmt(tP)}</td><td class="num">${fmt(tM)}</td><td class="num">${fmt(tG)}</td>
+    document.querySelector('#hqStates tfoot').innerHTML = `<tr><td>${NEG ? 'Jumlah Negeri ' + NEG_NAME : 'Jumlah Nasional'}</td>${NEG ? '' : `<td class="num">${tKaw}</td>`}<td class="num">${NEG ? tKaw : tDun}</td><td class="num">${fmt(tP)}</td><td class="num">${fmt(tM)}</td><td class="num">${fmt(tG)}</td>
       <td class="num">${att.toFixed(1)}%</td><td class="num">${fmt(tK*1000)}</td><td class="num">${fmt(tT*1000)}</td><td>${bar(bcT,tP)}</td><td></td></tr>`;
     document.querySelectorAll('#hqStates th[data-k]').forEach(th=>th.addEventListener('click',()=>{
       const k=+th.dataset.k; sortDir = (k===sortK) ? -sortDir : (k===0?1:-1); sortK=k; drawTable();
@@ -476,7 +698,7 @@
     // ---- Permohonan PASTI baharu (DUN daftar → Kawasan semak → Negeri lulus). HQ sees totals only.
     const PIPE = (() => {
       if (!NEG) return { baharu:21, negeri:17, lulus:38, tolak:6 };             // national (mock)
-      const P = (window.DB ? DB.all('pasti') : []), yr = String(new Date().getFullYear());
+      const P = (window.DB ? DB.all('pasti') : []).filter(p => String(p.negeri || '').toUpperCase() === myNeg), yr = String(new Date().getFullYear());
       return { baharu: P.filter(p => p.status === 'Baharu').length, negeri: P.filter(p => p.status === 'Disokong Kawasan').length,
         lulus: P.filter(p => p.status === 'Lulus' && String(p.tarikh||'').endsWith(yr)).length, tolak: P.filter(p => p.status === 'Ditolak').length };
     })();
@@ -492,7 +714,7 @@
       ['#c0392b', `Tertunggak tertinggi: ${worstDebt[0]}`, `${Math.round(worstDebt[6]/worstDebt[5]*100)}% daripada kutipan (RM ${fmt(worstDebt[6]*1000)}) belum dijelaskan.`],
       ['#e0912a', `Perbelanjaan naik: ${bigOut[0]}`, `▲ ${(bigOut[1]*100).toFixed(1)}% berbanding bulan lalu — semak ${NEG ? 'tuntutan & perbelanjaan kawasan' : 'kelulusan Negeri'}.`],
       ['#e0912a', `${fmt(bcT[3])} cawangan belum ada akaun kutipan`, `Tertinggi: ${noAcc.map(s=>`${s[0]} (${s[7][3]})`).join(', ')}. Galakkan guna akaun DUN/Kawasan sementara.`],
-      ['#e0912a', `Kehadiran di bawah 89.5%`, `${lowAtt.join(', ')} — semak laporan kehadiran ${NEG ? 'kawasan' : 'negeri'}.`],
+      ['#e0912a', `Kehadiran di bawah 89.5%`, `${lowAtt.join(', ') || 'Tiada'} — semak laporan kehadiran ${NEG ? 'kawasan' : 'negeri'}.`],
       NEG ? ['#2563eb', `${PIPE.negeri} permohonan PASTI menunggu kelulusan Negeri`, `Telah disemak & disokong Kawasan — buka Pengurusan PASTI untuk lulus / tolak.`] : ['#2563eb', `${PIPE.baharu + PIPE.negeri} permohonan PASTI baharu dalam proses`, `Disemak oleh Kawasan & diluluskan oleh Negeri — makluman sahaja.`],
       ['#2563eb', `${fmt(APPS[1][1])} permohonan murid belum diproses`, `Pendaftaran online Sesi 2026 di semua ${NEG ? 'kawasan' : 'negeri'}.`],
     ];
@@ -567,6 +789,408 @@
   });
 </script>
 <script>
+  // HQ (Pusat / Negeri) — Murid Berkeperluan Khas card. COUNTS ONLY.
+  //   Negeri → DB.mbkStats over its own state's PASTI · Pusat → fictional national figures (~1.2% of murid) + the live Kelantan demo data.
+  document.addEventListener('DOMContentLoaded', () => {
+    const box = document.getElementById('hqMbk'); if (!box) return;
+    if (!window.PT || !window.DB || !window.MBKX || !['pusat','negeri'].includes(PT.tier)) { box.style.display = 'none'; return; }
+    const X = MBKX, $ = id => document.getElementById(id), NEG = PT.tier === 'negeri';
+    const fmt = n => Math.round(n).toLocaleString('en-MY');
+    const title = s => String(s || '').toLowerCase().replace(/\b\w/g, x => x.toUpperCase());
+    let S, brk, note;
+    if (NEG) {
+      const list = DB.pastiInScope();
+      S = X.stats(list);
+      const byKaw = {};
+      list.forEach(p => { const r = (S.byPasti || {})[p.nama] || {}, k = String(p.kawasan || '—').replace(/^P\d+\s+/, ''); const o = byKaw[k] = byKaw[k] || { d:0, b:0 }; o.d += +r.diisi || 0; if (r.status === 'BUKA') o.b++; });
+      brk = Object.entries(byKaw).map(([k, o]) => [title(k), o.d, `${o.b} PASTI BUKA`]).sort((a, b) => b[1] - a[1]).slice(0, 6);
+      $('hqMbkSub').textContent = 'PASTI dalam negeri · bilangan sahaja — butiran murid hanya dilihat oleh Cawangan & guru kelas';
+      $('hqMbkBtn').style.display = '';
+      note = 'Pengisytiharan kesediaan dibuat oleh Cawangan dan disahkan oleh Pentadbir Kawasan · Negeri memantau sahaja.';
+    } else {
+      // national mock (fictional): 59,360 murid × ~1.2%
+      const W = { 'Masalah Pembelajaran':.44, 'Pertuturan':.19, 'Fizikal':.10, 'Pendengaran':.07, 'Penglihatan':.05, 'Mental':.04, 'Pelbagai':.11 };
+      const total = Math.round(59360 * .012), byK = {}; let left = total;
+      Object.keys(W).forEach((k, i, a) => { const n = i === a.length - 1 ? left : Math.round(total * W[k]); byK[k] = n; left -= n; });
+      S = { total, byKategori:byK, pastiBuka:196, pastiMenunggu:23, baharu:41, penilaian:27, kuota:842, diisi:total };
+      brk = [['Kelantan',14210],['Terengganu',10480],['Kedah',8120],['Selangor',6890],['Pahang',4150],['Perak',3920]].map(([n, m]) => [n, Math.round(m * .012), '']);
+      const K = X.stats(DB.all('pasti').filter(p => p.status === 'Lulus' && p.kod && String(p.negeri).toUpperCase() === 'KELANTAN'));
+      $('hqMbkSub').textContent = 'Anggaran nasional · bilangan sahaja mengikut kategori';
+      note = `Data sistem ePASTI Kelantan: ${fmt(K.total || 0)} murid MBK diterima · ${K.pastiBuka || 0} PASTI BUKA · ${K.pastiMenunggu || 0} menunggu pengesahan Kawasan.`;
+    }
+    $('hqMbkTiles').innerHTML = [
+      ['in', 'Murid MBK diterima', fmt(S.total || 0), NEG ? `${fmt(S.diisi || 0)}/${fmt(S.kuota || 0)} kuota diisi` : '≈1.2% daripada murid aktif'],
+      ['', 'PASTI BUKA MBK', fmt(S.pastiBuka || 0), 'Disahkan Pentadbir Kawasan'],
+      [S.pastiMenunggu ? 'out' : '', 'Menunggu pengesahan', fmt(S.pastiMenunggu || 0), 'PASTI mohon buka MBK'],
+      ['', 'Dalam semakan', fmt((S.baharu || 0) + (S.penilaian || 0)), 'Permohonan murid MBK'],
+    ].map(t => `<div class="ft ${t[0]}"><div class="l">${t[1]}</div><div class="v">${t[2]}</div><div class="s">${t[3]}</div></div>`).join('');
+    const mx = Math.max(1, ...brk.map(b => b[1]));
+    $('hqMbkBrk').innerHTML = `<h5>Murid MBK mengikut ${NEG ? 'kawasan' : 'negeri'}</h5>` + (brk.length ? brk.map(b => `<div class="r"><b>${b[0]}${b[2] ? ` <small class="muted" style="font-weight:500">· ${b[2]}</small>` : ''}</b><span>${fmt(b[1])}</span><div class="hq-bar"><span style="width:${b[1] / mx * 100}%;background:#6d5bd0"></span></div></div>`).join('') : '<div class="muted">Tiada data.</div>');
+    $('hqMbkNote').textContent = note;
+    X.donut($('hqMbkChart'), $('hqMbkLegend'), X.parts(S.byKategori), 'murid MBK');
+    const al = $('hqAlerts');
+    if (al && S.pastiMenunggu) al.insertAdjacentHTML('beforeend', `<div class="hq-alert"><div class="dot" style="background:#e0912a"></div><div><b>${fmt(S.pastiMenunggu)} PASTI mohon buka kemasukan MBK</b><span>Menunggu pengesahan Pentadbir Kawasan — makluman sahaja.</span></div></div>`);
+  });
+</script>
+<script>
+  // Kawasan / DUN / Cawangan welcome block — heading, lead & stat tiles from the shared DB, scoped to the signed-in user.
+  (function(){
+    if (!window.PT || !window.DB || !['kawasan','dun','cawangan'].includes(PT.tier)) return;
+    const $ = id => document.getElementById(id); if (!$('dwTitle')) return;
+    const tier = PT.tier, u = PT.user !== undefined ? PT.user : DB.user();
+    const SC = PT.scope || {};
+    const c = (u && DB.chainOf) ? DB.chainOf(u) : { negeri: SC.negeri, kawasan: SC.kawasan, dun: SC.dun, pasti: SC.pasti };
+    const up = s => String(s || '').toUpperCase(), norm = s => up(s).replace(/^PASTI\s+/, '').trim();
+    const KEY = { kawasan:'kawasan', dun:'dun' };
+    const inMine = p => tier === 'cawangan' ? norm(p.nama) === norm(u && u.skop) : up(p[KEY[tier]]) === up(u && u.skop);
+    const all = DB.all('pasti');
+    const live = DB.pastiInScope ? DB.pastiInScope() : all.filter(p => p.status === 'Lulus' && p.kod && inMine(p));
+    const names = live.map(p => norm(p.nama));
+    const fmt = n => Math.round(n).toLocaleString('en-MY');
+    const title = s => String(s || '').toLowerCase().replace(/\b\w/g, x => x.toUpperCase()).replace(/^Pasti\b/, 'PASTI');
+    const label = SC.label || [c.pasti, c.dun, c.kawasan, c.negeri].filter(Boolean).join(' · ') || (u ? u.skop : '');
+
+    $('dwTitle').textContent = 'Selamat Datang, ' + (u ? u.nama : DB.ROLE_LABEL[tier]);
+    $('dwLead').textContent = DB.ROLE_LABEL[tier] + ' · ' + label + ' · Dikemas kini sebentar tadi';
+
+    const pending = all.filter(p => (p.status === 'Baharu' || p.status === 'Disokong Kawasan') && tier !== 'cawangan' && inMine(p)).length;
+    const guru = live.reduce((a, p) => a + (+p.guru || 0), 0), murid = live.reduce((a, p) => a + (+p.murid || 0), 0);
+    const baru = DB.all('murid').filter(m => m.status === 'Baharu' && names.includes(norm(m.pasti))).length;
+    const akaunGuru = DB.all('users').filter(x => /guru|pembantu/.test(x.peranan) && names.includes(norm(x.skop))).length;
+    $('dsP').textContent = fmt(live.length);
+    $('dsPt').textContent = tier === 'cawangan' ? (live[0] ? 'Kod ' + live[0].kod : 'Belum diluluskan') : (pending ? '▲ ' + pending + ' permohonan dalam proses' : 'Tiada permohonan baharu');
+    $('dsG').textContent = fmt(guru);
+    $('dsGt').textContent = '▲ ' + akaunGuru + ' akaun guru ePASTI';
+    $('dsM').textContent = fmt(murid);
+    $('dsMt').textContent = '▲ ' + baru + ' permohonan online';
+    $('dsYl').textContent = 'Yuran Belum Jelas';
+    $('dsYt').textContent = '▼ 27 bil tertunggak · ' + (tier === 'cawangan' ? title(u && u.skop) : (u ? u.skop : ''));
+
+    // news headings follow the real chain
+    if ($('dwNeg')) $('dwNeg').textContent = 'PASTI Negeri ' + title(c.negeri);
+    const mine = tier === 'kawasan' ? 'PASTI Kawasan ' + title(String(c.kawasan || '').replace(/^P\d+\s+/, ''))
+      : tier === 'dun' ? 'PASTI DUN ' + title(String(c.dun || '').replace(/^N\d+\s+/, '')) : title(u && u.skop);
+    if ($('dwMine')) $('dwMine').textContent = mine;
+    if ($('dwNews')) $('dwNews').textContent = '» BENGKEL e-PASTI KAWASAN ' + up(String(c.kawasan || '').replace(/^P\d+\s+/, ''));
+  })();
+</script>
+<script>
+  // Monitoring for Kawasan / DUN / Cawangan — every unit under the signed-in scope.
+  //   Kawasan → by DUN and by PASTI · DUN → by PASTI · Cawangan → its own PASTI by class & teacher.
+  // Counts (PASTI, murid, guru, applications, payments, leave) come from the shared DB / localStorage;
+  // rates (attendance, collection, SPPM) are stable mock figures derived per PASTI so every page agrees.
+  document.addEventListener('DOMContentLoaded', () => {
+    if (!window.PT || !window.DB || !['kawasan','dun','cawangan'].includes(PT.tier) || !document.getElementById('mon')) return;
+    const $ = id => document.getElementById(id);
+    const tier = PT.tier, u = PT.user || DB.user(), c = DB.chainOf(u);
+    const up = s => String(s || '').toUpperCase(), norm = s => up(s).replace(/^PASTI\s+/, '').trim();
+    const title = s => String(s || '').toLowerCase().replace(/\b\w/g, x => x.toUpperCase()).replace(/^Pasti\b/, 'PASTI').replace(/\b(Bin|Binti)\b/g, w => w.toLowerCase());
+    const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, x => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[x]));
+    const fmt = n => Math.round(n).toLocaleString('en-MY');
+    const rm = n => 'RM ' + fmt(n);
+    const rmK = n => n >= 100000 ? 'RM ' + (n / 1000).toFixed(1) + 'k' : rm(n);
+    const hash = s => { let h = 2166136261; for (const ch of String(s)) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); } return ((h >>> 0) % 10000) / 10000; };
+    const MON = ['Jan','Feb','Mac','Apr','Mei','Jun','Jul','Ogo','Sep'], FEE = 60;
+
+    // ---- units under this scope
+    const allP = DB.all('pasti'), live = DB.pastiInScope();
+    const BC_OWN = ['AR-RAIHAN','AL-QAYYUM','AL-IKHLAS','AN-NUR HASANAH','BUKIT BESAR'], BC_KAW = ['AN-NAJAH','AL-MUNAWWARAH','DARUL NAIM'];
+    const bcOf = p => BC_OWN.includes(norm(p.nama)) ? 0 : BC_KAW.includes(norm(p.nama)) ? 2 : hash(p.nama + 'bc') < .15 ? 3 : 1;   // own · DUN · Kawasan · none
+    const adminOf = p => DB.find('users', x => x.peranan === 'cawangan' && norm(x.skop) === norm(p.nama));
+    const P = live.map(p => {
+      const m = +p.murid || 0, g = +p.guru || 0, h = hash(p.nama);
+      const rate = .80 + hash(p.nama + 'k') * .17;                     // collection rate 80–97%
+      const monthly = MON.map((_, i) => { const due = m * FEE * (i < 1 ? .92 : 1), r = Math.min(.99, rate + (hash(p.nama + i) - .5) * .06 + (i > 6 ? -.03 : 0)); return [Math.round(due * r), Math.round(due * (1 - r))]; });
+      const att = MON.map((_, i) => +(88.5 + h * 5.5 + (hash(p.nama + 'a' + i) - .5) * 2.4).toFixed(1));
+      const sent = Math.round(m * (.45 + hash(p.nama + 's') * .5)), part = Math.round((m - sent) * .6);
+      return { p, nama: p.nama, dun: p.dun, m, g, rate, monthly, att, attNow: att[8], sppm: [sent, part, m - sent - part], bc: bcOf(p), admin: adminOf(p), daftar: p.daftar || 'TUTUP',
+        kut: monthly.reduce((a, x) => a + x[0], 0), tung: monthly.reduce((a, x) => a + x[1], 0) };
+    });
+    const names = P.map(x => norm(x.nama));
+    const inMine = n => names.includes(norm(n));
+    const sum = (arr, f) => arr.reduce((a, x) => a + f(x), 0);
+    const tM = sum(P, x => x.m), tG = sum(P, x => x.g);
+    const wAtt = arr => { const mm = sum(arr, x => x.m); return mm ? sum(arr, x => x.attNow * x.m) / mm : 0; };
+
+    // grouping: kawasan → DUN rows (incl. DUN with no PASTI yet); dun → PASTI rows; cawangan → class rows
+    const dunList = tier === 'kawasan' ? (((DB.GEO || {})[up(c.negeri)] || {})[up(c.kawasan)] || [...new Set(P.map(x => x.dun))]) : [];
+    const rangeN = () => +$('monRange').value;
+    const SCOPE = tier === 'kawasan' ? 'Kawasan ' + title(String(c.kawasan).replace(/^P\d+\s+/, '')) : tier === 'dun' ? 'DUN ' + title(String(c.dun).replace(/^N\d+\s+/, '')) : title(u.skop);
+    $('monTitle').textContent = 'Pantauan ' + SCOPE;
+    $('monSub').textContent = tier === 'kawasan' ? `${dunList.length} DUN · ${P.length} PASTI · ${fmt(tM)} murid · ${fmt(tG)} guru — semua unit di bawah ${up(c.kawasan)}`
+      : tier === 'dun' ? `${P.length} PASTI · ${fmt(tM)} murid · ${fmt(tG)} guru — semua cawangan di bawah ${up(c.dun)}`
+      : `${fmt(tM)} murid · ${fmt(tG)} guru · ${up(c.dun)} · ${up(c.kawasan)}`;
+
+    // ---- Cawangan: its own PASTI broken down by class / teacher
+    const ME = P[0];
+    const KELAS = ME ? [['Tahun 4', .28], ['Tahun 5', .38], ['Tahun 6', .34]].map(([k, w], i) => {
+      const m = i < 2 ? Math.round(ME.m * w) : ME.m - Math.round(ME.m * .28) - Math.round(ME.m * .38);
+      const l = Math.round(m * (.46 + hash(ME.nama + k) * .1));
+      return { k, m, l, pr: m - l, att: +(ME.attNow + (hash(k + ME.nama) - .5) * 3).toFixed(1), rate: Math.min(.99, ME.rate + (hash(k) - .5) * .06), sppm: Math.round(m * (.45 + hash(k + 's') * .5)) };
+    }) : [];
+    const GURU = ME ? DB.all('users').filter(x => /guru|pembantu/.test(x.peranan) && norm(x.skop) === norm(ME.nama)) : [];
+
+    // ---- KPI strip
+    const last = arr => arr.slice(9 - rangeN());
+    function kpis(){
+      const n = rangeN(), win = P.map(x => ({ k: sum(last(x.monthly), y => y[0]), t: sum(last(x.monthly), y => y[1]) }));
+      const K = sum(win, x => x.k), T = sum(win, x => x.t), rate = K + T ? K / (K + T) * 100 : 0;
+      const own = P.filter(x => x.bc === 0).length;
+      const baru = DB.all('murid').filter(m => m.status === 'Baharu' && inMine(m.pasti)).length;
+      const cutiW = (() => { try { return JSON.parse(localStorage.getItem('pt-cuti') || '[]').filter(r => r.status === 'Menunggu' && inMine(r.pasti)).length; } catch(e){ return 0; } })();
+      const monthTot = MON.map((_, i) => sum(P, x => x.monthly[i][0]));
+      const attM = MON.map((_, i) => { const mm = tM || 1; return +(sum(P, x => x.att[i] * x.m) / mm).toFixed(1); });
+      const L = [
+        ['Murid Aktif', fmt(tM), `${baru} permohonan baharu`, baru ? 'up' : 'flat', MON.map((_, i) => tM * (.9 + i * .0125))],
+        ['Guru & Pembantu', fmt(tG), `${fmt(tM / (tG || 1))} murid setiap guru`, 'flat', MON.map((_, i) => tG * (.94 + i * .0075))],
+        ['Kadar Kehadiran', wAtt(P).toFixed(1) + '%', wAtt(P) >= 91 ? 'Mencapai sasaran 91%' : '▼ di bawah sasaran 91%', wAtt(P) >= 91 ? 'up' : 'down', attM],
+        ['Yuran Dikutip', rmK(K), `${rate.toFixed(1)}% kadar kutipan · ${n} bulan`, 'up', monthTot],
+        ['Yuran Tertunggak', rmK(T), `${fmt(T / FEE)} bil belum dijelaskan`, 'down', MON.map((_, i) => sum(P, x => x.monthly[i][1]))],
+        tier === 'cawangan'
+          ? ['Cuti Guru Menunggu', fmt(cutiW), cutiW ? 'Perlu keputusan anda' : 'Tiada permohonan', cutiW ? 'down' : 'flat', MON.map((_, i) => (i % 3) + 1)]
+          : ['Liputan BayarCash', (P.length ? own / P.length * 100 : 0).toFixed(0) + '%', `${own}/${P.length} cawangan akaun sendiri`, 'flat', MON.map((_, i) => 30 + i * 3)],
+      ];
+      $('monKpis').innerHTML = L.map((k, i) => `<div class="hq-kpi"><div class="l">${k[0]}</div><div class="v">${k[1]}</div><div class="d ${k[3]}">${k[2]}</div><canvas id="mspk${i}"></canvas></div>`).join('');
+      return L;
+    }
+
+    // ---- performance table (sortable)
+    const attBadge = a => `<span class="badge ${a >= 91 ? 'b-green' : a >= 89.5 ? 'b-amber' : 'b-red'}">${a.toFixed(1)}%</span>`;
+    const rateBadge = r => `<span class="badge ${r >= .9 ? 'b-green' : r >= .85 ? 'b-amber' : 'b-red'} no-dot">${(r * 100).toFixed(0)}%</span>`;
+    const BCN = [['Sendiri','#2fa308'],['DUN','#2563eb'],['Kawasan','#6d5bd0'],['Tiada','#d9dfd6']];
+    const bar = (arr, cols) => `<div class="hq-bar">${arr.map((v, j) => `<span style="width:${v / (arr.reduce((a, b) => a + b, 0) || 1) * 100}%;background:${cols[j]}"></span>`).join('')}</div>`;
+    let ROWS, COLS, sortK = tier === 'cawangan' ? 3 : 2, sortDir = -1;
+    if (tier === 'kawasan') {
+      ROWS = dunList.map(d => { const ps = P.filter(x => up(x.dun) === up(d)), m = sum(ps, x => x.m), K = sum(ps, x => x.kut), T = sum(ps, x => x.tung);
+        return { k: d, cells: [d, ps.length, m, sum(ps, x => x.g), ps.length ? wAtt(ps) : 0, K, T, K + T ? K / (K + T) : 0, [0,1,2,3].map(j => ps.filter(x => x.bc === j).length), ps.filter(x => x.daftar === 'BUKA').length] }; });
+      COLS = ['DUN','PASTI','Murid','Guru','Kehadiran','Dikutip (RM)','Tertunggak (RM)','Kadar','Akaun BayarCash','Daftar BUKA'];
+      $('monTblT').textContent = 'Prestasi Mengikut DUN';
+    } else if (tier === 'dun') {
+      ROWS = P.map(x => ({ k: x.nama, cells: [x.nama, x.p.kod, x.m, x.g, x.attNow, x.kut, x.tung, x.rate, x.bc, x.daftar, x.admin ? x.admin.nama : ''] }));
+      COLS = ['PASTI','Kod','Murid','Guru','Kehadiran','Dikutip (RM)','Tertunggak (RM)','Kadar','Akaun Kutipan','Pendaftaran','Pentadbir'];
+      $('monTblT').textContent = 'Prestasi Mengikut PASTI';
+    } else {
+      const due = ME ? ME.kut + ME.tung : 0, wsum = sum(KELAS, x => x.m * x.rate) || 1;
+      let kLeft = ME ? ME.kut : 0, dLeft = due;
+      ROWS = KELAS.map((x, i) => { const last = i === KELAS.length - 1;
+        const D = last ? dLeft : Math.round(due * x.m / (ME.m || 1)), K = last ? kLeft : Math.round(ME.kut * x.m * x.rate / wsum);
+        dLeft -= D; kLeft -= K; x.rate = D ? K / D : 0;
+        return { k: x.k, cells: [x.k, x.l, x.pr, x.m, x.att, K, D - K, x.rate, x.sppm] }; });
+      COLS = ['Kelas','Lelaki','Perempuan','Murid','Kehadiran','Dikutip (RM)','Tertunggak (RM)','Kadar','SPPM Dihantar'];
+      $('monTblT').textContent = 'Prestasi Mengikut Kelas';
+    }
+    $('monTblS').textContent = (tier === 'kawasan' ? 'Semua DUN dalam ' + up(c.kawasan) : tier === 'dun' ? 'Semua PASTI dalam ' + up(c.dun) : title(u.skop)) + ' · klik tajuk lajur untuk susun';
+    if (tier !== 'cawangan') $('monTblLegend').innerHTML = BCN.map(b => `<span><i style="background:${b[1]}"></i>${b[0]}</span>`).join('');
+    const cellHtml = (v, i) => {
+      const h = COLS[i];
+      if (h === 'Kehadiran') return `<td class="num">${v ? attBadge(v) : '—'}</td>`;
+      if (h === 'Kadar') return `<td class="num">${v ? rateBadge(v) : '—'}</td>`;
+      if (/RM/.test(h)) return `<td class="num"${/Tertunggak/.test(h) && v > 0 ? ' style="color:var(--bad)"' : ''}>${fmt(v)}</td>`;
+      if (h === 'Akaun BayarCash') return `<td style="min-width:130px">${v.some(Boolean) ? bar(v, BCN.map(b => b[1])) + `<div class="muted" style="font-size:11.5px;margin-top:3px">${v[0]} sendiri · ${v[1]} DUN · ${v[2]} Kawasan</div>` : '<span class="muted">Tiada PASTI</span>'}</td>`;
+      if (h === 'Akaun Kutipan') return `<td><span class="badge no-dot" style="background:${BCN[v][1]}22;color:${v === 3 ? 'var(--muted)' : BCN[v][1]}">${BCN[v][0]}</span></td>`;
+      if (h === 'Pendaftaran') return `<td><span class="badge ${v === 'BUKA' ? 'b-green' : 'b-red'}">${v}</span></td>`;
+      if (h === 'Pentadbir') return `<td>${v ? esc(title(v)) : '<span class="badge b-amber no-dot">Belum ada</span>'}</td>`;
+      if (i === 0) return `<td><b style="color:var(--ink)">${esc(v)}</b></td>`;
+      return `<td class="num">${typeof v === 'number' ? fmt(v) : esc(v)}</td>`;
+    };
+    function drawTable(){
+      const rows = [...ROWS].sort((a, b) => { const x = a.cells[sortK], y = b.cells[sortK]; return (typeof x === 'number' ? x - y : String(x).localeCompare(String(y))) * sortDir; });
+      document.querySelector('#monTbl thead').innerHTML = '<tr>' + COLS.map((h, i) => `<th data-k="${i}" style="cursor:pointer"${i ? ' class="right"' : ''}>${h}${i === sortK ? (sortDir < 0 ? ' ▼' : ' ▲') : ''}</th>`).join('') + '</tr>';
+      document.querySelector('#monTbl tbody').innerHTML = rows.map(r => '<tr>' + r.cells.map(cellHtml).join('') + '</tr>').join('') || `<tr><td colspan="${COLS.length}" class="empty">Tiada PASTI dalam skop anda.</td></tr>`;
+      const K = sum(ROWS, r => r.cells[5]), T = sum(ROWS, r => r.cells[6]);
+      const foot = COLS.map((h, i) => i === 0 ? 'Jumlah' : h === 'Kehadiran' ? (tier === 'cawangan' ? (ME ? ME.attNow : 0) : wAtt(P)).toFixed(1) + '%' : h === 'Kadar' ? (K + T ? (K / (K + T) * 100).toFixed(0) + '%' : '—')
+        : h === 'Akaun BayarCash' ? bar([0,1,2,3].map(j => P.filter(x => x.bc === j).length), BCN.map(b => b[1])) : h === 'Akaun Kutipan' ? '' : typeof ROWS[0]?.cells[i] === 'number' ? fmt(sum(ROWS, r => r.cells[i])) : '');
+      document.querySelector('#monTbl tfoot').innerHTML = '<tr>' + foot.map((v, i) => `<td${i ? ' class="num"' : ''} style="font-weight:700;border-top:2px solid var(--line);background:#fafcf9">${v}</td>`).join('') + '</tr>';
+    }
+    document.querySelector('#monTbl thead').addEventListener('click', e => { const th = e.target.closest('th[data-k]'); if (!th) return; const k = +th.dataset.k; sortDir = k === sortK ? -sortDir : (k ? -1 : 1); sortK = k; drawTable(); });
+    drawTable();
+
+    // keep the welcome tile in step with the monitoring figures
+    const tungAll = sum(P, x => x.tung), yTile = $('dsYl') && $('dsYl').closest('.stat');
+    if (yTile) { yTile.querySelector('.value').textContent = rm(tungAll); $('dsYt').textContent = '▼ ' + fmt(tungAll / FEE) + ' bil tertunggak · Jan–Sep 2026'; }
+
+    // ---- new-PASTI pipeline (Kawasan & DUN only)
+    if (tier === 'cawangan') $('monPipeCard').remove();
+    else {
+      const key = tier === 'kawasan' ? 'kawasan' : 'dun', mine = allP.filter(p => up(p[key]) === up(c[key])), yr = String(new Date().getFullYear());
+      const T = [['Menunggu sokongan Kawasan', mine.filter(p => p.status === 'Baharu').length, '#2563eb', tier === 'kawasan' ? 'Tindakan anda' : 'Didaftar oleh anda'],
+        ['Menunggu kelulusan Negeri', mine.filter(p => p.status === 'Disokong Kawasan').length, '#e0912a', 'Disokong Kawasan'],
+        ['Diluluskan ' + yr, mine.filter(p => p.status === 'Lulus' && String(p.tarikh || '').endsWith(yr)).length, '#2fa308', 'Kod PASTI dijana'],
+        ['Ditolak', mine.filter(p => p.status === 'Ditolak').length, '#c0392b', 'Oleh Kawasan / Negeri']];
+      $('monPipe').innerHTML = T.map((t, i) => `<div class="hq-pipe"><div class="n" style="background:${t[2]}">${i + 1}</div><div><span>${t[0]}</span><b>${t[1]}</b><small>${t[3]}</small></div></div>`).join('<div class="hq-pipe-arrow">›</div>');
+      $('monPipeSub').textContent = (tier === 'kawasan' ? 'Anda menyokong permohonan DUN' : 'Permohonan yang anda daftarkan') + ' · Negeri meluluskan';
+    }
+
+    // ---- Murid Berkeperluan Khas — counts only (no child names / kategori per child above Cawangan)
+    const MX = window.MBKX, MS = MX ? MX.stats(live) : null;
+    const mbkRows = MS ? live.map(p => { const r = (MS.byPasti || {})[p.nama] || {}; return { nama:p.nama, st:r.status || (MX.of(p).status || 'TUTUP'), kuota:+r.kuota || 0, diisi:+r.diisi || 0, baharu:+r.baharu || 0, pen:+r.penilaian || 0 }; }) : [];
+    if (!MS) $('monMbk').remove();
+    else {
+      const kuotaBuka = sum(mbkRows.filter(r => r.st === 'BUKA'), r => r.kuota), diisiBuka = sum(mbkRows.filter(r => r.st === 'BUKA'), r => r.diisi);
+      const own = tier === 'cawangan' ? mbkRows[0] : null;
+      $('monMbkSub').textContent = tier === 'cawangan' ? 'Ringkasan kemasukan MBK ' + title(u.skop) + ' · butiran murid di Senarai Murid'
+        : `${mbkRows.length} PASTI dalam skop · bilangan sahaja — butiran murid hanya dilihat oleh Cawangan & guru kelas`;
+      $('monMbkTiles').innerHTML = [
+        ['in', 'Murid MBK diterima', fmt(MS.total || 0), (MS.total && tM ? (MS.total / tM * 100).toFixed(1) + '% daripada murid' : 'Tiada lagi')],
+        ['', tier === 'cawangan' ? 'Status MBK' : 'PASTI BUKA MBK', tier === 'cawangan' ? (own ? own.st : 'TUTUP') : fmt(MS.pastiBuka || 0), tier === 'cawangan' ? (own && own.st === 'MENUNGGU' ? 'Menunggu pengesahan Kawasan' : own && own.st === 'BUKA' ? 'Disahkan Kawasan' : 'Belum dibuka') : `${MS.pastiMenunggu || 0} menunggu pengesahan`],
+        ['', 'Kuota diisi', `${fmt(diisiBuka)}/${fmt(kuotaBuka)}`, kuotaBuka ? `Baki ${fmt(Math.max(0, kuotaBuka - diisiBuka))} tempat` : 'Tiada kuota dibuka'],
+        [(MS.baharu || MS.penilaian) ? 'out' : '', 'Menunggu penilaian', fmt((MS.baharu || 0) + (MS.penilaian || 0)), `${MS.baharu || 0} baharu · ${MS.penilaian || 0} ${tier === 'cawangan' ? 'dijadual penilaian' : 'dalam semakan'}`],
+      ].map(t => `<div class="ft ${t[0]}"><div class="l">${t[1]}</div><div class="v">${t[2]}</div><div class="s">${t[3]}</div></div>`).join('');
+      if (tier === 'cawangan') {
+        $('monMbkTblWrap').remove(); $('monMbkBtn').href = 'murid-permohonan.html?t=mbk'; $('monMbkBtn').textContent = 'Permohonan MBK';
+        $('monMbkNote').textContent = 'Kemas kini kesediaan (kemudahan, guru terlatih, kuota, kategori) di kad Kemasukan MBK di atas.';
+      } else {
+        if (tier !== 'kawasan') $('monMbkBtn').remove();
+        const order = { BUKA:0, MENUNGGU:1, TUTUP:2 };
+        const rows = [...mbkRows].sort((a, b) => (order[a.st] ?? 3) - (order[b.st] ?? 3) || b.diisi - a.diisi || String(a.nama).localeCompare(String(b.nama)));
+        document.querySelector('#monMbkTbl thead').innerHTML = '<tr><th>PASTI</th><th>Status MBK</th><th class="right">Kuota</th><th class="right">Diisi</th><th class="right">Baharu</th><th class="right">Dalam Semakan</th></tr>';
+        document.querySelector('#monMbkTbl tbody').innerHTML = rows.map(r => `<tr><td><b style="color:var(--ink)">${esc(title(norm(r.nama)))}</b></td><td>${MX.badge(r.st)}</td><td class="num">${r.kuota || '—'}</td>`
+          + `<td class="num"${r.kuota && r.diisi >= r.kuota ? ' style="color:var(--bad);font-weight:700"' : ''}>${r.diisi}</td><td class="num">${r.baharu}</td><td class="num">${r.pen}</td></tr>`).join('') || '<tr><td colspan="6" class="empty">Tiada PASTI dalam skop anda.</td></tr>';
+        document.querySelector('#monMbkTbl tfoot').innerHTML = `<tr>${['Jumlah', `${MS.pastiBuka || 0} BUKA · ${MS.pastiMenunggu || 0} MENUNGGU`, fmt(kuotaBuka), fmt(sum(mbkRows, r => r.diisi)), fmt(MS.baharu || 0), fmt(MS.penilaian || 0)]
+          .map((v, i) => `<td${i > 1 ? ' class="num"' : ''} style="font-weight:700;border-top:2px solid var(--line);background:#fafcf9">${v}</td>`).join('')}</tr>`;
+        $('monMbkNote').textContent = tier === 'kawasan' ? 'Sahkan atau tolak pengisytiharan MBK cawangan di Pengurusan PASTI › Senarai PASTI Cawangan.' : 'Pengesahan kemasukan MBK dibuat oleh Pentadbir Kawasan.';
+      }
+    }
+
+    // ---- alerts from the data
+    const A = [];
+    const lowAtt = P.filter(x => x.attNow < 89.5), lowRate = P.filter(x => x.rate < .85), noAdmin = P.filter(x => !x.admin), tutup = P.filter(x => x.daftar !== 'BUKA'), noBc = P.filter(x => x.bc === 3);
+    const baruM = DB.all('murid').filter(m => m.status === 'Baharu' && inMine(m.pasti));
+    const cutiW = (() => { try { return JSON.parse(localStorage.getItem('pt-cuti') || '[]').filter(r => r.status === 'Menunggu' && inMine(r.pasti)); } catch(e){ return []; } })();
+    const lst = arr => arr.slice(0, 3).map(x => title(norm(x.nama))).join(', ') + (arr.length > 3 ? ' +' + (arr.length - 3) : '');
+    if (tier === 'cawangan') {
+      if (baruM.length) A.push(['#2563eb', `${baruM.length} permohonan murid menunggu keputusan anda`, 'Buka Permohonan Murid untuk Terima / Tolak.']);
+      if (cutiW.length) A.push(['#e0912a', `${cutiW.length} permohonan cuti guru menunggu`, cutiW.slice(0, 2).map(r => title(r.nama)).join(', ') + ' — buka Cuti Guru.']);
+      if (ME && ME.daftar !== 'BUKA') A.push(['#c0392b', 'Pendaftaran murid ditutup', 'Ibu bapa tidak boleh memohon. Hubungi Pentadbir Kawasan untuk membukanya.']);
+      const lowK = KELAS.filter(k => k.att < 90); if (lowK.length) A.push(['#e0912a', 'Kehadiran rendah: ' + lowK.map(k => k.k).join(', '), 'Di bawah 90% bulan ini — hubungi ibu bapa.']);
+      if (ME && ME.tung) A.push(['#e0912a', `${fmt(ME.tung / FEE)} bil yuran tertunggak`, `${rm(ME.tung)} — hantar peringatan atau rekod bayaran kaunter.`]);
+      if (ME && ME.sppm[2]) A.push(['#2563eb', `${ME.sppm[2]} murid belum dinilai (SPPM)`, 'Ingatkan guru kelas untuk mengisi Permarkahan di Portal Guru.']);
+    } else {
+      if (lowRate.length) A.push(['#c0392b', `Kutipan yuran di bawah 85%: ${lowRate.length} PASTI`, lst(lowRate) + ' — semak bil tertunggak.']);
+      if (lowAtt.length) A.push(['#e0912a', `Kehadiran di bawah 89.5%: ${lowAtt.length} PASTI`, lst(lowAtt)]);
+      if (noAdmin.length) A.push(['#e0912a', `${noAdmin.length} PASTI tiada Pentadbir Cawangan`, lst(noAdmin) + (tier === 'dun' ? ' — cipta akaun di Tetapan.' : ' — DUN perlu cipta akaun.')]);
+      if (tutup.length) A.push(['#2563eb', `Pendaftaran murid ditutup: ${tutup.length} PASTI`, lst(tutup) + (tier === 'kawasan' ? ' — buka di Pengurusan PASTI.' : '')]);
+      if (noBc.length) A.push(['#e0912a', `${noBc.length} PASTI tiada akaun kutipan`, lst(noBc) + ' — guna akaun DUN / Kawasan sementara.']);
+      if (baruM.length) A.push(['#2563eb', `${baruM.length} permohonan murid belum diproses`, 'Menunggu keputusan Pentadbir Cawangan masing-masing.']);
+      if (cutiW.length) A.push(['#2563eb', `${cutiW.length} permohonan cuti guru menunggu`, 'Diputuskan oleh Pentadbir Cawangan.']);
+    }
+    // MBK alerts (counts & PASTI names only)
+    if (MS) {
+      const penuh = mbkRows.filter(r => r.st === 'BUKA' && r.kuota && r.diisi >= r.kuota), menunggu = mbkRows.filter(r => r.st === 'MENUNGGU');
+      const pend = (MS.baharu || 0) + (MS.penilaian || 0), lstN = arr => arr.slice(0, 3).map(r => title(norm(r.nama))).join(', ') + (arr.length > 3 ? ' +' + (arr.length - 3) : '');
+      if (tier === 'cawangan') {
+        const me = mbkRows[0];
+        if (me && me.st === 'MENUNGGU') A.unshift(['#e0912a', 'Kemasukan MBK menunggu pengesahan Kawasan', 'Pengisytiharan kesediaan anda sedang disemak oleh Pentadbir Kawasan.']);
+        else if (me && me.st !== 'BUKA') A.push(['#2563eb', 'Kemasukan MBK ditutup', 'Isytihar kesediaan di kad Kemasukan MBK jika PASTI anda boleh menerima murid berkeperluan khas.']);
+        if (MS.baharu) A.unshift(['#2563eb', `${MS.baharu} permohonan MBK perlu dijadual penilaian`, '<a href="murid-permohonan.html?t=mbk">Buka Permohonan Murid (Keperluan Khas)</a> untuk Jadual Penilaian.']);
+        if (MS.penilaian) A.push(['#e0912a', `${MS.penilaian} murid MBK dijadual penilaian`, 'Selepas penilaian, Terima (jika kuota ada) atau Tolak.']);
+        if (penuh.length) A.push(['#c0392b', 'Kuota MBK penuh', `${me.diisi}/${me.kuota} tempat diisi — permohonan baharu akan dicadangkan ke PASTI lain.`]);
+      } else {
+        if (tier === 'kawasan') menunggu.forEach(r => A.unshift(['#e0912a', `${title(norm(r.nama))} mohon buka kemasukan MBK`, '<a href="pasti-pengurusan.html?t=cawangan">Semak &amp; sahkan di Pengurusan PASTI</a>.']));
+        else if (menunggu.length) A.push(['#e0912a', `${menunggu.length} PASTI menunggu pengesahan MBK`, lstN(menunggu) + ' — disahkan oleh Pentadbir Kawasan.']);
+        if (penuh.length) A.push(['#c0392b', `Kuota MBK penuh: ${penuh.length} PASTI`, lstN(penuh) + ' — permohonan baharu dicadangkan ke PASTI lain.']);
+        if (pend) A.push(['#2563eb', `${pend} permohonan MBK menunggu penilaian`, `${MS.baharu || 0} baharu · ${MS.penilaian || 0} dalam semakan — diputuskan oleh Pentadbir Cawangan.`]);
+      }
+    }
+    $('monAlerts').innerHTML = A.map(a => `<div class="hq-alert"><div class="dot" style="background:${a[0]}"></div><div><b>${a[1]}</b><span>${a[2]}</span></div></div>`).join('') || '<div class="muted">Tiada isu buat masa ini.</div>';
+
+    // ---- recent transactions (logged payments first, then sample rows)
+    const logged = (PT.payments ? PT.payments() : []).filter(t => !t.pasti || inMine(t.pasti)).slice(0, 5)
+      .map(t => ['in', t.untuk || 'Bayaran', `${t.pembayar || '—'}${t.murid ? ' · ' + t.murid : ''} · ${t.kaedah || 'BayarCash'}`, +t.jumlah || 0, t.tarikh]);
+    const sample = P.slice(0, 5).map((x, i) => ['in', i === 3 ? 'Derma — Tabung Am' : 'Yuran September', `${title(norm(x.nama))} · ${['FPX','DuitNow QR','Kad','FPX','Tunai'][i]}`, i === 3 ? 120 : FEE * (1 + (i % 2)), `${26 - i} Sep`]);
+    $('monTx').innerHTML = logged.concat(sample).slice(0, 6).map(t => `<div class="txf"><div class="ic in">+</div><div><b>${esc(t[1])}</b><small>${esc(t[2])} · ${esc(t[4])}</small></div><div class="am in">+ RM ${fmt(t[3])}</div></div>`).join('') || '<div class="muted">Tiada transaksi.</div>';
+
+    // ---- ranking
+    const rank = tier === 'cawangan' ? KELAS.map(k => [k.k, k.rate]) : P.map(x => [title(norm(x.nama)), x.rate]);
+    $('monRankT').textContent = tier === 'cawangan' ? 'Kutipan Mengikut Kelas' : 'Kedudukan Kutipan PASTI';
+    $('monRank').innerHTML = rank.sort((a, b) => b[1] - a[1]).slice(0, 6).map((r, i) => `<div class="hq-rank"><div class="n">${i + 1}</div><div class="nm">${esc(r[0])}</div><div class="hq-bar" style="width:110px;min-width:0"><span style="width:${r[1] * 100}%;background:${r[1] >= .9 ? '#2fa308' : r[1] >= .85 ? '#e0912a' : '#c0392b'}"></span></div><div class="am">${(r[1] * 100).toFixed(0)}%</div></div>`).join('') || '<div class="muted">Tiada data.</div>';
+
+    // ---- charts
+    if (!window.Chart) return;
+    Chart.defaults.font.family = getComputedStyle(document.body).fontFamily;
+    Chart.defaults.color = '#77857c';
+    Chart.defaults.plugins.legend.display = false;
+    const grid = { color:'#eef1ec' }, noGrid = { display:false }, charts = [];
+    const mk = (id, cfg) => { const ch = new Chart($(id), cfg); charts.push(ch); return ch; };
+    const center = (t1, t2) => ({ id:'c', afterDraw(ch){ const { ctx, chartArea:{ left, right, top, bottom } } = ch, x = (left + right) / 2, y = (top + bottom) / 2;
+      ctx.save(); ctx.textAlign = 'center'; ctx.fillStyle = '#122019'; ctx.font = '800 21px ' + Chart.defaults.font.family; ctx.fillText(t1, x, y + 2);
+      ctx.fillStyle = '#77857c'; ctx.font = '600 11px ' + Chart.defaults.font.family; ctx.fillText(t2, x, y + 18); ctx.restore(); } });
+    const donut = (id, legendId, parts, t2) => { const tot = sum(parts, x => x[1]);
+      mk(id, { type:'doughnut', data:{ labels:parts.map(x => x[0]), datasets:[{ data:parts.map(x => x[1]), backgroundColor:parts.map(x => x[2]), borderWidth:0 }] },
+        options:{ responsive:true, maintainAspectRatio:false, cutout:'70%' }, plugins:[center(fmt(tot), t2)] });
+      $(legendId).innerHTML = parts.map(x => `<span><i style="background:${x[2]}"></i>${x[0]} · ${fmt(x[1])}${tot ? ' (' + Math.round(x[1] / tot * 100) + '%)' : ''}</span>`).join(''); };
+
+    function drawRange(){
+      charts.splice(0).forEach(ch => ch.destroy());
+      const L = kpis(), n = rangeN(), labels = MON.slice(9 - n);
+      L.forEach((k, i) => mk('mspk' + i, { type:'line', data:{ labels:MON, datasets:[{ data:k[4], borderColor:k[3] === 'down' ? '#c0392b' : '#2fa308', borderWidth:2, pointRadius:0, tension:.35, fill:true,
+        backgroundColor:k[3] === 'down' ? 'rgba(192,57,43,.08)' : 'rgba(47,163,8,.10)' }] },
+        options:{ responsive:true, maintainAspectRatio:false, plugins:{ tooltip:{ enabled:false } }, scales:{ x:{ display:false }, y:{ display:false } }, animation:false } }));
+
+      // fees by month
+      const idx = labels.map(l => MON.indexOf(l)), kutM = idx.map(i => sum(P, x => x.monthly[i][0])), tunM = idx.map(i => sum(P, x => x.monthly[i][1]));
+      $('monFeeSub').textContent = `Kutipan vs tertunggak · ${labels[0]}–${labels[labels.length - 1]} 2026 · RM ${FEE} sebulan setiap murid`;
+      mk('monFee', { data:{ labels, datasets:[
+        { type:'bar', label:'Dikutip', data:kutM, backgroundColor:'#2fa308', borderRadius:5, stack:'s', order:2 },
+        { type:'bar', label:'Tertunggak', data:tunM, backgroundColor:'#e0912a', borderRadius:5, stack:'s', order:2 },
+        { type:'line', label:'Kadar kutipan', data:kutM.map((k, i) => +(k / ((k + tunM[i]) || 1) * 100).toFixed(1)), borderColor:'#122019', backgroundColor:'#122019', borderWidth:2, pointRadius:3, tension:.3, yAxisID:'y2', order:1 } ] },
+        options:{ responsive:true, maintainAspectRatio:false, interaction:{ mode:'index', intersect:false },
+          plugins:{ tooltip:{ callbacks:{ label:c => c.dataset.yAxisID === 'y2' ? ` ${c.dataset.label}: ${c.parsed.y}%` : ` ${c.dataset.label}: RM ${fmt(c.parsed.y)}` } } },
+          scales:{ x:{ grid:noGrid, stacked:true }, y:{ grid, stacked:true, beginAtZero:true, ticks:{ callback:v => v >= 1000 ? (v / 1000).toFixed(1) + 'k' : v } },
+            y2:{ position:'right', grid:noGrid, min:70, max:100, ticks:{ callback:v => v + '%' } } } } });
+
+      // attendance: last 10 school days (Sun–Thu) — real teacher record for today when present
+      const days = []; for (let d = new Date(); days.length < 10; d.setDate(d.getDate() - 1)) { const w = d.getDay(); if (w !== 5 && w !== 6) days.unshift(new Date(d)); }
+      const key = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+      let store = {}; try { store = JSON.parse(localStorage.getItem('pt-kehadiran') || '{}'); } catch(e){}
+      const series = (tier === 'cawangan' ? KELAS.map(k => ({ nm:k.k, base:k.att })) : (tier === 'kawasan' ? dunList.filter(d => P.some(x => up(x.dun) === up(d))).map(d => ({ nm:d, base:wAtt(P.filter(x => up(x.dun) === up(d))) })) : P.map(x => ({ nm:title(norm(x.nama)), base:x.attNow }))))
+        .slice(0, 6).map((s, j) => ({ ...s, data:days.map((d, i) => {
+          const rec = store[key(d)]; if (tier === 'cawangan' && s.nm === 'Tahun 5' && rec && rec.saved && rec.rows) { const h = rec.rows.filter(r => r.s !== 'T').length; return +(h / rec.rows.length * 100).toFixed(1); }
+          return +Math.min(99.5, s.base + (hash(s.nm + i) - .5) * 4).toFixed(1); }) }));
+      const PAL = ['#2fa308','#2563eb','#e0912a','#6d5bd0','#c0392b','#0f9d8a'];
+      $('monAttSub').textContent = '10 hari persekolahan terakhir · ' + (tier === 'cawangan' ? 'mengikut kelas (Tahun 5 dari Portal Guru bila direkod)' : tier === 'kawasan' ? 'mengikut DUN' : 'mengikut PASTI');
+      mk('monAtt', { type:'line', data:{ labels:days.map(d => d.getDate() + '/' + (d.getMonth() + 1)), datasets:series.map((s, j) => ({ label:s.nm, data:s.data, borderColor:PAL[j], backgroundColor:PAL[j], borderWidth:2, pointRadius:2, tension:.3 })) },
+        options:{ responsive:true, maintainAspectRatio:false, interaction:{ mode:'index', intersect:false },
+          plugins:{ legend:{ display:true, position:'bottom', labels:{ boxWidth:10, boxHeight:10 } }, tooltip:{ callbacks:{ label:c => ` ${c.dataset.label}: ${c.parsed.y}%` } } },
+          scales:{ x:{ grid:noGrid }, y:{ grid, min:80, max:100, ticks:{ callback:v => v + '%' } } } } });
+
+      // unit comparison charts
+      if (tier === 'cawangan') {
+        $('monC1T').textContent = 'Murid Mengikut Kelas & Jantina'; $('monC1S').textContent = title(u.skop);
+        mk('monC1', { type:'bar', data:{ labels:KELAS.map(k => k.k), datasets:[{ label:'Lelaki', data:KELAS.map(k => k.l), backgroundColor:'#2563eb', borderRadius:5 }, { label:'Perempuan', data:KELAS.map(k => k.pr), backgroundColor:'#e87ba4', borderRadius:5 }] },
+          options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ display:true, position:'bottom', labels:{ boxWidth:10, boxHeight:10 } } }, scales:{ x:{ grid:noGrid, stacked:true }, y:{ grid, stacked:true, beginAtZero:true } } } });
+        $('monC2T').textContent = 'Kehadiran Guru Bulan Ini'; $('monC2S').textContent = GURU.length + ' akaun guru & pembantu · hari bertugas daripada 19';
+        const G = (GURU.length ? GURU : [{ nama:'Guru 1' }, { nama:'Guru 2' }]).map(g => { const dd = 19, h = Math.round(dd * (.86 + hash(g.nama) * .14)), l = Math.round((dd - h) * .5 + hash(g.nama + 'l') * 2); return [title(g.nama).replace(/^(Ustazah|Ustaz)\s+/i, ''), h - l, l, dd - h]; });
+        mk('monC2', { type:'bar', data:{ labels:G.map(g => g[0].split(' ').slice(0, 3).join(' ')), datasets:[['Tepat masa','#2fa308',1],['Lewat','#e0912a',2],['Tidak hadir','#c0392b',3]].map(([l, col, j]) => ({ label:l, data:G.map(g => g[j]), backgroundColor:col, barThickness:16 })) },
+          options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{ legend:{ display:true, position:'bottom', labels:{ boxWidth:10, boxHeight:10 } } }, scales:{ x:{ stacked:true, grid, max:19 }, y:{ stacked:true, grid:noGrid } } } });
+      } else {
+        const byM = [...P].sort((a, b) => b.m - a.m), h = Math.max(260, byM.length * 30 + 60);
+        $('monC1Box').style.height = $('monC2Box').style.height = h + 'px';
+        $('monC1T').textContent = 'Murid & Guru Mengikut PASTI'; $('monC1S').textContent = 'Nisbah murid setiap guru dalam tooltip';
+        mk('monC1', { type:'bar', data:{ labels:byM.map(x => title(norm(x.nama))), datasets:[{ label:'Murid', data:byM.map(x => x.m), backgroundColor:'#2fa308', borderRadius:4, barThickness:12 }, { label:'Guru', data:byM.map(x => x.g), backgroundColor:'#6d5bd0', borderRadius:4, barThickness:12 }] },
+          options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{ legend:{ display:true, position:'bottom', labels:{ boxWidth:10, boxHeight:10 } },
+            tooltip:{ callbacks:{ afterBody:it => { const x = byM[it[0].dataIndex]; return 'Nisbah ' + (x.m / (x.g || 1)).toFixed(1) + ' murid / guru'; } } } }, scales:{ x:{ grid }, y:{ grid:noGrid } } } });
+        const byA = [...P].sort((a, b) => b.attNow - a.attNow);
+        $('monC2T').textContent = 'Kehadiran & Kutipan Mengikut PASTI'; $('monC2S').textContent = 'Sasaran kehadiran 91% · kutipan 90%';
+        mk('monC2', { type:'bar', data:{ labels:byA.map(x => title(norm(x.nama))), datasets:[
+          { label:'Kehadiran %', data:byA.map(x => x.attNow), backgroundColor:byA.map(x => x.attNow >= 91 ? '#2fa308' : x.attNow >= 89.5 ? '#e0912a' : '#c0392b'), borderRadius:4, barThickness:12 },
+          { label:'Kutipan %', data:byA.map(x => +(x.rate * 100).toFixed(1)), backgroundColor:'#2563eb', borderRadius:4, barThickness:12 } ] },
+          options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{ legend:{ display:true, position:'bottom', labels:{ boxWidth:10, boxHeight:10 } }, tooltip:{ callbacks:{ label:c => ` ${c.dataset.label.replace(' %', '')}: ${c.parsed.x}%` } } },
+            scales:{ x:{ grid, min:70, max:100, ticks:{ callback:v => v + '%' } }, y:{ grid:noGrid } } } });
+      }
+
+      // applications (live DB) + SPPM
+      const ms = DB.all('murid').filter(m => inMine(m.pasti));
+      donut('monApps', 'monAppsLegend', [['Diterima', ms.filter(m => m.status === 'Diterima').length, '#2fa308'], ['Baharu', ms.filter(m => m.status === 'Baharu').length, '#e0912a'], ['Ditolak', ms.filter(m => m.status === 'Ditolak').length, '#c0392b']], 'permohonan');
+      const S = [0,1,2].map(j => sum(P, x => x.sppm[j]));
+      donut('monSppm', 'monSppmLegend', [['Dihantar', S[0], '#2fa308'], ['Dalam proses', S[1], '#e0912a'], ['Belum mula', S[2], '#d9dfd6']], 'murid');
+      if (MS && $('monMbkChart')) { const ch = MX.donut($('monMbkChart'), $('monMbkLegend'), MX.parts(MS.byKategori), 'murid MBK'); if (ch) charts.push(ch); }
+    }
+    $('monRange').addEventListener('change', drawRange);
+    drawRange();
+  });
+</script>
+<script>
   // mini calendar — September 2026 (1 Sep = Tuesday). Highlight day 24 (today) + a few events.
   (function(){
     const dow=['S','M','T','W','T','F','S']; const first=2; const days=30; const today=24;
@@ -616,6 +1240,78 @@
         + '<p>Imbas kod QR atau layari:<br><b>' + link + '</b></p></body></html>');
       w.document.close(); setTimeout(() => w.print(), 400);
     };
+  })();
+</script>
+<script>
+  // Kemasukan MBK card (cawangan) — declare readiness → MENUNGGU; Pentadbir Kawasan verifies (BUKA) or rejects (TUTUP).
+  (function(){
+    const card = document.getElementById('mbkCard'); if (!card) return;
+    if (!window.PT || PT.tier !== 'cawangan' || !window.DB || !window.MBKX) { card.style.display = 'none'; return; }
+    const X = MBKX, $ = id => document.getElementById(id), u = DB.user();
+    const p = u && DB.find('pasti', x => X.norm(x.nama) === X.norm(u.skop) && x.status === 'Lulus');
+    if (!p) { card.style.display = 'none'; return; }
+    const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, x => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[x]));
+    const tags = (arr, cls) => (arr && arr.length) ? '<div class="mbk-tags">' + arr.map(x => `<span class="badge ${cls} no-dot">${esc(x)}</span>`).join('') + '</div>' : '<span class="muted">—</span>';
+    const today = () => { const d = new Date(); return String(d.getDate()).padStart(2, '0') + '/' + String(d.getMonth() + 1).padStart(2, '0') + '/' + d.getFullYear(); };
+    const modal = $('mbkModal');
+
+    function render(){
+      const m = X.of(p), st = m.status || 'TUTUP', q = X.quota(p), s = X.stats([p]), r = (s.byPasti || {})[p.nama] || {};
+      const baharu = r.baharu != null ? r.baharu : s.baharu, pen = r.penilaian != null ? r.penilaian : s.penilaian;
+      $('mbkStatus').innerHTML = X.badge(st);
+      $('mbkQ').innerHTML = [['Diisi', q.diisi], ['Kuota', q.kuota || 0], ['Baki', Math.max(0, (q.kuota || 0) - q.diisi)]]
+        .map(t => `<div><div class="l">${t[0]}</div><div class="v">${t[1]}</div></div>`).join('');
+      const by = o => o && (o.oleh || o.tarikh) ? esc(o.oleh || '—') + (o.tarikh ? ' · ' + esc(o.tarikh) : '') : '—';
+      let msg;
+      if (st === 'MENUNGGU') msg = `<div class="mbk-note amber"><b>Menunggu pengesahan Pentadbir Kawasan.</b> Diisytihar oleh ${by(m.dimohon)}. Ibu bapa belum boleh memohon kemasukan MBK sehingga disahkan.</div>`;
+      else if (st === 'BUKA') msg = `<div class="mbk-note green"><b>Kemasukan MBK dibuka.</b> Disahkan oleh ${by(m.disahkan)}.${q.kuota && q.diisi >= q.kuota ? ' <b>Kuota telah penuh</b> — permohonan baharu akan dicadangkan ke PASTI lain.' : ''}</div>`;
+      else msg = `<div class="mbk-note red"><b>Kemasukan MBK ditutup.</b> ${m.sebab ? 'Sebab: ' + esc(m.sebab) + ' — kemas kini dan isytihar semula.' : 'Isytihar kesediaan PASTI anda untuk menerima murid berkeperluan khas.'}</div>`;
+      $('mbkMsg').innerHTML = msg;
+      const declared = !!(m.kuota || (m.kategori && m.kategori.length));
+      $('mbkBtn').textContent = declared ? 'Kemas Kini' : 'Isytihar Kesediaan';
+      $('mbkApps').innerHTML = `Permohonan Murid (Keperluan Khas) <span class="badge b-blue no-dot" style="margin-left:6px">${baharu} Baharu</span> <span class="badge b-amber no-dot" style="margin-left:4px">${pen} Dijadual Penilaian</span>`;
+      $('mbkKv').innerHTML = [
+        ['Kategori diterima', tags(m.kategori, 'b-violet')],
+        ['Kemudahan', tags(m.kemudahan, 'b-green')],
+        ['Guru terlatih', m.guruTerlatih != null && m.guruTerlatih !== '' ? esc(m.guruTerlatih) + ' orang' : '—'],
+        ['Diisytihar', by(m.dimohon)],
+        ['Disahkan', st === 'BUKA' ? by(m.disahkan) : (st === 'MENUNGGU' ? '<span class="badge b-amber">Menunggu Kawasan</span>' : '—')],
+        ['Catatan', m.catatan ? esc(m.catatan) : '—'],
+      ].map(r => `<dt>${r[0]}</dt><dd>${r[1]}</dd>`).join('');
+    }
+
+    const checks = (el, list, sel, name) => { el.innerHTML = list.map((x, i) => `<label class="check"><input type="checkbox" name="${name}" value="${esc(x)}"${(sel || []).includes(x) ? ' checked' : ''}> ${esc(x)}</label>`).join(''); };
+    function open(){
+      const m = X.of(p), q = X.quota(p);
+      checks($('mbkFKem'), X.KEM, m.kemudahan, 'mbkKem');
+      checks($('mbkFKat'), X.KAT, m.kategori, 'mbkKat');
+      $('mbkFGuru').value = m.guruTerlatih || '';
+      $('mbkFKuota').value = m.kuota || '';
+      $('mbkFKuotaHint').textContent = q.diisi ? `${q.diisi} murid MBK telah diterima — kuota tidak boleh kurang daripada ini.` : 'Bilangan maksimum murid MBK yang boleh diterima.';
+      $('mbkFCat').value = m.catatan || '';
+      modal.querySelectorAll('.pt-err').forEach(x => x.classList.remove('pt-err'));
+      modal.classList.add('open');
+    }
+    function save(){
+      const kem = [...modal.querySelectorAll('input[name=mbkKem]:checked')].map(i => i.value);
+      const kat = [...modal.querySelectorAll('input[name=mbkKat]:checked')].map(i => i.value);
+      const guru = parseInt($('mbkFGuru').value, 10), kuota = parseInt($('mbkFKuota').value, 10), q = X.quota(p);
+      const bad = [[$('mbkFKem'), !kem.length], [$('mbkFKat'), !kat.length], [$('mbkFGuru'), !(guru >= 1)], [$('mbkFKuota'), !(kuota >= 1) || kuota < q.diisi]];
+      bad.forEach(([el, b]) => el.classList.toggle('pt-err', b));
+      if (bad.some(b => b[1])) return PT.toast(kuota >= 1 && kuota < q.diisi ? 'Kuota tidak boleh kurang daripada murid MBK yang telah diterima' : 'Sila lengkapkan medan bertanda *', 'red');
+      const rec = DB.find('pasti', x => x === p) || p;
+      rec.mbk = Object.assign({}, rec.mbk || {}, { status:'MENUNGGU', kemudahan:kem, guruTerlatih:guru, kuota, kategori:kat, catatan:$('mbkFCat').value.trim(),
+        dimohon:{ oleh:(u && u.nama) || 'Pentadbir Cawangan', tarikh:today() }, disahkan:null, sebab:'' });
+      DB.save();
+      if (PT.logAccess) { try { PT.logAccess('Isytihar kesediaan MBK', 'Kemasukan MBK', `Kuota ${kuota} · ${kat.length} kategori · status MENUNGGU`); } catch(e){} }
+      modal.classList.remove('open');
+      render();
+      PT.toast('Pengisytiharan MBK dihantar kepada Pentadbir Kawasan untuk pengesahan', 'green');
+    }
+    $('mbkBtn').addEventListener('click', open);
+    $('mbkSave').addEventListener('click', save);
+    modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('open'); });
+    render();
   })();
 </script>
 <script>

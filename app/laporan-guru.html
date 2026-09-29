@@ -6,7 +6,7 @@
 <title>Laporan Guru PASTI · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=8">
+<link rel="stylesheet" href="../assets/css/app.css?v=10">
 </head>
 <body>
 <div class="pt-app" data-module="pelaporan" data-page="laporan-guru" data-title="Laporan Guru PASTI" data-subtitle="Statistik guru mengikut elaun &amp; jantina">
@@ -16,7 +16,7 @@
       <div>
         <div class="crumb">ePASTI <span>›</span> Pelaporan <span>›</span> Guru PASTI</div>
         <h1>Laporan Guru PASTI</h1>
-        <div class="lead">Statistik guru PASTI Kawasan Kota Bharu mengikut DUN</div>
+        <div class="lead">Statistik guru mengikut DUN — <span data-scope-label>Kawasan Kota Bharu</span></div>
       </div>
       <div class="toolbar" style="margin-bottom:0">
         <button class="btn btn-ghost" data-action="print">Cetak</button>
@@ -70,7 +70,7 @@
         <div class="card-head"><h3>Guru Mengikut Jantina</h3></div>
         <div class="card-body">
           <div class="chart-box" id="cJantina" style="height:170px;position:relative"></div>
-          <div class="notice mt"><div class="tx"><b>Ringkasan</b><span>Perempuan 20 (100%) · Lelaki 0 (0%) — majoriti guru PASTI adalah muslimah.</span></div></div>
+          <div class="notice mt"><div class="tx"><b>Ringkasan</b><span id="gJantinaSum">Perempuan 20 (100%) · Lelaki 0 (0%) — majoriti guru PASTI adalah muslimah.</span></div></div>
         </div>
       </div>
 
@@ -99,11 +99,52 @@
   </main>
 </div>
 
-<script src="../assets/js/app.js?v=8"></script>
+<script src="../assets/js/app.js?v=10"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="../assets/js/charts.js?v=2"></script>
 <script>
+// Report scope: lead text follows the signed-in scope; DUN / Cawangan only see rows of their own DUN (or PASTI),
+// with JUMLAH recomputed from the rows that remain.
+window.LAP = (function(){
+  const P = window.PT || {}, S = P.scope || null, tier = (S && S.tier) || P.tier || '';
+  const low = tier === 'dun' || tier === 'cawangan';
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const code = s => { const m = String(s || '').toUpperCase().trim().match(/^([NP]\d+)/); return m ? m[1] : ''; };
+  const labelCell = tr => [...tr.cells].find(c => !/^\s*\d*\s*$/.test(c.textContent));
+  const isTotal = tr => /^\s*jumlah\s*$/i.test((labelCell(tr) || {}).textContent || '');
+  function lead(){ if (S && S.label) document.querySelectorAll('[data-scope-label]').forEach(el => { el.textContent = S.label; }); }
+  function note(){
+    if (!low || !S || document.getElementById('lapNote')) return;
+    const ph = document.querySelector('.pt-main .page-head'); if (!ph) return;
+    ph.insertAdjacentHTML('afterend', '<div class="notice mb" id="lapNote"><div class="tx"><b>Skop paparan: ' + esc(S.label || '') + '</b><span>Angka yang dipaparkan adalah bagi skop anda sahaja' +
+      (S.dun ? ' (DUN ' + esc(S.dun) + ')' : '') + ' — baris DUN / PASTI lain tidak dipaparkan dan jumlah dikira semula.</span></div></div>');
+  }
+  // drop out-of-scope rows (DUN rows named "N09 …"; PASTI rows via PT.inScope), then recompute JUMLAH
+  function scope(root){
+    if (!low || !S) return;
+    const dc = code(S.dun);
+    (root || document).querySelectorAll('table.pt').forEach(tb => {
+      const body = tb.tBodies[0]; if (!body) return; let cut = false;
+      [...body.rows].forEach(tr => { if (isTotal(tr)) return; const c = labelCell(tr); if (!c) return; const t = c.textContent.trim();
+        const out = /^N\d+/i.test(t) ? (dc && code(t) !== dc) : (P.inScope ? !P.inScope(t) : false);
+        if (out) { tr.remove(); cut = true; } });
+      if (cut) totals(tb);
+    });
+  }
+  function totals(tb){
+    const rows = [...tb.tBodies[0].rows], J = rows.find(isTotal); if (!J) return;
+    const data = rows.filter(r => r !== J);
+    [...J.cells].forEach((c, i) => { if (!/^\s*[\d,.]+\s*$/.test(c.textContent)) return;
+      c.textContent = data.reduce((a, r) => { const v = r.cells[i] ? r.cells[i].textContent.replace(/,/g, '').trim() : ''; return a + (/^\d+(\.\d+)?$/.test(v) ? +v : 0); }, 0); });
+    let n = 0; data.forEach(r => { const c = r.cells[0]; if (c && /^\d+$/.test(c.textContent.trim())) c.textContent = ++n; });
+  }
+  lead(); note();
+  return { scope, totals, low, S };
+})();
+</script>
+<script>
 (function(){
+  LAP.scope();
   const tabs = document.querySelectorAll('table.pt');
   const E = PTChart.readTable(tabs[0]), ranges = E.heads.slice(1, -1);
   PTChart.bar(document.getElementById('cElaun'), { labels: ranges.map(r => 'RM ' + r), stacked:true,
@@ -111,6 +152,8 @@
   const J = PTChart.readTable(tabs[1]);
   PTChart.bar(document.getElementById('cJantina'), { labels: J.labels, horizontal:true, stacked:true,
     series: [{ name:'Lelaki', data: J.rows.map(r => r[0]) }, { name:'Perempuan', data: J.rows.map(r => r[1]) }] });
+  const L = J.rows.reduce((a,r) => a + r[0], 0), P = J.rows.reduce((a,r) => a + r[1], 0), T = L + P || 1, sum = document.getElementById('gJantinaSum');
+  if (sum) sum.textContent = 'Perempuan ' + P + ' (' + Math.round(P / T * 100) + '%) · Lelaki ' + L + ' (' + Math.round(L / T * 100) + '%)' + (P >= L ? ' — majoriti guru PASTI adalah muslimah.' : '.');
 })();
 </script>
 </body>

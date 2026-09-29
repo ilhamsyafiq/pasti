@@ -6,7 +6,7 @@
 <title>Senarai Guru · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=8">
+<link rel="stylesheet" href="../assets/css/app.css?v=10">
 </head>
 <body>
 <div class="pt-app" data-module="warga" data-page="warga-guru" data-title="Senarai Guru" data-subtitle="Guru & pembantu guru PASTI">
@@ -30,7 +30,7 @@
       <div class="card">
         <div class="card-body">
           <div class="toolbar">
-            <span class="muted">Jumlah Bilangan = 38</span>
+            <span class="muted" data-count>Jumlah Bilangan = 38</span>
             <div class="spacer"></div>
             <button class="btn btn-soft">Excel</button>
             <button class="btn btn-ghost" data-action="print">Cetak</button>
@@ -61,7 +61,7 @@
       <div class="card">
         <div class="card-body">
           <div class="toolbar">
-            <span class="muted">Jumlah Bilangan = 4</span>
+            <span class="muted" data-count>Jumlah Bilangan = 4</span>
             <div class="spacer"></div>
             <button class="btn btn-soft">Excel</button>
             <button class="btn btn-ghost" data-action="print">Cetak</button>
@@ -80,7 +80,7 @@
   </main>
 </div>
 
-<script src="../assets/js/app.js?v=8"></script>
+<script src="../assets/js/app.js?v=10"></script>
 <script>
   // [MyKad, Nama, Jantina, Kaum, Telefon, PASTI, Status]
   const guru = [
@@ -112,13 +112,27 @@
         <td>${r[2]}</td>
         <td>${r[3]}</td>
         <td class="num">${r[4]}</td>
-        <td>${r[5]}</td>
+        <td>PASTI ${r[5]}</td>
         <td>${badge(r[6])}</td>
         <td class="right"><a class="btn btn-soft btn-sm" href="#">Profil</a> <button class="btn btn-ghost btn-sm">Edit</button></td>
       </tr>`).join('');
   }
   render('guruRows', guru);
   render('pembantuRows', pembantu);
+
+  // After the engine has scoped the rows: counts & pager show only what this user can see.
+  document.addEventListener('DOMContentLoaded', () => setTimeout(() => {
+    const count = () => document.querySelectorAll('[data-panel]').forEach(p => {
+      const el = p.querySelector('[data-count]'), tb = p.querySelector('table.pt'); if (!el || !tb) return;
+      const n = [...tb.tBodies[0].rows].filter(r => r.style.display !== 'none').length;
+      el.textContent = 'Jumlah Bilangan = ' + n;
+      const pg = p.querySelector('.pager');
+      if (pg) { pg.querySelector('.info').textContent = n ? 'Memaparkan 1–' + n + ' daripada ' + n + ' rekod' : 'Tiada rekod'; pg.querySelector('.pages').innerHTML = '<button class="active">1</button>'; }
+    });
+    count();
+    ['input','change'].forEach(ev => document.addEventListener(ev, () => setTimeout(count, 0)));
+    document.querySelectorAll('table.pt tbody').forEach(tb => new MutationObserver(() => setTimeout(count, 0)).observe(tb, { childList:true }));
+  }, 0));
 </script>
 </body>
 </html>

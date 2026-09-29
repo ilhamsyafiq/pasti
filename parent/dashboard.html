@@ -6,7 +6,7 @@
 <title>Utama · ePASTI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/app.css?v=8">
+<link rel="stylesheet" href="../assets/css/app.css?v=10">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#2fa308">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -50,8 +50,8 @@
   </main>
 </div>
 
-<script src="../assets/js/app.js?v=8"></script>
-<script src="../assets/js/parent-kids.js?v=3"></script>
+<script src="../assets/js/app.js?v=10"></script>
+<script src="../assets/js/parent-kids.js?v=5"></script>
 <script>
 (function(){
   const { me, kids } = PK.load(), esc = PK.esc, I = PK.I, $ = id => document.getElementById(id);
@@ -68,7 +68,7 @@
 
   $('ppDue').innerHTML = due
     ? '<div class="l">Yuran perlu dijelaskan</div><div class="v">RM ' + due.toFixed(2) + '</div><div class="s">' + bil + ' bil belum dijelaskan</div>'
-      + '<button class="btn btn-w" data-amount="' + due + '">Bayar</button>'
+      + '<a class="btn btn-w" href="yuran.html" data-own>Bayar</a>'
     : '<div class="l">Status yuran</div><div class="v" style="font-size:24px">Tiada tunggakan</div><div class="s">Terima kasih kerana menjelaskan yuran tepat pada masanya.</div>'
       + '<a class="btn btn-o" href="resit.html">Lihat Resit</a>';
 
