@@ -53,8 +53,6 @@
   .akt b{color:var(--ink)}.akt span{color:var(--muted);font-size:12px}
   .akt button{align-self:center}
   @media (max-width:560px){ .row{grid-template-columns:1fr} }
-  .mbk-ic{font-family:inherit;font-size:10.5px;font-weight:800;letter-spacing:.03em;border:1px solid #d9d1f6;background:#efecfb;color:#5b45c4;border-radius:7px;padding:3px 7px;margin-left:6px;cursor:pointer;vertical-align:1px;min-height:24px}
-  .mbk-nm{font-weight:700;color:var(--ink);margin-bottom:10px}
 </style>
 </head>
 <body>
@@ -94,7 +92,7 @@
   </main>
 </div>
 
-<script src="../assets/js/app.js?v=10"></script>
+<script src="../assets/js/app.js?v=11"></script>
 <script src="../assets/js/guru-kelas.js?v=2"></script>
 <script src="../assets/js/sppm.js?v=3"></script>
 <script>
@@ -105,28 +103,6 @@
   const $ = id => document.getElementById(id);
   const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const today = () => { const d = new Date(); return String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + d.getFullYear(); };
-  // MBK (Murid Berkeperluan Khas): a pupil whose MyKid matches a DB murid with `mbk` gets a small badge; tap → nota
-  // (kategori, keperluan, catatan). Only for guru / pembantu of that PASTI (PT.canSeeMbk). Works offline (DB is local).
-  const npasti = s => String(s || '').toUpperCase().replace(/^PASTI\s+/,'').replace(/[^A-Z0-9]/g,'');
-  const escM = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-  const mbkOf = mykid => { try {
-    const m = window.DB && DB.all ? DB.all('murid').find(x => x.mbk && String(x.mykid) === String(mykid)) : null; if (!m) return null;
-    if (window.PT && typeof PT.canSeeMbk === 'function') return PT.canSeeMbk(m) ? m : null;
-    const u = window.DB && DB.user && DB.user(); return u && /^(guru|pembantu)$/.test(u.peranan) && npasti(u.skop) === npasti(m.pasti) ? m : null;
-  } catch(e){ return null; } };
-  const mbkBtn = (m, i) => mbkOf(m.mykid) ? `<button type="button" class="mbk-ic" data-mbk="${i}" title="Nota Keperluan Khas" aria-label="Nota Keperluan Khas">MBK</button>` : '';
-  function mbkNote(i){
-    const k = M[i], m = k && mbkOf(k.mykid); if (!m) return; const x = m.mbk;
-    let ov = document.getElementById('mbkNote'); if (!ov) { ov = document.createElement('div'); ov.className = 'modal-overlay'; ov.id = 'mbkNote'; document.body.appendChild(ov); }
-    const row = (l, v) => v ? `<dt>${l}</dt><dd>${v}</dd>` : '';
-    ov.innerHTML = `<div class="modal"><div class="m-head"><h3>Nota Keperluan Khas</h3><button class="btn btn-ghost btn-sm" data-close>✕</button></div>
-      <div class="m-body"><div class="mbk-nm">${escM(k.nama)}</div><dl class="kv">${row('Kategori', escM(x.kategori || '—') + (x.sub ? ' · ' + escM(x.sub) : ''))}${row('Tahap', escM(x.tahap || ''))}
-        ${row('Keperluan', escM((x.keperluan || []).join(', ') || '—'))}${row('Catatan guru', escM(x.catatan || '—'))}</dl>
-        <div class="muted" style="font-size:12px;margin-top:12px">Sulit — untuk guru kelas sahaja. Jangan kongsi dengan pihak lain.</div></div>
-      <div class="m-foot"><button class="btn btn-ghost" data-close>Tutup</button></div></div>`;
-    ov.classList.add('open');
-    try { if (window.PT && PT.logAccess) PT.logAccess('Lihat nota MBK', 'Portal Guru', k.nama); } catch(e){}
-  }
   const ui = { pg:1, view:'murid', stu:0, el:'sahsiah', item:null };
   // Pembantu Guru may fill SPPM as draft but cannot send it to parents
   const ROLE = (window.PT && PT.role) || ((window.DB && DB.user && DB.user()) || {}).peranan;
@@ -153,7 +129,7 @@
     $('stuNav').innerHTML = ui.view !== 'murid' ? '' : `<div class="stu-nav">
       <button type="button" data-stu="${ui.stu-1}" ${ui.stu===0?'disabled':''} aria-label="Murid sebelum">‹</button>
       <div class="mid" style="position:relative"><div class="avatar" style="width:38px;height:38px;border-radius:11px;background:var(--brand-l);color:var(--brand-d);display:grid;place-items:center;font-weight:700;flex:none">${K.initials(M[ui.stu].nama)}</div>
-        <div style="min-width:0;flex:1"><b>${esc(M[ui.stu].nama)}${mbkBtn(M[ui.stu], ui.stu).replace('class="mbk-ic"', 'class="mbk-ic" style="position:relative;z-index:2"')}</b><span>Murid ${ui.stu+1}/${M.length} · ${pr.done}/${pr.total} item · ${r.sent[ui.pg] ? '✓ Dihantar ' + (r.sentAt[ui.pg]||'') : 'Draf'}</span><div class="bar"><i style="width:${pr.done/pr.total*100}%"></i></div></div>
+        <div style="min-width:0;flex:1"><b>${esc(M[ui.stu].nama)}</b><span>Murid ${ui.stu+1}/${M.length} · ${pr.done}/${pr.total} item · ${r.sent[ui.pg] ? '✓ Dihantar ' + (r.sentAt[ui.pg]||'') : 'Draf'}</span><div class="bar"><i style="width:${pr.done/pr.total*100}%"></i></div></div>
         <select id="stuSel" aria-label="Pilih murid">${M.map((m,i) => `<option value="${i}" ${i===ui.stu?'selected':''}>${esc(m.nama)}</option>`).join('')}</select></div>
       <button type="button" data-stu="${ui.stu+1}" ${ui.stu===M.length-1?'disabled':''} aria-label="Murid seterusnya">›</button></div>`;
     $('els').innerHTML = TPL.map(e => { const [a,b] = elProgress(r, e); return `<button type="button" data-el="${e.key}" class="${e.key===ui.el?'on':''}" style="--c:${e.color}"><i></i>${e.nama}<span>${ui.view==='murid' ? a + '/' + b : (e.sections ? 'tanda satu kelas' : 'ikut murid sahaja')}</span></button>`; }).join('');
@@ -190,7 +166,7 @@
     const x = all.find(y => y.k === ui.item), sec = e.sections.find(s => s.items.includes(x));
     $('body').innerHTML = `<select class="select" id="itemSel" style="width:100%;margin-bottom:12px">${e.sections.map(s => `<optgroup label="${esc(s.title)}">${s.items.map(y => `<option value="${y.k}" ${y.k===ui.item?'selected':''}>${esc(y.k.replace(/^[A-Z]+/,''))} ${esc(y.t)}</option>`).join('')}</optgroup>`).join('')}</select>
       <div class="flex gap wrap aic" style="margin-bottom:10px"><button type="button" class="btn btn-soft btn-sm" data-allm="M">Tanda semua murid M</button><span class="muted" style="font-size:12.5px">${esc(x.t)}${ptag(x, sec)} — ubah murid yang berbeza sahaja</span></div>
-      <div class="mlist">${M.map((m,i) => `<div class="mrow"><div class="who"><div class="avatar">${K.initials(m.nama)}</div><div><b>${esc(m.nama)}${mbkBtn(m, i)}</b><span>${rec(i).sent[ui.pg] ? '✓ Dihantar' : 'Draf'}</span></div></div>${pick(rec(i).p[ui.pg][x.k], 's' + i + ':' + x.k)}</div>`).join('')}</div>`;
+      <div class="mlist">${M.map((m,i) => `<div class="mrow"><div class="who"><div class="avatar">${K.initials(m.nama)}</div><div><b>${esc(m.nama)}</b><span>${rec(i).sent[ui.pg] ? '✓ Dihantar' : 'Draf'}</span></div></div>${pick(rec(i).p[ui.pg][x.k], 's' + i + ':' + x.k)}</div>`).join('')}</div>`;
   }
 
   function drawSum(){
@@ -213,7 +189,6 @@
 
   $('app').addEventListener('click', e => {
     const b = e.target.closest('button'); if (!b || b.disabled) return; const d = b.dataset;
-    if (d.mbk != null) { mbkNote(+d.mbk); return; }
     if (d.pg)   { ui.pg = +d.pg; draw(); return; }
     if (d.view) { ui.view = d.view; if (d.view === 'item' && !TPL.find(x => x.key === ui.el).sections) ui.el = 'sahsiah'; draw(); return; }
     if (d.el)   { ui.el = d.el; draw(); return; }

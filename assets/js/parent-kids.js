@@ -39,13 +39,12 @@
     const me = window.DB && DB.user();
     const demo = !me || me.peranan !== 'ibubapa' || me.emel === 'ibubapa@pasti.org';
     if (demo) return { me: me || { nama:'Puan Nurul Nabihah binti Hafizuddin', emel:'ibubapa@pasti.org' }, demo:true, kids: applyBills(SAMPLE.map(k => Object.assign({}, k))) };
-    // statuses kept: Baharu, Dijadual Penilaian (MBK — appointment shown on the card), Diterima; the parent sees their own child's MBK details
+    // statuses kept: Baharu, Diterima
     const kids = DB.all('murid').filter(m => (m.emel||'').toLowerCase() === me.emel.toLowerCase() && m.status !== 'Ditolak').map(m => {
       const ok = m.status === 'Diterima';
       return { nama:m.nama, pendek:m.nama.split(' ').filter(w => !/^(bin|binti)$/i.test(w)).slice(0,2).join(' ').replace(/\b\w+/g, w => w[0] + w.slice(1).toLowerCase()),
         mykid:m.mykid, pasti:m.pasti, kelas:m.kelas, guru:'—', ref:m.ref, daftar:m.tarikhDaftar || m.tarikh || '—', status:m.status,
-        hadir:null, tertunggak: ok ? 60 : 0, bil: ok ? 1 : 0, prestasi:'Belum',
-        mbk: m.mbk ? Object.assign({}, m.mbk) : null, penilaian: (m.mbk && m.mbk.penilaian) || null };
+        hadir:null, tertunggak: ok ? 60 : 0, bil: ok ? 1 : 0, prestasi:'Belum' };
     });
     return { me, demo:false, kids: applyBills(kids) };
   }

@@ -2,7 +2,7 @@
 
 ## 1. Pengenalan
 
-**ePASTI** ialah Sistem Pengurusan PASTI untuk Jabatan PASTI Malaysia. Semua urusan PASTI dibuat dalam satu sistem: pendaftaran PASTI dan murid, warga PASTI, yuran dan caruman, kehadiran, penilaian SPPM, takwim, notis, kempen dan derma, serta laporan.
+**ePASTI** ialah Sistem Pengurusan PASTI untuk Jabatan PASTI Malaysia. Semua urusan PASTI dibuat dalam satu sistem: data PASTI dan pendaftaran murid, warga PASTI, yuran dan caruman, kehadiran, penilaian SPPM, takwim, notis, kempen dan derma, serta laporan.
 
 Manual ini menerangkan **cara menggunakan** ePASTI mengikut peranan anda. Anda hanya perlu membaca bahagian peranan anda sendiri, bersama Bahagian 2 (Bermula) dan Bahagian 12 (Fungsi Bersama).
 
@@ -105,7 +105,6 @@ Tekan butang **Excel** atau **Eksport** di atas jadual. Senarai yang sedang dipa
 - **Maklumat anak:** nama penuh, No. MyKid, tarikh lahir.
 - **Maklumat bapa dan ibu:** nama, No. Kad Pengenalan, telefon, pekerjaan.
 - **Alamat emel yang aktif.** Emel ini akan menjadi ID log masuk Portal Ibu Bapa anda.
-- Jika anak berkeperluan khas: kategori keperluan, No. Kad OKU JKM (jika ada) dan laporan doktor atau pakar.
 
 ### 3.2 Langkah mendaftar
 
@@ -113,10 +112,9 @@ Tekan butang **Excel** atau **Eksport** di atas jadual. Senarai yang sedang dipa
 2. Masukkan **Kod PASTI** dan tekan **Masuk**. Nama dan alamat PASTI akan dipaparkan untuk anda semak.
 3. Isi **Maklumat Murid**: nama, MyKid, tarikh lahir, jantina, bangsa, status yatim dan kelas yang dipohon (Tahun 4, 5 atau 6).
 4. Isi **Maklumat Ibu Bapa**, termasuk **Emel**.
-5. Jawab soalan **Keperluan Khas** (Ya atau Tidak). Lihat Bahagian 3.3 jika Ya.
-6. Tandakan kedua-dua kotak **Akuan**.
-7. Tekan **Hantar Permohonan**.
-8. Sistem memaparkan **No. Rujukan** (contoh: B124784). **Simpan nombor ini** untuk menyemak status.
+5. Tandakan kedua-dua kotak **Akuan**.
+6. Tekan **Hantar Permohonan**.
+7. Sistem memaparkan **No. Rujukan** (contoh: B124784). **Simpan nombor ini** untuk menyemak status.
 
 > **Jika ada ruangan bertanda merah:** ruangan itu wajib diisi atau formatnya salah. Contohnya, MyKid mesti 12 digit dan emel mesti sah.
 >
@@ -124,25 +122,7 @@ Tekan butang **Excel** atau **Eksport** di atas jadual. Senarai yang sedang dipa
 >
 > **Jika MyKid sudah pernah memohon:** sistem memaparkan nombor rujukan permohonan sedia ada. Gunakan **Semak Status**.
 
-### 3.3 Mendaftar anak berkeperluan khas (MBK / OKU)
-
-1. Pada bahagian **Keperluan Khas**, pilih **Ya**.
-2. Pilih **Kategori** (Pendengaran, Penglihatan, Pertuturan, Fizikal, Masalah Pembelajaran, Mental atau Pelbagai). Untuk Masalah Pembelajaran, pilih juga **sub-kategori** seperti Autisme, ADHD atau Sindrom Down.
-3. Pilih **Tahap sokongan** (Ringan, Sederhana atau Tinggi).
-4. Isi **No. Kad OKU JKM** jika ada.
-5. Tandakan **Keperluan sokongan**, contohnya kerusi roda, pengiring atau terapi pertuturan.
-6. Tulis **Catatan untuk guru**, contohnya cara terbaik berkomunikasi dengan anak.
-7. Muat naik **Laporan doktor / pakar**.
-8. Tandakan **persetujuan data kesihatan**.
-9. Hantar permohonan seperti biasa.
-
-> **Nota:** Hanya PASTI yang telah disahkan bersedia menerima murid berkeperluan khas boleh menerima permohonan MBK. Jika PASTI pilihan anda belum bersedia atau kuotanya penuh, sistem akan mencadangkan **PASTI lain yang berdekatan**. Tekan **Tukar ke kod ini** untuk memohon di PASTI tersebut.
->
-> **Privasi:** Maklumat keperluan khas anak hanya boleh dilihat oleh Pentadbir Cawangan dan guru kelas anak anda.
-
-Selepas permohonan dihantar, PASTI akan menetapkan **sesi penilaian** bersama anak anda sebelum membuat keputusan.
-
-### 3.4 Menyemak status permohonan
+### 3.3 Menyemak status permohonan
 
 1. Di halaman Log Masuk, tekan **Semak Status**.
 2. Masukkan **No. MyKid** anak dan **No. Rujukan**.
@@ -151,7 +131,6 @@ Selepas permohonan dihantar, PASTI akan menetapkan **sesi penilaian** bersama an
 | Status | Maksud | Tindakan anda |
 |---|---|---|
 | **Dalam Semakan** | Permohonan sedang disemak oleh PASTI | Tunggu makluman |
-| **Dijadual Penilaian** | (Anak MBK) Sesi penilaian telah ditetapkan | Hadir pada tarikh, masa dan tempat yang dipaparkan. Bawa MyKid, Kad Pengenalan, laporan doktor dan Kad OKU |
 | **Diterima** | Anak diterima masuk. Akaun Portal Ibu Bapa telah dicipta | Tekan **Log Masuk Portal Ibu Bapa** |
 | **Ditolak** | Permohonan tidak berjaya. Sebab dipaparkan | Hubungi PASTI jika perlu |
 
@@ -169,7 +148,6 @@ Halaman Utama memaparkan ringkasan anak-anak anda, peratus kehadiran, **jumlah y
 
 - Setiap anak dipaparkan sebagai kad: kehadiran, status yuran, SPPM, PASTI, kelas dan guru kelas.
 - Tekan **Butiran** untuk maklumat penuh.
-- Jika anak berkeperluan khas, kad memaparkan **Keperluan Khas** dan maklumat sokongan. Jika penilaian telah dijadualkan, tarikh, masa dan tempat turut dipaparkan.
 - Untuk mendaftar anak lain, tekan **+ Daftar Anak Baharu**.
 
 ### 4.3 Prestasi Anak (SPPM)
@@ -240,8 +218,6 @@ Halaman Utama memaparkan salam, jam, butang **Clock In / Clock Out**, statistik 
 > Anda boleh mengemas kini rekod 5 hari persekolahan terakhir.
 >
 > **Tiada internet?** Rekod disimpan dalam telefon dan dihantar secara automatik apabila talian pulih.
->
-> **Ikon MBK** di sebelah nama murid menandakan murid berkeperluan khas. Tekan ikon untuk membaca nota sokongan murid tersebut.
 
 ### 5.4 Permarkahan SPPM
 
@@ -285,7 +261,6 @@ Pentadbir Cawangan menguruskan operasi harian **satu PASTI**.
 ### 6.1 Papan Pemuka (Utama)
 
 - **Kad Kod PASTI:** kod untuk ibu bapa mendaftar, dengan status pendaftaran BUKA atau TUTUP.
-- **Kad Kemasukan MBK:** status kesediaan menerima murid berkeperluan khas dan kuota.
 - **Pantauan PASTI:** jumlah murid dan guru, kehadiran, kutipan yuran, carta mengikut kelas, kehadiran guru, **Perlu Perhatian** (perkara yang perlu tindakan anda), permohonan murid dan SPPM.
 
 ### 6.2 Berkongsi Kod PASTI dengan ibu bapa
@@ -307,38 +282,15 @@ Pada kad **Kod PASTI**, gunakan salah satu:
    - Tekan **Terima**. Anak menjadi murid PASTI dan **akaun Portal Ibu Bapa dicipta secara automatik**. Maklumkan ID log masuk dan kata laluan sementara yang dipaparkan kepada ibu bapa.
    - Atau tekan **Tolak** dan nyatakan sebab. Ibu bapa akan melihat sebab ini semasa menyemak status.
 
-### 6.4 Murid Berkeperluan Khas (MBK)
+### 6.4 Senarai Murid, Ibu Bapa dan Sijil
 
-**A. Mengisytiharkan kesediaan PASTI (sekali sahaja, atau bila ada perubahan)**
-
-1. Di Utama, pada kad **Kemasukan Murid Berkeperluan Khas**, tekan **Isytihar Kesediaan**.
-2. Tandakan **kemudahan** yang ada (ramp, tandas OKU, bilik sumber dan lain-lain).
-3. Isi bilangan **guru terlatih** dan **kuota** murid MBK.
-4. Tandakan **kategori** yang boleh diterima, kemudian tekan hantar.
-5. Status menjadi **MENUNGGU** sehingga disahkan oleh Pentadbir Kawasan, dan kemudian **BUKA**.
-
-> Mengemas kini maklumat kesediaan akan menghantarnya semula kepada Kawasan untuk pengesahan.
-
-**B. Memproses permohonan MBK**
-
-1. Buka **Permohonan Murid → tab Keperluan Khas**. Jalur **Kuota MBK** menunjukkan kuota yang telah diisi dan bakinya.
-2. Tekan **Lihat** untuk membaca maklumat keperluan khas dan laporan.
-3. Tekan **Jadual Penilaian**, isi **Tarikh**, **Masa** dan **Tempat**, kemudian simpan. Ibu bapa akan melihat temujanji ini.
-4. Selepas sesi penilaian, di tab **Dijadual Penilaian**:
-   - tekan **Terima** (hanya jika kuota masih ada), atau
-   - tekan **Tolak** dan nyatakan sebab.
-
-> **Privasi:** Maklumat MBK hanya dilihat oleh anda dan guru PASTI anda. Setiap kali maklumat ini dibuka, ia direkodkan dalam Log Akses.
-
-### 6.5 Senarai Murid, Ibu Bapa dan Sijil
-
-- **Senarai Murid:** lihat dan **Edit** maklumat murid. Tapisan **Keperluan Khas** memaparkan murid MBK sahaja.
+- **Senarai Murid:** lihat dan **Edit** maklumat murid.
 - **Ibu Bapa / Penjaga:** senarai ibu bapa, boleh dieksport ke Excel.
 - **Cetak Sijil Murid:**
   - Tekan **Sijil Jawi** atau **Sijil Rumi** untuk seorang murid.
   - Atau tandakan beberapa murid dan tekan **Cetak Sijil Tamat Sekolah Jawi / Rumi** untuk cetakan pukal.
 
-### 6.6 Mencipta akaun Guru dan Pembantu Guru
+### 6.5 Mencipta akaun Guru dan Pembantu Guru
 
 1. Buka **Tetapan → Pengguna & Akaun**.
 2. Tekan **+ Cipta Akaun**.
@@ -353,7 +305,7 @@ Dalam senarai akaun, anda juga boleh:
 - **Set Semula Kata Laluan.**
 - **Padam** akaun.
 
-### 6.7 Yuran
+### 6.6 Yuran
 
 **Menjana bil bulanan:**
 
@@ -370,19 +322,19 @@ Dalam senarai akaun, anda juga boleh:
 
 **Transaksi:** lihat semua bayaran, termasuk bayaran dalam talian oleh ibu bapa.
 
-### 6.8 Kehadiran (kaunter PASTI)
+### 6.7 Kehadiran (kaunter PASTI)
 
 1. Buka **Operasi → Kehadiran**.
 2. Pada tab **Murid** atau **Guru & Petugas**, tekan **Check-in** apabila tiba dan **Check-out** apabila pulang.
 3. Kad **Kehadiran Guru (Portal Guru)** memaparkan clock in guru dan kehadiran murid yang direkod oleh guru hari ini.
 
-### 6.9 Meluluskan cuti guru
+### 6.8 Meluluskan cuti guru
 
 1. Buka **Operasi → Cuti Guru**. Tab **Menunggu** menyenaraikan permohonan baharu.
 2. Tekan **Lulus**, atau **Tolak** dengan catatan sebab.
 3. Guru akan melihat keputusan dalam Portal Guru.
 
-### 6.10 Jemaah Pengurus Cawangan
+### 6.9 Jemaah Pengurus Cawangan
 
 Buka **Warga PASTI → Jemaah Pengurus Cawangan**. Anda boleh:
 
@@ -390,7 +342,7 @@ Buka **Warga PASTI → Jemaah Pengurus Cawangan**. Anda boleh:
 - **Edit** maklumat ahli.
 - Cetak **Surat Pelantikan** untuk seorang ahli atau secara pukal.
 
-### 6.11 Akaun BayarCash PASTI
+### 6.10 Akaun BayarCash PASTI
 
 1. Buka **Caruman & Yuran → Payment Gateway**.
 2. Semak maklumat akaun BayarCash PASTI anda dan tekan **Uji Sambungan**.
@@ -398,12 +350,12 @@ Buka **Warga PASTI → Jemaah Pengurus Cawangan**. Anda boleh:
    - **Akaun Cawangan sendiri** (disyorkan), atau
    - akaun **DUN** atau **Kawasan** jika PASTI belum ada akaun sendiri.
 
-### 6.12 Caruman dan Tuntutan Ahli
+### 6.11 Caruman dan Tuntutan Ahli
 
 - **PERKESO SKSPS:** tekan **Bayar** pada caruman tertunggak.
 - **Tuntutan:** tekan **+ Tambah Tuntutan Ahli**, isi nama ahli, PASTI, jenis, jumlah dan dokumen sokongan. Tuntutan akan disokong oleh Kawasan dan diluluskan oleh Negeri.
 
-### 6.13 Kempen dan Derma
+### 6.12 Kempen dan Derma
 
 - **Kempen PASTI:** tekan **+ Cipta Kempen**, isi nama, sasaran RM, tarikh dan keterangan. Tekan **Kongsi** untuk menyalin pautan derma.
 - **Derma:** tekan **+ Terima Derma**, isi butiran penderma dan jumlah, kemudian teruskan ke pembayaran BayarCash.
@@ -412,7 +364,7 @@ Buka **Warga PASTI → Jemaah Pengurus Cawangan**. Anda boleh:
 
 ## 7. Pentadbir DUN
 
-Pentadbir DUN memantau semua PASTI dalam DUN dan **mendaftarkan PASTI baharu**.
+Pentadbir DUN memantau semua PASTI dalam DUN dan **mencipta akaun Pentadbir Cawangan** untuk setiap PASTI.
 
 ### 7.1 Papan Pemuka
 
@@ -421,32 +373,17 @@ Pentadbir DUN memantau semua PASTI dalam DUN dan **mendaftarkan PASTI baharu**.
 - semua PASTI dalam DUN;
 - jadual **Prestasi Mengikut PASTI**: murid, guru, kehadiran, kutipan, akaun kutipan, status pendaftaran dan pentadbir;
 - carta perbandingan;
-- status permohonan PASTI baharu;
 - senarai **Perlu Perhatian**.
 
-### 7.2 Mendaftar PASTI baharu
+### 7.2 Mencipta Pentadbir Cawangan
 
-1. Buka **Pengurusan & Murid → Daftar PASTI Baharu**.
-2. Isi **1.0 Butir Penubuhan**. Negeri, Parlimen dan DUN diisi secara automatik mengikut akaun anda. Tekan **Seterusnya**.
-3. Isi **2.0 Kelengkapan Fizikal**: jenis bangunan, pemilikan dan kemudahan. Tekan **Seterusnya**.
-4. Isi **3.0 Pengurusan & Akuan**: jemaah pengurusan dan dokumen sokongan. Tandakan akuan.
-5. Tekan **Hantar Permohonan**.
-
-**Aliran kelulusan:**
-
-- Status **Baharu**: menunggu sokongan Kawasan.
-- Status **Disokong Kawasan**: menunggu kelulusan Negeri.
-- Status **Lulus**: Kod PASTI dijana.
-
-Semak kemajuan di **Pengurusan PASTI**.
-
-### 7.3 Selepas PASTI diluluskan
+Data PASTI dimuat naik oleh Pentadbir Negeri (lihat 9.2). Selepas itu:
 
 1. Di **Pengurusan PASTI → Senarai PASTI Cawangan**, PASTI tanpa pentadbir bertanda **Belum ada**.
 2. Tekan **Cipta Pentadbir** (atau buka **Tetapan → Pengguna & Akaun**) dan cipta akaun **Pentadbir Cawangan**.
 3. Maklumkan ID log masuk dan kata laluan sementara kepada pentadbir cawangan.
 
-### 7.4 Tugasan lain
+### 7.3 Tugasan lain
 
 - **Akaun BayarCash DUN** (Payment Gateway): akaun sandaran untuk PASTI yang belum ada akaun sendiri.
 - **Petugas PASTI:** tambah dan kemas kini petugas.
@@ -468,51 +405,29 @@ Pentadbir Kawasan menyelia semua DUN dan PASTI dalam kawasan Parlimen.
 - carta setiap PASTI (murid dan guru, kehadiran dan kutipan);
 - kutipan yuran bulanan;
 - kehadiran mengikut DUN;
-- permohonan PASTI baharu;
-- ringkasan **Murid Berkeperluan Khas** (jumlah sahaja);
 - senarai **Perlu Perhatian**.
 
-### 8.2 Menyokong permohonan PASTI baharu
-
-1. Buka **Pengurusan & Murid → Pengurusan PASTI**, tab **Senarai PASTI Baharu**.
-2. Semak permohonan daripada DUN (**Lihat**).
-3. Buat keputusan:
-   - tekan **Sokong** untuk menghantarnya kepada Negeri, atau
-   - tekan **Tolak** dan nyatakan sebab.
-
-### 8.3 Membuka dan menutup pendaftaran murid
+### 8.2 Membuka dan menutup pendaftaran murid
 
 1. Di **Pengurusan PASTI → Senarai PASTI Cawangan**, cari PASTI berkenaan.
 2. Tekan **Buka Pendaftaran** supaya ibu bapa boleh memohon, atau **Tutup Pendaftaran**.
 
-### 8.4 Mengesahkan kesediaan MBK PASTI
-
-1. Loceng notifikasi memaklumkan *"PASTI X mohon buka kemasukan MBK"*.
-2. Di **Pengurusan PASTI → Senarai PASTI Cawangan**, lajur **MBK** menunjukkan status **MENUNGGU**.
-3. Tekan **Semak MBK** untuk melihat kemudahan, guru terlatih, kuota dan kategori.
-4. Buat keputusan:
-   - tekan **Sahkan & Buka**: PASTI boleh menerima permohonan MBK, atau
-   - tekan **Tolak** dan nyatakan sebab.
-5. Untuk menghentikan kemasukan MBK pada bila-bila masa, tekan **Tutup MBK**.
-
-> Anda melihat **jumlah** murid MBK sahaja, bukan nama atau butiran murid.
-
-### 8.5 Menyokong tuntutan ahli
+### 8.3 Menyokong tuntutan ahli
 
 1. Buka **Caruman & Yuran → Caruman Skim PASTI**, tab **Tuntutan**.
 2. Pada tuntutan berstatus **Baharu**, tekan **Sokong** (dihantar kepada Negeri) atau **Tolak**.
 
-### 8.6 Warga PASTI
+### 8.4 Warga PASTI
 
 - **Ahli Jawatankuasa Kawasan:** tambah ahli, edit dan cetak surat pelantikan.
 - **Petugas PASTI Kawasan dan Cawangan:** tambah dan edit.
 - **Senarai Guru dan Pembantu:** paparan dan eksport.
 
-### 8.7 Mencipta akaun
+### 8.5 Mencipta akaun
 
 Buka **Tetapan → Pengguna & Akaun → + Cipta Akaun** untuk mencipta akaun **Pentadbir DUN** atau **Pentadbir Cawangan** dalam kawasan anda.
 
-### 8.8 Tugasan lain
+### 8.6 Tugasan lain
 
 - **Akaun BayarCash Kawasan** (Payment Gateway): akaun sandaran untuk PASTI. Tekan **Set Akaun** untuk mengemas kini.
 - **Kempen dan Derma:** cipta kempen dan terima derma.
@@ -523,7 +438,7 @@ Buka **Tetapan → Pengguna & Akaun → + Cipta Akaun** untuk mencipta akaun **P
 
 ## 9. Pentadbir Negeri
 
-Pentadbir Negeri memantau semua kawasan dalam negeri dan memberi **kelulusan akhir**.
+Pentadbir Negeri memantau semua kawasan dalam negeri, **memuat naik data PASTI negeri** melalui Excel dan memberi kelulusan akhir tuntutan ahli.
 
 ### 9.1 Papan Pemuka Negeri
 
@@ -534,19 +449,24 @@ Memaparkan:
 - **Prestasi Mengikut Kawasan**;
 - murid mengikut kawasan;
 - liputan akaun BayarCash;
-- permohonan PASTI baharu;
-- ringkasan MBK;
 - senarai **Perlu Perhatian**.
 
-### 9.2 Meluluskan PASTI baharu
+### 9.2 Memuat naik data PASTI (Excel)
 
-1. Buka **Pengurusan PASTI**. Permohonan berstatus **Disokong Kawasan** menunggu keputusan anda.
-2. Buat keputusan:
-   - tekan **Lulus**: **Kod PASTI dijana** secara automatik, atau
-   - tekan **Tolak** dan nyatakan sebab.
-3. Selepas lulus:
-   - DUN mencipta akaun Pentadbir Cawangan;
-   - Kawasan membuka pendaftaran murid.
+Tiada pendaftaran PASTI secara dalam talian. Senarai PASTI negeri anda dimasukkan melalui fail Excel.
+
+1. Buka **Pengurusan & Murid → Pengurusan PASTI** (**Senarai PASTI Cawangan**).
+2. Tekan **Templat Excel** untuk memuat turun fail **Templat_Data_PASTI.xlsx**. Lajurnya: Kod PASTI, No Pendaftaran, Nama PASTI, Alamat, No Telefon, Parlimen, DUN, Bil Guru, Bil Murid.
+3. Isi satu baris bagi setiap PASTI. **Kod PASTI, Nama PASTI, Parlimen dan DUN wajib diisi**; baris yang tidak lengkap akan diabaikan.
+4. Tekan **Muat Naik Excel** dan pilih fail (.xlsx, .xls atau .csv).
+5. Semak paparan ringkasan: bilangan PASTI **baharu**, **dikemas kini** dan baris **diabaikan**. Tekan **Simpan**.
+
+Perkara penting:
+
+- Negeri sentiasa ditetapkan kepada negeri anda sendiri.
+- Jika **Kod PASTI sudah wujud**, maklumat PASTI itu dikemas kini. Jika belum, PASTI ditambah sebagai PASTI aktif dengan pendaftaran murid **TUTUP**.
+- Setiap muat naik direkodkan dalam **Log Akses**.
+- Selepas itu, DUN mencipta akaun Pentadbir Cawangan dan Kawasan membuka pendaftaran murid.
 
 ### 9.3 Meluluskan tuntutan ahli
 
@@ -569,7 +489,7 @@ Di tab **Skim PASTI**, tekan **Bayar** pada inbois negeri anda yang tertunggak. 
 
 ## 10. Pentadbir Pusat
 
-Pentadbir Pusat memantau seluruh negara. Pusat **tidak meluluskan** permohonan; kelulusan dibuat oleh Negeri.
+Pentadbir Pusat memantau seluruh negara. Pusat **tidak meluluskan** apa-apa permohonan dan tidak mengubah data PASTI.
 
 ### 10.1 Papan Pemuka Induk
 
@@ -580,8 +500,6 @@ Memaparkan:
 - **Prestasi Mengikut Negeri** (tekan tajuk lajur untuk menyusun);
 - murid mengikut negeri;
 - liputan akaun kutipan;
-- permohonan PASTI (makluman sahaja);
-- ringkasan MBK nasional;
 - senarai **Perlu Perhatian**;
 - kedudukan kutipan.
 
@@ -603,14 +521,9 @@ Memaparkan:
 
 | Tugasan | Cawangan | DUN | Kawasan | Negeri | Pusat |
 |---|:-:|:-:|:-:|:-:|:-:|
-| Daftar PASTI baharu | | ✓ | | | |
-| Sokong PASTI baharu | | | ✓ | | |
-| Luluskan PASTI baharu (Kod PASTI) | | | | ✓ | |
+| Muat naik data PASTI (Excel) | | | | ✓ | |
 | Buka / tutup pendaftaran murid | | | ✓ | | |
 | Terima / tolak murid | ✓ | | | | |
-| Isytihar kesediaan MBK | ✓ | | | | |
-| Sahkan & buka MBK | | | ✓ | | |
-| Jadual penilaian & terima murid MBK | ✓ | | | | |
 | Cipta akaun guru | ✓ | | | | |
 | Cipta akaun Pentadbir Cawangan | | ✓ | ✓ | ✓ | ✓ |
 | Jana bil & rekod bayaran yuran | ✓ | | | | |
@@ -643,7 +556,7 @@ Memaparkan:
 
 ### 12.3 Log Akses (Audit)
 
-- Senarai semua tindakan pengguna dalam skop anda, termasuk setiap kali maklumat MBK dibuka.
+- Senarai semua tindakan pengguna dalam skop anda.
 - Tapis mengikut pengguna, modul, tindakan atau tarikh.
 - Tekan **Eksport** untuk muat turun, atau **Cetak**.
 
@@ -668,9 +581,6 @@ Anda hanya melihat data di bawah kawasan tanggungjawab anda (lihat lencana **Sko
 
 **Ibu bapa tidak dapat mendaftar dengan Kod PASTI.**
 Semak di kad Kod PASTI sama ada pendaftaran **BUKA**. Jika TUTUP, Pentadbir Kawasan perlu membukanya.
-
-**Permohonan anak berkeperluan khas disekat.**
-PASTI tersebut belum disahkan untuk MBK, kuotanya penuh, atau kategori keperluan tidak diterima. Pilih PASTI lain yang dicadangkan oleh sistem, atau hubungi PASTI.
 
 **Guru tiada internet semasa mengambil kehadiran.**
 Tekan **Simpan** seperti biasa. Rekod disimpan dalam telefon dan dihantar secara automatik apabila talian pulih.
@@ -703,17 +613,17 @@ Semak di **Resit** sama ada pembayaran berjaya. Jika bayaran dibuat secara tunai
 
 ### A.2 Kod PASTI untuk menguji pendaftaran murid
 
-| Kod PASTI | PASTI | DUN / Kawasan | Pendaftaran | MBK | Baki kuota MBK | Sesuai untuk uji |
-|---|---|---|---|---|:-:|---|
-| **D030108** | PASTI Ar-Raihan | N09 Kota Lama / P021 Kota Bharu | BUKA | BUKA (Masalah Pembelajaran, Pertuturan, Fizikal) | 2 | Pendaftaran biasa **dan** MBK |
-| **D030114** | PASTI Baitul Ilmi | N09 Kota Lama / P021 Kota Bharu | BUKA | BUKA (Masalah Pembelajaran, Pendengaran, Penglihatan) | 1 | MBK kategori Pendengaran / Penglihatan |
-| **D030111** | PASTI Al-Munawwarah | N10 Bunut Payong / P021 Kota Bharu | BUKA | BUKA (Fizikal, Masalah Pembelajaran) | 1 | MBK di DUN lain |
-| **D030101** | PASTI An-Nur Hasanah | N20 Tawang / P025 Bachok | BUKA | BUKA (Masalah Pembelajaran, Pertuturan) | 1 | MBK di kawasan lain |
-| **D030109** | PASTI An-Najah | N09 Kota Lama / P021 Kota Bharu | BUKA | TUTUP | — | Pendaftaran biasa. MBK akan **disekat** dan PASTI lain dicadangkan |
-| **D030110** | PASTI Al-Qayyum | N09 Kota Lama / P021 Kota Bharu | BUKA | MENUNGGU pengesahan Kawasan | — | Pendaftaran biasa. MBK disekat sehingga Kawasan sahkan |
-| **D030112** | PASTI Az-Zahra | N09 Kota Lama / P021 Kota Bharu | BUKA | TUTUP | — | Pendaftaran biasa |
-| **D030102** | PASTI Darul Naim | N21 Pantai Irama / P025 Bachok | BUKA | TUTUP | — | Pendaftaran biasa (Bachok) |
-| **D030113** | PASTI Al-Ikhlas | N09 Kota Lama / P021 Kota Bharu | **TUTUP** | TUTUP | — | Uji mesej **"Pendaftaran sedang ditutup"** |
+| Kod PASTI | PASTI | DUN / Kawasan | Pendaftaran | Sesuai untuk uji |
+|---|---|---|---|---|
+| **D030108** | PASTI Ar-Raihan | N09 Kota Lama / P021 Kota Bharu | BUKA | Pendaftaran biasa |
+| **D030114** | PASTI Baitul Ilmi | N09 Kota Lama / P021 Kota Bharu | BUKA | Pendaftaran biasa |
+| **D030111** | PASTI Al-Munawwarah | N10 Bunut Payong / P021 Kota Bharu | BUKA | Pendaftaran biasa (DUN lain) |
+| **D030101** | PASTI An-Nur Hasanah | N20 Tawang / P025 Bachok | BUKA | Pendaftaran biasa (kawasan lain) |
+| **D030109** | PASTI An-Najah | N09 Kota Lama / P021 Kota Bharu | BUKA | Pendaftaran biasa |
+| **D030110** | PASTI Al-Qayyum | N09 Kota Lama / P021 Kota Bharu | BUKA | Pendaftaran biasa |
+| **D030112** | PASTI Az-Zahra | N09 Kota Lama / P021 Kota Bharu | BUKA | Pendaftaran biasa |
+| **D030102** | PASTI Darul Naim | N21 Pantai Irama / P025 Bachok | BUKA | Pendaftaran biasa (Bachok) |
+| **D030113** | PASTI Al-Ikhlas | N09 Kota Lama / P021 Kota Bharu | **TUTUP** | Uji mesej **"Pendaftaran sedang ditutup"** |
 
 **Senario ujian yang dicadangkan:**
 
@@ -721,16 +631,13 @@ Semak di **Resit** sama ada pembayaran berjaya. Jika bayaran dibuat secara tunai
    1. Daftar dengan **D030108**. Simpan no. rujukan.
    2. Log masuk sebagai `cawangan@pasti.org`, kemudian buka **Permohonan Murid** dan tekan **Terima**.
    3. Log masuk ke Portal Ibu Bapa dengan emel yang diisi.
-2. **Pendaftaran MBK:**
-   1. Daftar dengan **D030108** dan pilih Keperluan Khas = Ya.
-   2. Sebagai `cawangan@`, tekan **Jadual Penilaian**, kemudian **Terima**.
-   3. Semak status di **Semak Status**.
-3. **MBK disekat:**
-   1. Daftar MBK dengan **D030109** atau **D030110**. Sistem akan menyekat dan mencadangkan PASTI lain.
-   2. Kemudian, sebagai `kawasan@`, **Sahkan & Buka** MBK Al-Qayyum dan cuba semula dengan **D030110**.
-4. **Pendaftaran ditutup:**
+2. **Pendaftaran ditutup:**
    1. Daftar dengan **D030113**. Sistem akan memaparkan mesej pendaftaran ditutup.
    2. Sebagai `kawasan@`, tekan **Buka Pendaftaran** untuk Al-Ikhlas, kemudian cuba semula.
+3. **Muat naik data PASTI:**
+   1. Log masuk sebagai `negeri@pasti.org`, buka **Pengurusan PASTI** dan tekan **Templat Excel**.
+   2. Tambah satu baris PASTI baharu, kemudian tekan **Muat Naik Excel** dan **Simpan**.
+   3. PASTI baharu dipaparkan dengan pendaftaran **TUTUP**. Sebagai `dun@`, tekan **Cipta Pentadbir**.
 
 ---
 
@@ -742,7 +649,6 @@ Semak di **Resit** sama ada pembayaran berjaya. Jika bayaran dibuat secara tunai
 | **Cawangan** | Satu PASTI |
 | **DUN / Kawasan** | Dewan Undangan Negeri / Kawasan Parlimen |
 | **Kod PASTI** | Kod unik PASTI (contoh D030108) yang digunakan ibu bapa untuk mendaftar |
-| **MBK / OKU** | Murid Berkeperluan Khas / Orang Kurang Upaya |
 | **SPPM** | Sistem Perkembangan Prestasi Murid |
 | **AM / M / SM** | Ansur Maju / Maju / Sangat Maju |
 | **BayarCash** | Pintu bayaran dalam talian yang digunakan ePASTI (FPX, kad dan DuitNow QR) |

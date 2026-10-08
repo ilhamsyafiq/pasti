@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="../assets/css/app.css?v=10">
 </head>
 <body>
-<div class="pt-app" data-module="pengurusan" data-page="pasti-pengurusan" data-title="Pengurusan PASTI" data-subtitle="Permohonan, kelulusan &amp; senarai PASTI cawangan">
+<div class="pt-app" data-module="pengurusan" data-page="pasti-pengurusan" data-title="Pengurusan PASTI" data-subtitle="Senarai PASTI cawangan · data dimuat naik oleh Pentadbir Negeri">
   <main class="pt-main">
 
     <div class="page-head">
@@ -20,67 +20,18 @@
       </div>
     </div>
 
-    <div class="tabs">
-      <a href="#" class="active" data-tab="baharu">Senarai PASTI Baharu</a>
-      <a href="#" data-tab="semakan">Semakan Kelulusan</a>
-      <a href="#" data-tab="cawangan">Senarai PASTI Cawangan</a>
-    </div>
-
-    <!-- Panel 1: Senarai PASTI Baharu -->
-    <div data-panel="baharu">
-      <div class="card">
-        <div class="card-body">
-          <div class="toolbar">
-            <button class="btn btn-primary" data-action="goto" data-goto="pasti-daftar-baharu.html" data-tiers="dun">+ Permohonan Baru</button>
-            <div class="input-group"><input type="text" placeholder="Cari nama / no pendaftaran…"></div>
-            <div class="spacer"></div>
-            <button class="btn btn-ghost btn-sm" data-toast="Menyediakan Excel…">Excel</button>
-            <button class="btn btn-ghost btn-sm" data-action="print">Cetak</button>
-          </div>
-          <div class="table-wrap">
-            <table class="pt" data-nosave>
-              <thead>
-                <tr>
-                  <th>Bil</th><th>No. Pendaftaran</th><th>Tarikh Mohon</th><th>Nama PASTI</th><th>Alamat</th><th>No Telefon</th><th>Negeri</th><th>Parlimen</th><th>DUN</th><th>Status Permohonan</th><th>Tindakan</th>
-                </tr>
-              </thead>
-              <tbody id="pp1"></tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Panel 2: Semakan Kelulusan -->
-    <div data-panel="semakan" style="display:none">
-      <div class="card">
-        <div class="card-body">
-          <div class="toolbar">
-            <div class="input-group"><input type="text" placeholder="Cari permohonan diluluskan…"></div>
-            <div class="spacer"></div>
-            <button class="btn btn-ghost btn-sm" data-action="print">Cetak</button>
-          </div>
-          <div class="table-wrap">
-            <table class="pt" data-nosave>
-              <thead>
-                <tr>
-                  <th>No Pendaftaran</th><th>Tarikh Mohon</th><th>Nama PASTI</th><th>Alamat</th><th>Negeri</th><th>Parlimen</th><th>DUN</th><th>Status</th><th>Tindakan</th>
-                </tr>
-              </thead>
-              <tbody id="pp2"></tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Panel 3: Senarai PASTI Cawangan -->
-    <div data-panel="cawangan" style="display:none">
+    <!-- Senarai PASTI Cawangan (fasa 1: data dimuat naik oleh Pentadbir Negeri melalui Excel) -->
+    <div data-panel="cawangan">
       <div class="card">
         <div class="card-body">
           <div class="toolbar">
             <div class="input-group"><input type="text" placeholder="Cari kod / nama PASTI…"></div>
             <div class="spacer"></div>
+            <span data-own data-tiers="negeri" class="flex gap wrap">
+              <button class="btn btn-soft btn-sm" id="ppTpl">Templat Excel</button>
+              <button class="btn btn-primary btn-sm" id="ppUp">Muat Naik Excel</button>
+              <input type="file" id="ppFile" accept=".xlsx,.xls,.csv" hidden>
+            </span>
             <button class="btn btn-ghost btn-sm" data-toast="Menyediakan Excel…">Excel</button>
             <button class="btn btn-ghost btn-sm" data-action="print">Cetak</button>
           </div>
@@ -88,7 +39,7 @@
             <table class="pt" data-nosave>
               <thead>
                 <tr>
-                  <th>Bil</th><th>Kod PASTI</th><th>No Pendaftaran</th><th>Nama PASTI</th><th>Bil Guru</th><th>Bil Murid</th><th>Alamat</th><th>No Telefon</th><th>Negeri</th><th>Parlimen</th><th>DUN</th><th>Pentadbir Cawangan</th><th>Pendaftaran</th><th>MBK</th><th>Tindakan</th>
+                  <th>Bil</th><th>Kod PASTI</th><th>No Pendaftaran</th><th>Nama PASTI</th><th>Bil Guru</th><th>Bil Murid</th><th>Alamat</th><th>No Telefon</th><th>Negeri</th><th>Parlimen</th><th>DUN</th><th>Pentadbir Cawangan</th><th>Pendaftaran</th><th>Tindakan</th>
                 </tr>
               </thead>
               <tbody id="pp3"></tbody>
@@ -101,42 +52,19 @@
   </main>
 </div>
 
-<script src="../assets/js/app.js?v=10"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="../assets/js/app.js?v=11"></script>
 <script>
 // Pengurusan PASTI — driven by the shared DB.
-// Flow: DUN daftar → Kawasan semak & sokong → Negeri lulus (Kod PASTI) → DUN cipta Pentadbir Cawangan → Kawasan buka pendaftaran murid.
-// Pusat (HQ) does not approve — it only sees the totals on its dashboard.
+// Fasa 1: no online PASTI registration. Pentadbir Negeri uploads its state's PASTI from Excel (template below);
+// rows are matched on Kod PASTI (update) or added. Then DUN cipta Pentadbir Cawangan → Kawasan buka pendaftaran murid.
 (function(){
   const tier = PT.tier, $ = id => document.getElementById(id);
   const esc = s => String(s==null?'':s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const today = () => { const d = new Date(); return String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + d.getFullYear(); };
-  const cls = s => /lulus|buka/i.test(s) ? 'b-green' : /tolak|tutup/i.test(s) ? 'b-red' : /disokong/i.test(s) ? 'b-amber' : 'b-blue';
+  const cls = s => /buka/i.test(s) ? 'b-green' : /tutup/i.test(s) ? 'b-red' : 'b-blue';
   const badge = s => `<span class="badge ${cls(s)}">${esc(s)}</span>`;
   const admin = p => DB.find('users', u => u.peranan === 'cawangan' && u.skop === p.nama);
-  // MBK (Murid Berkeperluan Khas) — counts only (safe for every tier). Engine API when present, local fallback otherwise.
-  const mbkOf = p => window.DB && DB.mbkOf ? DB.mbkOf(p) : (p.mbk || { status:'TUTUP' });
-  function mbkQ(p){
-    if (window.DB && DB.mbkQuota) return DB.mbkQuota(p);
-    const k = +(mbkOf(p).kuota || 0), diisi = DB.all('murid').filter(m => m.mbk && m.status === 'Diterima' && m.pasti === p.nama).length;
-    return { kuota:k, diisi, baki: k - diisi };
-  }
-  const MBK_CLS = { BUKA:'b-green', MENUNGGU:'b-amber', TUTUP:'b-slate' };
-  function mbkCell(p){
-    const k = mbkOf(p) || {}, st = k.status || 'TUTUP', q = mbkQ(p);
-    return `<span class="badge ${MBK_CLS[st] || 'b-slate'}">${esc(st)}</span>` + (q.kuota ? `<div class="muted num" style="font-size:11.5px;margin-top:3px">${q.diisi}/${q.kuota}</div>` : '');
-  }
-  function mbkAct(p, i){
-    if (tier !== 'kawasan') return '';
-    const st = (mbkOf(p) || {}).status;
-    return st === 'MENUNGGU' ? ` <span data-own><button class="btn btn-primary btn-sm" data-pp="mbk-semak" data-i="${i}">Semak MBK</button></span>`
-      : st === 'BUKA' ? ` <span data-own><button class="btn btn-ghost btn-sm" data-pp="mbk-tutup" data-i="${i}">Tutup MBK</button></span>` : '';
-  }
-
-  function decisionCell(p, i){
-    if (p.status === 'Baharu')  return tier === 'kawasan' ? `<button class="btn btn-primary btn-sm" data-pp="sokong" data-i="${i}">Sokong</button> <button class="btn btn-red btn-sm" data-pp="tolak" data-i="${i}">Tolak</button>` : '<span class="muted" style="font-size:12px">Menunggu semakan Kawasan</span>';
-    if (p.status === 'Disokong Kawasan') return tier === 'negeri' ? `<button class="btn btn-primary btn-sm" data-pp="lulus" data-i="${i}">Lulus</button> <button class="btn btn-red btn-sm" data-pp="tolak" data-i="${i}">Tolak</button>` : '<span class="muted" style="font-size:12px">Menunggu kelulusan Negeri</span>';
-    return '';
-  }
   // each tier sees only the PASTI inside its own skop (Negeri → state, Kawasan → parlimen, DUN → its DUN, Cawangan → own PASTI)
   const me = (PT.user !== undefined ? PT.user : DB.user()), same = (a, b) => String(a || '').toUpperCase() === String(b || '').toUpperCase();
   const mine = p => !me || tier === 'pusat' || (tier === 'negeri' ? same(p.negeri, me.skop) : tier === 'kawasan' ? same(p.kawasan, me.skop) : tier === 'dun' ? same(p.dun, me.skop) : tier === 'cawangan' ? same(p.nama, me.skop) : true);
@@ -144,27 +72,17 @@
   const lead = document.querySelector('.page-head .lead');
   const SC = PT.scope || {}, where = [SC.label || (me ? me.skop : 'Semua Negeri PASTI'), tier === 'negeri' ? '' : SC.negeri].filter((v, i, a) => v && a.indexOf(v) === i).join(' · ');
   if (lead) lead.textContent = (DB.ROLE_LABEL[tier] || 'Pentadbir') + ' · ' + where
-    + (tier === 'kawasan' ? ' · semak & sokong permohonan DUN' : tier === 'negeri' ? ' · luluskan permohonan yang disokong Kawasan' : tier === 'dun' ? ' · daftar PASTI baharu dalam DUN anda' : '');
+    + (tier === 'negeri' ? ' · muat naik data PASTI melalui Excel' : '');
   function draw(){
     const all = DB.all('pasti');
     const idx = p => all.indexOf(p);
-    const open = all.filter(p => mine(p) && (p.status === 'Baharu' || p.status === 'Disokong Kawasan'));
-    $('pp1').innerHTML = open.map((p,n) => `<tr><td class="num">${n+1}</td><td><b>${esc(p.no)}</b></td><td class="num">${p.tarikh}</td><td>${esc(p.nama)}</td><td>${esc(p.alamat)}</td><td class="num">${esc(p.tel)}</td>
-      <td>${p.negeri}</td><td>${p.kawasan}</td><td>${p.dun}</td><td>${badge(p.status)}</td>
-      <td class="flex gap wrap"><button class="btn btn-soft btn-sm">Lihat</button> <span data-own class="flex gap wrap">${decisionCell(p, idx(p))}</span></td></tr>`).join('')
-      || '<tr><td colspan="11" class="empty">Tiada permohonan dalam proses.</td></tr>';
-    const done = all.filter(p => mine(p) && (p.status === 'Lulus' || p.status === 'Ditolak')).sort((a,b) => (b.sejarah||[]).length - (a.sejarah||[]).length);
-    $('pp2').innerHTML = done.map(p => `<tr><td><b>${esc(p.no)}</b></td><td class="num">${p.tarikh}</td><td>${esc(p.nama)}</td><td>${esc(p.alamat)}</td><td>${p.negeri}</td><td>${p.kawasan}</td><td>${p.dun}</td>
-      <td>${badge(p.status === 'Lulus' ? 'LULUS' : 'DITOLAK')}${p.sebab ? `<div class="muted" style="font-size:11.5px;margin-top:3px">${esc(p.sebab)}</div>` : ''}</td>
-      <td class="flex gap wrap"><button class="btn btn-soft btn-sm">Lihat</button> <button class="btn btn-ghost btn-sm" data-action="print">Cetak</button></td></tr>`).join('');
     const live = all.filter(p => mine(p) && p.status === 'Lulus' && p.kod);
     $('pp3').innerHTML = live.map((p,n) => { const a = admin(p);
       return `<tr><td class="num">${n+1}</td><td><b>${p.kod}</b></td><td>${esc(p.no)}</td><td>${esc(p.nama)}</td><td class="num">${p.guru||0}</td><td class="num">${p.murid||0}</td><td>${esc(p.alamat)}</td><td class="num">${esc(p.tel)}</td>
       <td>${p.negeri}</td><td>${p.kawasan}</td><td>${p.dun}</td>
       <td>${a ? esc(a.nama) : '<span class="badge b-amber no-dot">Belum ada</span><div class="muted" style="font-size:11.5px;margin-top:3px">DUN perlu cipta akaun</div>'}</td>
       <td>${badge(p.daftar || 'TUTUP')}</td>
-      <td>${mbkCell(p)}</td>
-      <td class="flex gap wrap"><button class="btn btn-soft btn-sm">Lihat</button>${tier === 'kawasan' ? ` <span data-own><button class="btn btn-ghost btn-sm" data-pp="daftar" data-i="${idx(p)}">${p.daftar === 'BUKA' ? 'Tutup Pendaftaran' : 'Buka Pendaftaran'}</button></span>` : ''}${mbkAct(p, idx(p))}${tier === 'dun' && !a ? ' <a class="btn btn-primary btn-sm" href="tetapan.html?t=pentadbir">Cipta Pentadbir</a>' : ''}</td></tr>`; }).join('');
+      <td class="flex gap wrap"><button class="btn btn-soft btn-sm">Lihat</button>${tier === 'kawasan' ? ` <span data-own><button class="btn btn-ghost btn-sm" data-pp="daftar" data-i="${idx(p)}">${p.daftar === 'BUKA' ? 'Tutup Pendaftaran' : 'Buka Pendaftaran'}</button></span>` : ''}${tier === 'dun' && !a ? ' <a class="btn btn-primary btn-sm" href="tetapan.html?t=pentadbir">Cipta Pentadbir</a>' : ''}</td></tr>`; }).join('');
   }
 
   // reason / result dialog
@@ -178,36 +96,43 @@
     const b = e.target.closest('[data-pp]'); if (!b) return;
     const p = DB.all('pasti')[+b.dataset.i]; if (!p) return;
     const act = b.dataset.pp;
-    if (act === 'sokong') { p.status = 'Disokong Kawasan'; (p.sejarah = p.sejarah || []).push({ by, act:'Sokong', at: today() }); DB.save(); draw(); PT.toast(p.nama + ' disokong — dihantar ke Negeri untuk kelulusan'); }
-    if (act === 'lulus') { p.status = 'Lulus'; p.kod = DB.nextKod(); p.daftar = 'TUTUP'; p.guru = 0; p.murid = 0; (p.sejarah = p.sejarah || []).push({ by, act:'Lulus', at: today() }); DB.save(); draw();
-      dialog('PASTI diluluskan', `<div class="notice"><div class="tx"><b>${esc(p.nama)} kini cawangan PASTI berdaftar.</b><span>Kod PASTI: <b>${p.kod}</b> — ibu bapa guna kod ini semasa mendaftar murid.</span></div></div>
-        <div class="mt" style="font-size:13px"><b>Langkah seterusnya</b><ol style="margin:6px 0 0;padding-left:18px;line-height:1.8"><li>Pentadbir DUN ${esc(p.dun)} cipta akaun <b>Pentadbir Cawangan</b> (Tetapan → Pengguna).</li><li>Pentadbir Cawangan cipta akaun guru.</li><li>Pentadbir Kawasan <b>buka pendaftaran murid</b> untuk cawangan ini.</li></ol></div>`,
-        '<button class="btn btn-primary" data-close>Faham</button>'); }
-    if (act === 'tolak') { dialog('Tolak — ' + esc(p.nama), '<div class="field"><span class="label">Sebab penolakan <span class="req">*</span></span><textarea class="input" rows="3" id="ppWhy" placeholder="Sebab akan dimaklumkan kepada DUN pemohon"></textarea></div>',
-        `<button class="btn btn-ghost" data-close>Batal</button><button class="btn btn-red" data-pp="tolak-ok" data-i="${b.dataset.i}">Sahkan Tolak</button>`); }
-    if (act === 'tolak-ok') { const w = $('ppWhy'); if (!w.value.trim()) { w.classList.add('pt-err'); PT.toast('Nyatakan sebab penolakan', 'red'); return; }
-      p.status = 'Ditolak'; p.sebab = w.value.trim(); (p.sejarah = p.sejarah || []).push({ by, act:'Tolak', at: today() }); DB.save(); $('ppDlg').classList.remove('open'); draw(); PT.toast(p.nama + ' ditolak', 'red'); }
-    // ---- MBK: Kawasan sahkan / tolak pengisytiharan kesediaan cawangan, atau tutup kemasukan MBK
-    if (/^mbk-/.test(act) && tier !== 'kawasan') return;
-    const k = p.mbk, L = a => Array.isArray(a) && a.length ? a.map(esc).join(', ') : '—';
-    if (act === 'mbk-semak') { if (!k) return;
-      dialog('Semak MBK — ' + esc(p.nama), `<div class="muted" style="font-size:12.5px;margin-bottom:10px">Pengisytiharan kesediaan menerima Murid Berkeperluan Khas oleh Pentadbir Cawangan.</div>
-        <dl class="kv"><dt>Kategori diterima</dt><dd>${L(k.kategori)}</dd><dt>Kemudahan</dt><dd>${L(k.kemudahan)}</dd><dt>Guru terlatih</dt><dd>${esc(k.guruTerlatih != null ? k.guruTerlatih : '—')} orang</dd>
-        <dt>Kuota dipohon</dt><dd>${esc(k.kuota || 0)} murid</dd><dt>Catatan</dt><dd>${esc(k.catatan || '—')}</dd>
-        <dt>Dimohon oleh</dt><dd>${k.dimohon ? esc(k.dimohon.oleh || '—') + ' · ' + esc(k.dimohon.tarikh || '') : '—'}</dd></dl>`,
-        `<button class="btn btn-ghost" data-close>Batal</button><button class="btn btn-red" data-pp="mbk-tolak" data-i="${b.dataset.i}">Tolak</button><button class="btn btn-primary" data-pp="mbk-buka" data-i="${b.dataset.i}">Sahkan &amp; Buka</button>`); return; }
-    if (act === 'mbk-buka') { if (!k) return; k.status = 'BUKA'; k.disahkan = { oleh: me ? me.nama : by, tarikh: today() }; k.sebab = '';
-      DB.save(); $('ppDlg').classList.remove('open'); draw(); PT.toast('Kemasukan MBK ' + esc(p.nama) + ' dibuka · kuota ' + (k.kuota || 0)); return; }
-    if (act === 'mbk-tolak') { dialog('Tolak MBK — ' + esc(p.nama), '<div class="field"><span class="label">Sebab penolakan <span class="req">*</span></span><textarea class="input" rows="3" id="ppMbkWhy" placeholder="Cth: kemudahan belum mencukupi / tiada guru terlatih"></textarea></div>',
-        `<button class="btn btn-ghost" data-close>Batal</button><button class="btn btn-red" data-pp="mbk-tolak-ok" data-i="${b.dataset.i}">Sahkan Tolak</button>`); return; }
-    if (act === 'mbk-tolak-ok') { const w = $('ppMbkWhy'); if (!w.value.trim()) { w.classList.add('pt-err'); PT.toast('Nyatakan sebab penolakan', 'red'); return; }
-      p.mbk = Object.assign(k || {}, { status:'TUTUP', sebab: w.value.trim() }); DB.save(); $('ppDlg').classList.remove('open'); draw(); PT.toast('Permohonan MBK ' + esc(p.nama) + ' ditolak', 'red'); return; }
-    if (act === 'mbk-tutup') { dialog('Tutup kemasukan MBK?', `<p>Kemasukan Murid Berkeperluan Khas di <b>${esc(p.nama)}</b> akan ditutup. Murid MBK sedia ada tidak terjejas; permohonan MBK baharu tidak lagi diterima.</p>`,
-        `<button class="btn btn-ghost" data-close>Batal</button><button class="btn btn-red" data-pp="mbk-tutup-ok" data-i="${b.dataset.i}">Tutup MBK</button>`); return; }
-    if (act === 'mbk-tutup-ok') { if (!k) return; k.status = 'TUTUP'; k.sebab = 'Ditutup oleh ' + (me ? me.nama : by) + ' · ' + today();
-      DB.save(); $('ppDlg').classList.remove('open'); draw(); PT.toast('Kemasukan MBK ' + esc(p.nama) + ' ditutup', 'red'); return; }
     if (act === 'daftar') { p.daftar = p.daftar === 'BUKA' ? 'TUTUP' : 'BUKA'; DB.save(); draw(); PT.toast('Pendaftaran murid ' + p.nama + ' ' + (p.daftar === 'BUKA' ? 'dibuka' : 'ditutup'), p.daftar === 'BUKA' ? 'green' : 'red'); }
   });
+
+  // ---- Excel upload (Pentadbir Negeri only; negeri is forced to the admin's own state)
+  const COLS = ['Kod PASTI','No Pendaftaran','Nama PASTI','Alamat','No Telefon','Parlimen','DUN','Bil Guru','Bil Murid'];
+  const tplBtn = $('ppTpl'), upBtn = $('ppUp'), file = $('ppFile');
+  if (tier !== 'negeri' || !window.XLSX) { [tplBtn, upBtn].forEach(x => x && x.parentNode.remove()); }
+  else {
+    tplBtn.onclick = () => { const ws = XLSX.utils.aoa_to_sheet([COLS, ['D030199','D/199/2026','PASTI CONTOH','No 1, Jalan Contoh','09-000 0000','P021 KOTA BHARU','N09 KOTA LAMA',5,30]]);
+      const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'PASTI'); XLSX.writeFile(wb, 'Templat_Data_PASTI.xlsx'); };
+    upBtn.onclick = () => { file.value = ''; file.click(); };
+    file.onchange = async () => {
+      const f = file.files[0]; if (!f) return;
+      let rows; try { const wb = XLSX.read(await f.arrayBuffer()); rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval:'', raw:false }); }
+      catch(err){ PT.toast('Fail Excel tidak dapat dibaca', 'red'); return; }
+      const key = k => String(k).toLowerCase().replace(/[^a-z]/g,''), get = (r, c) => { const k = Object.keys(r).find(x => key(x) === key(c)); return k ? String(r[k]).trim() : ''; };
+      const ok = [], bad = [];
+      rows.forEach((r, n) => { const o = {}; COLS.forEach(c => o[c] = get(r, c));
+        const miss = ['Kod PASTI','Nama PASTI','Parlimen','DUN'].filter(c => !o[c]);
+        (miss.length ? bad : ok).push(miss.length ? 'Baris ' + (n + 2) + ': tiada ' + miss.join(', ') : o); });
+      if (!ok.length) { dialog('Muat Naik Excel', '<div class="notice red"><div class="tx"><b>Tiada baris sah.</b><span>' + (bad.slice(0,8).map(esc).join('<br>') || 'Fail kosong.') + '</span></div></div>', '<button class="btn btn-primary" data-close>Tutup</button>'); return; }
+      const neg = String(me ? me.skop : '').toUpperCase(), all = DB.all('pasti');
+      const exist = o => all.find(p => p.kod && p.kod.toUpperCase() === o['Kod PASTI'].toUpperCase());
+      const upd = ok.filter(exist).length;
+      dialog('Muat Naik Excel — ' + esc(f.name), `<div class="notice"><div class="tx"><b>${ok.length} PASTI sedia dimuat naik ke ${esc(neg)}</b><span>${ok.length - upd} baharu · ${upd} dikemas kini (padanan Kod PASTI)${bad.length ? ' · ' + bad.length + ' baris diabaikan' : ''}</span></div></div>`
+        + (bad.length ? '<div class="muted mt" style="font-size:12px">' + bad.slice(0,8).map(esc).join('<br>') + '</div>' : ''),
+        '<button class="btn btn-ghost" data-close>Batal</button><button class="btn btn-primary" id="ppSave">Simpan</button>');
+      $('ppSave').onclick = () => {
+        ok.forEach(o => { const v = { kod:o['Kod PASTI'].toUpperCase(), no:o['No Pendaftaran'] || '—', nama:o['Nama PASTI'].toUpperCase(), alamat:o['Alamat'], tel:o['No Telefon'],
+            negeri:neg, kawasan:o['Parlimen'].toUpperCase(), dun:o['DUN'].toUpperCase(), guru:+o['Bil Guru'] || 0, murid:+o['Bil Murid'] || 0 };
+          const p = exist(o); if (p) Object.assign(p, v);
+          else all.push(Object.assign({ tarikh:today(), status:'Lulus', daftar:'TUTUP', sejarah:[{ by, act:'Muat naik Excel', at:today() }] }, v)); });
+        DB.save(); $('ppDlg').classList.remove('open'); draw();
+        try { PT.logAccess('Muat naik data PASTI (Excel)', 'Pengurusan PASTI', f.name + ' · ' + ok.length + ' rekod'); } catch(e){}
+        PT.toast(ok.length + ' rekod PASTI disimpan'); };
+    };
+  }
   draw();
 })();
 </script>

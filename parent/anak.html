@@ -43,8 +43,8 @@
   </div>
 </div>
 
-<script src="../assets/js/app.js?v=10"></script>
-<script src="../assets/js/parent-kids.js?v=5"></script>
+<script src="../assets/js/app.js?v=11"></script>
+<script src="../assets/js/parent-kids.js?v=6"></script>
 <script>
 (function(){
   const { me, kids } = PK.load(), esc = PK.esc, $ = id => document.getElementById(id);
@@ -53,12 +53,9 @@
   $('ppMini').innerHTML = '<div>Anak berdaftar<b>' + kids.length + '</b></div><div>Murid aktif<b>' + ok + '</b></div>'
     + (kids.length - ok ? '<div>Dalam semakan<b>' + (kids.length - ok) + '</b></div>' : '');
 
-  // MBK: own child's kategori + support notes; 'Dijadual Penilaian' shows the assessment appointment
-  const PEN = k => k.status === 'Dijadual Penilaian';
-  const penTxt = p => p ? [p.tarikh, p.masa].filter(Boolean).join(' · ') + (p.tempat ? ' — ' + p.tempat : '') : '';
   $('ppKids').innerHTML = kids.map((k,i) => {
-    const c = PK.COLORS[i % 6], murid = k.status === 'Diterima', pen = PEN(k), p = k.penilaian || (k.mbk && k.mbk.penilaian);
-    return '<div class="pp-kid"><div class="band ' + c + '"><span class="tag">' + (murid ? 'Murid' : pen ? 'Dijadual Penilaian' : 'Dalam semakan') + '</span></div>'
+    const c = PK.COLORS[i % 6], murid = k.status === 'Diterima';
+    return '<div class="pp-kid"><div class="band ' + c + '"><span class="tag">' + (murid ? 'Murid' : 'Dalam semakan') + '</span></div>'
       + '<div class="who"><div class="av ' + c + '">' + PK.ini(k.nama) + '</div><div><div class="nm">' + esc(k.nama) + '</div><div class="ml">MyKid ' + esc(k.mykid) + '</div></div></div>'
       + '<div class="body">'
       + '<div class="stats">'
@@ -66,10 +63,7 @@
       +   '<div class="st"><div class="l">Yuran</div><div class="v ' + (k.tertunggak ? 'warn' : 'ok') + '">' + (!murid ? '—' : k.tertunggak ? 'RM ' + k.tertunggak : 'Selesai') + '</div></div>'
       +   '<div class="st"><div class="l">SPPM</div><div class="v">' + esc(k.prestasi) + '</div></div>'
       + '</div>'
-      + '<dl class="meta"><dt>PASTI</dt><dd>' + esc(k.pasti) + '</dd><dt>Kelas</dt><dd>' + esc(k.kelas) + '</dd><dt>Guru Kelas</dt><dd>' + esc(k.guru) + '</dd><dt>No. Rujukan</dt><dd>' + esc(k.ref) + '</dd>'
-      + (k.mbk ? '<dt>Keperluan Khas</dt><dd>' + esc(k.mbk.kategori || '—') + (k.mbk.sub ? ' · ' + esc(k.mbk.sub) : '') + '</dd>' : '') + '</dl>'
-      + (pen ? '<div class="notice amber" style="padding:10px 12px"><div class="tx"><b><span class="badge b-amber">Dijadual Penilaian</span></b><span>'
-          + (p && p.tarikh ? 'Sila hadir penilaian: <b>' + esc(penTxt(p)) + '</b>' : 'Tarikh penilaian akan dimaklumkan oleh PASTI.') + '</span></div></div>' : '')
+      + '<dl class="meta"><dt>PASTI</dt><dd>' + esc(k.pasti) + '</dd><dt>Kelas</dt><dd>' + esc(k.kelas) + '</dd><dt>Guru Kelas</dt><dd>' + esc(k.guru) + '</dd><dt>No. Rujukan</dt><dd>' + esc(k.ref) + '</dd></dl>'
       + '<div class="acts"><button type="button" class="btn btn-soft btn-sm" data-own data-kid="' + i + '">Butiran</button>'
       + (murid ? '<a class="btn btn-ghost btn-sm" href="prestasi.html">Prestasi</a>' + (k.tertunggak ? '<a class="btn btn-primary btn-sm" href="yuran.html">Bayar Yuran</a>' : '')
                : '<a class="btn btn-ghost btn-sm" href="../semak-status.html?ref=' + encodeURIComponent(k.ref) + '&mykid=' + encodeURIComponent(k.mykid) + '">Semak Status</a>')
@@ -78,15 +72,11 @@
 
   document.addEventListener('click', e => {
     const b = e.target.closest('[data-kid]'); if (!b) return;
-    const k = kids[+b.dataset.kid], murid = k.status === 'Diterima', pen = PEN(k), x = k.mbk, p = k.penilaian || (x && x.penilaian);
+    const k = kids[+b.dataset.kid], murid = k.status === 'Diterima';
     $('anakModalT').textContent = 'Butiran Murid — ' + k.pendek;
-    const extra = (pen ? '<dt>Penilaian</dt><dd><span class="badge b-amber">Dijadual Penilaian</span>' + (p && p.tarikh ? '<br>' + esc(p.tarikh) + (p.masa ? ' · ' + esc(p.masa) : '') + (p.tempat ? '<br>' + esc(p.tempat) : '') + (p.catatan ? '<br><span class="muted">' + esc(p.catatan) + '</span>' : '') : '<br>Tarikh akan dimaklumkan') + '</dd>' : '')
-      + (x ? '<dt>Keperluan Khas</dt><dd>' + esc(x.kategori || '—') + (x.sub ? ' · ' + esc(x.sub) : '') + (x.tahap ? ' (' + esc(x.tahap) + ')' : '') + '</dd>'
-        + '<dt>Sokongan diperlukan</dt><dd>' + esc((x.keperluan || []).join(', ') || '—') + '</dd>'
-        + (x.catatan ? '<dt>Catatan</dt><dd>' + esc(x.catatan) + '</dd>' : '') : '');
     $('anakModalB').innerHTML = '<dl class="kv"><dt>Nama Penuh</dt><dd>' + esc(k.nama) + '</dd><dt>MyKid</dt><dd>' + esc(k.mykid) + '</dd><dt>PASTI</dt><dd>' + esc(k.pasti) + '</dd>'
       + '<dt>No Rujukan</dt><dd>' + esc(k.ref) + '</dd><dt>Tarikh Daftar</dt><dd>' + esc(k.daftar) + '</dd><dt>Tahun / Kelas</dt><dd>' + esc(k.kelas) + '</dd><dt>Guru Kelas</dt><dd>' + esc(k.guru) + '</dd>'
-      + '<dt>Status</dt><dd>' + (murid ? 'Murid' : pen ? 'Permohonan — dijadual penilaian' : 'Permohonan dalam semakan') + '</dd>' + extra + '<dt>Yuran Bulanan</dt><dd>RM 60</dd>'
+      + '<dt>Status</dt><dd>' + (murid ? 'Murid' : 'Permohonan dalam semakan') + '</dd><dt>Yuran Bulanan</dt><dd>RM 60</dd>'
       + '<dt>Status Yuran</dt><dd>' + (!murid ? '—' : k.tertunggak ? '<span class="badge b-amber no-dot">Tertunggak RM ' + k.tertunggak + '</span>' : '<span class="badge b-green no-dot">Dijelaskan</span>') + '</dd></dl>';
     $('anakModal').classList.add('open');
   });

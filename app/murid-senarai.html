@@ -7,13 +7,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/css/app.css?v=10">
-<style>
-  .mbk-tag{display:inline-flex;align-items:center;font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:6px;background:#efecfb;color:#5b45c4;margin-left:6px;vertical-align:1px;letter-spacing:.03em}
-  .mbk-ml{color:#5b45c4!important;font-weight:600}
-  .mbk-sec{margin-top:14px;border:1px solid #ddd6f7;border-radius:12px;overflow:hidden}
-  .mbk-sec h4{margin:0;padding:9px 13px;background:#efecfb;color:#5b45c4;font-size:13px}
-  .mbk-sec .kv{padding:12px 13px}
-</style>
 </head>
 <body>
 <div class="pt-app" data-module="pengurusan" data-page="murid-senarai" data-title="Senarai Murid" data-subtitle="Senarai penuh murid berdaftar">
@@ -32,7 +25,6 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z"/><path d="M21 21l-4.3-4.3"/></svg>
         <input type="text" placeholder="Cari nama murid, MyKid, PASTI…">
       </div>
-      <select class="select" id="fMbk" data-tiers="cawangan" style="width:auto"><option>Semua Murid</option><option>Keperluan Khas</option></select>
       <div class="spacer"></div>
       <button class="btn btn-ghost" data-action="print" title="Cetak">Cetak</button>
     </div>
@@ -66,7 +58,7 @@
   </main>
 </div>
 
-<script src="../assets/js/app.js?v=10"></script>
+<script src="../assets/js/app.js?v=11"></script>
 <script>
 (function(){
   const data = [
@@ -85,24 +77,17 @@
   ];
   function initials(name){ const p=name.split(' '); return (p[0][0]+(p[1]?p[1][0]:'')).toUpperCase(); }
   const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-  const npasti = s => String(s || '').toUpperCase().replace(/^PASTI\s+/,'').replace(/[^A-Z0-9]/g,'');
-  const tier = (window.PT && PT.tier) || '';
-  // MBK details only for the PASTI's own Pentadbir Cawangan (PT.canSeeMbk); every other tier sees no MBK marker at all.
-  const canSee = m => { if (!m || !m.mbk || tier !== 'cawangan') return false;
-    if (window.PT && typeof PT.canSeeMbk === 'function') return !!PT.canSeeMbk(m);
-    const S = (window.PT && PT.scope) || {}; return !!S.pasti && npasti(S.pasti) === npasti(m.pasti); };
-  // accepted students from the shared DB first (incl. the seeded MBK pupils), then the static sample rows (duplicates dropped)
+  // accepted students from the shared DB first, then the static sample rows (duplicates dropped)
   const dbm = (window.DB && DB.all) ? DB.all('murid').filter(m => m.status === 'Diterima') : [];
   const seen = new Set(); dbm.forEach(m => { seen.add(String(m.mykid)); seen.add(String(m.nama).toUpperCase()); });
-  const rows = dbm.map(m => ({ nama:m.nama, mykid:m.mykid, bapa:m.bapa || '—', pasti:String(m.pasti || '').replace(/^PASTI\s+/i,''), m }))
-    .concat(data.filter(r => !seen.has(r[1]) && !seen.has(r[0].toUpperCase())).map(r => ({ nama:r[0], mykid:r[1], bapa:r[2], pasti:r[3], m:null })));
-  document.getElementById('muridRows').innerHTML = rows.map((r,i)=>{ const mbk = canSee(r.m) ? r.m.mbk : null;
-    return `<tr${mbk ? ' data-mbk-row="1"' : ''}>
+  const rows = dbm.map(m => ({ nama:m.nama, mykid:m.mykid, bapa:m.bapa || '—', pasti:String(m.pasti || '').replace(/^PASTI\s+/i,'') }))
+    .concat(data.filter(r => !seen.has(r[1]) && !seen.has(r[0].toUpperCase())).map(r => ({ nama:r[0], mykid:r[1], bapa:r[2], pasti:r[3] })));
+  document.getElementById('muridRows').innerHTML = rows.map((r,i)=>`<tr>
     <td>${i+1}</td>
     <td>
       <div class="cell-user">
         <div class="avatar">${initials(r.nama)}</div>
-        <div><div class="nm">${esc(r.nama)}</div>${mbk ? '<span class="mbk-tag" title="Murid Berkeperluan Khas">MBK</span>' : ''}<div class="ml${mbk ? ' mbk-ml' : ''}">${mbk ? 'Keperluan Khas: ' + esc(mbk.kategori) + (mbk.sub ? ' · ' + esc(mbk.sub) : '') : 'Murid PASTI ' + esc(r.pasti)}</div></div>
+        <div><div class="nm">${esc(r.nama)}</div><div class="ml">Murid PASTI ${esc(r.pasti)}</div></div>
       </div>
     </td>
     <td><span class="num">${esc(r.mykid)}</span><div class="muted" style="font-size:11.5px">MyKid</div></td>
@@ -110,32 +95,10 @@
     <td>PASTI ${esc(r.pasti)}</td>
     <td><span class="badge b-teal">Murid</span></td>
     <td>
-      <button class="btn btn-soft btn-sm" title="Lihat"${mbk ? ' data-own data-mbk="' + i + '"' : ''}>Lihat</button>
+      <button class="btn btn-soft btn-sm" title="Lihat">Lihat</button>
       <button class="btn btn-ghost btn-sm" title="Edit" data-tiers="cawangan">Edit</button>
     </td>
-  </tr>`; }).join('');
-
-  // Lihat on an MBK row: normal details + the MBK section (Cawangan only); every opening is logged.
-  function dialog(title, body){
-    let ov = document.getElementById('mbkDlg'); if (!ov) { ov = document.createElement('div'); ov.className = 'modal-overlay'; ov.id = 'mbkDlg'; document.body.appendChild(ov); }
-    ov.innerHTML = `<div class="modal"><div class="m-head"><h3>${title}</h3><button class="btn btn-ghost btn-sm" data-close>✕</button></div><div class="m-body">${body}</div><div class="m-foot"><button class="btn btn-ghost" data-close>Tutup</button></div></div>`;
-    ov.classList.add('open');
-  }
-  const kv = pairs => '<dl class="kv">' + pairs.filter(p => p[1] != null && p[1] !== '').map(([k,v]) => `<dt>${esc(k)}</dt><dd>${v}</dd>`).join('') + '</dl>';
-  document.addEventListener('click', e => {
-    const b = e.target.closest && e.target.closest('[data-mbk]'); if (!b) return;
-    const r = rows[+b.dataset.mbk]; if (!r || !canSee(r.m)) return;
-    const m = r.m, x = m.mbk, pn = x.penilaian || {};
-    dialog('Butiran Murid — ' + esc(m.nama),
-      kv([['Nama Murid', esc(m.nama)], ['MyKid', esc(m.mykid)], ['PASTI', 'PASTI ' + esc(r.pasti)], ['Kelas', esc(m.kelas || '—')], ['Ibu Bapa / Penjaga', esc(m.bapa || '—')],
-        ['No. Tel', esc(m.telBapa || '—')], ['No. Rujukan', esc(m.ref || '—')], ['Status', '<span class="badge b-teal">Murid</span>']])
-      + '<div class="mbk-sec"><h4>Murid Berkeperluan Khas (MBK) · sulit</h4>'
-      + kv([['Kategori', esc(x.kategori || '—')], ['Sub-kategori', esc(x.sub || '')], ['Tahap', esc(x.tahap || '')], ['No. Kad OKU', esc(x.noKadOKU || '')],
-        ['Keperluan sokongan', esc((x.keperluan || []).join(', ') || '—')], ['Catatan', esc(x.catatan || '—')], ['Dokumen', esc(x.dokumen || '')],
-        ['Penilaian', pn.tarikh ? esc(pn.tarikh + (pn.masa ? ' · ' + pn.masa : '') + (pn.tempat ? ' · ' + pn.tempat : '')) + (pn.catatan ? '<br><span class="muted">' + esc(pn.catatan) + '</span>' : '') : '']])
-      + '<div class="muted" style="font-size:12px;padding:0 13px 12px">Maklumat ini hanya dilihat oleh Pentadbir Cawangan &amp; guru kelas. Akses ini direkodkan dalam Log Akses.</div></div>');
-    try { if (window.PT && PT.logAccess) PT.logAccess('Lihat maklumat MBK', 'Senarai Murid', m.nama); } catch(err){}
-  });
+  </tr>`).join('');
 
   // After the engine has scoped the rows: count & pager show only what this user can see.
   document.addEventListener('DOMContentLoaded', () => setTimeout(() => {

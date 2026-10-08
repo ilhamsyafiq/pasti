@@ -20,15 +20,10 @@
       </div>
     </div>
 
-    <!-- MBK quota strip (Pentadbir Cawangan only; filled by script) -->
-    <div id="mbkStrip" style="display:none;margin-bottom:14px"></div>
-
     <div class="tabs">
       <a href="#" class="active" data-tab="baharu">Permohonan Baharu</a>
-      <a href="#" data-tab="penilaian" data-mbk-tab style="display:none">Dijadual Penilaian</a>
       <a href="#" data-tab="diterima">Diterima</a>
       <a href="#" data-tab="ditolak">Ditolak</a>
-      <a href="#" data-tab="mbk" data-mbk-tab style="display:none">Keperluan Khas</a>
     </div>
 
     <!-- Permohonan Baharu -->
@@ -49,29 +44,6 @@
               </tr>
             </thead>
             <tbody id="baharuRows"></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <!-- Dijadual Penilaian (MBK — Pentadbir Cawangan sahaja) -->
-    <div data-panel="penilaian" style="display:none">
-      <div class="toolbar">
-        <span class="muted" data-count>Jumlah Bilangan : 0</span>
-        <div class="spacer"></div>
-        <button class="btn btn-soft" data-action="export" title="Muat turun Excel">Excel</button>
-      </div>
-      <div class="card">
-        <div class="table-wrap">
-          <table class="pt" data-nosave>
-            <thead>
-              <tr>
-                <th>Bil</th><th>Tarikh Mohon</th><th>No. Rujukan</th><th>Nama Anak</th><th>PASTI</th>
-                <th>No. MyKid</th><th>Umur</th><th>Nama Bapa</th><th>No. KP Bapa</th>
-                <th>No. Telefon Bapa</th><th>Tarikh Daftar</th><th>Status</th><th>Tindakan</th>
-              </tr>
-            </thead>
-            <tbody id="penilaianRows"></tbody>
           </table>
         </div>
       </div>
@@ -123,75 +95,35 @@
       </div>
     </div>
 
-    <!-- Keperluan Khas (MBK — Pentadbir Cawangan sahaja; semua status) -->
-    <div data-panel="mbk" style="display:none">
-      <div class="toolbar">
-        <span class="muted" data-count>Jumlah Bilangan : 0</span>
-        <div class="spacer"></div>
-        <button class="btn btn-soft" data-action="export" title="Muat turun Excel">Excel</button>
-      </div>
-      <div class="card">
-        <div class="table-wrap">
-          <table class="pt" data-nosave>
-            <thead>
-              <tr>
-                <th>Bil</th><th>Tarikh Mohon</th><th>No. Rujukan</th><th>Nama Anak</th><th>PASTI</th>
-                <th>No. MyKid</th><th>Umur</th><th>Nama Bapa</th><th>No. KP Bapa</th>
-                <th>No. Telefon Bapa</th><th>Tarikh Daftar</th><th>Status</th><th>Tindakan</th>
-              </tr>
-            </thead>
-            <tbody id="mbkRows"></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
   </main>
 </div>
 
-<script src="../assets/js/app.js?v=10"></script>
+<script src="../assets/js/app.js?v=11"></script>
 <script>
 // Permohonan Murid — from the shared DB (public form daftar-murid.html feeds it).
 // Only Pentadbir Cawangan decides. Terima → akaun Portal Ibu Bapa dicipta automatik.
-// MBK (Murid Berkeperluan Khas): Baharu → Jadual Penilaian → Dijadual Penilaian → Terima (ikut kuota) / Tolak.
-// Privasi: hanya Pentadbir Cawangan nampak lencana MBK & butiran; peringkat lain nampak status 'Baharu' sahaja (tidak dapat dibezakan daripada permohonan biasa).
 (function(){
   const tier = PT.tier, $ = id => document.getElementById(id);
   const esc = s => String(s==null?'':s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const today = () => { const d = new Date(); return String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + d.getFullYear(); };
-  const cls = { Baharu:'b-blue', Diterima:'b-green', Ditolak:'b-red', 'Dijadual Penilaian':'b-amber', 'Dalam Semakan':'b-amber' };
+  const cls = { Baharu:'b-blue', Diterima:'b-green', Ditolak:'b-red', 'Dalam Semakan':'b-amber' };
   const me = (PT.user !== undefined ? PT.user : DB.user());
   const norm = s => String(s || '').toUpperCase().replace(/^PASTI\s+/, '').trim();
   const same = (a, b) => String(a || '').toUpperCase() === String(b || '').toUpperCase();
   const isCaw = tier === 'cawangan';
-  // ---- MBK helpers (Engine API when present, local fallback otherwise)
-  const canSee = m => !!(m && m.mbk) && (window.PT && PT.canSeeMbk ? PT.canSeeMbk(m) : isCaw && !!me && norm(m.pasti) === norm(me.skop));
-  const label = m => window.PT && PT.statusLabel ? PT.statusLabel(m) : (m.status === 'Dijadual Penilaian' && !canSee(m) ? 'Baharu' : m.status);
-  const pastiOf = n => DB.find('pasti', x => norm(x.nama) === norm(n));
-  const mbkOf = n => window.DB && DB.mbkOf ? DB.mbkOf(n) : ((pastiOf(n) || {}).mbk || { status:'TUTUP' });
-  function quota(n){
-    if (window.DB && DB.mbkQuota) return DB.mbkQuota(n);
-    const k = +(mbkOf(n).kuota || 0), l = DB.all('murid').filter(m => m.mbk && norm(m.pasti) === norm(n));
-    const diisi = l.filter(m => m.status === 'Diterima').length;
-    return { kuota:k, diisi, penilaian: l.filter(m => m.status === 'Dijadual Penilaian').length, baki: k - diisi };
-  }
-  const log = (t, d) => { try { if (window.PT && PT.logAccess) PT.logAccess(t, 'Permohonan Murid', d); } catch(e){} };
   const small = t => '<div class="muted" style="font-size:11.5px;margin-top:3px">' + t + '</div>';
   function rows(list){
     const all = DB.all('murid');
-    return list.map((m,i) => { const i2 = all.indexOf(m), see = canSee(m), st = label(m);
+    return list.map((m,i) => { const i2 = all.indexOf(m), st = m.status;
       const btn = (a, c, t) => '<button class="btn ' + c + ' btn-sm" data-mp="' + a + '" data-i="' + i2 + '">' + t + '</button>';
-      const acts = !isCaw ? '' :
-        m.status === 'Baharu' && m.mbk ? btn('jadual', 'btn-primary', 'Jadual Penilaian') + btn('tolak', 'btn-red', 'Tolak')
-        : m.status === 'Baharu' || m.status === 'Dijadual Penilaian' ? btn('terima', 'btn-primary', 'Terima') + btn('tolak', 'btn-red', 'Tolak') : '';
-      const pn = see && m.status === 'Dijadual Penilaian' && m.mbk.penilaian ? small(esc(m.mbk.penilaian.tarikh) + ' ' + esc(m.mbk.penilaian.masa) + ' · ' + esc(m.mbk.penilaian.tempat)) : '';
+      const acts = isCaw && m.status === 'Baharu' ? btn('terima', 'btn-primary', 'Terima') + btn('tolak', 'btn-red', 'Tolak') : '';
       return `<tr>
       <td>${i+1}</td><td class="num">${m.tarikh}</td><td><b>${esc(m.ref)}</b></td>
-      <td>${esc(m.nama)}${see ? ' <span class="badge b-violet no-dot">MBK</span>' + small(esc(m.mbk.kategori) + (m.mbk.sub ? ' · ' + esc(m.mbk.sub) : '')) : ''}</td><td>${esc(m.pasti)}</td>
+      <td>${esc(m.nama)}</td><td>${esc(m.pasti)}</td>
       <td class="num">${esc(m.mykid)}</td><td class="center">${esc(m.umur)}</td><td>${esc(m.bapa)}</td><td class="num">${esc(m.kpBapa)}</td><td class="num">${esc(m.telBapa)}</td>
       <td class="num">${m.tarikhDaftar||'—'}</td>
-      <td><span class="badge ${cls[st] || 'b-slate'}">${esc(st)}</span>${pn}${m.sebab && (!m.mbk || see) ? small(esc(m.sebab)) : ''}</td>
-      <td class="flex gap wrap">${see ? '<span data-own>' + btn('lihat', 'btn-soft', 'Lihat') + '</span>' : '<button class="btn btn-soft btn-sm">Lihat</button>'} <button class="btn btn-ghost btn-sm" data-action="print">Cetak</button>
+      <td><span class="badge ${cls[st] || 'b-slate'}">${esc(st)}</span>${m.sebab ? small(esc(m.sebab)) : ''}</td>
+      <td class="flex gap wrap"><button class="btn btn-soft btn-sm">Lihat</button> <button class="btn btn-ghost btn-sm" data-action="print">Cetak</button>
         ${acts ? '<span data-own class="flex gap">' + acts + '</span>' : ''}</td>
     </tr>`; }).join('') || '<tr><td colspan="13" class="empty">Tiada rekod.</td></tr>';
   }
@@ -204,31 +136,12 @@
     if (p && KEY[tier]) return same(p[KEY[tier]], me.skop);
     return window.PT && PT.inScope ? PT.inScope(m.pasti) : false;
   }
-  // MBK tabs/panels exist only for Pentadbir Cawangan — removed from the DOM for every other tier
-  document.querySelectorAll('[data-mbk-tab]').forEach(t => { if (isCaw) t.style.display = ''; else { const pn = document.querySelector('[data-panel="' + t.dataset.tab + '"]'); if (pn) pn.remove(); t.remove(); } });
-  if (!isCaw) { const st = $('mbkStrip'); if (st) st.remove(); }
-  function strip(){
-    const el = $('mbkStrip'); if (!el || !isCaw || !me) return;
-    const k = mbkOf(me.skop) || {}, st = k.status || 'TUTUP', q = quota(me.skop);
-    el.style.display = '';
-    el.innerHTML = st === 'BUKA'
-      ? '<div class="notice' + (q.baki <= 0 ? ' amber' : '') + '"><div class="tx"><b>Kuota MBK: ' + q.diisi + '/' + q.kuota + ' · baki ' + Math.max(0, q.baki) + '</b><span>Kemasukan Murid Berkeperluan Khas DIBUKA · ' + (q.penilaian || 0) + ' dijadual penilaian' + (q.baki <= 0 ? ' · kuota penuh — permohonan MBK tidak boleh diterima' : '') + '</span></div></div>'
-      : '<div class="notice amber"><div class="tx"><b>Kemasukan MBK: ' + esc(st) + '</b><span>' + (st === 'MENUNGGU' ? 'Pengisytiharan kesediaan menunggu pengesahan Pentadbir Kawasan' + (k.kuota ? ' (kuota dipohon ' + k.kuota + ')' : '') : (k.sebab ? 'Sebab: ' + esc(k.sebab) : 'PASTI ini belum dibuka untuk kemasukan murid berkeperluan khas')) + '</span></div></div>';
-  }
   function draw(){
     const all = DB.all('murid').filter(mine);
-    // Cawangan: penilaian rows get their own tab. Other tiers: they stay with Baharu, labelled 'Baharu' (indistinguishable from normal applications).
-    const B = all.filter(m => m.status === 'Baharu' || (!isCaw && m.status === 'Dijadual Penilaian')),
-          P = all.filter(m => m.status === 'Dijadual Penilaian'),
-          T = all.filter(m => m.status === 'Diterima'), X = all.filter(m => m.status === 'Ditolak'),
-          K = isCaw ? all.filter(canSee) : [];
+    const B = all.filter(m => m.status === 'Baharu'),
+          T = all.filter(m => m.status === 'Diterima'), X = all.filter(m => m.status === 'Ditolak');
     const put = (key, id, l) => { if (!$(id)) return; $(id).innerHTML = rows(l); const c = document.querySelector('[data-panel="' + key + '"] [data-count]'); if (c) c.textContent = 'Jumlah Bilangan : ' + l.length; };
     put('baharu', 'baharuRows', B); put('diterima', 'diterimaRows', T); put('ditolak', 'ditolakRows', X);
-    if (isCaw) { put('penilaian', 'penilaianRows', P); put('mbk', 'mbkRows', K);
-      const tp = document.querySelector('.tabs [data-tab="penilaian"]'), tk = document.querySelector('.tabs [data-tab="mbk"]');
-      if (tp) tp.textContent = 'Dijadual Penilaian (' + P.length + ')';
-      if (tk) tk.textContent = 'Keperluan Khas (' + K.length + ')'; }
-    strip();
     const lead = document.querySelector('.page-head .lead');
     if (lead && !lead.dataset.x) { lead.dataset.x = 1;
       const SC = PT.scope || {}, where = [SC.label || (me ? me.skop : 'Semua PASTI'), tier === 'negeri' ? '' : SC.negeri].filter((v, i, a) => v && a.indexOf(v) === i).join(' · ');
@@ -241,51 +154,18 @@
     ov.classList.add('open');
   }
   const titleCase = s => s.toLowerCase().replace(/\b\w/g, c => c.toUpperCase()).replace(/\bBin\b/g,'bin').replace(/\bBinti\b/g,'binti');
-  const list = a => Array.isArray(a) ? (a.length ? a.map(esc).join(', ') : '—') : esc(a || '—');
-  const dmy = v => { const x = String(v || '').split('-'); return x.length === 3 ? x[2] + '/' + x[1] + '/' + x[0] : v; };
-  function details(m){
-    const k = m.mbk, pn = k.penilaian, sub = t => '<div class="muted" style="font-size:12px;font-weight:500">' + t + '</div>';
-    return '<dl class="kv"><dt>Nama murid</dt><dd>' + esc(m.nama) + ' <span class="badge b-violet no-dot">MBK</span></dd><dt>No. Rujukan</dt><dd>' + esc(m.ref) + '</dd>'
-      + '<dt>Status</dt><dd><span class="badge ' + (cls[m.status] || 'b-slate') + '">' + esc(m.status) + '</span></dd>'
-      + '<dt>Kategori</dt><dd>' + esc(k.kategori || '—') + '</dd><dt>Sub-kategori</dt><dd>' + esc(k.sub || '—') + '</dd><dt>Tahap</dt><dd>' + esc(k.tahap || '—') + '</dd>'
-      + '<dt>No. Kad OKU</dt><dd>' + esc(k.noKadOKU || 'Tiada / belum memohon') + '</dd><dt>Keperluan sokongan</dt><dd>' + list(k.keperluan) + '</dd>'
-      + '<dt>Catatan ibu bapa</dt><dd>' + esc(k.catatan || '—') + '</dd><dt>Dokumen sokongan</dt><dd>' + (k.dokumen ? '📎 ' + esc(k.dokumen) : '—') + '</dd>'
-      + '<dt>Penilaian</dt><dd>' + (pn && pn.tarikh ? esc(pn.tarikh) + ' · ' + esc(pn.masa) + ' · ' + esc(pn.tempat) + (pn.catatan ? sub(esc(pn.catatan)) : '') + (pn.oleh ? sub('Dijadual oleh ' + esc(pn.oleh)) : '') : 'Belum dijadual') + '</dd></dl>'
-      + '<div class="muted mt" style="font-size:12px">🔒 Maklumat sulit — hanya Pentadbir Cawangan, guru kelas dan ibu bapa murid. Akses ini direkod dalam Log Akses.</div>';
-  }
   document.addEventListener('click', e => {
     const b = e.target.closest('[data-mp]'); if (!b) return;
     const m = DB.all('murid')[+b.dataset.i]; if (!m) return;
     const act = b.dataset.mp;
-    if (act === 'lihat') { if (!canSee(m)) return;
-      log('Lihat maklumat MBK', m.ref);
-      dialog('Maklumat Keperluan Khas — ' + esc(m.nama), details(m), '<button class="btn btn-primary" data-close>Tutup</button>'); return; }
-    if (act === 'jadual') { if (!isCaw || !m.mbk) return;
-      dialog('Jadual Penilaian — ' + esc(m.nama), '<div class="muted" style="font-size:12.5px;margin-bottom:10px">' + esc(m.mbk.kategori) + (m.mbk.sub ? ' · ' + esc(m.mbk.sub) : '') + ' · Ibu bapa dimaklumkan tarikh penilaian melalui SMS &amp; e-mel.</div>'
-        + '<div class="form-grid"><div class="field"><span class="label">Tarikh <span class="req">*</span></span><input class="input" type="date" id="mpTarikh"></div>'
-        + '<div class="field"><span class="label">Masa <span class="req">*</span></span><input class="input" type="time" id="mpMasa" value="09:00"></div>'
-        + '<div class="field full"><span class="label">Tempat <span class="req">*</span></span><input class="input" type="text" id="mpTempat" value="' + esc('Bilik Sumber ' + m.pasti) + '"></div>'
-        + '<div class="field full"><span class="label">Catatan</span><textarea class="input" rows="2" id="mpCat" placeholder="Cth: bawa laporan doktor / kad OKU"></textarea></div></div>',
-        '<button class="btn btn-ghost" data-close>Batal</button><button class="btn btn-primary" data-mp="jadual-ok" data-i="' + b.dataset.i + '">Simpan Jadual</button>'); return; }
-    if (act === 'jadual-ok') {
-      const f = ['mpTarikh','mpMasa','mpTempat'].map($); let bad = 0;
-      f.forEach(x => { const miss = !x.value.trim(); x.classList.toggle('pt-err', miss); if (miss) bad++; });
-      if (bad) { PT.toast('Lengkapkan tarikh, masa dan tempat penilaian', 'red'); return; }
-      m.mbk.penilaian = { tarikh: dmy(f[0].value), masa: f[1].value, tempat: f[2].value.trim(), catatan: $('mpCat').value.trim(), oleh: me ? me.nama : 'Pentadbir Cawangan' };
-      m.status = 'Dijadual Penilaian'; DB.save(); $('mpDlg').classList.remove('open'); draw();
-      PT.toast('Penilaian dijadualkan — ' + m.mbk.penilaian.tarikh + ' ' + m.mbk.penilaian.masa); return; }
     if (act === 'terima') {
-      if (m.mbk) { const q = quota(m.pasti);
-        if (q.baki <= 0) { PT.toast('Kuota MBK ' + esc(m.pasti) + ' telah penuh (' + q.diisi + '/' + q.kuota + ') — permohonan tidak boleh diterima', 'red'); return; } }
       m.status = 'Diterima'; m.tarikhDaftar = today();
       let acc = m.emel && DB.find('users', u => u.emel.toLowerCase() === m.emel.toLowerCase()), made = false;
       if (m.emel && !acc) { acc = DB.add('users', { nama: titleCase(m.bapa), emel: m.emel, peranan:'ibubapa', skop: m.pasti, oleh:'Automatik (murid diterima)', tarikh: today(), status:'Aktif' }); made = true; }
       const p = DB.find('pasti', x => x.nama === m.pasti); if (p) p.murid = (p.murid||0) + 1;
       DB.save(); draw();
-      const q2 = m.mbk ? quota(m.pasti) : null;
       dialog('Permohonan diterima', '<div class="notice"><div class="tx"><b>' + esc(m.nama) + ' kini murid ' + esc(m.pasti) + '.</b><span>' + esc(m.kelas) + ' · Tarikh daftar ' + m.tarikhDaftar + '</span></div></div>'
         + (acc ? '<dl class="kv mt"><dt>Akaun Portal Ibu Bapa</dt><dd>' + (made ? 'Dicipta automatik' : 'Sudah wujud — anak dipautkan') + '</dd><dt>Nama</dt><dd>' + esc(acc.nama) + '</dd><dt>ID log masuk</dt><dd>' + esc(acc.emel) + '</dd>' + (made ? '<dt>Kata laluan sementara</dt><dd>Pasti@' + m.ref.slice(-4) + '</dd>' : '') + '</dl>' : '<div class="notice amber mt"><div class="tx"><b>Tiada emel ibu bapa</b><span>Akaun portal tidak dapat dicipta. Kemas kini emel dalam Ibu Bapa / Penjaga.</span></div></div>')
-        + (q2 ? '<div class="muted mt" style="font-size:12.5px">Kuota MBK kini ' + q2.diisi + '/' + q2.kuota + ' · baki ' + Math.max(0, q2.baki) + '. Guru kelas boleh melihat keperluan khas murid ini.</div>' : '')
         + '<div class="muted mt" style="font-size:12.5px">Ibu bapa dimaklumkan melalui SMS & e-mel. Mereka boleh semak status di halaman Semak Status.</div>',
         '<button class="btn btn-primary" data-close>Selesai</button>');
       PT.toast('Diterima — ' + esc(m.nama));

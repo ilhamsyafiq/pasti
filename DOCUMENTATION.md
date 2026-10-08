@@ -2,7 +2,7 @@
 
 > Sistem Pengurusan PASTI (ePASTI) · Jabatan PASTI Malaysia
 > Static HTML mockup: no backend, all data lives in the browser.
-> Last reviewed against the code on 29/09/2026, after the role and bug-fix pass.
+> Last reviewed against the code on 29/09/2026, after the role and bug-fix pass. Updated 08/10/2026: online PASTI registration replaced by the Negeri Excel upload (Fasa 1).
 
 ---
 
@@ -36,7 +36,7 @@
 
 ePASTI manages the PASTI pre-school network across these areas:
 
-- PASTI registration and approval
+- PASTI records (uploaded per state from Excel)
 - Staff and committee (warga)
 - Students and parents
 - Fees and contributions (yuran, caruman), with **BayarCash** as the only payment gateway
@@ -134,10 +134,10 @@ flowchart TD
 
 | Tier | Main job |
 |---|---|
-| **Pusat** | Watches the whole country. Can't approve PASTI, has no collection account, and can't manage students. |
-| **Negeri** | Watches its state. **Gives final approval to new PASTI** (issues the Kod PASTI). Pays its state's Skim PASTI invoice. Gives final approval to caruman claims. |
-| **Kawasan** | Supervises. **Supports or rejects new PASTI** and caruman claims, opens and closes student registration, manages the AJK and staff. Views students, fees and attendance. |
-| **DUN** | **Registers new PASTI**, creates the Pentadbir Cawangan for approved PASTI, and watches its PASTI. |
+| **Pusat** | Watches the whole country. Can't change PASTI records, has no collection account, and can't manage students. |
+| **Negeri** | Watches its state. **Uploads its state's PASTI list from Excel** (Pengurusan PASTI). Pays its state's Skim PASTI invoice. Gives final approval to caruman claims. |
+| **Kawasan** | Supervises. **Supports or rejects caruman claims**, opens and closes student registration, manages the AJK and staff. Views students, fees and attendance. |
+| **DUN** | **Creates the Pentadbir Cawangan** for each PASTI in its DUN, and watches its PASTI. |
 | **Cawangan** | Runs one PASTI. **Accepts or rejects student applications**, shares the Kod PASTI, creates teacher accounts, runs billing and records payments, checks pupils and staff in, approves teacher leave, manages its Jemaah Pengurus, and owns the branch BayarCash account. |
 | **Guru / Pembantu** | Clock in/out, student attendance, SPPM marks (only Guru can send them to parents), calendar, leave requests. |
 | **Ibu Bapa** | Sees children, SPPM progress, pays fees, gets receipts and notices. |
@@ -160,8 +160,7 @@ Source: `TIERS[...].allow` in `assets/js/app.js`. If a user opens a page not in 
 | Petugas Kawasan / Cawangan | `warga-petugas` | — | — | ✓ | ✓ | — |
 | Guru & Pembantu Guru | `warga-guru` | — | — | ✓ | ✓ | ✓ |
 | **Pengurusan & Murid** | | | | | | |
-| Pengurusan PASTI | `pasti-pengurusan` | — | ✓ Lulus | ✓ Sokong | ✓ view | — |
-| Daftar PASTI Baharu | `pasti-daftar-baharu` | — | — | — | ✓ | — |
+| Pengurusan PASTI | `pasti-pengurusan` | — | ✓ Excel upload | ✓ Buka/Tutup | ✓ Cipta Pentadbir | — |
 | Permohonan Murid | `murid-permohonan` | — | — | ✓ view | ✓ view | ✓ Terima/Tolak |
 | Senarai Murid | `murid-senarai` | — | — | ✓ view | ✓ view | ✓ edit |
 | Cetak Sijil Murid | `murid-sijil` | — | — | ✓ | ✓ | ✓ |
@@ -195,9 +194,7 @@ Reports, lists and tables are always limited to the user's own scope (see §8). 
 
 | Page | Action | Who |
 |---|---|---|
-| Pengurusan PASTI | **+ Permohonan Baru** | DUN |
-| Pengurusan PASTI | **Sokong / Tolak** (status *Baharu*) | Kawasan |
-| Pengurusan PASTI | **Lulus / Tolak** (status *Disokong Kawasan*) | Negeri |
+| Pengurusan PASTI | **Templat Excel / Muat Naik Excel** (own state only) | Negeri |
 | Pengurusan PASTI | **Buka / Tutup Pendaftaran** murid | Kawasan |
 | Pengurusan PASTI | **Cipta Pentadbir** (PASTI with no Cawangan admin) | DUN |
 | Permohonan Murid | **Terima / Tolak** | Cawangan |
@@ -233,7 +230,7 @@ Reports, lists and tables are always limited to the user's own scope (see §8). 
 Every admin role has these on every page:
 
 - Topbar with live clock, notification bell and user chip (real name · role · scope), and log-out.
-- The bell includes **live items** from the data: PASTI waiting for Kawasan support or Negeri approval, approval results for DUN, and new student applications and pending leave for Cawangan.
+- The bell includes **live items** from the data: new student applications and pending leave for Cawangan.
 - **Tetapan**: edit profile, change password, and manage the accounts below you.
 - **Takwim**, **Notifikasi** and **Log Akses** (log rows limited to your scope).
 - CSV export (**Excel** buttons) and **Cetak / Simpan PDF** for tables and documents.
@@ -248,7 +245,7 @@ Everything a role sees is limited to its own scope, which comes from the logged-
 
 **Can do:**
 
-- **National HQ dashboard:** KPIs, money flow, balance by tier, performance by state, students by state, BayarCash coverage, the new-PASTI pipeline (for information only), alerts, applications, top collection.
+- **National HQ dashboard:** KPIs, money flow, balance by tier, performance by state, students by state, BayarCash coverage, alerts, applications, top collection.
 - **Caruman:** view Skim PASTI and PERKESO invoices and **Hantar Peringatan** to states with outstanding invoices. View claims and contribution rates.
 - **Payment Gateway (monitor):** coverage stats, fallback accounts, accounts per branch, recent transactions. No edit actions.
 - **Reports:** all four. **Kempen:** create and share campaigns. **Derma:** view donations.
@@ -270,8 +267,8 @@ Everything a role sees is limited to its own scope, which comes from the logged-
 
 **Can do:**
 
-- **State HQ dashboard:** the same widgets as Pusat, for its own state, broken down by Kawasan. The pipeline counts come from the data, with a button to Pengurusan PASTI.
-- **Final approval of new PASTI:** **Lulus** or **Tolak** (reason required) on *Disokong Kawasan* applications in its state. Lulus issues the next **Kod PASTI** and sets student registration to *TUTUP*.
+- **State HQ dashboard:** the same widgets as Pusat, for its own state, broken down by Kawasan.
+- **PASTI data (Excel upload):** in Pengurusan PASTI, **Templat Excel** and **Muat Naik Excel** add or update the PASTI of its own state (see §6.1). It is the only tier that can change PASTI records.
 - **Caruman:** **Bayar** its own state's Skim PASTI invoice. **Lulus / Tolak** member claims that Kawasan has supported.
 - **Payment Gateway (monitor):** stats and tables, no edit actions.
 - **Warga:** manage AJK Kawasan (add, edit, appointment letters); view Jemaah Pengurus.
@@ -280,7 +277,7 @@ Everything a role sees is limited to its own scope, which comes from the logged-
 
 **Cannot do:**
 
-- Register a PASTI or give Kawasan-level support. Open or close student registration.
+- Open or close student registration.
 - Pay another state's invoice. Approve a claim Kawasan hasn't supported.
 - Create Guru accounts, take donations, or use *Log masuk sebagai*.
 - Open student lists, applications, parents, fees, attendance, leave, SPPM, Petugas or Guru lists.
@@ -289,7 +286,7 @@ Everything a role sees is limited to its own scope, which comes from the logged-
 
 **Login:** `kawasan@pasti.org` (P021 Kota Bharu), `bachok@pasti.org` · **Scope:** one Kawasan.
 
-**Sidebar:** everything except Daftar PASTI Baharu.
+**Sidebar:** every page in the admin console.
 
 **Can do:**
 
@@ -298,9 +295,9 @@ Everything a role sees is limited to its own scope, which comes from the logged-
   - Monthly fee collection chart, and attendance over the last 10 school days by DUN.
   - **Prestasi Mengikut DUN** table (PASTI, students, teachers, attendance, collection, BayarCash accounts, registration open).
   - Charts per PASTI (students and teachers, attendance and collection).
-  - New-PASTI pipeline, *Perlu Perhatian* alerts, student applications and SPPM donuts, recent transactions, and a collection ranking.
+  - *Perlu Perhatian* alerts, student applications and SPPM donuts, recent transactions, and a collection ranking.
   - Also: news with **+ Tambah** (target Kawasan and below), calendar and quick-access tiles.
-- **Pengurusan PASTI:** **Sokong** or **Tolak** new applications from DUN in its Kawasan. **Buka / Tutup Pendaftaran** murid for each approved PASTI.
+- **Pengurusan PASTI:** view the PASTI in its Kawasan and **Buka / Tutup Pendaftaran** murid for each one.
 - **Caruman:** **Sokong / Tolak** member claims from DUN and Cawangan. Pay PERKESO invoices in scope.
 - **Warga:** manage AJK Kawasan and Petugas; view Jemaah Pengurus and the Guru lists.
 - **Monitor the branches:** student applications, student list, parents, certificates, SPPM progress, fees and transactions, attendance (including teacher clock-in from the Portal Guru), teacher leave. All view-only.
@@ -310,7 +307,7 @@ Everything a role sees is limited to its own scope, which comes from the logged-
 
 **Cannot do:**
 
-- Register or give final approval to a PASTI.
+- Upload or edit PASTI records (Negeri does this).
 - Accept students, edit student records, run billing, record payments, check pupils in, or approve leave. These belong to the branch.
 - Give final approval to claims. Create Guru accounts.
 
@@ -318,14 +315,13 @@ Everything a role sees is limited to its own scope, which comes from the logged-
 
 **Login:** `dun@pasti.org` (N09 Kota Lama), `n10@pasti.org` · **Scope:** one DUN and its PASTI.
 
-**Sidebar:** Utama · Warga (Petugas, Guru/Pembantu) · Pengurusan (Pengurusan PASTI, Daftar PASTI Baharu, Permohonan Murid, Senarai Murid, Cetak Sijil, Ibu Bapa, Permarkahan) · Caruman, Yuran, Payment Gateway · Papan Pemuka, Laporan Guru, Laporan Murid · Kehadiran, Cuti Guru, Takwim, Notifikasi, Log Akses · Kempen, Derma · Tetapan.
+**Sidebar:** Utama · Warga (Petugas, Guru/Pembantu) · Pengurusan (Pengurusan PASTI, Permohonan Murid, Senarai Murid, Cetak Sijil, Ibu Bapa, Permarkahan) · Caruman, Yuran, Payment Gateway · Papan Pemuka, Laporan Guru, Laporan Murid · Kehadiran, Cuti Guru, Takwim, Notifikasi, Log Akses · Kempen, Derma · Tetapan.
 
 **Can do:**
 
 - **Monitoring dashboard for the DUN:** the same panels as Kawasan, with a **Prestasi Mengikut PASTI** table (code, students, teachers, attendance, collection, collection account, registration, Cawangan admin) and charts per PASTI.
-- **Register a new PASTI** (3-step form). Negeri, Parlimen and DUN come from its own account and are locked. The application gets status **Baharu** and goes to Kawasan.
-- **Pengurusan PASTI:** track its applications. For an approved PASTI with no admin, **Cipta Pentadbir** opens Tetapan.
-- **Tetapan:** create **Pentadbir Cawangan** accounts for approved PASTI in its DUN.
+- **Pengurusan PASTI:** view the PASTI in its DUN. For a PASTI with no admin, **Cipta Pentadbir** opens Tetapan.
+- **Tetapan:** create **Pentadbir Cawangan** accounts for the PASTI in its DUN.
 - **Caruman:** add member claims; pay PERKESO invoices in scope.
 - **Payment Gateway:** configure the **DUN fallback account**; view branch accounts.
 - **Monitor:** applications, students, certificates, parents, SPPM, fees, attendance, leave (view-only). Petugas (add, edit), Guru list.
@@ -333,7 +329,7 @@ Everything a role sees is limited to its own scope, which comes from the logged-
 
 **Cannot do:**
 
-- Support or approve a PASTI, including its own. Open or close registration.
+- Add or edit PASTI records (Negeri uploads them). Open or close registration.
 - Accept students, edit student records, run billing, check pupils in, or approve leave.
 - Open AJK/Jemaah or Laporan Warga. Create Guru accounts.
 
@@ -360,7 +356,7 @@ Everything a role sees is limited to its own scope, which comes from the logged-
 
 **Cannot do:**
 
-- Open Pengurusan PASTI, Daftar PASTI Baharu, Petugas, AJK Kawasan or Laporan Warga.
+- Open Pengurusan PASTI, Petugas, AJK Kawasan or Laporan Warga.
 - See any other PASTI's data.
 - Create admin accounts. Open or close its own registration (ask Kawasan).
 - Send notices or events above Cawangan level.
@@ -401,7 +397,7 @@ Everything a role sees is limited to its own scope, which comes from the logged-
 ### 5.8 Public visitors (no login)
 
 - **Pendaftaran Murid** (`daftar-murid.html`):
-  - Needs a valid **Kod PASTI** for an approved PASTI whose registration is **BUKA**.
+  - Needs a valid **Kod PASTI** for a PASTI whose registration is **BUKA**.
   - Every field is saved: pupil (name, MyKid, date of birth, sex, race, orphan status, class), father, mother, email, income and address.
   - Checks: MyKid and IC are 12 digits, phone digits, valid email, birth date not in the future.
   - A MyKid that already has an application in progress or accepted is refused, with its reference and a Semak Status link.
@@ -411,43 +407,33 @@ Everything a role sees is limited to its own scope, which comes from the logged-
 
 ## 6. End-to-end flows
 
-### 6.1 New PASTI: from registration to open for students
+### 6.1 PASTI data: from Excel upload to open for students
+
+There is **no online PASTI registration** in Fasa 1. Each state's PASTI list is loaded by the **Pentadbir Negeri** from Excel.
 
 ```mermaid
 sequenceDiagram
+  participant NEG as Negeri
   participant DUN
   participant KWS as Kawasan
-  participant NEG as Negeri
   participant CAW as Cawangan
   participant Parent
-  DUN->>DUN: Daftar PASTI Baharu (3-step form)
-  Note over DUN: status = Baharu, no D/nnn/2026
-  DUN->>KWS: appears in Pengurusan PASTI
-  alt Kawasan supports
-    KWS->>NEG: Sokong → status "Disokong Kawasan"
-    alt Negeri approves
-      NEG->>NEG: Lulus → Kod PASTI issued (e.g. D030117), registration TUTUP
-      NEG-->>DUN: next steps shown
-      DUN->>CAW: Tetapan → create Pentadbir Cawangan
-      CAW->>CAW: create Guru accounts
-      KWS->>KWS: Buka Pendaftaran for this PASTI
-      CAW->>Parent: share Kod PASTI / link / QR
-    else Negeri rejects
-      NEG->>DUN: Tolak + reason → "Ditolak"
-    end
-  else Kawasan rejects
-    KWS->>DUN: Tolak + reason → "Ditolak"
-  end
+  NEG->>NEG: Pengurusan PASTI → Templat Excel (Templat_Data_PASTI.xlsx)
+  NEG->>NEG: Muat Naik Excel → preview (baharu / dikemas kini / diabaikan) → Simpan
+  Note over NEG: new Kod PASTI = active PASTI, registration TUTUP; existing Kod PASTI = updated
+  NEG-->>DUN: PASTI appears in Senarai PASTI Cawangan
+  DUN->>CAW: Cipta Pentadbir → Tetapan → create Pentadbir Cawangan
+  CAW->>CAW: create Guru accounts
+  KWS->>KWS: Buka Pendaftaran for this PASTI
+  CAW->>Parent: share Kod PASTI / link / QR
 ```
 
-| Status | Set by | Who acts next |
-|---|---|---|
-| `Baharu` | DUN (on submit) | Kawasan: Sokong / Tolak |
-| `Disokong Kawasan` | Kawasan | Negeri: Lulus / Tolak |
-| `Lulus` (plus Kod PASTI) | Negeri | DUN creates the Cawangan admin; Kawasan opens registration |
-| `Ditolak` (plus reason) | Kawasan or Negeri | Ends here (shown in *Semakan Kelulusan*) |
-
-Every step adds an entry to the PASTI's `sejarah` history (who, action, date). **Pusat never acts.** It only sees totals on its dashboard.
+- **Template columns:** Kod PASTI, No Pendaftaran, Nama PASTI, Alamat, No Telefon, Parlimen, DUN, Bil Guru, Bil Murid.
+- **Upload:** `.xlsx`, `.xls` or `.csv`. A row needs **Kod PASTI, Nama PASTI, Parlimen and DUN**; rows missing any of them are skipped and listed.
+- **Negeri** is always set to the admin's own state, whatever the file says.
+- A row whose **Kod PASTI already exists** updates that PASTI. Any other row is **added as an active PASTI** with student registration **TUTUP**.
+- A preview shows how many PASTI are new, updated and skipped before **Simpan**. The upload is written to **Log Akses**.
+- Kawasan, DUN and Cawangan never change PASTI records. **Pusat never acts**; it only sees totals on its dashboard.
 
 ### 6.2 Account creation cascade
 
@@ -464,7 +450,7 @@ How the **Cipta Akaun** form works (Tetapan → Pengguna & Akaun):
 
 1. Choose the **role**. Only roles below yours are offered.
 2. Fill in name, email (the login ID) and phone.
-3. Choose the **location** with cascading Negeri → Kawasan → DUN → PASTI pickers. Levels at or above your own are locked to your scope. The PASTI list only shows **approved PASTI that have a Kod PASTI**.
+3. Choose the **location** with cascading Negeri → Kawasan → DUN → PASTI pickers. Levels at or above your own are locked to your scope. The PASTI list only shows **PASTI that have a Kod PASTI**.
 4. Result:
    - The email must be unique.
    - A temporary password `Pasti@nnnn` is generated.
@@ -515,7 +501,7 @@ Kawasan and DUN can see the applications but can't decide on them.
 
 - **Skim PASTI invoices** are per state. **Negeri pays its own state's invoice.** Pusat sends **Hantar Peringatan**. Kawasan, DUN and Cawangan view only.
 - **PERKESO SKSPS** invoices are per member. Negeri, Kawasan, DUN and Cawangan pay rows in their scope; Pusat sends reminders.
-- **Member claims** (medical, death benefit, maternity, disability) follow the same chain as a new PASTI:
+- **Member claims** (medical, death benefit, maternity, disability) go through a three-step chain:
   1. **Cawangan or DUN** adds the claim (member, PASTI, type, amount, notes, document) → *Baharu*.
   2. **Kawasan** clicks **Sokong** → *Disokong Kawasan*, or **Tolak**.
   3. **Negeri** clicks **Lulus** → *Diluluskan*, or **Tolak**.
@@ -535,27 +521,15 @@ Kawasan and DUN can see the applications but can't decide on them.
 
 ---
 
-### 6.10 Special-needs students (MBK / OKU)
-
-1. **Cawangan declares readiness** (dashboard → *Kemasukan Murid Berkeperluan Khas*): facilities, trained teachers, quota and accepted categories. Status becomes **MENUNGGU**.
-2. **Kawasan verifies** (Pengurusan PASTI → *Senarai PASTI Cawangan* → **Semak MBK**): **Sahkan & Buka** makes it **BUKA**; **Tolak** (with reason) returns it to **TUTUP**. Kawasan can also **Tutup MBK** later.
-3. **Parent applies** with the normal form. In section *Keperluan Khas* they give the category, sub-category, support level, OKU card number, support needs, notes, a doctor's report and a separate health-data consent. The form blocks the application if that PASTI's MBK is not BUKA, the quota is full, or the category isn't accepted, and suggests other PASTI with room (same DUN first).
-4. **Cawangan decides** (Permohonan Murid → tab *Keperluan Khas*): **Jadual Penilaian** (date, time, place) → status *Dijadual Penilaian* → **Terima** (blocked if the quota is full) or **Tolak**.
-5. The **parent** sees the assessment appointment in Semak Status and the Anak Saya card. The **class teacher** sees an MBK note in Kehadiran Murid and Permarkahan.
-6. **Fees** are the same as for other students.
-
-**Privacy:** only the Cawangan, the teachers of that PASTI and the child's parent can see which child is MBK and the details. Kawasan, DUN, Negeri and Pusat see **counts only** (dashboards, Laporan Murid → *Keperluan Khas*, the MBK column in Pengurusan PASTI). For them an application under assessment simply shows as *Baharu*. Every opening of MBK details is written to Log Akses.
-
 ## 7. Module reference (admin console)
 
 | Page | Tabs / sections | Main functions |
 |---|---|---|
-| **Utama** `dashboard` | Pusat: national by Negeri. Negeri: state by Kawasan. Kawasan: by DUN and PASTI. DUN: by PASTI. Cawangan: by class and teacher. | KPIs, charts (Chart.js), alerts, PASTI pipeline, news (+ Tambah makluman), mini calendar, Kod PASTI (Cawangan), quick-access tiles filtered by permission |
+| **Utama** `dashboard` | Pusat: national by Negeri. Negeri: state by Kawasan. Kawasan: by DUN and PASTI. DUN: by PASTI. Cawangan: by class and teacher. | KPIs, charts (Chart.js), alerts, news (+ Tambah makluman), mini calendar, Kod PASTI (Cawangan), quick-access tiles filtered by permission |
 | **AJK / Jemaah** `warga-jawatankuasa` | AJK PASTI Kawasan · Jemaah Pengurus Cawangan | Search, + Tambah Ahli, Edit, Surat Pelantikan (single or bulk) |
 | **Petugas** `warga-petugas` | Kawasan · Cawangan | Status and Bidang filters, search, + Tambah Petugas, Edit |
 | **Guru** `warga-guru` | Senarai Guru · Pembantu Guru | Search, Excel, Cetak, Profil, Edit |
-| **Pengurusan PASTI** `pasti-pengurusan` | PASTI Baharu · Semakan Kelulusan · PASTI Cawangan | Approval chain, Kod PASTI, open/close registration, create Cawangan admin |
-| **Daftar PASTI Baharu** `pasti-daftar-baharu` | 3-step wizard | Establishment details, facilities checklist, management committee, documents, declaration |
+| **Pengurusan PASTI** `pasti-pengurusan` | Senarai PASTI Cawangan | Templat Excel and Muat Naik Excel (Negeri), open/close registration (Kawasan), Cipta Pentadbir (DUN), Lihat |
 | **Permohonan Murid** `murid-permohonan` | Baharu · Diterima · Ditolak | Lihat, Cetak (borang), Excel, Terima/Tolak (Cawangan) |
 | **Senarai Murid** `murid-senarai` | — | Search, Lihat, Edit, Cetak |
 | **Cetak Sijil** `murid-sijil` | — | Select rows; Sijil Jawi / Rumi per row or in bulk; Cetak / Simpan PDF |
@@ -583,7 +557,7 @@ Kawasan and DUN can see the applications but can't decide on them.
 
 Scoping comes from the **logged-in account** (`PT.scope`), not from fixed demo values.
 
-1. **The account's chain.** `DB.chainOf(user)` works out Negeri → Kawasan → DUN → PASTI from the account's `skop` and the PASTI records. `DB.pastiInScope()` lists the approved PASTI inside it.
+1. **The account's chain.** `DB.chainOf(user)` works out Negeri → Kawasan → DUN → PASTI from the account's `skop` and the PASTI records. `DB.pastiInScope()` lists the PASTI inside it.
 2. **Location filters** (`scopeFilters`). Any `<select>` whose first option is *Semua Negeri / Kawasan / DUN / PASTI* is hidden if it is above the user's level, and options outside scope are removed. A **"Skop: …"** badge with the real scope is added.
 
    | Tier | Hidden filters |
@@ -654,7 +628,7 @@ Everything is kept in the browser's `localStorage`. Nothing is sent to a server.
 | `pt-cuti` | Teacher leave requests and decisions |
 | `pt-payments` | Log of every payment (online and counter), newest first |
 | `pt-yuran-rekod` | Counter payments recorded by Cawangan in Yuran |
-| `pt-log` | Access log entries (e.g. MBK details opened), shown in Log Akses |
+| `pt-log` | Access log entries, shown in Log Akses |
 | `pt-autodebit`, `pt-pemakluman-read`, `pt-notif-read-*` | Parent preferences and read state |
 | `pt-queue` | Offline send queue (guru and parent) |
 | `pt-print-job` | Document handed to `print.html` |
@@ -666,12 +640,11 @@ Everything is kept in the browser's `localStorage`. Nothing is sent to a server.
 All sample names, IC numbers, MyKid numbers and phone numbers are **fictional**.
 
 - **PASTI:**
-  - 9 approved in P021 Kota Bharu (N09 Kota Lama, N10 Bunut Payong), with codes `D030108–D030116`.
+  - 9 in P021 Kota Bharu (N09 Kota Lama, N10 Bunut Payong), with codes `D030108–D030116`.
   - 2 in P025 Bachok.
   - A few in Terengganu and Kedah.
-  - Applications in progress: AL-QALAM (*Disokong Kawasan*), AR-WAFA and AS-SAKINAH (*Baharu*), AL-BAYAN (*Ditolak*).
-- **Students:** normal applications (*Baharu*, *Diterima*, *Ditolak*) plus MBK records: 6 accepted MBK students (including Muhammad Nazmi in the demo teacher's class), one MBK application *Baharu* and one *Dijadual Penilaian* at Ar-Raihan.
-- **MBK intake:** BUKA at Ar-Raihan, Baitul Ilmi, Al-Munawwarah and An-Nur Hasanah; MENUNGGU at Al-Qayyum.
+  - All are active PASTI with a Kod PASTI. Upload more with Muat Naik Excel as a Negeri admin.
+- **Students:** applications in every status (*Baharu*, *Diterima*, *Ditolak*).
 - **SPPM:** pupil Ahmad Umair (MyKid 210512035411) has Penggal 1 complete and sent. He is the demo parent's child and in the demo teacher's class.
 - **Users:** the 13 accounts listed in §2.
 
@@ -684,7 +657,7 @@ This is a **front-end prototype**. These limits are expected until a backend exi
 - **No real authentication.** Passwords aren't checked, and the session and data live in the browser's `localStorage`, where anyone can change them. Page permissions are enforced only in the browser.
 - **Data is per browser.** Two people or two devices don't share records.
 - **Simulated services:** BayarCash payments, SMS and e-mail, Google Calendar sync, auto-debit, password resets, and sending the offline queue.
-- **Uploads are not stored** (PASTI documents, claim documents, photos).
+- **Uploads are not stored** (claim documents, photos). The PASTI Excel file is read in the browser and its rows go into the mock DB.
 - **Mock figures:** dashboard rates (attendance, fee collection, SPPM progress), HQ money figures, report tables and the audit log are sample data (stable per PASTI and filtered by scope), not calculated from transactions. Counts of PASTI, students, teachers, applications, leave and logged payments are real.
 - **Demo class:** the Portal Guru uses one sample class of 15 pupils for whichever PASTI the teacher belongs to. The SPPM book covers ages 5 and 6 only.
 - **Teacher attendance in admin Kehadiran** reads the Portal Guru data stored in the same browser.
@@ -692,7 +665,6 @@ This is a **front-end prototype**. These limits are expected until a backend exi
 ### Fixed in the role and bug-fix pass (29/09/2026)
 
 - Scoping now follows the logged-in account for every demo login (e.g. `n10@`, `qayyum@`, `bachok@`, `terengganu@`), including the dashboard, Payment Gateway, reports and lists.
-- Daftar PASTI Baharu saves the DUN's real Negeri and Kawasan.
 - Role rules applied: Cawangan runs billing, check-in, student edits, Jemaah Pengurus and leave approval; Negeri pays its own Skim invoice; claims go Cawangan/DUN → Kawasan → Negeri; broadcasts are limited to your own level; only Pusat can *Log masuk sebagai*; only Cawangan creates teachers; Pembantu can't send SPPM.
 - Access filled in: Cawangan and DUN reports, DUN Kempen and Sijil, Kawasan Laporan Warga, Pusat Payment Gateway monitor, Pusat and Negeri Derma view.
 - New flows: teacher leave (Cuti Guru); parent payments reaching Resit, totals and admin Transaksi; notifications from live data.

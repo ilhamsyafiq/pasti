@@ -1,6 +1,6 @@
 // ePASTI service worker — lets the guru & parent portals open from the home screen
 // and keep working on weak signal. Network first; falls back to the cached copy.
-const CACHE = 'epasti-v5';
+const CACHE = 'epasti-v6';
 const CORE = [
   'assets/css/app.css', 'assets/js/app.js', 'assets/img/pasti-logo.png', 'assets/img/icons/icon-192.png',
   'guru/dashboard.html', 'guru/clock.html', 'guru/murid.html', 'guru/markah.html', 'guru/takwim.html', 'guru/profil.html',

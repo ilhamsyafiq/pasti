@@ -7,7 +7,7 @@
 (function () {
   // Data version: when it changes, every ePASTI key kept in this browser (DB, saved tables, SPPM,
   // kehadiran, sign-in) is cleared so old sample data can never come back from cache.
-  const DATA_VER = '2026-09-29-mbk';
+  const DATA_VER = '2026-10-08-nodaftar';
   try { if (localStorage.getItem('pt-data-ver') !== DATA_VER) {
     Object.keys(localStorage).filter(k => /^pt[-:]|^pt_/.test(k)).forEach(k => localStorage.removeItem(k));
     Object.keys(sessionStorage).filter(k => /^pt[-:]/.test(k)).forEach(k => sessionStorage.removeItem(k));
@@ -82,7 +82,6 @@
     { key:'pengurusan', label:'Pengurusan & Murid', icon:'nSchool', children:[
       { cap:'Pengurusan PASTI' },
       { label:'Pengurusan PASTI', file:'pasti-pengurusan' },
-      { label:'Daftar PASTI Baharu', file:'pasti-daftar-baharu' },
       { cap:'Murid & Ibu Bapa' },
       { label:'Permohonan Murid', file:'murid-permohonan' },
       { label:'Senarai Murid', file:'murid-senarai' },
@@ -155,58 +154,33 @@
   const DBKEY = 'pt-db-v2';
   const HIER = { pusat:'negeri', negeri:'kawasan', kawasan:'dun', dun:'cawangan', cawangan:'guru' };   // who each tier creates
   const ROLE_LABEL = { pusat:'Pentadbir Pusat', negeri:'Pentadbir Negeri', kawasan:'Pentadbir Kawasan', dun:'Pentadbir DUN', cawangan:'Pentadbir Cawangan', guru:'Guru PASTI', pembantu:'Pembantu Guru', ibubapa:'Ibu Bapa / Penjaga' };
-  // Murid Berkeperluan Khas (MBK / OKU) — lists shared by every page (DB.MBK_*)
-  const MBK_KATEGORI = ['Pendengaran','Penglihatan','Pertuturan','Fizikal','Masalah Pembelajaran','Mental','Pelbagai'];
-  const MBK_SUB = { 'Masalah Pembelajaran': ['Autisme','ADHD','Sindrom Down','Lewat Perkembangan Global','Disleksia','Lain-lain'] };
-  const MBK_TAHAP = ['Ringan','Sederhana','Tinggi'];
-  const MBK_KEMUDAHAN = ['Ramp / laluan kerusi roda','Tandas OKU','Bilik sumber / sensori','Pembantu pengiring','Alat bantu dengar / visual'];
-  const MBK_KEPERLUAN = ['Kerusi roda','Alat bantu dengar','Pengiring','Diet khas','Ubat berjadual','Terapi pertuturan','Terapi cara kerja'];
   function seedDB(){
     const P = (no,t,nama,alamat,tel,kaw,dun,status,extra) => Object.assign({ no, tarikh:t, nama, alamat, tel, negeri:'KELANTAN', kawasan:kaw, dun, status, sejarah:[] }, extra||{});
     const KK = 'P021 KOTA BHARU';
-    // MBK (Murid Berkeperluan Khas) readiness declared by Cawangan; BUKA = verified by Kawasan
-    const KM = MBK_KEMUDAHAN;
-    const MBK = (status,kuota,kategori,kemudahan,guruTerlatih,catatan,mohon,sah) => Object.assign({ status, kuota, kategori, kemudahan, guruTerlatih, catatan:catatan||'',
-      dimohon:{ oleh:'Pentadbir Cawangan', tarikh:mohon }, sebab:'' }, sah ? { disahkan:{ oleh:'Pentadbir Kawasan', tarikh:sah } } : {});
     const pasti = [
-      P('D/140/2021','12/01/2021',"PASTI AR-RAIHAN",'No 3, Jalan Masjid, Kota Bharu','09-1450 0734',KK,'N09 KOTA LAMA','Lulus',{kod:'D030108',guru:9,murid:54,daftar:'BUKA',
-        mbk:MBK('BUKA',4,['Masalah Pembelajaran','Pertuturan','Fizikal'],[KM[0],KM[1],KM[2]],2,'Bilik sumber di aras bawah; 2 guru berkursus Pendidikan Khas (2025).','08/01/2026','15/01/2026')}),
+      P('D/140/2021','12/01/2021',"PASTI AR-RAIHAN",'No 3, Jalan Masjid, Kota Bharu','09-1450 0734',KK,'N09 KOTA LAMA','Lulus',{kod:'D030108',guru:9,murid:54,daftar:'BUKA'}),
       P('D/141/2021','14/01/2021','PASTI AN-NAJAH','Lorong Kurnia, Kota Bharu','09-3130 9765',KK,'N09 KOTA LAMA','Lulus',{kod:'D030109',guru:13,murid:78,daftar:'BUKA'}),
-      P('D/142/2021','20/01/2021','PASTI AL-QAYYUM','Lot 224, Kota Lama, Kota Bharu','09-3140 1571',KK,'N09 KOTA LAMA','Lulus',{kod:'D030110',guru:7,murid:41,daftar:'BUKA',
-        mbk:MBK('MENUNGGU',2,['Masalah Pembelajaran','Pertuturan'],[KM[0],KM[3]],1,'Ramp siap dibina Ogos 2026; seorang guru sedang berkursus.','22/09/2026')}),
-      P('D/143/2021','02/02/2021','PASTI AL-MUNAWWARAH','No 8, Taman Bunut Payong Indah','09-2352 3542',KK,'N10 BUNUT PAYONG','Lulus',{kod:'D030111',guru:8,murid:49,daftar:'BUKA',
-        mbk:MBK('BUKA',2,['Fizikal','Masalah Pembelajaran'],[KM[0],KM[1],KM[3]],1,'','12/01/2026','20/01/2026')}),
+      P('D/142/2021','20/01/2021','PASTI AL-QAYYUM','Lot 224, Kota Lama, Kota Bharu','09-3140 1571',KK,'N09 KOTA LAMA','Lulus',{kod:'D030110',guru:7,murid:41,daftar:'BUKA'}),
+      P('D/143/2021','02/02/2021','PASTI AL-MUNAWWARAH','No 8, Taman Bunut Payong Indah','09-2352 3542',KK,'N10 BUNUT PAYONG','Lulus',{kod:'D030111',guru:8,murid:49,daftar:'BUKA'}),
       P('D/144/2021','09/02/2021','PASTI AZ-ZAHRA','Kg Kubang Pasu, Kota Bharu','09-3153 2187',KK,'N09 KOTA LAMA','Lulus',{kod:'D030112',guru:10,murid:62,daftar:'BUKA'}),
       P('D/145/2021','15/02/2021','PASTI AL-IKHLAS','Jalan Bunut Payong Baru','09-3410 6010',KK,'N09 KOTA LAMA','Lulus',{kod:'D030113',guru:6,murid:38,daftar:'TUTUP'}),
-      P('D/146/2021','01/03/2021','PASTI BAITUL ILMI','No 12, Jalan Besar, Kota Bharu','09-2904 3422',KK,'N09 KOTA LAMA','Lulus',{kod:'D030114',guru:11,murid:67,daftar:'BUKA',
-        mbk:MBK('BUKA',3,['Masalah Pembelajaran','Pendengaran','Penglihatan'],[KM[1],KM[2],KM[4]],2,'','09/01/2026','15/01/2026')}),
+      P('D/146/2021','01/03/2021','PASTI BAITUL ILMI','No 12, Jalan Besar, Kota Bharu','09-2904 3422',KK,'N09 KOTA LAMA','Lulus',{kod:'D030114',guru:11,murid:67,daftar:'BUKA'}),
       P('D/147/2021','08/03/2021','PASTI AL-HUDA','Lorong Hidayah, Kota Bharu','09-7014 7455',KK,'N09 KOTA LAMA','Lulus',{kod:'D030115',guru:8,murid:44,daftar:'BUKA'}),
       P('D/148/2021','15/03/2021','PASTI AL-MIZAN','Kg Kota Bharu Darat','09-1413 5212',KK,'N09 KOTA LAMA','Lulus',{kod:'D030116',guru:9,murid:51,daftar:'BUKA'}),
       // other Kelantan kawasan (P025 Bachok)
-      P('D/131/2020','06/07/2020','PASTI AN-NUR HASANAH','Kg Tawang, Bachok','09-778 2140','P025 BACHOK','N20 TAWANG','Lulus',{kod:'D030101',guru:7,murid:42,daftar:'BUKA',
-        mbk:MBK('BUKA',2,['Masalah Pembelajaran','Pertuturan'],[KM[1],KM[2]],1,'','05/01/2026','13/01/2026')}),
+      P('D/131/2020','06/07/2020','PASTI AN-NUR HASANAH','Kg Tawang, Bachok','09-778 2140','P025 BACHOK','N20 TAWANG','Lulus',{kod:'D030101',guru:7,murid:42,daftar:'BUKA'}),
       P('D/132/2020','14/07/2020','PASTI DARUL NAIM','Jalan Pantai Irama, Bachok','09-778 5516','P025 BACHOK','N21 PANTAI IRAMA','Lulus',{kod:'D030102',guru:6,murid:35,daftar:'BUKA'}),
       // a few other states (light seed)
       Object.assign(P('C/210/2022','10/03/2022','PASTI BUKIT BESAR','Jalan Sultan Omar, Kuala Terengganu','09-622 4410','P036 KUALA TERENGGANU','N15 BANDAR','Lulus',{kod:'T040201',guru:8,murid:46,daftar:'BUKA'}),{negeri:'TERENGGANU'}),
       Object.assign(P('C/211/2022','22/03/2022','PASTI SERI LADANG','Kg Ladang, Kuala Terengganu','09-622 7781','P036 KUALA TERENGGANU','N16 LADANG','Lulus',{kod:'T040202',guru:6,murid:33,daftar:'BUKA'}),{negeri:'TERENGGANU'}),
       Object.assign(P('K/305/2023','05/05/2023','PASTI DERGA JAYA','Taman Derga Jaya, Alor Setar','04-731 2250','P009 ALOR SETAR','N13 DERGA','Lulus',{kod:'K020301',guru:5,murid:28,daftar:'TUTUP'}),{negeri:'KEDAH'}),
-      // applications in progress
-      P('D/152/2026','16/09/2026','PASTI AL-QALAM','Lot 51, Kg Pulau Melaka, Kota Bharu','09-198 1834',KK,'N09 KOTA LAMA','Disokong Kawasan',{sejarah:[{by:'Pentadbir DUN',act:'Daftar',at:'16/09/2026'},{by:'Pentadbir Kawasan',act:'Sokong',at:'22/09/2026'}]}),
-      P('D/153/2026','20/09/2026','PASTI AR-WAFA','No 7, Jalan Bayam, Kota Bharu','09-007 4440',KK,'N09 KOTA LAMA','Baharu',{sejarah:[{by:'Pentadbir DUN',act:'Daftar',at:'20/09/2026'}]}),
-      P('D/154/2026','24/09/2026','PASTI AS-SAKINAH','Kg Bunut Payong Dalam','09-300 0352',KK,'N10 BUNUT PAYONG','Baharu',{sejarah:[{by:'Pentadbir DUN',act:'Daftar',at:'24/09/2026'}]}),
-      P('D/149/2026','02/09/2026','PASTI AL-BAYAN','Kg Kota, Kota Bharu','09-141 0250',KK,'N09 KOTA LAMA','Ditolak',{sebab:'Premis belum mendapat kelulusan PBT.',sejarah:[{by:'Pentadbir DUN',act:'Daftar',at:'02/09/2026'},{by:'Pentadbir Kawasan',act:'Sokong',at:'03/09/2026'},{by:'Pentadbir Negeri',act:'Tolak',at:'06/09/2026'}]}),
     ];
     const PIDX = ["PASTI AR-RAIHAN","PASTI AR-RAIHAN","PASTI AL-QAYYUM","PASTI AR-RAIHAN","PASTI AL-MUNAWWARAH","PASTI BAITUL ILMI","PASTI AR-RAIHAN","PASTI AZ-ZAHRA"];
     const M = (r,st,i,extra) => Object.assign({ tarikh:r[0], ref:r[1], nama:r[2], mykid:r[3], umur:r[4], bapa:r[5], kpBapa:r[6], telBapa:r[7], tarikhDaftar:r[8], status:st, pasti:PIDX[i%PIDX.length], kelas:'Tahun '+(10-+r[4]) }, extra||{});
-    // MBK children (privacy: details visible only to Cawangan, class teacher and the child's own parent)
-    const X = (kategori,sub,tahap,noKadOKU,keperluan,catatan,dokumen,penilaian) => Object.assign({ kategori, sub:sub||'', tahap, noKadOKU:noKadOKU||'', keperluan, catatan:catatan||'', dokumen:dokumen||'' }, penilaian ? { penilaian } : {});
-    const MB = (r,st,pasti,emel,mbk,extra) => Object.assign(M(r,st,0,{ pasti, emel, mbk }), extra||{});
+    const MB = (r,st,pasti,emel,extra) => Object.assign(M(r,st,0,{ pasti, emel }), extra||{});
     const murid = [
-      MB(['24/09/2026','B124782','NUR QAISARA ALIYA BINTI HAMDAN','220305038216','4','HAMDAN BIN YUSOF','880719035524','012-9087713','—'],'Baharu',"PASTI AR-RAIHAN",'hamdan.yusof@gmail.com',
-        X('Masalah Pembelajaran','Autisme','Sederhana','',['Pengiring','Terapi pertuturan'],'Sensitif kepada bunyi bising; perlukan rutin harian yang tetap.','laporan_pakar_qaisara.pdf'),{ ibu:'NORHAYATI BINTI SALLEH' }),
-      MB(['21/09/2026','B124783','MUHAMMAD HAFIY ISKANDAR BIN RIDZUAN','210829031947','5','RIDZUAN BIN ABDULLAH','850506033318','017-2231649','—'],'Dijadual Penilaian',"PASTI AR-RAIHAN",'ridzuan.abdullah@gmail.com',
-        X('Fizikal','','Sederhana','JKM-KB-0457812',['Kerusi roda','Pengiring'],'Menggunakan kerusi roda; boleh menulis dengan tangan kanan.','laporan_fisioterapi_hafiy.pdf',
-          { tarikh:'06/10/2026', masa:'09:00', tempat:'Bilik Sumber, PASTI AR-RAIHAN', catatan:'Sila bawa laporan fisioterapi terkini dan kad OKU asal.', oleh:'Ustazah Husna Mardhiah' })),
+      MB(['24/09/2026','B124782','NUR QAISARA ALIYA BINTI HAMDAN','220305038216','4','HAMDAN BIN YUSOF','880719035524','012-9087713','—'],'Baharu',"PASTI AR-RAIHAN",'hamdan.yusof@gmail.com',{ ibu:'NORHAYATI BINTI SALLEH' }),
+      MB(['21/09/2026','B124783','MUHAMMAD HAFIY ISKANDAR BIN RIDZUAN','210829031947','5','RIDZUAN BIN ABDULLAH','850506033318','017-2231649','—'],'Baharu',"PASTI AR-RAIHAN",'ridzuan.abdullah@gmail.com'),
       ...[['20/09/2026','B124781','ROZITA ASMA BINTI IZZUDDIN','210817032711','5','IZZUDDIN BIN LUTFI','840203035402','013-7012324','—'],
       ['19/09/2026','B124780','MUHAMMAD ZAKWAN IQMAL BIN RAFIE','200629031454','6','RAFIE BIN MUSTAQIM','821014031401','019-6770250','—'],
       ['18/09/2026','B124779','RAIHANA FAUZIAH BINTI WAFIY','211105035584','4','WAFIY BIN AFIQ','850926030942','012-5740515','—'],
@@ -217,18 +191,12 @@
       ['09/09/2026','B124769','MUHAMMAD GHAZI BIN NUAIM','201118034346','6','NUAIM BIN ZIKRI','831207031303','019-4215743','11/09/2026'],
       ['08/09/2026','B124768','ZAHRA QISTINA BINTI ASRI','210206035117','5','ASRI BIN YAZID','840716032115','012-0412598','10/09/2026'],
       ['07/09/2026','B124767','MUHAMMAD ANAS BIN FADHIL','200924034237','6','FADHIL BIN WAJDI','801003037283','017-1096460','09/09/2026']].map((r,i)=>M(r,'Diterima',i+1)),
-      MB(['05/01/2026','B124701','MUHAMMAD NAZMI BIN CHE FARHAN','150507034460','5','CHE FARHAN BIN CHE MAT','830411035217','013-9021478','07/01/2026'],'Diterima',"PASTI AR-RAIHAN",'chefarhan.chemat@gmail.com',
-        X('Pertuturan','','Ringan','',['Terapi pertuturan'],'Beri masa tambahan untuk menjawab; guna kad gambar.','laporan_terapi_pertuturan_nazmi.pdf'),{ kelas:'Tahun 5' }),
-      MB(['06/01/2026','B124702','NUR AISYAH HUMAIRA BINTI ZULHILMI','210414036128','5','ZULHILMI BIN AZHAR','860302035119','019-3348120','08/01/2026'],'Diterima',"PASTI AR-RAIHAN",'zulhilmi.azhar@gmail.com',
-        X('Masalah Pembelajaran','Sindrom Down','Sederhana','JKM-KB-0419930',['Pengiring','Terapi cara kerja'],'Suka aktiviti muzik; beri arahan satu langkah pada satu masa.','laporan_pakar_aisyah.pdf')),
-      MB(['07/01/2026','B124703','MUHAMMAD ARIF HAZIQ BIN ROSDI','200923031875','6','ROSDI BIN HASHIM','820917035561','013-4470215','09/01/2026'],'Diterima','PASTI BAITUL ILMI','rosdi.hashim@gmail.com',
-        X('Masalah Pembelajaran','ADHD','Ringan','',['Ubat berjadual'],'Ubat diberi jam 10:00 pagi oleh guru kelas.','laporan_pakar_arif.pdf')),
-      MB(['07/01/2026','B124704','NUR IMAN SAFIYYA BINTI KHAIRUL','210628034402','5','KHAIRUL BIN NASIR','870212034487','019-5582031','09/01/2026'],'Diterima','PASTI BAITUL ILMI','khairul.nasir@gmail.com',
-        X('Pendengaran','','Sederhana','JKM-KB-0428817',['Alat bantu dengar'],'Duduk di barisan hadapan; pastikan alat bantu dengar dicas.','laporan_audiologi_iman.pdf')),
-      MB(['08/01/2026','B124705','AHMAD DANISH ZAFRAN BIN MOKHTAR','200315037731','6','MOKHTAR BIN ISMAIL','810624035306','017-9013542','10/01/2026'],'Diterima','PASTI AL-MUNAWWARAH','mokhtar.ismail@gmail.com',
-        X('Fizikal','','Sederhana','JKM-KB-0433095',['Kerusi roda','Pengiring'],'Perlukan bantuan ke tandas.','laporan_fisioterapi_danish.pdf')),
-      MB(['09/01/2026','B124706','MUHAMMAD RAYYAN FIKRI BIN SAHARUDDIN','210117030559','5','SAHARUDDIN BIN OMAR','840830036621','012-6614370','12/01/2026'],'Diterima','PASTI AN-NUR HASANAH','saharuddin.omar@gmail.com',
-        X('Masalah Pembelajaran','Autisme','Sederhana','',['Terapi pertuturan','Diet khas'],'Diet bebas gluten; sediakan sudut tenang.','laporan_pakar_rayyan.pdf')),
+      MB(['05/01/2026','B124701','MUHAMMAD NAZMI BIN CHE FARHAN','150507034460','5','CHE FARHAN BIN CHE MAT','830411035217','013-9021478','07/01/2026'],'Diterima',"PASTI AR-RAIHAN",'chefarhan.chemat@gmail.com',{ kelas:'Tahun 5' }),
+      MB(['06/01/2026','B124702','NUR AISYAH HUMAIRA BINTI ZULHILMI','210414036128','5','ZULHILMI BIN AZHAR','860302035119','019-3348120','08/01/2026'],'Diterima',"PASTI AR-RAIHAN",'zulhilmi.azhar@gmail.com'),
+      MB(['07/01/2026','B124703','MUHAMMAD ARIF HAZIQ BIN ROSDI','200923031875','6','ROSDI BIN HASHIM','820917035561','013-4470215','09/01/2026'],'Diterima','PASTI BAITUL ILMI','rosdi.hashim@gmail.com'),
+      MB(['07/01/2026','B124704','NUR IMAN SAFIYYA BINTI KHAIRUL','210628034402','5','KHAIRUL BIN NASIR','870212034487','019-5582031','09/01/2026'],'Diterima','PASTI BAITUL ILMI','khairul.nasir@gmail.com'),
+      MB(['08/01/2026','B124705','AHMAD DANISH ZAFRAN BIN MOKHTAR','200315037731','6','MOKHTAR BIN ISMAIL','810624035306','017-9013542','10/01/2026'],'Diterima','PASTI AL-MUNAWWARAH','mokhtar.ismail@gmail.com'),
+      MB(['09/01/2026','B124706','MUHAMMAD RAYYAN FIKRI BIN SAHARUDDIN','210117030559','5','SAHARUDDIN BIN OMAR','840830036621','012-6614370','12/01/2026'],'Diterima','PASTI AN-NUR HASANAH','saharuddin.omar@gmail.com'),
       ...[['02/09/2026','B124760','MUHAMMAD AMSYAR BIN KHALISH','210903032801','5','KHALISH BIN JAMIL','850812035520','013-1101154','—'],
       ['01/09/2026','B124759','KHALISAH SYAKIRAH BINTI MUSTAQIM','211008034955','4','MUSTAQIM BIN SAIFULLAH','870627034933','017-5435253','—']].map((r,i)=>M(r,'Ditolak',i,{sebab:'Kuota kelas telah penuh.'})),
     ];
@@ -253,7 +221,7 @@
   function loadDB(){
     try { if (/[?&]reset=1/.test(location.search)) localStorage.removeItem(DBKEY);
       const s = localStorage.getItem(DBKEY);
-      if (s) { const d = JSON.parse(s); (d.pasti || []).forEach(p => { if (p.status === 'Disokong Negeri') p.status = 'Disokong Kawasan'; }); return d; } } catch(e){}
+      if (s) { const d = JSON.parse(s); return d; } } catch(e){}
     const d = seedDB(); try { localStorage.setItem(DBKEY, JSON.stringify(d)); } catch(e){} return d;
   }
   // ---- geography (mockup): negeri → kawasan → dun. PASTI rows carry their own negeri/kawasan/dun.
@@ -318,42 +286,9 @@
     chainOf,
     // active PASTI (status Lulus with kod) inside the signed-in account's scope (pusat = all)
     pastiInScope(){ const f = scopePred(this.user()); return this.all('pasti').filter(p => p.status === 'Lulus' && p.kod && f(p)); },
-    // ---- MBK (Murid Berkeperluan Khas). Counts here are safe for every tier (no names / diagnosis).
-    MBK_KATEGORI, MBK_SUB, MBK_TAHAP, MBK_KEMUDAHAN, MBK_KEPERLUAN,
     // PASTI record from a record / nama / kod
     pastiOf(x){ if (x && typeof x === 'object') return x; const n = normPasti(x), k = String(x || '').trim().toUpperCase();
       return DB.find('pasti', p => (p.kod && p.kod.toUpperCase() === k) || normPasti(p.nama) === n) || null; },
-    // the PASTI's mbk object (live reference — mutate + DB.save()) or a TUTUP stub when never declared
-    mbkOf(x){ const p = DB.pastiOf(x); return (p && p.mbk) || { status:'TUTUP', kuota:0, kategori:[], kemudahan:[], guruTerlatih:0, catatan:'' }; },
-    // { kuota, diisi (Diterima MBK), penilaian (Dijadual Penilaian), baharu (MBK Baharu), baki = kuota − diisi }
-    mbkQuota(x){ const p = DB.pastiOf(x), m = DB.mbkOf(p), n = normPasti(p ? p.nama : x);
-      const mine = DB.all('murid').filter(r => r.mbk && normPasti(r.pasti) === n);
-      const kuota = +m.kuota || 0, diisi = mine.filter(r => r.status === 'Diterima').length;
-      return { kuota, diisi, penilaian: mine.filter(r => r.status === 'Dijadual Penilaian').length, baharu: mine.filter(r => r.status === 'Baharu').length, baki: kuota - diisi }; },
-    // aggregate counts over a PASTI list (records or names; default = PASTI in the signed-in scope).
-    // kuota = sum over PASTI whose MBK is BUKA; total/diisi/byKategori = Diterima MBK murid.
-    mbkStats(list){
-      const ps = (list || DB.pastiInScope()).map(x => DB.pastiOf(x)).filter(Boolean);
-      const out = { total:0, baharu:0, penilaian:0, byKategori:{}, pastiBuka:0, pastiMenunggu:0, pastiTutup:0, kuota:0, diisi:0, byPasti:{} };
-      MBK_KATEGORI.forEach(k => out.byKategori[k] = 0);
-      const idx = {}; ps.forEach(p => { idx[normPasti(p.nama)] = p;
-        const m = DB.mbkOf(p);
-        out.byPasti[p.nama] = { status:m.status, kuota:+m.kuota || 0, diisi:0, baharu:0, penilaian:0, byKategori:{} };
-        if (m.status === 'BUKA') { out.pastiBuka++; out.kuota += +m.kuota || 0; } else if (m.status === 'MENUNGGU') out.pastiMenunggu++; else out.pastiTutup++; });
-      DB.all('murid').forEach(r => { if (!r.mbk) return; const p = idx[normPasti(r.pasti)]; if (!p) return; const b = out.byPasti[p.nama];
-        if (r.status === 'Diterima') { out.total++; out.diisi++; b.diisi++; const k = r.mbk.kategori || 'Pelbagai';
-          out.byKategori[k] = (out.byKategori[k] || 0) + 1; b.byKategori[k] = (b.byKategori[k] || 0) + 1; }
-        else if (r.status === 'Baharu') { out.baharu++; b.baharu++; }
-        else if (r.status === 'Dijadual Penilaian') { out.penilaian++; b.penilaian++; } });
-      return out; },
-    // approved PASTI (open for registration) whose MBK is BUKA with room — same DUN first, then same Kawasan.
-    // Optional kategori keeps only PASTI that accept it. Returns copies: { ...pasti, baki, dekat:'DUN'|'Kawasan' }.
-    mbkAlternatives(x, kategori){
-      const me = DB.pastiOf(x); if (!me) return [];
-      const ok = p => p !== me && p.status === 'Lulus' && p.kod && p.daftar !== 'TUTUP' && p.mbk && p.mbk.status === 'BUKA'
-        && (!kategori || !(p.mbk.kategori || []).length || p.mbk.kategori.includes(kategori));
-      const pick = (f, dekat) => DB.all('pasti').filter(p => ok(p) && f(p)).map(p => Object.assign({}, p, { baki:DB.mbkQuota(p).baki, dekat })).filter(p => p.baki > 0).sort((a, b) => b.baki - a.baki);
-      return pick(p => p.dun === me.dun, 'DUN').concat(pick(p => p.dun !== me.dun && p.kawasan === me.kawasan, 'Kawasan')); },
   };
   window.DB = DB;
 
@@ -367,7 +302,7 @@
     kawasan: { label:'Pentadbir Kawasan',
       allow:['dashboard','warga-jawatankuasa','warga-petugas','warga-guru','pasti-pengurusan','murid-permohonan','murid-senarai','murid-sijil','ibubapa-senarai','permarkahan','caruman','yuran','payment-gateway','kehadiran','cuti-guru','calendar','notifikasi','log-akses','kempen','derma','laporan-papan-pemuka','laporan-guru','laporan-murid','laporan-warga','tetapan'] },
     dun: { label:'Pentadbir DUN',
-      allow:['dashboard','warga-petugas','warga-guru','pasti-pengurusan','pasti-daftar-baharu','murid-permohonan','murid-senarai','murid-sijil','ibubapa-senarai','permarkahan','caruman','yuran','payment-gateway','kehadiran','cuti-guru','calendar','notifikasi','log-akses','tetapan','kempen','derma','laporan-papan-pemuka','laporan-guru','laporan-murid'] },
+      allow:['dashboard','warga-petugas','warga-guru','pasti-pengurusan','murid-permohonan','murid-senarai','murid-sijil','ibubapa-senarai','permarkahan','caruman','yuran','payment-gateway','kehadiran','cuti-guru','calendar','notifikasi','log-akses','tetapan','kempen','derma','laporan-papan-pemuka','laporan-guru','laporan-murid'] },
     cawangan: { label:'Pentadbir Cawangan',
       allow:['dashboard','warga-jawatankuasa','warga-guru','murid-permohonan','murid-senarai','murid-sijil','ibubapa-senarai','permarkahan','caruman','yuran','payment-gateway','kehadiran','cuti-guru','calendar','notifikasi','log-akses','tetapan','kempen','derma','laporan-papan-pemuka','laporan-guru','laporan-murid'] },
   };
@@ -516,31 +451,13 @@
       { c:'#d93025', t:'Kehadiran Guru', s:'3 guru belum clock-in hari ini.', time:'Hari ini', go: canPage('kehadiran') ? 'kehadiran.html' : null },
     ]);
   }
-  // Live admin items from the DB: PASTI applications waiting for this tier, results for DUN,
-  // new student applications & pending teacher leave for Cawangan.
+  // Live admin items from the DB: new student applications & pending teacher leave for Cawangan.
   function adminNotifs(){
     const u = DB.user(); if (!u) return [];
     const tier = u.peranan, S = scopeInfo(), mine = DB.all('pasti').filter(scopePred(u)), out = [];
-    const names = l => l.length <= 2 ? ' — ' + l.map(p => p.nama).join(', ') : '';
-    if (tier === 'kawasan') { const l = mine.filter(p => p.status === 'Baharu');
-      if (l.length) out.push({ c:'#1a73e8', t:'Permohonan PASTI Baharu', s:l.length + ' permohonan PASTI menunggu sokongan Kawasan' + names(l) + '.', time:'Terkini', go:'pasti-pengurusan.html?t=semakan' });
-      mine.filter(p => p.status === 'Lulus' && p.mbk && p.mbk.status === 'MENUNGGU').forEach(p => out.push({ c:'#f9ab00', t:'Kemasukan MBK', s:p.nama + ' mohon buka kemasukan MBK' + (p.mbk.kuota ? ' (kuota ' + p.mbk.kuota + ')' : '') + '.', time:(p.mbk.dimohon && p.mbk.dimohon.tarikh) || 'Terkini', go:'pasti-pengurusan.html' })); }
-    if (tier === 'negeri') { const l = mine.filter(p => p.status === 'Disokong Kawasan');
-      if (l.length) out.push({ c:'#1a73e8', t:'Kelulusan PASTI Baharu', s:l.length + ' permohonan PASTI disokong Kawasan, menunggu kelulusan Negeri' + names(l) + '.', time:'Terkini', go:'pasti-pengurusan.html?t=semakan' }); }
-    if (tier === 'dun') mine.filter(p => (p.sejarah || []).length > 1).slice(0, 4).forEach(p => {
-      const last = p.sejarah[p.sejarah.length - 1];
-      const res = p.status === 'Lulus' ? 'diluluskan oleh Negeri' + (p.kod ? ' · Kod ' + p.kod : '') : p.status === 'Ditolak' ? 'ditolak oleh ' + String(last.by || '').replace('Pentadbir ','') + (p.sebab ? ' — ' + String(p.sebab).replace(/\.\s*$/,'') : '') : p.status === 'Disokong Kawasan' ? 'disokong Kawasan, menunggu kelulusan Negeri' : p.status;
-      out.push({ c: p.status === 'Lulus' ? '#2fa308' : p.status === 'Ditolak' ? '#d93025' : '#f9ab00', t:'Keputusan Permohonan PASTI', s:p.nama + ' ' + res + '.', time:last.at || 'Terkini', go:'pasti-pengurusan.html' }); });
-    if (tier === 'cawangan') {
+        if (tier === 'cawangan') {
       const l = DB.all('murid').filter(m => m.status === 'Baharu' && normPasti(m.pasti) === normPasti(S.pasti));
       if (l.length) out.push({ c:'#1a73e8', t:'Permohonan Murid Baharu', s:l.length + ' permohonan murid baharu menunggu keputusan.', time:'Terkini', go:'murid-permohonan.html?t=baharu' });
-      const mb = l.filter(m => m.mbk);
-      if (mb.length) out.push({ c:'#f9ab00', t:'Permohonan MBK', s:mb.length + ' permohonan MBK perlu dijadual penilaian.', time:'Terkini', go:'murid-permohonan.html?t=baharu' });
-      const t0 = new Date(); t0.setHours(0,0,0,0);
-      DB.all('murid').filter(m => m.status === 'Dijadual Penilaian' && m.mbk && m.mbk.penilaian && normPasti(m.pasti) === normPasti(S.pasti)).forEach(m => {
-        const pn = m.mbk.penilaian, d = String(pn.tarikh || '').split('/'); if (d.length !== 3) return;
-        const days = Math.round((new Date(+d[2], +d[1] - 1, +d[0]) - t0) / 864e5); if (days < 0 || days > 3) return;
-        out.push({ c:'#8430ce', t:'Penilaian MBK', s:(days === 0 ? 'Hari ini' : days === 1 ? 'Esok' : 'Dalam ' + days + ' hari') + ' — ' + m.nama + ' · ' + pn.tarikh + ' ' + (pn.masa || '') + (pn.tempat ? ' · ' + pn.tempat : '') + '.', time:'Peringatan', go:'murid-permohonan.html' }); });
       let cuti = []; try { cuti = JSON.parse(localStorage.getItem('pt-cuti') || '[]'); } catch(e){}
       const c = (Array.isArray(cuti) ? cuti : []).filter(x => x && x.status === 'Menunggu' && normPasti(x.pasti) === normPasti(S.pasti));
       if (c.length) out.push({ c:'#8430ce', t:'Permohonan Cuti Guru', s:c.length + ' permohonan cuti menunggu kelulusan' + (c.length <= 2 ? ' — ' + c.map(x => x.nama).join(', ') : '') + '.', time:'Terkini', go:'cuti-guru.html' });
@@ -1459,17 +1376,6 @@
     document.addEventListener('submit',(e)=>{ e.preventDefault(); if(e.target.closest('[data-own]')) return; toast('Berjaya disimpan','green'); const ov=e.target.closest('.modal-overlay'); ov&&ov.classList.remove('open'); });
   }
 
-  // ---- MBK privacy: who may see which child is MBK and the details
-  const sameEmail = (a, b) => !!a && !!b && String(a).toLowerCase().trim() === String(b).toLowerCase().trim();
-  function canSeeMbk(m){
-    const u = DB.user(); if (!u || u.status !== 'Aktif') return false;
-    const r = u.peranan;
-    if (!m) return ['cawangan','guru','pembantu','ibubapa'].includes(r);
-    if (r === 'ibubapa') return sameEmail(m.emel, u.emel);
-    if (r === 'cawangan' || r === 'guru' || r === 'pembantu') return normPasti(m.pasti) === normPasti(chainOf(u).pasti || u.skop);
-    return false;
-  }
-  const statusLabel = m => { const s = m ? m.status : ''; return s === 'Dijadual Penilaian' && !canSeeMbk(m) ? 'Baharu' : s; };
   // ---- access / audit log: localStorage['pt-log'], newest first (cap 1000)
   const LOGKEY = 'pt-log';
   function accessLog(){ try { const a = JSON.parse(localStorage.getItem(LOGKEY) || '[]'); return Array.isArray(a) ? a : []; } catch(e){ return []; } }
@@ -1485,7 +1391,7 @@
   }
 
   window.PT = { svg, I, toast, queueSave, printHtml,
-    canSeeMbk, statusLabel, logAccess, accessLog,
+    logAccess, accessLog,
     get user(){ return DB.user(); },
     get role(){ const u = DB.user(); return u ? u.peranan : null; },
     get tier(){ return getTier(); },
